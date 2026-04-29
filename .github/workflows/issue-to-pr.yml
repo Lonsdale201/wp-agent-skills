@@ -22,7 +22,8 @@ jobs:
 
       - name: Parse issue form
         id: parse
-        uses: stefanbuck/github-issue-parser@v3
+        # SHA-pinned for supply-chain safety. Dependabot keeps this updated.
+        uses: stefanbuck/github-issue-parser@cb6e97157cbf851e3a393ff8d57c93a484cc323f # v3.2.5
         with:
           template-path: .github/ISSUE_TEMPLATE/new-skill.yml
 
