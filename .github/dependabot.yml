@@ -1,0 +1,21 @@
+version: 2
+updates:
+  # Keep GitHub Actions (official + third-party) up to date.
+  # Action versions are SHA-pinned in workflow files; Dependabot will
+  # update both the SHA and the trailing version comment.
+  - package-ecosystem: github-actions
+    directory: /
+    schedule:
+      interval: weekly
+      day: monday
+      time: "06:00"
+      timezone: Europe/Budapest
+    open-pull-requests-limit: 5
+    labels:
+      - dependencies
+      - github-actions
+    commit-message:
+      prefix: "ci(deps)"
+    target-branch: contrib
+    reviewers:
+      - Lonsdale201

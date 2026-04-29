@@ -32,6 +32,31 @@ const SECRET_PATTERNS = [
   { name: 'Generic private key block', re: /-----BEGIN (?:RSA |EC |OPENSSH |DSA )?PRIVATE KEY-----/ },
 ];
 
+// Dangerous code patterns. Matched only INSIDE fenced code blocks of
+// matching languages, AND only when the block lacks a documentation
+// signal (WRONG / BAD / etc.) — security-audit skills naturally label
+// their antipatterns and won't trigger.
+const DANGEROUS_PATTERNS = [
+  { name: 'PHP eval()',                              re: /\beval\s*\(/,                                                                            langs: ['php'] },
+  { name: 'PHP create_function() (deprecated, eval-like)', re: /\bcreate_function\s*\(/,                                                            langs: ['php'] },
+  { name: 'PHP shell exec function',                 re: /\b(?:exec|system|shell_exec|passthru|proc_open|popen)\s*\(/,                              langs: ['php'] },
+  { name: 'PHP backtick shell exec',                 re: /^[^\n]*=\s*`[^`\n]+`/m,                                                                  langs: ['php'] },
+  { name: 'PHP preg_replace /e modifier',            re: /preg_replace\s*\(\s*['"][^'"]*\/[a-z]*e[a-z]*['"]/i,                                       langs: ['php'] },
+  { name: 'PHP unserialize on user input',           re: /\bunserialize\s*\(\s*\$_(?:GET|POST|REQUEST|COOKIE|SERVER)/i,                              langs: ['php'] },
+  { name: 'PHP extract on user input',               re: /\bextract\s*\(\s*\$_(?:GET|POST|REQUEST|COOKIE)/i,                                          langs: ['php'] },
+  { name: 'PHP include/require with user input',     re: /\b(?:include|require)(?:_once)?\s*\(?\s*\$_(?:GET|POST|REQUEST|COOKIE)/i,                    langs: ['php'] },
+  { name: 'JS eval()',                                re: /\beval\s*\(/,                                                                             langs: ['js', 'javascript', 'ts', 'typescript', 'jsx', 'tsx'] },
+  { name: 'JS new Function() (eval-like)',            re: /\bnew\s+Function\s*\(/,                                                                   langs: ['js', 'javascript', 'ts', 'typescript', 'jsx', 'tsx'] },
+];
+
+// If any of these case-insensitive signals appears in the SAME code block
+// as a dangerous-pattern match, treat it as a teaching example (no warning).
+// Includes: explicit antipattern markers, attacker-context phrases, and the
+// repo's severity-marker convention (`// HIGH —`, `# MEDIUM –`, etc.).
+const DOC_SIGNAL_RE = /\b(?:WRONG|BAD|DON'?T|DO\s*NOT|AVOID|ANTI[- ]?PATTERN|INSECURE|UNSAFE|VULNERABL[EY]|EXPLOIT|INJECTION|VULN(?:ERABILIT(?:Y|IES))?|ATTACKER[- ]CONTROLLED|GADGET\s+CHAIN|MALICIOUS|NEVER\s+(?:do|use|run|call))\b|\b(?:HIGH|MEDIUM|LOW)\s*[—–-]/i;
+
+const FENCE_RE = /^```([A-Za-z0-9_+-]*)\s*\n([\s\S]*?)^```\s*$/gm;
+
 function sh(cmd) {
   return cp.execSync(cmd, { encoding: 'utf8' }).trim();
 }
@@ -96,6 +121,29 @@ function findSecret(text) {
     if (m) return { name: p.name, sample: m[0].slice(0, 12) + '…' };
   }
   return null;
+}
+
+function findDangerousPatterns(text) {
+  const findings = [];
+  FENCE_RE.lastIndex = 0;
+  let m;
+  while ((m = FENCE_RE.exec(text)) !== null) {
+    const lang = (m[1] || '').toLowerCase();
+    if (!lang) continue;
+    const block = m[2];
+    const isDoc = DOC_SIGNAL_RE.test(block);
+    if (isDoc) continue;
+    for (const p of DANGEROUS_PATTERNS) {
+      if (!p.langs.includes(lang)) continue;
+      const hit = block.match(p.re);
+      if (hit) {
+        // Approximate line in the file: count newlines up to the match start.
+        const lineInFile = text.slice(0, m.index + hit.index).split('\n').length;
+        findings.push({ name: p.name, sample: hit[0], line: lineInFile, lang });
+      }
+    }
+  }
+  return findings;
 }
 
 function findCrossRefs(body) {
@@ -197,6 +245,11 @@ function validateSkillFolder(folderRel, errors, warnings, knownSkills) {
       if (secret) {
         const rel = path.relative(ROOT, p).replace(/\\/g, '/');
         errors.push(`${rel}: looks like a hardcoded secret (${secret.name}, sample: ${secret.sample}). Replace with a placeholder.`);
+      }
+      const dangers = findDangerousPatterns(text);
+      for (const d of dangers) {
+        const rel = path.relative(ROOT, p).replace(/\\/g, '/');
+        warnings.push(`${rel}:${d.line}: dangerous pattern in ${d.lang} code block — ${d.name} (\`${d.sample.trim()}\`). If this is a teaching example, label the block with WRONG/BAD/DON'T/AVOID/INSECURE in a comment.`);
       }
     }
   };
