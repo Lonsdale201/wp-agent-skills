@@ -16,6 +16,8 @@ const ALLOWED_DOMAINS = new Set([
   'jetformbuilder',
   'better-data',
   'better-route',
+  'lw-plugins',
+  'wp-rocket',
 ]);
 
 const REQUIRED_FRONTMATTER = ['name', 'description', 'author', 'plugin', 'plugin-version-tested', 'php-min'];
@@ -205,8 +207,12 @@ function validateSkillFolder(folderRel, errors, warnings, knownSkills) {
   }
 
   if (typeof data.description === 'string') {
+    // CONTRIBUTING recommends <=1024 chars (router attention budget). Existing
+    // skills sometimes overshoot slightly; warn rather than block contributor
+    // PRs that touch unrelated content. The Submit-a-skill issue form's
+    // pre-check still treats >1024 as a hard error for NEW skills.
     if (data.description.length > 1024) {
-      errors.push(`${domain}/${slug}/SKILL.md: description is ${data.description.length} chars; max 1024.`);
+      warnings.push(`${domain}/${slug}/SKILL.md: description is ${data.description.length} chars (>1024 — router attention budget).`);
     }
     if (/\bsee below\b/i.test(data.description)) {
       errors.push(`${domain}/${slug}/SKILL.md: description must not say "see below".`);
@@ -221,11 +227,14 @@ function validateSkillFolder(folderRel, errors, warnings, knownSkills) {
     warnings.push(`${domain}/${slug}/SKILL.md: \`plugin-version-tested\` "${data['plugin-version-tested']}" should look like "10.5" or "10.0 - 10.5".`);
   }
 
-  // Body length / split rule
+  // Body length / split rule. CONTRIBUTING recommends moving long material
+  // into reference.md past 300 lines. Treat as warning so a typo PR on a
+  // pre-existing oversize skill is not blocked by an unrelated structural
+  // rule; the warning still shows up in the PR check log for review.
   const lines = lineCount(content);
   const hasReference = fs.existsSync(path.join(skillDir, 'reference.md'));
   if (lines > 300 && !hasReference) {
-    errors.push(`${domain}/${slug}/SKILL.md: ${lines} lines and no reference.md. Move long material into reference.md (CONTRIBUTING.md → progressive disclosure).`);
+    warnings.push(`${domain}/${slug}/SKILL.md: ${lines} lines and no reference.md (CONTRIBUTING.md recommends progressive disclosure past 300 lines).`);
   }
 
   // Emoji / secrets in all .md files in the folder

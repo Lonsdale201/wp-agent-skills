@@ -1,6 +1,7 @@
 ---
 name: bd-security
-description: Apply better-data's security discipline when touching
+description: >
+  Apply better-data's security discipline when touching
   Secret, EncryptionEngine, #[Sensitive], #[Encrypted],
   MetaKeyRegistry::register, RequestSource guards, or user_pass
   handling. Loud-over-silent — missing key throws, tampered ciphertext
@@ -22,6 +23,16 @@ php-min: "8.3"
 last-updated: "2026-04-29"
 docs:
   - https://github.com/lonsdale201/better-data
+source-refs:
+  - src/Secret.php
+  - src/Encryption/EncryptionEngine.php
+  - src/Attribute/Encrypted.php
+  - src/Attribute/Sensitive.php
+  - src/Registration/MetaKeyRegistry.php
+  - src/Source/RequestSource.php
+  - src/DataObject.php
+  - src/Exception/DecryptionFailedException.php
+  - src/Exception/SecretSerializationException.php
 ---
 
 # better-data: Security-sensitive changes

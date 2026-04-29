@@ -23,6 +23,16 @@ php-min: "8.3"
 last-updated: "2026-04-29"
 docs:
   - https://github.com/lonsdale201/better-data
+source-refs:
+  - src/Source/HasWpSources.php
+  - src/Source/PostSource.php
+  - src/Source/UserSource.php
+  - src/Source/TermSource.php
+  - src/Source/OptionSource.php
+  - src/Source/RowSource.php
+  - src/Source/RequestSource.php
+  - src/Internal/AttributeDrivenHydrator.php
+  - src/Exception/PostNotFoundException.php
 ---
 
 # better-data: Adding a source adapter

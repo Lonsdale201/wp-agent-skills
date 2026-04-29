@@ -23,6 +23,14 @@ php-min: "8.1"
 last-updated: "2026-04-29"
 docs:
   - https://lonsdale201.github.io/better-docs/docs/better-route/agents
+source-refs:
+  - src/Middleware/RateLimit/RateLimitMiddleware.php
+  - src/Middleware/RateLimit/RateLimiterInterface.php
+  - src/Middleware/RateLimit/RateLimitResult.php
+  - src/Middleware/RateLimit/WpObjectCacheRateLimiter.php
+  - src/Middleware/RateLimit/TransientRateLimiter.php
+  - src/Http/ClientIpResolver.php
+  - src/Http/ApiException.php
 ---
 
 # better-route: Rate limiting and client IP resolution

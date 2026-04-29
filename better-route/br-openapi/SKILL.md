@@ -1,6 +1,7 @@
 ---
 name: br-openapi
-description: Generate and serve OpenAPI 3.1.0 documentation for a
+description: >
+  Generate and serve OpenAPI 3.1.0 documentation for a
   better-route API — collect contracts via $router->contracts(), pass
   to BetterRoute::openApiExporter()->export($contracts, $options) for
   the document, OR use OpenApiRouteRegistrar::register() to publish
@@ -24,6 +25,14 @@ php-min: "8.1"
 last-updated: "2026-04-29"
 docs:
   - https://lonsdale201.github.io/better-docs/docs/better-route/agents
+source-refs:
+  - src/OpenApi/OpenApiExporter.php
+  - src/OpenApi/OpenApiRouteRegistrar.php
+  - src/Router/Router.php
+  - src/Router/RouteBuilder.php
+  - src/Resource/Resource.php
+  - src/Integration/Woo/WooOpenApiComponents.php
+  - src/BetterRoute.php
 ---
 
 # better-route: OpenAPI documentation

@@ -23,6 +23,17 @@ php-min: "8.1"
 last-updated: "2026-04-29"
 docs:
   - https://lonsdale201.github.io/better-docs/docs/better-route/agents
+source-refs:
+  - src/Router/Router.php
+  - src/Router/RouteBuilder.php
+  - src/Router/RouteDefinition.php
+  - src/Router/RouteMeta.php
+  - src/Router/WordPressRestDispatcher.php
+  - src/Router/ArgumentResolver.php
+  - src/Http/Response.php
+  - src/Http/RequestContext.php
+  - src/Http/ApiException.php
+  - src/BetterRoute.php
 ---
 
 # better-route: Custom REST routes (Router)

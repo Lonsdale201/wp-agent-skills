@@ -20,6 +20,10 @@ php-min: "7.4"
 last-updated: "2026-04-28"
 docs:
   - https://woocommerce.com/document/woocommerce-rest-api/
+source-refs:
+  - wp-content/plugins/woocommerce/src/Internal/RestApi/Routes/V4/AbstractController.php
+  - wp-content/plugins/woocommerce/src/Internal/RestApi/Routes/V4/
+  - wp-content/plugins/woocommerce/src/Internal/Traits/RestApiCache.php
 ---
 
 # WooCommerce REST API v4

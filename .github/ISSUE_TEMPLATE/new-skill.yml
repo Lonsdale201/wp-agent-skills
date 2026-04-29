@@ -22,6 +22,8 @@ body:
         - jetformbuilder
         - better-data
         - better-route
+        - lw-plugins
+        - wp-rocket
         - other
     validations:
       required: true

@@ -1,6 +1,7 @@
 ---
 name: wp-plugin-options-storage
-description: Picks the right WordPress storage primitive for plugin data:
+description: >
+  Picks the right WordPress storage primitive for plugin data:
   options, user/post/term/comment meta, transients, site options, site
   transients, or custom tables. Covers grouped settings, autoload
   management, transient TTL rules, serialized/JSON blob trade-offs,

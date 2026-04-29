@@ -23,6 +23,16 @@ php-min: "8.3"
 last-updated: "2026-04-29"
 docs:
   - https://github.com/lonsdale201/better-data
+source-refs:
+  - src/Sink/HasWpSinks.php
+  - src/Sink/PostSink.php
+  - src/Sink/UserSink.php
+  - src/Sink/TermSink.php
+  - src/Sink/OptionSink.php
+  - src/Sink/RowSink.php
+  - src/Internal/SinkProjection.php
+  - src/Encryption/EncryptionEngine.php
+  - src/Exception/MissingIdentifierException.php
 ---
 
 # better-data: Adding a sink

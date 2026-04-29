@@ -23,6 +23,20 @@ php-min: "8.1"
 last-updated: "2026-04-29"
 docs:
   - https://lonsdale201.github.io/better-docs/docs/better-route/agents
+source-refs:
+  - src/Integration/Woo/WooRouteRegistrar.php
+  - src/Integration/Woo/WooOrderService.php
+  - src/Integration/Woo/WooProductService.php
+  - src/Integration/Woo/WooCustomerService.php
+  - src/Integration/Woo/WooCouponService.php
+  - src/Integration/Woo/MetaDataHelper.php
+  - src/Integration/Woo/HposGuard.php
+  - src/Integration/Woo/OrderListQueryParser.php
+  - src/Integration/Woo/ProductListQueryParser.php
+  - src/Integration/Woo/CustomerListQueryParser.php
+  - src/Integration/Woo/CouponListQueryParser.php
+  - src/Integration/Woo/WooOpenApiComponents.php
+  - src/BetterRoute.php
 ---
 
 # better-route: WooCommerce route registration

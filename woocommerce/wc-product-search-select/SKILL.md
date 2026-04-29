@@ -24,6 +24,10 @@ last-updated: "2026-04-28"
 docs:
   - https://github.com/woocommerce/selectWoo
   - https://woocommerce.com/document/woocommerce-json-search/
+source-refs:
+  - wp-content/plugins/woocommerce/includes/class-wc-ajax.php
+  - wp-content/plugins/woocommerce/includes/admin/class-wc-admin-assets.php
+  - wp-content/plugins/woocommerce/assets/js/admin/wc-enhanced-select.js
 ---
 
 # WooCommerce: AJAX product search select (wooselect / selectWoo)

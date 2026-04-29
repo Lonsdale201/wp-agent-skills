@@ -23,6 +23,11 @@ php-min: "7.4"
 last-updated: "2026-04-28"
 docs:
   - https://woocommerce.com/document/woocommerce-coupons/
+source-refs:
+  - wp-content/plugins/woocommerce/includes/class-wc-coupon.php
+  - wp-content/plugins/woocommerce/includes/class-wc-discounts.php
+  - wp-content/plugins/woocommerce/includes/wc-coupon-functions.php
+  - wp-content/plugins/woocommerce/includes/class-wc-cart.php
 ---
 
 # WooCommerce: dynamic / virtual coupons

@@ -24,6 +24,14 @@ last-updated: "2026-04-29"
 docs:
   - https://lonsdale201.github.io/better-docs/docs/better-route/agents
   - https://github.com/Lonsdale201/better-route
+source-refs:
+  - src/Router/RouteBuilder.php
+  - src/Resource/ResourcePolicy.php
+  - src/Middleware/Jwt/Hs256JwtVerifier.php
+  - src/Middleware/Auth/WpClaimsUserMapper.php
+  - src/OpenApi/OpenApiRouteRegistrar.php
+  - src/BetterRoute.php
+  - composer.json
 ---
 
 # better-route: Install and migrate to v0.4.0

@@ -23,6 +23,15 @@ php-min: "7.4"
 last-updated: "2026-04-28"
 docs:
   - https://woocommerce.com/document/payment-gateway-api/
+source-refs:
+  - wp-content/plugins/woocommerce/includes/abstracts/abstract-wc-payment-gateway.php
+  - wp-content/plugins/woocommerce/includes/abstracts/abstract-wc-settings-api.php
+  - wp-content/plugins/woocommerce/includes/class-wc-payment-gateways.php
+  - wp-content/plugins/woocommerce/includes/class-wc-order.php
+  - wp-content/plugins/woocommerce/includes/gateways/bacs/class-wc-gateway-bacs.php
+  - wp-content/plugins/woocommerce/includes/gateways/cheque/class-wc-gateway-cheque.php
+  - wp-content/plugins/woocommerce/includes/gateways/cod/class-wc-gateway-cod.php
+  - wp-content/plugins/woocommerce/includes/class-wc-api.php
 ---
 
 # WooCommerce: register a custom payment gateway

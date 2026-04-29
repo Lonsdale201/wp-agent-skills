@@ -17,6 +17,8 @@ const ALLOWED_DOMAINS = new Set([
   'jetformbuilder',
   'better-data',
   'better-route',
+  'lw-plugins',
+  'wp-rocket',
 ]);
 
 function emitOutput(key, value) {

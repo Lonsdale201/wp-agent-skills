@@ -24,6 +24,11 @@ last-updated: "2026-04-29"
 docs:
   - https://woocommerce.com/document/woocommerce-pricing-functions/
   - https://github.com/woocommerce/woocommerce/wiki/Product-Variations
+source-refs:
+  - wp-content/plugins/woocommerce/includes/class-wc-product-variable.php
+  - wp-content/plugins/woocommerce/includes/class-wc-product-variation.php
+  - wp-content/plugins/woocommerce/includes/data-stores/class-wc-product-variable-data-store-cpt.php
+  - wp-content/plugins/woocommerce/includes/abstracts/abstract-wc-product.php
 ---
 
 # WooCommerce: variation pricing filter chain

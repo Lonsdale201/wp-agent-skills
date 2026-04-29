@@ -25,6 +25,21 @@ php-min: "8.3"
 last-updated: "2026-04-29"
 docs:
   - https://github.com/lonsdale201/better-data
+source-refs:
+  - src/DataObject.php
+  - src/Internal/AttributeDrivenHydrator.php
+  - src/Source/HasWpSources.php
+  - src/Sink/HasWpSinks.php
+  - src/Presenter/HasPresenter.php
+  - src/Attribute/MetaKey.php
+  - src/Attribute/PostField.php
+  - src/Attribute/Encrypted.php
+  - src/Attribute/Sensitive.php
+  - src/Attribute/ListOf.php
+  - src/Attribute/DateFormat.php
+  - src/Validation/Rule/Required.php
+  - src/Secret.php
+  - src/Exception/MissingRequiredFieldException.php
 ---
 
 # better-data: Adding a DataObject

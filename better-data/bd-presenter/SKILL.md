@@ -21,7 +21,16 @@ plugin-version-tested: "phase-9"
 php-min: "8.3"
 last-updated: "2026-04-29"
 docs:
-  - https://github.com/lonsdale201+better-data
+  - https://github.com/lonsdale201/better-data
+source-refs:
+  - src/Presenter/Presenter.php
+  - src/Presenter/CollectionPresenter.php
+  - src/Presenter/PresentationContext.php
+  - src/Presenter/HasPresenter.php
+  - src/Presenter/Formatter/DateFormatter.php
+  - src/Presenter/Formatter/CurrencyFormatter.php
+  - src/Secret.php
+  - src/Attribute/Sensitive.php
 ---
 
 # better-data: Extending the Presenter

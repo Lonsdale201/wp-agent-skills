@@ -19,7 +19,7 @@ api-stable-since: "3.0"
 php-min: "7.4"
 last-updated: "2026-04-28"
 docs:
-  - https://jetformbuilder.com/documentation/
+  - https://github.com/Crocoblock/developer-documentation/tree/main/03-jet-form-builder
   - https://developer.wordpress.org/reference/functions/wp_remote_post/
 source-refs:
   - includes/context/context.php

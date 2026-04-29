@@ -21,6 +21,13 @@ last-updated: "2026-04-28"
 docs:
   - https://developer.woocommerce.com/docs/hpos/
   - https://github.com/woocommerce/woocommerce/wiki/High-Performance-Order-Storage-Upgrade-Recipe-Book
+source-refs:
+  - wp-content/plugins/woocommerce/src/Utilities/FeaturesUtil.php
+  - wp-content/plugins/woocommerce/src/Utilities/OrderUtil.php
+  - wp-content/plugins/woocommerce/src/Internal/Utilities/COTMigrationUtil.php
+  - wp-content/plugins/woocommerce/src/Internal/Admin/Orders/PageController.php
+  - wp-content/plugins/woocommerce/src/Internal/DataStores/Orders/OrdersTableDataStore.php
+  - wp-content/plugins/woocommerce/src/Admin/Features/Fulfillments/FulfillmentsRenderer.php
 ---
 
 # WooCommerce HPOS compatibility

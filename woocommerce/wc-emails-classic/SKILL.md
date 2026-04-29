@@ -23,6 +23,12 @@ php-min: "7.4"
 last-updated: "2026-04-28"
 docs:
   - https://woocommerce.com/document/template-structure/
+source-refs:
+  - wp-content/plugins/woocommerce/includes/class-wc-emails.php
+  - wp-content/plugins/woocommerce/includes/emails/class-wc-email.php
+  - wp-content/plugins/woocommerce/includes/emails/class-wc-email-customer-processing-order.php
+  - wp-content/plugins/woocommerce/includes/wc-core-functions.php
+  - wp-content/plugins/woocommerce/templates/emails/
 ---
 
 # WooCommerce: classic transactional emails (`WC_Email`)

@@ -22,6 +22,13 @@ php-min: "8.1"
 last-updated: "2026-04-29"
 docs:
   - https://lonsdale201.github.io/better-docs/docs/better-route/agents
+source-refs:
+  - src/Resource/Resource.php
+  - src/Resource/ResourcePolicy.php
+  - src/Resource/Table/WordPressTableRepository.php
+  - src/Resource/Table/TableRepositoryInterface.php
+  - src/Resource/Table/TableListQuery.php
+  - src/Resource/Table/TableListQueryParser.php
 ---
 
 # better-route: Custom-table-backed Resource CRUD

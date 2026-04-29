@@ -26,6 +26,14 @@ last-updated: "2026-04-29"
 docs:
   - https://github.com/lonsdale201/better-data
   - https://github.com/lonsdale201/better-route
+source-refs:
+  - src/Route/BetterRouteBridge.php
+  - src/Registration/MetaKeyRegistry.php
+  - src/Source/RequestSource.php
+  - src/Internal/RestSchemaBuilder.php
+  - src/Presenter/Presenter.php
+  - src/Presenter/PresentationContext.php
+  - src/Exception/RequestParamCollisionException.php
 ---
 
 # better-data: Composing with better-route
