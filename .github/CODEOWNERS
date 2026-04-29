@@ -1,0 +1,10 @@
+# Maintainer of the repo. The branch protection rule enforces that
+# `main` requires CODEOWNERS review.
+*                       @Lonsdale201
+
+# Workflow / infra changes need extra attention — same owner enforced.
+/.github/               @Lonsdale201
+/CONTRIBUTING.md        @Lonsdale201
+/SKILL_TEMPLATE.md      @Lonsdale201
+/README.md              @Lonsdale201
+/LICENSE                @Lonsdale201

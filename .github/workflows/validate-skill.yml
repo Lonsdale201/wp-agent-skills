@@ -1,0 +1,46 @@
+name: Validate skill
+
+on:
+  pull_request:
+    branches: [contrib, main]
+    types: [opened, synchronize, reopened, ready_for_review]
+  push:
+    branches:
+      - 'submission/**'
+
+permissions:
+  contents: read
+  pull-requests: read
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Determine base ref
+        id: base
+        run: |
+          if [ "${{ github.event_name }}" = "pull_request" ]; then
+            echo "ref=origin/${{ github.event.pull_request.base.ref }}" >> "$GITHUB_OUTPUT"
+          else
+            git fetch origin contrib --depth=1 || true
+            echo "ref=origin/contrib" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Install deps
+        run: npm install --no-save js-yaml@4
+
+      - name: Run validation
+        env:
+          BASE_REF: ${{ steps.base.outputs.ref }}
+          EVENT_NAME: ${{ github.event_name }}
+        run: node .github/scripts/validate-skill.js

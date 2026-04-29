@@ -1,0 +1,13 @@
+# Normalize all text files to LF on commit; check out as LF on every OS.
+* text=auto eol=lf
+
+# Explicit
+*.md      text eol=lf
+*.yml     text eol=lf
+*.yaml    text eol=lf
+*.js      text eol=lf
+*.json    text eol=lf
+*.php     text eol=lf
+LICENSE   text eol=lf
+.gitattributes text eol=lf
+.gitignore text eol=lf

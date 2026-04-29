@@ -1,0 +1,21 @@
+# Claude / agent local state
+.claude/
+.cursor/
+.aider*
+.continuerc
+
+# OS
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# Editors
+.idea/
+.vscode/
+*.swp
+*~
+
+# Local notes
+TODO.local.md
+NOTES.local.md
+*.local.md
