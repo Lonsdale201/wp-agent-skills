@@ -1,0 +1,80 @@
+name: Report a skill problem
+description: Flag an existing skill that's outdated, broken, gives wrong advice, or is no longer relevant.
+title: "[Report] "
+labels: ["skill-report"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Use this form to report a problem with an existing skill in the repo. For brand-new skills, use **Submit a skill** instead.
+
+  - type: input
+    id: skill_name
+    attributes:
+      label: Skill name
+      description: The exact `name` from the SKILL.md frontmatter (also the folder name).
+      placeholder: wc-payment-gateway
+    validations:
+      required: true
+
+  - type: dropdown
+    id: problem_type
+    attributes:
+      label: Problem type
+      options:
+        - Wrong advice / incorrect code or hook
+        - Outdated — API or hook changed in a newer version
+        - Trigger fires for the wrong cases (false positives)
+        - Trigger does NOT fire when it should (false negatives)
+        - Description is misleading or too vague
+        - Cross-reference is broken
+        - Skill is no longer relevant (deprecated upstream / superseded)
+        - Security concern (prompt-injection content, unsafe pattern)
+        - Other (explain in details)
+    validations:
+      required: true
+
+  - type: input
+    id: affected_versions
+    attributes:
+      label: Affected plugin / WP versions (if applicable)
+      placeholder: "WC 10.5+, or WP 6.9"
+
+  - type: textarea
+    id: details
+    attributes:
+      label: What's wrong, what should it say instead
+      description: |
+        Be concrete. Quote the exact lines / snippets that are wrong, and (if you know) what the correct behavior is. Reference upstream docs / source if you have them.
+      placeholder: |
+        SKILL.md says to use `process_payment` returning `array(result, redirect)` but in WC 10.x the correct …
+    validations:
+      required: true
+
+  - type: textarea
+    id: repro
+    attributes:
+      label: Repro / evidence (optional)
+      description: A minimal example, an upstream commit / PR link, or steps that demonstrate the problem.
+      render: markdown
+
+  - type: dropdown
+    id: severity
+    attributes:
+      label: Severity (your judgment)
+      options:
+        - Low — typo / minor wording / style
+        - Medium — incorrect but not dangerous (wrong API, misleading wording)
+        - High — actively unsafe (causes data loss, security regression, breaks installs)
+    validations:
+      required: true
+
+  - type: checkboxes
+    id: ack
+    attributes:
+      label: Acknowledgements
+      options:
+        - label: I checked the skill folder and the issue is in the current `main` branch (not an old version of my local copy).
+          required: true
+        - label: I'm willing to discuss / open a PR with the fix if asked.
+          required: false
