@@ -1,0 +1,82 @@
+name: Request a skill
+description: Suggest a new skill that should exist (without writing it yourself).
+title: "[Request] "
+labels: ["skill-request"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Use this form to *suggest* a new skill. If you already have the content ready, use **Submit a skill** instead.
+
+  - type: dropdown
+    id: scope
+    attributes:
+      label: Scope
+      description: Is this for WordPress core or a specific plugin?
+      options:
+        - WordPress core (any plugin / theme)
+        - Specific plugin (name it below)
+    validations:
+      required: true
+
+  - type: input
+    id: plugin_slug
+    attributes:
+      label: Plugin slug (required if scope = specific plugin)
+      description: |
+        Lowercase WP slug, e.g. `woocommerce`, `jet-form-builder`, `wp-rocket`. Use the slug from the plugin's `wp-content/plugins/<slug>` folder when you're unsure.
+      placeholder: woocommerce
+
+  - type: input
+    id: working_title
+    attributes:
+      label: Working title for the skill
+      description: A short kebab-case suggestion. We'll refine before writing.
+      placeholder: wc-stock-low-threshold
+    validations:
+      required: true
+
+  - type: textarea
+    id: problem
+    attributes:
+      label: What problem would this skill solve?
+      description: |
+        Concretely — what does the agent currently do wrong / not know, or what do you keep re-explaining? Real examples beat abstract descriptions.
+      placeholder: |
+        When asking Claude to add a low-stock notification in WooCommerce, it always reaches for `update_post_meta` instead of the proper `wc_low_stock_amount` filter / option.
+    validations:
+      required: true
+
+  - type: textarea
+    id: triggers
+    attributes:
+      label: When should the agent use this skill? (proposed triggers)
+      description: |
+        List user phrasings, function/hook names, or file patterns that should activate this skill. The more concrete, the easier it is to write a good `description`.
+      placeholder: |
+        - User asks about "low stock", "out of stock email", "stock threshold".
+        - Code touches: `woocommerce_no_stock_amount`, `wc_low_stock_amount`, `WC_Product::set_stock_status`.
+
+  - type: input
+    id: existing_skill
+    attributes:
+      label: Closest existing skill (optional)
+      description: If a related skill already exists, link or name it. Helps decide between "extend" and "create new".
+
+  - type: textarea
+    id: docs
+    attributes:
+      label: Useful upstream docs / source paths (optional)
+      placeholder: |
+        https://woocommerce.com/document/...
+        woocommerce/includes/class-wc-product.php
+
+  - type: checkboxes
+    id: ack
+    attributes:
+      label: Acknowledgements
+      options:
+        - label: I checked the existing skill list and didn't find one that already covers this.
+          required: true
+        - label: If this gets accepted, I'm OK with someone else writing it (or willing to write it myself if discussed first).
+          required: true

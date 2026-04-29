@@ -1,5 +1,1 @@
 blank_issues_enabled: false
-contact_links:
-  - name: Question or general discussion
-    url: https://github.com/Lonsdale201/wp-agent-skills/issues/new?labels=question&title=%5BQuestion%5D+
-    about: For questions about format, tooling, or compatibility (use the question label).

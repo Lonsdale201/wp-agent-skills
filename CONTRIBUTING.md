@@ -4,15 +4,22 @@ Thanks for considering a contribution. This repo lives or dies on skill **qualit
 
 ## Submission flow
 
-> **Quick rules**
-> - **New skill?** Open an [issue with the *Submit a skill* template](../../issues/new?template=new-skill.yml). The form collects the frontmatter fields and the body; a bot opens the PR for you against `contrib`.
-> - **Editing an existing skill?** Open a regular PR against `contrib`.
-> - Only the maintainer (`Lonsdale201`) merges `contrib` → `main` periodically.
+There are four ways to engage. Pick the one that matches your intent.
 
-1. **Check what exists.** Browse the domain folders (`wordpress/`, `woocommerce/`, etc.) — your idea may already be covered, or there may be an adjacent skill to extend instead.
-2. **New skills go through the issue form.** This guarantees the frontmatter shape, runs pre-checks (kebab-case name, description length, name uniqueness), and produces a clean PR with the right path, label, and review checklist. You can edit the issue body to fix validation errors and the bot will update the PR.
-3. **Tiny fixes** to existing skills (typo, broken link, version bump) — go straight to a PR against `contrib`.
-4. **Larger edits** to an existing skill (>50 lines diff or refactor) — open an issue first to discuss scope, then PR against `contrib`.
+| Intent | Use | What happens |
+|---|---|---|
+| Submit a brand-new skill (with content) | **[Submit a skill](../../issues/new?template=new-skill.yml)** issue form | Bot validates the form, builds the SKILL.md, opens a PR against `contrib`. You can edit the issue to fix errors and it retries. |
+| Report a problem with an existing skill | **[Report a skill problem](../../issues/new?template=report-skill.yml)** issue form | Maintainer triages; you (or a contributor) open a PR with the fix. |
+| Ask a question | **[Question](../../issues/new?template=question.yml)** issue form | Conversation in the issue thread. |
+| Suggest a skill that should exist (without writing it) | **[Request a skill](../../issues/new?template=request-skill.yml)** issue form | Maintainer evaluates demand and either picks it up or invites contributors. |
+| Tiny fix to an existing skill (typo, link, version bump) | Direct PR against `contrib` | CI validates; maintainer merges. |
+| Larger edit / refactor of an existing skill | Open a *Report a skill problem* or *Question* issue first to align on scope, then PR against `contrib` | Same as above. |
+
+> Only the maintainer (`@Lonsdale201`) merges `contrib` → `main` periodically. Direct pushes to `main` are blocked by branch protection.
+
+### Why is the *Submit a skill* form a hard requirement for new skills?
+
+It guarantees frontmatter shape, runs pre-checks (kebab-case name, ≤1024-char description, name uniqueness, no duplicate folder, no path traversal in filenames, no obvious secrets), and produces a clean PR with the right path, label, and review checklist. Editing the issue retriggers the bot, so fixing validation errors is a one-click loop.
 
 ## Repository layout rules
 

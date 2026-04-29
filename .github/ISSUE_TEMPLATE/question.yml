@@ -1,0 +1,45 @@
+name: Question
+description: Ask about format, tooling, compatibility, or how to use a skill in your setup.
+title: "[Question] "
+labels: ["question"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Use this form for general questions. For bug reports / wrong content, use **Report a skill problem**. For new skills, use **Submit a skill**.
+
+  - type: dropdown
+    id: topic
+    attributes:
+      label: Topic
+      options:
+        - Using a skill (Claude Code / claude.ai / other agent runtime)
+        - Skill format / frontmatter
+        - How to write a new skill
+        - Tooling / CI / submission flow
+        - WP / plugin specifics covered (or not) by an existing skill
+        - Other
+    validations:
+      required: true
+
+  - type: input
+    id: skill_name
+    attributes:
+      label: Specific skill (optional)
+      description: If your question is about a specific skill, the name (e.g. `wp-rest-api`).
+
+  - type: textarea
+    id: question
+    attributes:
+      label: Your question
+      description: Be specific — what you tried, what you expected, what happened.
+    validations:
+      required: true
+
+  - type: textarea
+    id: context
+    attributes:
+      label: Environment / context (optional)
+      description: Agent runtime + version, WP/plugin versions, OS, anything relevant.
+      placeholder: |
+        Claude Code 1.x on macOS; WP 6.7 + WooCommerce 10.4

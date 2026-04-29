@@ -99,12 +99,19 @@ function buildFrontmatter(fields) {
 function parseExamplesBlock(text) {
   if (!text) return [];
   const out = [];
-  const re = /---\s*file:\s*([A-Za-z0-9._-]+)\s*---\s*\n([\s\S]*?)(?=\n---\s*file:|\s*$)/g;
+  const re = /---\s*file:\s*([^\n]+?)\s*---\s*\n([\s\S]*?)(?=\n---\s*file:|\s*$)/g;
   let m;
   while ((m = re.exec(text)) !== null) {
     out.push({ filename: m[1].trim(), content: m[2].trim() + '\n' });
   }
   return out;
+}
+
+function safeExampleFilename(name) {
+  // Whitelist: no leading dot, no path separators, no traversal, .md only.
+  if (!/^[A-Za-z0-9][A-Za-z0-9._-]{0,63}\.md$/.test(name)) return null;
+  if (name.includes('..')) return null;
+  return name;
 }
 
 function validateChecklist(checklist) {
@@ -255,10 +262,26 @@ function main() {
 
   const examples = parseExamplesBlock(examplesRaw);
   if (examples.length) {
+    const safeExamples = [];
+    for (const ex of examples) {
+      const safeName = safeExampleFilename(ex.filename);
+      if (!safeName) {
+        errors.push(`examples filename "${ex.filename}" must be safe (single-segment, .md, no path traversal).`);
+        continue;
+      }
+      safeExamples.push({ filename: safeName, content: ex.content });
+    }
+    if (errors.length) errorAndExit(errors);
+
     const examplesDir = path.join(skillDir, 'examples');
     fs.mkdirSync(examplesDir, { recursive: true });
-    for (const ex of examples) {
-      fs.writeFileSync(path.join(examplesDir, ex.filename), ex.content);
+    for (const ex of safeExamples) {
+      const target = path.resolve(examplesDir, ex.filename);
+      // Defense in depth: ensure target stays within examplesDir even after resolution.
+      if (!target.startsWith(path.resolve(examplesDir) + path.sep)) {
+        errorAndExit([`examples filename "${ex.filename}" resolves outside the examples directory.`]);
+      }
+      fs.writeFileSync(target, ex.content);
     }
   }
 
