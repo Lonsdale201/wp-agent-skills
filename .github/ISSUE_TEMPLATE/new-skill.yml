@@ -1,0 +1,185 @@
+name: Submit a skill
+description: Propose a new agent skill. The bot will open a PR against the `contrib` branch.
+title: "[Skill] "
+labels: ["skill-submission"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Read [CONTRIBUTING.md](../blob/main/CONTRIBUTING.md) for naming rules, frontmatter shape, and the writing checklist.
+
+        **How this works.** Fill in the form below. On submission, a bot validates the fields, generates `SKILL.md` from your inputs (frontmatter + body), creates a branch, and opens a PR against `contrib`. If validation fails, the bot comments on this issue with the errors — fix them by editing the issue body and the bot will retry.
+
+  - type: dropdown
+    id: domain
+    attributes:
+      label: Domain folder
+      description: Where the skill folder will live. Pick `other` to propose a new domain (≥2 skills required).
+      options:
+        - wordpress
+        - plugin-scaffold
+        - woocommerce
+        - jetformbuilder
+        - better-data
+        - better-route
+        - other
+    validations:
+      required: true
+
+  - type: input
+    id: domain_other
+    attributes:
+      label: New domain name (only if Domain = other)
+      description: Lowercase, kebab-case. Required only when proposing a new domain.
+      placeholder: my-plugin-slug
+
+  - type: input
+    id: name
+    attributes:
+      label: Skill name
+      description: kebab-case, `[a-z0-9-]`, max 64 chars. The folder name will match this exactly.
+      placeholder: wp-something-cool
+    validations:
+      required: true
+
+  - type: input
+    id: title
+    attributes:
+      label: Skill title (human-readable)
+      description: The `# Title` heading at the top of SKILL.md. Defaults to a humanized form of the name if empty.
+      placeholder: WP Something Cool
+
+  - type: textarea
+    id: description
+    attributes:
+      label: Description (router prompt, ≤1024 chars)
+      description: |
+        Single paragraph. Must answer WHAT the skill does and WHEN the agent should use it. List concrete trigger signals (function names, file patterns, user phrasings). See the "Writing the description" section in CONTRIBUTING.md.
+      placeholder: |
+        Audits WP plugin PHP for missing nonce checks, capability checks, sanitization, output escaping, SQL preparation, AJAX nopriv exposure, and unsafe redirects. Use when reviewing PRs, before release, or when handling code that touches $_GET / $_POST, admin-ajax, register_rest_route, $wpdb->, or wp_redirect.
+    validations:
+      required: true
+
+  - type: input
+    id: author
+    attributes:
+      label: Author
+      description: Your real name or a stable handle. Use the same form across your skills.
+      placeholder: Jane Doe
+    validations:
+      required: true
+
+  - type: input
+    id: contact
+    attributes:
+      label: Contact (optional)
+      description: A single URL or mailto. GitHub profile recommended.
+      placeholder: https://github.com/your-handle
+
+  - type: input
+    id: plugin
+    attributes:
+      label: Plugin slug
+      description: Lowercase WP/plugin slug, or `wordpress` for core.
+      placeholder: woocommerce
+    validations:
+      required: true
+
+  - type: input
+    id: plugin_version_tested
+    attributes:
+      label: plugin-version-tested
+      description: Versions you actually verified end-to-end. Range or single. NOT a "supported range" claim.
+      placeholder: "10.0 - 10.5"
+    validations:
+      required: true
+
+  - type: dropdown
+    id: php_min
+    attributes:
+      label: php-min
+      description: Minimum PHP version your code samples support.
+      options:
+        - "7.4"
+        - "8.0"
+        - "8.1"
+        - "8.2"
+        - "8.3"
+    validations:
+      required: true
+
+  - type: textarea
+    id: docs
+    attributes:
+      label: docs (optional)
+      description: One URL per line. Will be added as a YAML list under `docs:` in the frontmatter.
+      placeholder: |
+        https://developer.wordpress.org/...
+        https://woocommerce.com/document/...
+
+  - type: textarea
+    id: body
+    attributes:
+      label: SKILL.md body
+      description: |
+        Everything that comes AFTER the frontmatter and the `# Title` heading. Start with the one-paragraph hook, then `## When to use this skill`, `## How to run / Workflow`, etc. Do NOT paste a `---` frontmatter block here — the bot generates it from the fields above.
+      placeholder: |
+        One-paragraph hook describing what this skill does and what it explicitly does NOT do.
+
+        ## When to use this skill
+
+        Trigger when ANY of:
+
+        - The user asks "...".
+        - The diff or file contains: ...
+
+        ## How to run / Workflow
+
+        ...
+      render: markdown
+    validations:
+      required: true
+
+  - type: textarea
+    id: reference_md
+    attributes:
+      label: reference.md (optional)
+      description: Long-form reference content. Add only if your main body would exceed ~300 lines without it. Saved as `reference.md` next to `SKILL.md`.
+      render: markdown
+
+  - type: textarea
+    id: examples
+    attributes:
+      label: examples/ contents (optional)
+      description: |
+        For multi-file examples, use one block per file in this format:
+
+        ```
+        --- file: snake-case-name.md ---
+        <markdown content for the example>
+        --- file: another-example.md ---
+        <markdown content for another example>
+        ```
+
+        Each block becomes a file under `examples/<filename>`.
+      render: markdown
+
+  - type: checkboxes
+    id: checklist
+    attributes:
+      label: Pre-submission checklist (all required)
+      options:
+        - label: Folder name will match the `name` field exactly (kebab-case).
+          required: true
+        - label: Description lists concrete triggers (function names, file patterns, user phrasings) — not just "Helps with X".
+          required: true
+        - label: I tested trigger activation in a fresh agent session and the right skill loaded (not a sibling skill).
+          required: true
+        - label: I tested the skill output on at least two real plugins (different sizes / authors).
+          required: true
+        - label: Frontmatter and body are imperative voice, no emoji, no marketing language.
+          required: true
+        - label: No hardcoded secrets, real user data, or proprietary code anywhere in the submission.
+          required: true
+        - label: Cross-references (if any) point to skills that already exist in this repo.
+          required: true

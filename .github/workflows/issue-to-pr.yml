@@ -1,0 +1,105 @@
+name: Issue → Skill PR
+
+on:
+  issues:
+    types: [opened, edited, labeled]
+
+permissions:
+  contents: write
+  issues: write
+  pull-requests: write
+
+jobs:
+  build-pr:
+    if: contains(github.event.issue.labels.*.name, 'skill-submission')
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout contrib
+        uses: actions/checkout@v4
+        with:
+          ref: contrib
+          fetch-depth: 0
+
+      - name: Parse issue form
+        id: parse
+        uses: stefanbuck/github-issue-parser@v3
+        with:
+          template-path: .github/ISSUE_TEMPLATE/new-skill.yml
+
+      - name: Pre-checks and SKILL.md generation
+        id: build
+        env:
+          PARSED_JSON: ${{ steps.parse.outputs.jsonString }}
+          ISSUE_NUMBER: ${{ github.event.issue.number }}
+          ISSUE_AUTHOR: ${{ github.event.issue.user.login }}
+        run: |
+          set -euo pipefail
+          mkdir -p .build
+          echo "$PARSED_JSON" > .build/parsed.json
+          node .github/scripts/build-skill-pr.js
+
+      - name: Comment validation errors and stop
+        if: steps.build.outputs.status == 'error'
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const fs = require('fs');
+            const body = fs.readFileSync('.build/error-comment.md', 'utf8');
+            await github.rest.issues.createComment({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: context.issue.number,
+              body
+            });
+
+      - name: Configure git
+        if: steps.build.outputs.status == 'ok'
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+
+      - name: Create or update submission branch
+        if: steps.build.outputs.status == 'ok'
+        env:
+          BRANCH: ${{ steps.build.outputs.branch }}
+        run: |
+          set -euo pipefail
+          # Reset working tree to match contrib, drop any prior submission attempt
+          git fetch origin contrib
+          git checkout -B "$BRANCH" origin/contrib
+          # Replay the new files (built by the script under .build/output/)
+          rsync -a --delete-after .build/output/ ./
+          git add -A
+          if git diff --cached --quiet; then
+            echo "No changes to commit (idempotent re-run)."
+            echo "no_changes=true" >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
+          git commit -m "Submit skill from issue #${{ github.event.issue.number }}"
+          git push -f origin "$BRANCH"
+
+      - name: Open or update PR
+        if: steps.build.outputs.status == 'ok'
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          BRANCH: ${{ steps.build.outputs.branch }}
+          SLUG: ${{ steps.build.outputs.slug }}
+          ISSUE_NUMBER: ${{ github.event.issue.number }}
+          ISSUE_AUTHOR: ${{ github.event.issue.user.login }}
+        run: |
+          set -euo pipefail
+          existing=$(gh pr list --head "$BRANCH" --base contrib --state open --json number --jq '.[0].number' || true)
+          PR_BODY_FILE=.build/pr-body.md
+          if [ -z "$existing" ]; then
+            pr_url=$(gh pr create \
+              --base contrib \
+              --head "$BRANCH" \
+              --title "Skill submission: $SLUG (from #$ISSUE_NUMBER)" \
+              --body-file "$PR_BODY_FILE" \
+              --label "skill-submission")
+            pr_number="${pr_url##*/}"
+            gh issue comment "$ISSUE_NUMBER" --body "PR opened: #$pr_number"
+          else
+            gh pr edit "$existing" --body-file "$PR_BODY_FILE"
+            gh issue comment "$ISSUE_NUMBER" --body "PR updated: #$existing"
+          fi
