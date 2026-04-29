@@ -19,3 +19,9 @@ desktop.ini
 TODO.local.md
 NOTES.local.md
 *.local.md
+
+# Node (only used for ad-hoc local validation; workflows install fresh)
+node_modules/
+package.json
+package-lock.json
+
