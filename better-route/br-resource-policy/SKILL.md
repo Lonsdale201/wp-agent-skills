@@ -1,6 +1,7 @@
 ---
 name: br-resource-policy
-description: Configure permission policies on a better-route Resource —
+description: >
+  Configure permission policies on a better-route Resource —
   use a ResourcePolicy preset (publicReadPrivateWrite, adminOnly,
   capabilities, callbacks) for per-action authorization, or
   ->fieldPolicy([...]) for per-field write authorization. The four
@@ -23,6 +24,9 @@ php-min: "8.1"
 last-updated: "2026-04-29"
 docs:
   - https://lonsdale201.github.io/better-docs/docs/better-route/agents
+source-refs:
+  - src/Resource/ResourcePolicy.php
+  - src/Resource/Resource.php
 ---
 
 # better-route: Resource permission policies

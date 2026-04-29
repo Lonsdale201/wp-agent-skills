@@ -1,6 +1,7 @@
 ---
 name: br-etag-cache
-description: HTTP-level response caching for better-route GET / HEAD
+description: >
+  HTTP-level response caching for better-route GET / HEAD
   endpoints via ETagMiddleware — computes a hash of the response body
   (sha1 of json_encode by default), emits an ETag response header, and
   returns 304 Not Modified with no body when the request's
@@ -23,6 +24,14 @@ php-min: "8.1"
 last-updated: "2026-04-29"
 docs:
   - https://lonsdale201.github.io/better-docs/docs/better-route/agents
+source-refs:
+  - src/Middleware/Cache/ETagMiddleware.php
+  - src/Middleware/Cache/CachingMiddleware.php
+  - src/Middleware/Cache/CacheStoreInterface.php
+  - src/Middleware/Cache/TransientCacheStore.php
+  - src/Middleware/MiddlewareInterface.php
+  - src/Http/RequestContext.php
+  - src/Http/Response.php
 ---
 
 # better-route: ETag-based response caching

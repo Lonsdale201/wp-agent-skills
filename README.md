@@ -38,6 +38,7 @@ wp-agent-skills/
     wp-plugin-hooks/
     wp-plugin-rewrite-rules/
     wp-plugin-assets-loading/
+    wp-action-scheduler/
   woocommerce/        # WooCommerce-specific skills
     wc-shipping-method/
     wc-shipping-providers/
@@ -80,6 +81,14 @@ wp-agent-skills/
     br-openapi/
     br-woo-routes/
     br-error-contract/
+  lw-plugins/         # LW Plugins family (LW LMS, LW Site Manager)
+    lw-lms-backend-extend/
+    lw-lms-frontend-build/
+    lw-site-manager-overview/
+    lw-site-manager-extend-abilities/
+  wp-rocket/          # WP Rocket integration (third-party plugin)
+    wp-rocket-cache-invalidation/
+    wp-rocket-cache-rejection-and-filters/
 ```
 
 Each skill folder contains at minimum a `SKILL.md`. Larger skills may also include `reference.md`, `examples/`, or `scripts/`.
@@ -157,6 +166,7 @@ The skill's `description` matches your intent and the agent loads it automatical
 | `wp-plugin-hooks` | Designing custom action and filter hooks the plugin EMITS — action vs filter by semantics, prefixed naming with `@since` docblocks, parameter design (order, type stability, 4-arg ceiling), the stability promise, and deprecation via `apply_filters_deprecated` / `do_action_deprecated`. |
 | `wp-plugin-rewrite-rules` | Custom URL rewrites and the flush footgun — `add_rewrite_rule` + `query_vars` filter + handler pattern, CPT rewrite slugs, `add_rewrite_endpoint` for permastruct extensions, the hard rule that `flush_rewrite_rules()` runs ONCE on activation/deactivation, NEVER on `init`. Pushes back on the "flush every request" antipattern AI assistants commonly emit. |
 | `wp-plugin-assets-loading` | Plugin JS/CSS loading — correct enqueue hooks and screen gating, script args (`strategy`, `in_footer`, WP 6.9 `fetchpriority`), script module args, inline data, and removal of legacy IE conditional style support. |
+| `wp-action-scheduler` | Action Scheduler 3.9.x in plugins — async / single / recurring / cron-expression actions, `action_scheduler_init` load timing, hook + args + group naming, `unique` and `priority` parameters, idempotent callbacks, chunked workloads, activation / deactivation cleanup, WooCommerce-bundled vs standalone dependency, admin + WP-CLI debugging, queue runner limits. The graduation point from `wp-plugin-cron` for queue-style work (10k+ actions, retry, status tracking). |
 
 ### `jetformbuilder/`
 
@@ -226,6 +236,26 @@ Skills for consumers of the [better-route](https://github.com/Lonsdale201/better
 | `br-openapi` | OpenAPI 3.1.0 export via `BetterRoute::openApiExporter()->export(...)` OR live publishing via `OpenApiRouteRegistrar::register(...)`. v0.3.0 default permission for the registrar is `manage_options`; pass `permissionCallback` to override. `strictSchemas: true` throws on unknown `$ref`; default `false` substitutes a forgiving `{type: object, additionalProperties: true}`. |
 | `br-woo-routes` | WooCommerce data over REST via `BetterRoute::wooRouteRegistrar()->register(...)` — generates orders/products/customers/coupons CRUD. v0.3.0 customer endpoints filter to `customer` role only; writes need `create_users`/`edit_user`/`delete_user` on top of registrar permissions. Meta keys with `_` prefix stripped by default. |
 | `br-error-contract` | The standard error envelope `{error: {code, message, requestId, details}}` — throw `ApiException(message, status, errorCode, details)` for caller-controlled errors. v0.3.0 normalization scrubs `message` to "Unexpected error." and empties `details` for status >= 500 from non-ApiException; status === 400 preserves `details.exception` as developer aid. Common codes — `validation_failed`, `idempotency_key_required`, `invalid_token`, `not_found`, `rate_limited`, `hpos_required`. |
+
+### `lw-plugins/`
+
+Skills covering the LW Plugins family (LW LMS, LW Site Manager). Use these when extending or building on top of these plugins.
+
+| Skill | Purpose |
+|---|---|
+| `lw-lms-backend-extend` | Backend extension contract for `lwplugins/lw-lms` (BETA — README explicitly says "not recommended for production use"). Headless LMS — courses / lessons / sections / progress / access control. Three verified custom actions (`lw_lms_attachment_downloaded`, `lw_lms_lesson_completed`, `lw_lms_course_completed`) and two access-override filters (`lw_lms_has_course_access`, `lw_lms_has_lesson_access`). 11 custom capabilities, three DB tables, optional Site Manager integration. |
+| `lw-lms-frontend-build` | Build a frontend on top of `lwplugins/lw-lms` (also BETA). The plugin is intentionally HEADLESS — no shipped templates, shortcodes, or blocks; only a REST API at `/wp-json/lms/v1`. Six endpoints (public list/single, auth+access lessons / progress GET+POST / per-course progress / download). Single-course response includes content ONLY when `access.has_access === true`. |
+| `lw-site-manager-overview` | Reference for `lwplugins/lw-site-manager` — a WP 6.9+ Abilities-API-native exposure layer that registers 120+ machine-callable abilities under `site-manager/*` for AI agents (Claude, ChatGPT, MCP clients) to discover and invoke. Calling pattern via `/wp-json/wp-abilities/v1/abilities/{namespace}/{ability}/run` with Application Password Basic auth. **Not** MainWP — different surface and security model (per-ability cap-checks). |
+| `lw-site-manager-extend-abilities` | Add custom abilities to LW Site Manager via two action hooks (`lw_site_manager_register_categories`, `lw_site_manager_register_abilities` — second receives the central `PermissionManager` instance). Critical pattern — extend `AbstractAbilitiesRegistrar` to inherit the meta builders (`readOnlyMeta` / `writeMeta` / `destructiveMeta`) and schema builders (`paginationSchema` / `orderingSchema` / `idSchema` / `listOutputSchema` / etc.). |
+
+### `wp-rocket/`
+
+Integration skills for [WP Rocket](https://wp-rocket.me) (paid third-party caching plugin, not on Packagist). Use when your plugin / theme needs to play nicely with WP Rocket on installs that have it.
+
+| Skill | Purpose |
+|---|---|
+| `wp-rocket-cache-invalidation` | Programmatically clear WP Rocket cache from a third-party plugin / theme — the `rocket_clean_*` function family (`rocket_clean_post`, `rocket_clean_files`, `rocket_clean_term`, `rocket_clean_user`, `rocket_clean_home`, `rocket_clean_minify`, `rocket_clean_cache_busting`, `rocket_clean_domain`, `rocket_clean_cache_dir`). Detection rule — feature-detect via `function_exists('rocket_clean_post')` OR `defined('WP_ROCKET_VERSION')` since not every site has it. Don't raw-unlink the cache dir; `wp_cache_flush()` is the WP object cache (unrelated). |
+| `wp-rocket-cache-rejection-and-filters` | Customize WP Rocket behavior via filter hooks — exclude URIs / cookies / user agents / REST API namespaces from caching, configure CDN URL rewrites, extend lazy load, override capability requirements, hook into Action Scheduler integration. `rocket_cache_reject_uri` takes URI patterns (regex-like), NOT full URLs. The `rocket_buffer` filter is the FULL HTML output filter — extremely powerful but dangerous (one fatal in the callback breaks every cached page until WP Rocket is disabled). |
 
 ## Contributing
 

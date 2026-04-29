@@ -1,6 +1,7 @@
 ---
 name: br-error-contract
-description: Reference for the standard better-route error envelope —
+description: >
+  Reference for the standard better-route error envelope —
   every error response has shape {error: {code, message, requestId,
   details}}. Throw ApiException(message, status, errorCode, details)
   inside handlers; better-route's ErrorNormalizer wraps it. Critical
@@ -24,6 +25,14 @@ php-min: "8.1"
 last-updated: "2026-04-29"
 docs:
   - https://lonsdale201.github.io/better-docs/docs/better-route/agents
+source-refs:
+  - src/Http/ApiException.php
+  - src/Http/ConflictException.php
+  - src/Http/PreconditionFailedException.php
+  - src/Http/ErrorNormalizer.php
+  - src/Http/Response.php
+  - src/Http/RequestContext.php
+  - src/Resource/Resource.php
 ---
 
 # better-route: Error contract reference

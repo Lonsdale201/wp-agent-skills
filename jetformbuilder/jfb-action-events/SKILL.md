@@ -25,7 +25,7 @@ api-stable-since: "3.0"
 php-min: "7.4"
 last-updated: "2026-04-28"
 docs:
-  - https://jetformbuilder.com/documentation/
+  - https://github.com/Crocoblock/developer-documentation/tree/main/03-jet-form-builder
 source-refs:
   - includes/actions/events/base-event.php
   - includes/actions/events/base-action-event.php

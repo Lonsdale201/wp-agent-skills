@@ -1,6 +1,7 @@
 ---
 name: br-auth-middleware
-description: Pick and configure the right authentication middleware for
+description: >
+  Pick and configure the right authentication middleware for
   a better-route endpoint — JwtAuthMiddleware (Bearer JWT, HS256 via
   Hs256JwtVerifier), BearerTokenAuthMiddleware (custom bearer tokens
   with a verifier callback), ApplicationPasswordAuthMiddleware (WP
@@ -24,6 +25,20 @@ php-min: "8.1"
 last-updated: "2026-04-29"
 docs:
   - https://lonsdale201.github.io/better-docs/docs/better-route/agents
+source-refs:
+  - src/Middleware/Jwt/Hs256JwtVerifier.php
+  - src/Middleware/Jwt/JwtAuthMiddleware.php
+  - src/Middleware/Jwt/JwtVerifierInterface.php
+  - src/Middleware/Auth/BearerTokenAuthMiddleware.php
+  - src/Middleware/Auth/BearerTokenVerifierInterface.php
+  - src/Middleware/Auth/ApplicationPasswordAuthMiddleware.php
+  - src/Middleware/Auth/CookieNonceAuthMiddleware.php
+  - src/Middleware/Auth/WpClaimsUserMapper.php
+  - src/Middleware/Auth/ClaimsUserMapperInterface.php
+  - src/Middleware/Auth/JwtBearerTokenVerifierAdapter.php
+  - src/Middleware/Auth/AuthContext.php
+  - src/Middleware/Auth/AuthIdentity.php
+  - src/Router/RouteBuilder.php
 ---
 
 # better-route: Authentication middleware

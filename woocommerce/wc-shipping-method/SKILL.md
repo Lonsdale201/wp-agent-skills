@@ -25,6 +25,13 @@ last-updated: "2026-04-28"
 docs:
   - https://woocommerce.com/document/shipping-method-api/
   - https://github.com/woocommerce/woocommerce
+source-refs:
+  - wp-content/plugins/woocommerce/includes/abstracts/abstract-wc-shipping-method.php
+  - wp-content/plugins/woocommerce/includes/abstracts/abstract-wc-settings-api.php
+  - wp-content/plugins/woocommerce/includes/class-wc-shipping.php
+  - wp-content/plugins/woocommerce/includes/shipping/free-shipping/class-wc-shipping-free-shipping.php
+  - wp-content/plugins/woocommerce/includes/shipping/flat-rate/class-wc-shipping-flat-rate.php
+  - wp-content/plugins/woocommerce/assets/js/admin/wc-shipping-zone-methods.js
 ---
 
 # WooCommerce: register a custom shipping method

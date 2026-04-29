@@ -22,6 +22,13 @@ php-min: "7.4"
 last-updated: "2026-04-28"
 docs:
   - https://github.com/woocommerce/woocommerce
+source-refs:
+  - wp-content/plugins/woocommerce/src/Admin/Features/Fulfillments/Providers/AbstractShippingProvider.php
+  - wp-content/plugins/woocommerce/src/Admin/Features/Fulfillments/Providers/DHLShippingProvider.php
+  - wp-content/plugins/woocommerce/src/Admin/Features/Fulfillments/Providers/UPSShippingProvider.php
+  - wp-content/plugins/woocommerce/src/Admin/Features/Fulfillments/ShippingProviders.php
+  - wp-content/plugins/woocommerce/src/Admin/Features/Fulfillments/FulfillmentUtils.php
+  - wp-content/plugins/woocommerce/src/Admin/Features/Fulfillments/FulfillmentsManager.php
 ---
 
 # WooCommerce: custom shipping providers (Fulfillments)

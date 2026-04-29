@@ -25,6 +25,14 @@ php-min: "7.4"
 last-updated: "2026-04-28"
 docs:
   - https://woocommerce.com/document/woocommerce-data-storage/
+source-refs:
+  - wp-content/plugins/woocommerce/includes/abstracts/abstract-wc-session.php
+  - wp-content/plugins/woocommerce/includes/class-wc-session-handler.php
+  - wp-content/plugins/woocommerce/includes/class-wc-customer.php
+  - wp-content/plugins/woocommerce/includes/class-wc-cart-session.php
+  - wp-content/plugins/woocommerce/includes/class-woocommerce.php
+  - wp-content/plugins/woocommerce/includes/wc-core-functions.php
+  - wp-content/plugins/woocommerce/src/StoreApi/Utilities/CartController.php
 ---
 
 # WooCommerce: customer and session APIs

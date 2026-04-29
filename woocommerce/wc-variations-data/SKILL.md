@@ -24,6 +24,12 @@ last-updated: "2026-04-29"
 docs:
   - https://github.com/woocommerce/woocommerce/wiki/Product-Variations
   - https://woocommerce.com/document/managing-product-variations/
+source-refs:
+  - wp-content/plugins/woocommerce/includes/class-wc-product-variable.php
+  - wp-content/plugins/woocommerce/includes/class-wc-product-variation.php
+  - wp-content/plugins/woocommerce/includes/data-stores/class-wc-product-variable-data-store-cpt.php
+  - wp-content/plugins/woocommerce/includes/data-stores/class-wc-product-variation-data-store-cpt.php
+  - wp-content/plugins/woocommerce/includes/wc-product-functions.php
 ---
 
 # WooCommerce: variations data layer (CRUD + cache)

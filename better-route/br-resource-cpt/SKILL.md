@@ -22,6 +22,14 @@ php-min: "8.1"
 last-updated: "2026-04-29"
 docs:
   - https://lonsdale201.github.io/better-docs/docs/better-route/agents
+source-refs:
+  - src/Resource/Resource.php
+  - src/Resource/ResourcePolicy.php
+  - src/Resource/Cpt/WordPressCptRepository.php
+  - src/Resource/Cpt/CptRepositoryInterface.php
+  - src/Resource/Cpt/CptListQuery.php
+  - src/Resource/Cpt/CptListQueryParser.php
+  - src/Router/Router.php
 ---
 
 # better-route: CPT-backed Resource CRUD

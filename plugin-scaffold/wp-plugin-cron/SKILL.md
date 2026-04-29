@@ -1,6 +1,7 @@
 ---
 name: wp-plugin-cron
-description: Designs and reviews scheduled/background work in WordPress
+description: >
+  Designs and reviews scheduled/background work in WordPress
   plugins: wp_schedule_event, wp_schedule_single_event, cron_schedules,
   wp_next_scheduled guards, activation scheduling, deactivation cleanup,
   WP-Cron pseudo-cron timing, DISABLE_WP_CRON/system cron, multisite
@@ -172,7 +173,7 @@ When to graduate from WP cron to Action Scheduler:
 | 10,000+ scheduled actions (e.g. one per order) | **slow / breaks** — `cron` option grows huge in `wp_options`, all autoloaded | designed for it |
 | Per-action status tracking (pending / running / completed / failed) | none | built-in |
 | Built-in retry on failure | manual | built-in |
-| Idempotency by hook+args (skip duplicates) | partial (single-event 10-min de-dup) | modern `$unique` parameter, or `as_next_scheduled_action()` fallback |
+| Duplicate guards | partial (single-event 10-min de-dup by hook+args) | `$unique` for hook+group singletons, or exact-args guards with `as_has_scheduled_action()` |
 | Admin UI to inspect queue / re-run failures | none | yes (`Tools → Scheduled Actions`) |
 | Logical grouping of related actions | none | `group` parameter |
 | Graceful concurrency (multiple workers) | no | yes |
@@ -219,7 +220,7 @@ if ( function_exists( 'as_unschedule_all_actions' ) ) {
 }
 ```
 
-For one-shot deferred work, the parallel pair is `as_schedule_single_action()` / `wp_schedule_single_event()`. Modern Action Scheduler's `$unique` flag handles de-duplication explicitly; older bundled copies need an `as_next_scheduled_action()` guard.
+For one-shot deferred work, the parallel pair is `as_schedule_single_action()` / `wp_schedule_single_event()`. Modern Action Scheduler's `$unique` flag handles hook+group singleton de-duplication explicitly; per-entity jobs should use exact-args guards plus idempotent callbacks.
 
 The cost of Action Scheduler: it's a hard dependency. For a small plugin with 1-2 daily events on a low-traffic site, native WP cron is fine. Don't pull in WooCommerce or vendor Action Scheduler for a single hourly cleanup.
 
@@ -257,7 +258,7 @@ add_action( 'myplugin_daily_cleanup', static function (): void {
 } );
 ```
 
-The transient lock and `get_option`+`update_option` pattern is non-atomic (TOCTOU race) but good enough for soft idempotency. For hard idempotency, use modern Action Scheduler's `$unique` support, or a unique-key insert into a custom table as the gate.
+The transient lock and `get_option`+`update_option` pattern is non-atomic (TOCTOU race) but good enough for soft idempotency. For a global singleton, modern Action Scheduler's `$unique` support can help; for per-entity hard idempotency, use a unique-key insert into a custom table as the gate.
 
 ## Critical rules
 
@@ -317,10 +318,11 @@ foreach ( $orders as $order ) {
 - Run **`wp-plugin-lifecycle`** for the activation-schedule / deactivation-clear pattern in full lifecycle context — including multisite-aware `$network_wide` callback args.
 - Run **`wp-plugin-options-storage`** for the warning about the autoloaded `cron` option — at scale (10k+ events) it becomes the autoload bottleneck.
 - Run **`wp-security-audit`** on cron callbacks — they run with no current user, so capability checks based on a "logged in user" don't work. Treat persisted args / IDs as untrusted input.
+- Run **`wp-action-scheduler`** once the design graduates to Action Scheduler — this skill only covers the decision point and minimal fallback pattern.
 
 ## What this skill does NOT cover
 
-- Action Scheduler internal architecture (its own queue tables, runner process). Treated here as a black-box queue API.
+- Action Scheduler internal architecture, queue tables, runner process, WP-CLI commands, and 3.9.x API details — covered by `wp-action-scheduler`.
 - WP-CLI cron commands (`wp cron event list`, `wp cron event run`, `wp cron schedule list`) — adjacent topic, useful for debugging but separate skill scope.
 - External queue systems (Redis Queue, AWS SQS, Beanstalkd) integrated into WP — viable for ultra-high-throughput plugins but out of WP-native scope.
 - Server-side cron daemon configuration.

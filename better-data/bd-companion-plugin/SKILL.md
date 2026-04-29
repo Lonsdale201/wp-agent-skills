@@ -24,6 +24,19 @@ php-min: "8.3"
 last-updated: "2026-04-29"
 docs:
   - https://github.com/lonsdale201/better-data
+source-refs:
+  - wp-content/plugins/better-data-plugin-test/better-data-plugin-test.php
+  - wp-content/plugins/better-data-plugin-test/src/Plugin.php
+  - wp-content/plugins/better-data-plugin-test/src/Cli.php
+  - wp-content/plugins/better-data-plugin-test/src/StressCli.php
+  - wp-content/plugins/better-data-plugin-test/src/SeedCli.php
+  - wp-content/plugins/better-data-plugin-test/src/PurgeCli.php
+  - wp-content/plugins/better-data-plugin-test/src/InventoryCli.php
+  - wp-content/plugins/better-data-plugin-test/src/Smoke/Runner.php
+  - wp-content/plugins/better-data-plugin-test/src/Smoke/Assertion.php
+  - wp-content/plugins/better-data-plugin-test/src/Stress/Runner.php
+  - wp-content/plugins/better-data-plugin-test/src/Stress/Finding.php
+  - wp-content/plugins/better-data-plugin-test/src/Dto/
 ---
 
 # better-data: Companion plugin testbed

@@ -23,6 +23,14 @@ php-min: "8.3"
 last-updated: "2026-04-29"
 docs:
   - https://github.com/lonsdale201/better-data
+source-refs:
+  - src/Internal/TypeCoercer.php
+  - src/DataObject.php
+  - src/Internal/AttributeDrivenHydrator.php
+  - src/Attribute/Encrypted.php
+  - src/Attribute/ListOf.php
+  - src/Encryption/EncryptionEngine.php
+  - src/Exception/TypeCoercionException.php
 ---
 
 # better-data: Hydration and coercion

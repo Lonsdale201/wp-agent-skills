@@ -1,6 +1,7 @@
 ---
 name: wp-abilities-api
-description: Register WordPress Abilities: machine-readable plugin
+description: >
+  Register WordPress Abilities: machine-readable plugin
   operations with JSON Schema contracts, required permission callbacks,
   optional REST exposure, and AI/MCP-friendly discovery. Covers categories,
   wp_register_ability, WP_Ability::execute, REST run endpoints,

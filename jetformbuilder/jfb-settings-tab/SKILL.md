@@ -18,7 +18,7 @@ api-stable-since: "3.0"
 php-min: "7.4"
 last-updated: "2026-04-28"
 docs:
-  - https://jetformbuilder.com/documentation/
+  - https://github.com/Crocoblock/developer-documentation/tree/main/03-jet-form-builder
 source-refs:
   - includes/admin/tabs-handlers/base-handler.php
   - includes/admin/tabs-handlers/tab-handler-manager.php

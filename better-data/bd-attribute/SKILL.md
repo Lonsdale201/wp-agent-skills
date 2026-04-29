@@ -1,6 +1,7 @@
 ---
 name: bd-attribute
-description: Add a new declarative attribute to the better-data library
+description: >
+  Add a new declarative attribute to the better-data library
   (e.g. #[ArrayOf], #[Default], domain hint). Attributes live in
   src/Attribute/ as final readonly classes with constructor-promoted
   public properties — pure data carriers, never business logic. The
@@ -23,6 +24,22 @@ php-min: "8.3"
 last-updated: "2026-04-29"
 docs:
   - https://github.com/lonsdale201/better-data
+source-refs:
+  - src/Attribute/MetaKey.php
+  - src/Attribute/PostField.php
+  - src/Attribute/UserField.php
+  - src/Attribute/TermField.php
+  - src/Attribute/Column.php
+  - src/Attribute/Sensitive.php
+  - src/Attribute/Encrypted.php
+  - src/Attribute/ListOf.php
+  - src/Attribute/DateFormat.php
+  - src/Internal/AttributeDrivenHydrator.php
+  - src/Internal/SinkProjection.php
+  - src/Internal/RestSchemaBuilder.php
+  - src/Sink/OptionSink.php
+  - src/Presenter/Presenter.php
+  - src/DataObject.php
 ---
 
 # better-data: Adding a new attribute

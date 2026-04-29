@@ -1,6 +1,7 @@
 ---
 name: br-idempotency
-description: Prevent duplicate writes on better-route POST / PUT /
+description: >
+  Prevent duplicate writes on better-route POST / PUT /
   PATCH endpoints via IdempotencyMiddleware — client sends an
   Idempotency-Key header, the middleware caches the first response and
   returns the cached response on retries within the TTL. Two store
@@ -24,6 +25,13 @@ php-min: "8.1"
 last-updated: "2026-04-29"
 docs:
   - https://lonsdale201.github.io/better-docs/docs/better-route/agents
+source-refs:
+  - src/Middleware/Write/IdempotencyMiddleware.php
+  - src/Middleware/Write/IdempotencyStoreInterface.php
+  - src/Middleware/Write/ArrayIdempotencyStore.php
+  - src/Middleware/Write/TransientIdempotencyStore.php
+  - src/Middleware/Write/WpdbIdempotencyStore.php
+  - src/Http/ApiException.php
 ---
 
 # better-route: Idempotent writes

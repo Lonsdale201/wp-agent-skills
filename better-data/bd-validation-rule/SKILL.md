@@ -22,6 +22,22 @@ php-min: "8.3"
 last-updated: "2026-04-29"
 docs:
   - https://github.com/lonsdale201/better-data
+source-refs:
+  - src/Validation/Rule.php
+  - src/Validation/Rule/Required.php
+  - src/Validation/Rule/Email.php
+  - src/Validation/Rule/Url.php
+  - src/Validation/Rule/Uuid.php
+  - src/Validation/Rule/Min.php
+  - src/Validation/Rule/Max.php
+  - src/Validation/Rule/MinLength.php
+  - src/Validation/Rule/MaxLength.php
+  - src/Validation/Rule/Regex.php
+  - src/Validation/Rule/OneOf.php
+  - src/Validation/Rule/Callback.php
+  - src/Validation/BuiltInValidator.php
+  - src/Validation/ValidationResult.php
+  - src/Internal/RestSchemaBuilder.php
 ---
 
 # better-data: Adding a validation rule
