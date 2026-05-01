@@ -1,0 +1,4 @@
+interface:
+  display_name: "Better Route Atomic Idempotency"
+  short_description: "Prevent concurrent duplicate write execution."
+  default_prompt: "Use better-route atomic idempotency for side-effectful write routes."

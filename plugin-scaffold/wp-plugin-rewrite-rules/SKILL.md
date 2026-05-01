@@ -1,7 +1,6 @@
 ---
 name: wp-plugin-rewrite-rules
-description: >
-  Design and review custom WordPress URL rewrites:
+description: Design and review custom WordPress URL rewrites:
   add_rewrite_rule, add_rewrite_tag, query_vars, CPT/taxonomy rewrite
   slugs, add_rewrite_endpoint, soft vs hard flushes, rewrite_rules cache
   behavior, and the rule that flush_rewrite_rules() must not run on every

@@ -2,25 +2,25 @@
 name: br-routes
 description: Register custom REST routes via better-route's fluent
   Router — BetterRoute::router('vendor', 'v1') gives a Router with
-  ->get / ->post / ->put / ->patch / ->delete returning a RouteBuilder
+  ->get / ->post / ->put / ->patch / ->delete / ->options returning a RouteBuilder
   for fluent options (->permission, ->protectedByMiddleware,
   ->publicRoute, ->meta, ->middleware). Critical v0.4.0 rule — POST /
   PUT / PATCH / DELETE without an explicit permission declaration deny
   by default at the WP layer (return 403 before the handler runs); GET
-  is unchanged. Use ->permission(callable) for WP capability checks,
+  and OPTIONS are public by default. Use ->permission(callable) for WP capability checks,
   ->protectedByMiddleware($security) when an auth middleware handles
   authentication, ->publicRoute() for intentionally public endpoints.
   Route handlers receive ID from URL route params first (query / body
   ID is consulted only when URL doesn't supply one). Inbound
   X-Request-ID is accepted only if it matches ^[A-Za-z0-9._:-]{1,128}$.
   Use when registering custom (non-WooCommerce) REST routes. Triggers
-  on BetterRoute::router, $router->get/post/put/patch/delete, RouteBuilder.
+  on BetterRoute::router, $router->get/post/put/patch/delete/options, RouteBuilder.
 author: Soczó Kristóf
 contact: mailto:lonsdale201@hotmail.com
 plugin: better-route
-plugin-version-tested: "0.4.0"
+plugin-version-tested: "0.5.0"
 php-min: "8.1"
-last-updated: "2026-04-29"
+last-updated: "2026-05-01"
 docs:
   - https://lonsdale201.github.io/better-docs/docs/better-route/agents
 source-refs:
@@ -59,7 +59,7 @@ $router->post('/webhooks/stripe', $handler)
     ->publicRoute();                                                  // intentionally public
 ```
 
-GET is unaffected — `$router->get('/foo', $handler)` stays public by default.
+GET and OPTIONS are unaffected — `$router->get('/foo', $handler)` and `$router->options('/foo', $handler)` stay public by default.
 
 Other AI-prone misconceptions:
 
@@ -72,7 +72,7 @@ Other AI-prone misconceptions:
 Trigger when ANY of the following is true:
 
 - Calling `BetterRoute::router(...)`.
-- Registering routes via `$router->{get, post, put, patch, delete}`.
+- Registering routes via `$router->{get, post, put, patch, delete, options}`.
 - Reviewing a PR that adds REST routes via better-route.
 - Triaging post-v0.4.0 403s on write endpoints.
 - Setting up route groups with shared middleware.
@@ -115,6 +115,8 @@ $router->put('/articles/{id}', $updateArticleHandler)
 
 $router->delete('/articles/{id}', $deleteArticleHandler)
     ->permission(static fn () => current_user_can('delete_posts'));
+
+$router->options('/articles', static fn () => null);   // preflight route, public by default
 ```
 
 The handler signature is `function ($context): mixed`. Return:
@@ -210,6 +212,7 @@ Without `->register()`, no routes are actually wired to WordPress. The fluent de
 
 - **Inside `rest_api_init` only.** Earlier or later hooks miss the WP REST registration window.
 - **v0.4.0: write methods need explicit intent.** `->permission()`, `->protectedByMiddleware()`, OR `->publicRoute()`. GET is unchanged.
+- **v0.5.0: OPTIONS routes are public by default.** Use them for explicit CORS preflight endpoints; keep business logic out of them.
 - **Pick ONE of the three intents.** Don't combine `->protectedByMiddleware()` with `->permission()` — the second overrides the first.
 - **`->publicRoute()` clears OpenAPI security to `[]`.** Even with `globalSecurity` set, this route shows as unauthenticated. Use only when intentional.
 - **`->protectedByMiddleware()` defers auth to the middleware pipeline.** WP layer just lets the request through; your `JwtAuthMiddleware` / `BearerTokenAuthMiddleware` does the actual rejection.

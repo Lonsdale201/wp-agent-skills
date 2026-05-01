@@ -1,14 +1,15 @@
 ---
 name: br-idempotency
-description: >
-  Prevent duplicate writes on better-route POST / PUT /
-  PATCH endpoints via IdempotencyMiddleware — client sends an
-  Idempotency-Key header, the middleware caches the first response and
-  returns the cached response on retries within the TTL. Two store
-  options — ArrayIdempotencyStore (in-memory, per-process; lost on
-  next request, mostly for tests), TransientIdempotencyStore (WP
-  transients), and WpdbIdempotencyStore (custom DB table, survives
-  object-cache flushes; recommended for production). Critical
+description: Configure better-route idempotent write behavior. Use
+  IdempotencyMiddleware for replay-cache semantics and use the separate
+  br-atomic-idempotency skill / AtomicIdempotencyMiddleware for
+  side-effectful writes where concurrent duplicate execution must be
+  prevented. Client sends an Idempotency-Key header; the classic
+  middleware caches the first completed response and returns it on
+  retries within the TTL. Store options — ArrayIdempotencyStore
+  (in-memory, tests), TransientIdempotencyStore (WP transients), and
+  WpdbIdempotencyStore (custom DB table, recommended for production).
+  Critical
   requirement — call WpdbIdempotencyStore::installSchema() once on
   plugin activation. Cross-database table names (containing .) are
   rejected by the table-name guard at WpdbIdempotencyStore.php:107.
@@ -20,9 +21,9 @@ description: >
 author: Soczó Kristóf
 contact: mailto:lonsdale201@hotmail.com
 plugin: better-route
-plugin-version-tested: "0.4.0"
+plugin-version-tested: "0.5.0"
 php-min: "8.1"
-last-updated: "2026-04-29"
+last-updated: "2026-05-01"
 docs:
   - https://lonsdale201.github.io/better-docs/docs/better-route/agents
 source-refs:
@@ -31,6 +32,8 @@ source-refs:
   - src/Middleware/Write/ArrayIdempotencyStore.php
   - src/Middleware/Write/TransientIdempotencyStore.php
   - src/Middleware/Write/WpdbIdempotencyStore.php
+  - src/Middleware/Write/AtomicIdempotencyMiddleware.php
+  - src/Middleware/Write/WpdbAtomicIdempotencyStore.php
   - src/Http/ApiException.php
 ---
 
@@ -39,6 +42,10 @@ source-refs:
 For developers protecting POST / PUT / PATCH endpoints from duplicate writes — payment captures, order creation, anything that should run once even if the client retries due to network errors. The middleware honors the `Idempotency-Key` request header pattern (Stripe / Visa Acceptance / many SaaS APIs use the same convention).
 
 ## Misconception this skill corrects
+
+> "Classic `IdempotencyMiddleware` is enough to prevent concurrent double execution."
+
+Not for high-side-effect endpoints. Classic `IdempotencyMiddleware` checks the store, runs the handler, then stores the response. Two identical requests arriving at the same time can both see an empty store and both execute. For payment/order/subscription/account-like writes, use **`br-atomic-idempotency`** and `AtomicIdempotencyMiddleware`, which reserves before handler execution.
 
 > "I'll use `ArrayIdempotencyStore` since it's the default and simplest."
 
@@ -52,6 +59,8 @@ The production options:
 | `TransientIdempotencyStore` | Until cache flush | OK if your object cache is persistent (Redis); risky on standard hosts where transients live in `wp_options` and a cache plugin can clear them. |
 | `WpdbIdempotencyStore` | DB-persistent | **Production default.** Survives object-cache flushes and PHP restarts. |
 
+For concurrent duplicate prevention, the production option is `WpdbAtomicIdempotencyStore` with `AtomicIdempotencyMiddleware`.
+
 Other AI-prone misconceptions:
 
 - "I'll set up `WpdbIdempotencyStore` once and it just works." Wrong — call `installSchema()` once on plugin activation. Without the table, every `INSERT` / `SELECT` fails. Verified at [WpdbIdempotencyStore.php:76](WpdbIdempotencyStore.php).
@@ -63,6 +72,7 @@ Other AI-prone misconceptions:
 Trigger when ANY of the following is true:
 
 - The diff instantiates `IdempotencyMiddleware`, `WpdbIdempotencyStore`, `TransientIdempotencyStore`.
+- The route needs retry replay but not pre-handler reservation.
 - Setting up a payment / billing endpoint.
 - The user asks "how do I prevent duplicate orders" / "Stripe-style idempotency".
 - Plugin-activation code that needs `installSchema()`.
@@ -289,11 +299,12 @@ if (!wp_next_scheduled('myapp_idempotency_cleanup')) {
 - Run **`br-auth-middleware`** for the auth middleware that should run BEFORE idempotency.
 - Run **`br-rate-limiting`** for combining throttle + idempotency on the same endpoint (orthogonal concerns).
 - Run **`br-error-contract`** for the `400 idempotency_key_required` and `409 idempotency_conflict` envelope shapes.
+- Run **`br-atomic-idempotency`** for high-side-effect writes where concurrent duplicate execution must be blocked before the handler starts.
 
 ## What this skill does NOT cover
 
 - Idempotency-Key generation on the client side. UUID v4 is the convention; any unique string works.
-- Conflict semantics (two requests with the same key but different bodies). Better-route currently caches by KEY only, not by body — same key + different body returns the first body's response. For body-aware idempotency, write a custom store.
+- Atomic reservation semantics. Use `AtomicIdempotencyMiddleware` / `br-atomic-idempotency` for that.
 - Multi-region replication of the idempotency table. WP isn't multi-region native; replicate via DB-level mechanisms.
 - Cleanup automation beyond on-access pruning. Schedule a WP cron if needed.
 - Stripe-style idempotency-replay headers (`Idempotent-Replayed: true`). Better-route returns the cached response indistinguishably from a fresh response. Add a custom header if your client cares.

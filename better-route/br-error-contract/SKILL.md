@@ -1,7 +1,6 @@
 ---
 name: br-error-contract
-description: >
-  Reference for the standard better-route error envelope —
+description: Reference for the standard better-route error envelope —
   every error response has shape {error: {code, message, requestId,
   details}}. Throw ApiException(message, status, errorCode, details)
   inside handlers; better-route's ErrorNormalizer wraps it. Critical

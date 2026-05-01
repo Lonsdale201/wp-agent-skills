@@ -1,7 +1,6 @@
 ---
 name: br-write-schema
-description: >
-  Validate POST / PUT / PATCH bodies on a better-route
+description: Validate POST / PUT / PATCH bodies on a better-route
   Resource via ->writeSchema([...]) (alias ->payloadSchema([...])).
   Maps each field to a rule array with type / required / nullable /
   min / max / minLength / maxLength / regex / enum-values / sanitize.

@@ -1,0 +1,4 @@
+interface:
+  display_name: "Better Route Audit Enrichment"
+  short_description: "Enrich better-route audit events safely."
+  default_prompt: "Use better-route audit enrichment middleware for sensitive REST operations."
