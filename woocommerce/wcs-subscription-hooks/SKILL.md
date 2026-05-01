@@ -9,19 +9,28 @@ description: Curated WooCommerce Subscriptions hook and extension-point map
   "subscription status changed", or when code contains WC_Subscription,
   wcs_create_subscription, wcs_create_renewal_order,
   woocommerce_scheduled_subscription_payment, wcs_renewal_order_created,
-  payment_retry, wcs_get_subscriptions, wcsg_, or subscription switching.
+  payment_retry, wcs_get_subscriptions, wcsg_, subscription_switch,
+  _subscription_switch_data, _recipient_user, wcsg_recipient, or
+  subscription switching.
 author: Soczó Kristóf
 contact: mailto:lonsdale201@hotmail.com
 plugin: woocommerce-subscriptions
 plugin-version-tested: "8.6.0"
 php-min: "7.4"
-last-updated: "2026-04-29"
+last-updated: "2026-05-01"
 source-refs:
   - wp-content/plugins/woocommerce-subscriptions/includes/core/wcs-functions.php
   - wp-content/plugins/woocommerce-subscriptions/includes/core/class-wc-subscription.php
+  - wp-content/plugins/woocommerce-subscriptions/includes/core/class-wc-subscriptions-change-payment-gateway.php
+  - wp-content/plugins/woocommerce-subscriptions/includes/core/class-wc-subscriptions-core-plugin.php
+  - wp-content/plugins/woocommerce-subscriptions/includes/core/class-wc-subscriptions-product.php
   - wp-content/plugins/woocommerce-subscriptions/includes/core/wcs-renewal-functions.php
   - wp-content/plugins/woocommerce-subscriptions/includes/core/class-wcs-action-scheduler.php
   - wp-content/plugins/woocommerce-subscriptions/includes/payment-retry/class-wcs-retry-manager.php
+  - wp-content/plugins/woocommerce-subscriptions/includes/switching/class-wc-subscriptions-switcher.php
+  - wp-content/plugins/woocommerce-subscriptions/includes/switching/class-wcs-cart-switch.php
+  - wp-content/plugins/woocommerce-subscriptions/includes/gifting/class-wcs-gifting.php
+  - wp-content/plugins/woocommerce-subscriptions/includes/gifting/class-wcsg-checkout.php
 ---
 
 # WooCommerce Subscriptions: hook map
@@ -52,6 +61,16 @@ Trigger when ANY of the following is true:
 ```bash
 rg -n "hook_name|function_name" wp-content/plugins/woocommerce-subscriptions/includes wp-content/plugins/woocommerce-subscriptions/src
 ```
+
+## Storage facts agents must not guess
+
+Subscriptions registers `shop_subscription` as a WooCommerce order type. In CPT mode it appears as a post type; in HPOS it is an order type. Subscription product type slugs are `subscription`, `variable-subscription`, and `subscription_variation`.
+
+Subscription prop meta keys include `_billing_period`, `_billing_interval`, `_suspension_count`, `_cancelled_email_sent`, `_requires_manual_renewal`, `_trial_period`, `_last_order_date_created`, `_schedule_start`, `_schedule_trial_end`, `_schedule_next_payment`, `_schedule_cancelled`, `_schedule_end`, `_schedule_payment_retry`, and `_subscription_switch_data`.
+
+Related order meta keys are `_subscription_renewal`, `_subscription_switch`, and `_subscription_resubscribe`.
+
+Switch cart items store `subscription_switch` cart item data. Gift cart items store `wcsg_gift_recipients_email`; gifted subscriptions use `_recipient_user_email_address` and `_recipient_user`, with parent order item meta `wcsg_recipient`.
 
 ## Core hook map
 
@@ -140,6 +159,28 @@ WCS uses Action Scheduler with group `wc_subscription_scheduled_event`, but the 
 | Payment meta fields | `woocommerce_subscription_payment_meta` | filter | `array $payment_meta, WC_Subscription $subscription` | Add fields to payment-method change UI. |
 | Validate payment meta | `woocommerce_subscription_validate_payment_meta` and `..._{gateway_id}` | action | `array $payment_meta, WC_Subscription $subscription` | Throw/notice on invalid payment details. |
 
+## Customer action guardrails
+
+For custom customer account actions, do not expose WCS admin REST writes directly. Load the subscription object, verify the current user owns it, then use WCS capabilities and object methods.
+
+Status actions:
+
+- Check `$subscription->get_user_id() === get_current_user_id()` unless this is trusted admin/server code.
+- Check `$subscription->can_be_updated_to( $target_status )` before calling `$subscription->update_status( $target_status, $note, true )`.
+- Prefer domain statuses: cancel to `pending-cancel` when the prepaid term should continue; cancel to `cancelled` only when immediate cancellation is intended and allowed.
+- Let WCS status hooks run; do not update `post_status` or order status meta directly.
+
+Payment-method actions:
+
+- Verify the selected payment token belongs to the same WP user and gateway customer.
+- Do not update only payment meta/source IDs. Use `WC_Subscriptions_Change_Payment_Gateway::update_payment_method()` or the gateway's change-payment flow so hooks and remote gateway side effects run.
+- Preserve `woocommerce_subscriptions_pre_update_payment_method` and `woocommerce_subscription_payment_method_updated`; gateways use them for remote profile cleanup and migration.
+
+Switch actions:
+
+- Use `WC_Subscriptions_Switcher::can_item_be_switched_by_user()` for eligibility.
+- Wrap the switch cart/checkout flow or reproduce `_subscription_switch_data` deliberately. Direct line-item replacement is not a subscription switch.
+
 ## Common mistakes
 
 ```php
@@ -177,5 +218,6 @@ add_action( 'woocommerce_subscription_renewal_payment_complete', function ( WC_S
 
 ## Cross-references
 
+- Run `wcs-data-model-switching-gifting` when exact Subscriptions meta names, product type slugs, switch payloads, switched item meta/types, or WCS Gifting recipient storage matters.
 - Run `wcs-renewal-scheduler` for changes to next payment dates, renewal order creation, scheduled actions, or payment retry timing.
 - Run `wc-hpos-compatibility` if the integration queries orders/subscriptions directly.

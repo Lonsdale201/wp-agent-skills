@@ -1,7 +1,6 @@
 ---
 name: br-resource-policy
-description: >
-  Configure permission policies on a better-route Resource —
+description: Configure permission policies on a better-route Resource —
   use a ResourcePolicy preset (publicReadPrivateWrite, adminOnly,
   capabilities, callbacks) for per-action authorization, or
   ->fieldPolicy([...]) for per-field write authorization. The four

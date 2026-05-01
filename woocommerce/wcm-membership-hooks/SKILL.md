@@ -9,17 +9,20 @@ description: Curated WooCommerce Memberships hook and extension-point map
   status changed, grant access from order, user membership API, profile
   fields, member directory, or code contains wc_memberships_,
   WC_Memberships_User_Membership, WC_Memberships_Membership_Plan,
-  wc_user_membership, wcm-, or woocommerce-memberships.
+  wc_user_membership, wc_membership_plan, wcm-, _subscription_id,
+  wc_memberships_rules, or woocommerce-memberships.
 author: Soczó Kristóf
 contact: mailto:lonsdale201@hotmail.com
 plugin: woocommerce-memberships
 plugin-version-tested: "1.28.1"
 php-min: "7.4"
-last-updated: "2026-04-29"
+last-updated: "2026-05-01"
 source-refs:
+  - wp-content/plugins/woocommerce-memberships/src/class-wc-memberships-post-types.php
   - wp-content/plugins/woocommerce-memberships/src/class-wc-memberships-user-memberships.php
   - wp-content/plugins/woocommerce-memberships/src/class-wc-memberships-user-membership.php
   - wp-content/plugins/woocommerce-memberships/src/class-wc-memberships-membership-plan.php
+  - wp-content/plugins/woocommerce-memberships/src/class-wc-memberships-rules.php
   - wp-content/plugins/woocommerce-memberships/src/API/Controller/User_Memberships.php
   - wp-content/plugins/woocommerce-memberships/src/API/Webhooks.php
   - wp-content/plugins/woocommerce-memberships/src/Profile_Fields.php
@@ -54,6 +57,18 @@ Trigger when ANY of the following is true:
 ```bash
 rg -n "hook_name|function_name" wp-content/plugins/woocommerce-memberships/src wp-content/plugins/woocommerce-memberships/templates
 ```
+
+## Storage facts agents must not guess
+
+Memberships registers two CPTs: `wc_membership_plan` for plans and `wc_user_membership` for user memberships. A user membership's plan ID is `post_parent`, and its member/user ID is `post_author`; the installed plugin does not use `_member_plan_id` as the plan relation.
+
+Core plan meta keys are `_access_method`, `_access_length`, `_access_start_date`, `_access_end_date`, `_product_ids`, `_members_area_sections`, and `_email_content`.
+
+Core user membership meta keys are `_start_date`, `_end_date`, `_cancelled_date`, `_paused_date`, `_paused_intervals`, `_product_id`, `_order_id`, `_previous_owners`, `_renewal_login_token`, and `_locked`.
+
+Membership rules are stored in the `wc_memberships_rules` option. Rule type values are `content_restriction`, `product_restriction`, and `purchasing_discount`.
+
+When WooCommerce Subscriptions links a membership, the `wc_user_membership` post gets `_subscription_id`; subscription-linked memberships may also use `_has_installment_plan` and `_free_trial_end_date`.
 
 ## Public API first
 
@@ -194,5 +209,6 @@ if ( wc_memberships_is_user_active_member( $user_id, $plan_id ) ) {
 
 ## Cross-references
 
+- Use `wcm-data-model-subscriptions-link` for exact CPT names, meta keys, rule storage, profile-field storage, and Memberships-Subscriptions relation details.
 - Use `wcm-access-discounts` for access checks, restriction/drip hooks, member discounts, and price-adjustment recursion safety.
 - Use `wcs-subscription-hooks` or `wcs-renewal-scheduler` when the membership is tied to WooCommerce Subscriptions renewal/payment flow.

@@ -1,7 +1,6 @@
 ---
 name: bd-security
-description: >
-  Apply better-data's security discipline when touching
+description: Apply better-data's security discipline when touching
   Secret, EncryptionEngine, #[Sensitive], #[Encrypted],
   MetaKeyRegistry::register, RequestSource guards, or user_pass
   handling. Loud-over-silent — missing key throws, tampered ciphertext

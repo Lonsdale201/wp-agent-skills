@@ -31,7 +31,7 @@ source-refs:
   - wp-content/plugins/woocommerce/includes/gateways/bacs/class-wc-gateway-bacs.php
   - wp-content/plugins/woocommerce/includes/gateways/cheque/class-wc-gateway-cheque.php
   - wp-content/plugins/woocommerce/includes/gateways/cod/class-wc-gateway-cod.php
-  - wp-content/plugins/woocommerce/includes/class-wc-api.php
+  - wp-content/plugins/woocommerce/includes/class-woocommerce.php
 ---
 
 # WooCommerce: register a custom payment gateway
@@ -430,6 +430,7 @@ Storing additional gateway-specific data on the order: `$order->update_meta_data
 ## Cross-references
 
 - Run **`wc-hpos-compatibility`** when storing custom meta on orders — `WC_Order::update_meta_data + save` is the right path; direct postmeta calls break HPOS.
+- Run **`wc-stripe-add-payment-method`** when touching WooCommerce Stripe saved cards, My Account payment method templates, `add-payment-method`, SetupIntent, or Stripe billing-details/tokenization UI.
 - Run **`wp-security-audit`** on the webhook handler — it's an unauthenticated endpoint with attacker-controlled input. Signature verification + rate limiting + idempotency.
 - Run **`wp-security-secrets`** on API key storage — gateway secrets in autoloaded options is a smell; consider `wp-config.php` constants or per-environment config.
 - Run **`wp-rest-api`** if migrating webhooks from `wc-api` to a proper REST endpoint with `permission_callback`.
@@ -438,7 +439,7 @@ Storing additional gateway-specific data on the order: `$order->update_meta_data
 
 - Block-based checkout integration (`@woocommerce/blocks-registry`, `registerPaymentMethod`). Adjacent topic, separate React-side concern. Classic-shortcode checkout works the same way it did in WC 7.x.
 - Subscriptions support beyond declaring `'subscriptions'` in `$supports`. WC Subscriptions has its own gateway-extension docs.
-- Tokenization storage (`WC_Payment_Tokens`, `WC_Payment_Token_CC`, `WC_Payment_Token_DataStore`). Adjacent, separate skill if there's enough demand.
+- Stripe saved-card tokenization/account-template details — use `wc-stripe-add-payment-method`.
 - Currency conversion / multi-currency at the gateway level — usually a separate plugin handles this above the gateway.
 - 3D Secure / SCA flow — provider-specific; the skill only covers the outer WC integration.
 - Server-side certificate pinning for webhook delivery — niche.

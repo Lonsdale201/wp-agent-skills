@@ -11,7 +11,8 @@ description: Use the WooCommerce REST API v4 (namespace wc/v4, since WC 10.2)
   WP_REST_Controller directly. Use when calling WC REST endpoints, when
   picking v3 vs v4, or when reviewing /wc/v3/ URLs that now have v4
   equivalents. Triggers on wc/v4, /wc/v4/, woocommerce_rest_api_v4_*,
-  RestApiCache, REST API v4 in WooCommerce context.
+  RestApiCache, customer-owned Woo endpoints, REST API v4 in WooCommerce
+  context.
 author: Soczó Kristóf
 contact: mailto:lonsdale201@hotmail.com
 plugin: woocommerce
@@ -21,9 +22,12 @@ last-updated: "2026-04-28"
 docs:
   - https://woocommerce.com/document/woocommerce-rest-api/
 source-refs:
+  - wp-content/plugins/woocommerce/includes/wc-rest-functions.php
   - wp-content/plugins/woocommerce/src/Internal/RestApi/Routes/V4/AbstractController.php
   - wp-content/plugins/woocommerce/src/Internal/RestApi/Routes/V4/
   - wp-content/plugins/woocommerce/src/Internal/Traits/RestApiCache.php
+  - wp-content/plugins/woocommerce/src/StoreApi/RoutesController.php
+  - wp-content/plugins/woocommerce-subscriptions/includes/api/class-wc-rest-subscriptions-controller.php
 ---
 
 # WooCommerce REST API v4
@@ -46,7 +50,7 @@ Two common AI errors:
 
 Trigger when ANY of the following is true:
 
-- Calling WC REST endpoints from a custom plugin, external integration, or JS / mobile client.
+- Calling WC REST endpoints from a custom plugin, external integration, or custom client.
 - Reviewing hardcoded `/wc/v3/` URLs to check whether v4 has a better-shaped endpoint for the same data.
 - Building a new feature that needs ID-sortable customers, fulfillments, granular settings, or per-route cache headers.
 - Debugging "why is my v3 customers query slow" — v4 added caching infrastructure for these.
@@ -104,6 +108,33 @@ v4 inherits WP REST authentication. From the WC perspective:
 - **OAuth 1.0a** — WC's classic external-integration scheme.
 
 No new auth types in v4. The `permission_callback` enforcement is identical.
+
+## Customer-owned account endpoints
+
+Do not confuse Woo's admin/integration REST API with customer-facing account actions. WC REST resources such as orders/subscriptions are generally protected by capabilities and consumer keys; they are not automatically safe to expose to a logged-in customer for "my account" operations.
+
+When implementing custom routes for account actions:
+
+- Use `register_rest_route()` with a strict `permission_callback`.
+- Authenticate as a WP user and derive the user ID server-side with `get_current_user_id()`.
+- Never ship Woo consumer keys, application passwords, or Stripe secret keys to a public client.
+- For every object ID in the request, verify ownership: order customer ID, subscription customer ID, payment token user ID, or membership user ID.
+- Return only customer-safe fields; do not mirror admin REST responses wholesale.
+- Prefer domain actions over raw CRUD: `cancel subscription`, `set default payment method`, `delete payment token`, `create setup intent`, `confirm payment method`.
+- Keep writes behind nonces/bearer tokens, rate limits, idempotency keys for payment-related operations, and audit notes/logs.
+
+Important surfaces:
+
+| Need | Existing surface | Customer-facing status |
+|---|---|---|
+| Cart/checkout | Store API (`wc/store/v1`) | Designed for shopper checkout, session/cart oriented. |
+| Saved payment methods | Woo account form/query handlers + `WC_Payment_Tokens` | No complete customer REST CRUD; wrap token APIs yourself. |
+| Stripe card setup | Stripe Gateway AJAX + SetupIntent helpers | Browser/account flow exists; custom REST must verify SetupIntent/customer server-side. |
+| Subscriptions CRUD | WCS `/wc/v3/subscriptions` | Admin/server API; customer routes should enforce ownership and allowed transitions. |
+| Subscription switch | WCS switcher cart/checkout flow | No simple REST endpoint; wrap the switch flow, do not raw-update line items/meta. |
+| Membership access | Memberships objects/hooks | Expose only current user's membership state unless admin. |
+
+For Subscriptions, the REST controller can set `status`, `transition_status`, dates, line items, `payment_method`, and `payment_details`, but its permissions are Woo capability based. For customer actions, call WCS object methods after ownership checks: `$subscription->can_be_updated_to()`, `$subscription->update_status()`, `update_dates()`, and WCS change-payment/switch services.
 
 ## Hook prefix pattern (for filtering responses)
 
@@ -215,6 +246,7 @@ The endpoint surface is REST-conventional — same query params (`per_page`, `or
 
 - **`wc/v4` is the namespace, NOT `wc-blocks/v4` or `wc-store/v4`.** Those are different APIs (Store API and Blocks API; not covered here).
 - **v4 coexists with v3.** Both work; pick per-endpoint based on what each provides.
+- **Admin REST is not a My Account API.** Do not expose WC consumer keys or capability-protected order/subscription endpoints directly to customers; write customer-owned routes with explicit ownership checks.
 - **Don't extend `Automattic\WooCommerce\Internal\RestApi\Routes\V4\AbstractController`** for your plugin's REST routes. The `Internal\` namespace prefix is WC's "we may break this in any release" signal. Use `WP_REST_Controller` directly (see `wp-rest-api` skill).
 - **Filter responses via `woocommerce_rest_api_v4_<route>_item_response`** when you need to add fields without rewriting the route. Same pattern works in v3 with the v3-prefixed hook (`woocommerce_rest_prepare_*`).
 - **DELETE on shipping zones is v4-only.** v3 lacks it; if you're cleaning up zones programmatically, use v4.

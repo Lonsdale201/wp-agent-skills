@@ -18,9 +18,9 @@ description: Throttle better-route endpoints via RateLimitMiddleware
 author: Soczó Kristóf
 contact: mailto:lonsdale201@hotmail.com
 plugin: better-route
-plugin-version-tested: "0.4.0"
+plugin-version-tested: "0.5.0"
 php-min: "8.1"
-last-updated: "2026-04-29"
+last-updated: "2026-05-01"
 docs:
   - https://lonsdale201.github.io/better-docs/docs/better-route/agents
 source-refs:
@@ -141,13 +141,15 @@ The middleware throws `ApiException` with status 429:
 }
 ```
 
-Response headers (verified at [RateLimitMiddleware.php:54-58](RateLimitMiddleware.php)):
+Response headers:
 
 ```
 X-RateLimit-Limit: 60
 X-RateLimit-Remaining: 23
 X-RateLimit-Reset: 1714356060
 ```
+
+In 0.5.0 `RateLimitMiddleware` wraps plain array handler results into `BetterRoute\Http\Response`, so these headers are preserved even if the handler returns `['data' => ...]`. Existing `Response` and `WP_REST_Response` outputs remain supported.
 
 ### 4. Custom key resolver (per-IP, per-route, per-tenant)
 

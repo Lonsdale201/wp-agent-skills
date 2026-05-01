@@ -1,7 +1,6 @@
 ---
 name: wp-plugin-hooks
-description: >
-  Design custom action/filter hooks emitted by a plugin:
+description: Design custom action/filter hooks emitted by a plugin:
   action vs filter semantics, prefixed names, docblocks, parameter
   stability, *_ref_array forwarding, and deprecated hook migration. Use
   when adding, reviewing, evolving, or deprecating a public hook surface.

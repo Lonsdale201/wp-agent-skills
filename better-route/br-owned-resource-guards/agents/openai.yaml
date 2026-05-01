@@ -1,0 +1,4 @@
+interface:
+  display_name: "Better Route Ownership Guards"
+  short_description: "Add better-route ownership checks for user-owned resources."
+  default_prompt: "Use better-route ownership guards for user-owned REST resources."
