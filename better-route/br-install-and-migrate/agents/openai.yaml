@@ -1,0 +1,4 @@
+interface:
+  display_name: "Better Route Install And Migrate"
+  short_description: "Install or upgrade better-route to 0.6."
+  default_prompt: "Use better-route 0.6 install and migration guidance for a WordPress project."

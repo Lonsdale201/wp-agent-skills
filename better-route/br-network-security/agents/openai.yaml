@@ -1,0 +1,4 @@
+interface:
+  display_name: "Better Route Network Security"
+  short_description: "Resolve trusted-proxy IPs and enforce CIDR allowlists."
+  default_prompt: "Use better-route trusted-proxy IP resolution and allowlist middleware."

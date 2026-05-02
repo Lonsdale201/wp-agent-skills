@@ -1,0 +1,4 @@
+interface:
+  display_name: "Better Route Crypto"
+  short_description: "Generate tokens and compare secrets safely."
+  default_prompt: "Use better-route Crypto helpers for token generation and constant-time comparison."

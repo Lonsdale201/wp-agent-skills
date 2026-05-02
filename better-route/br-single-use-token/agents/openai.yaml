@@ -1,0 +1,4 @@
+interface:
+  display_name: "Better Route Single-Use Tokens"
+  short_description: "Consume one-time tokens atomically."
+  default_prompt: "Use better-route single-use token middleware for an auth code or magic-link flow."

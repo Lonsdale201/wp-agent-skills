@@ -1,0 +1,4 @@
+interface:
+  display_name: "Better Route Auth Middleware"
+  short_description: "Pick and configure better-route auth middleware."
+  default_prompt: "Use better-route authentication middleware for a protected REST endpoint."

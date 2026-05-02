@@ -1,0 +1,4 @@
+interface:
+  display_name: "Better Route HMAC Signatures"
+  short_description: "Verify signed server-to-server REST requests."
+  default_prompt: "Use better-route HMAC request signatures for a webhook or back-channel endpoint."

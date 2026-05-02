@@ -1,6 +1,6 @@
 # better-route
 
-**Consumer** skills for the [better-route](https://github.com/Lonsdale201/better-route) PHP library — fluent REST router for WordPress, PHP 8.1+, v0.5.0+. Use these when building / migrating / extending an API on top of better-route.
+**Consumer** skills for the [better-route](https://github.com/Lonsdale201/better-route) PHP library — fluent REST router for WordPress, PHP 8.1+, v0.6.0+. Use these when building / migrating / extending an API on top of better-route.
 
 ## Core
 
@@ -12,14 +12,17 @@
 | `br-resource-table` | Custom-table-backed CRUD via `Resource::make->sourceTable($wpdb->prefix . 'audit_events')` — REQUIRES `->fields([...])` (throws if empty) AND `->policy(...)` (deny-by-default for ALL actions including reads, unlike CPT sources). Cross-database table names containing `.` are rejected. |
 | `br-write-schema` | Resource payload validation via `->writeSchema([...])` — type / required / nullable / min / max / minLength / maxLength / regex / values / sanitize. Source-verified — enum shape is FLAT `{type: 'enum', values: [...]}`, NOT nested `{type: 'enum', enum: {values: [...]}}` as some docs show. Failures return `400 validation_failed` with `details.fieldErrors`. |
 | `br-resource-policy` | Permission policies on resources — four `ResourcePolicy` presets (`publicReadPrivateWrite`, `adminOnly`, `capabilities`, `callbacks`) and per-field write authorization via `->fieldPolicy([...])`. Important — `fieldPolicy` strips denied fields silently; combine with explicit error-throwing in `writeSchema` sanitize callable if consumers need feedback. |
-| `br-error-contract` | The standard error envelope `{error: {code, message, requestId, details}}` — throw `ApiException(message, status, errorCode, details)` for caller-controlled errors. v0.3.0 normalization scrubs `message` to "Unexpected error." and empties `details` for status >= 500 from non-ApiException; status === 400 preserves `details.exception` as developer aid. Common codes — `validation_failed`, `idempotency_key_required`, `invalid_token`, `not_found`, `rate_limited`, `hpos_required`. |
+| `br-error-contract` | The standard error envelope `{error: {code, message, requestId, details}}` — throw `ApiException(message, status, errorCode, details)` for caller-controlled errors. v0.3.0 normalization scrubs `message` to "Unexpected error." and empties `details` for status >= 500 from non-ApiException; status === 400 preserves `details.exception` as developer aid. Common codes — `validation_failed`, `idempotency_key_required`, `invalid_token`, `not_found`, `rate_limited`, `hpos_required`. v0.6.0 adds opt-in OAuth RFC 6749 error format via `->meta(['error_format' => 'oauth_rfc6749'])`. |
 
 ## Auth
 
 | Skill | Purpose |
 |---|---|
-| `br-auth-middleware` | JWT (Hs256JwtVerifier with v0.3.0 `exp`-required default), custom bearer tokens (BearerTokenAuthMiddleware), WP application passwords, cookie + nonce. WpClaimsUserMapper no longer maps `sub` by default — re-add explicitly if your tokens use it. Middleware order matters — auth before rate-limit / idempotency. |
+| `br-auth-middleware` | JWT (Hs256JwtVerifier with v0.3.0 `exp`-required default), custom bearer tokens (BearerTokenAuthMiddleware), WP application passwords, cookie + nonce. v0.6.0 adds RS256/ES256 JWT via `Rs256JwksJwtVerifier` + `JwtBearerTokenVerifierAdapter` (dispatches to `br-jwks-jwt-auth`). WpClaimsUserMapper no longer maps `sub` by default — re-add explicitly if your tokens use it. Middleware order matters — auth before rate-limit / idempotency. |
+| `br-jwks-jwt-auth` | v0.6.0 `Rs256JwksJwtVerifier` + `JwksProviderInterface` (`HttpJwksProvider`, `StaticJwksProvider`) for OIDC/OAuth RS256/ES256 bearer tokens. Strict JOSE — exact `kid` match required, `none` and `HS*` algorithms rejected, HTTPS JWKS URL enforced, single `refresh()` on key miss, transient cache + `better_route/jwks_refresh` action hook. Pair with `BearerTokenAuthMiddleware` via `JwtBearerTokenVerifierAdapter`. |
+| `br-hmac-signature` | v0.6.0 `HmacSignatureMiddleware` for signed server-to-server REST requests and webhooks — `X-Signature` (HMAC-SHA256 of `timestamp.body`), `X-Timestamp` (replay window in seconds), `X-Key-Id` (multi-key rotation). Pair with `HmacSecretProviderInterface` / `ArrayHmacSecretProvider`. Constant-time comparison via `Crypto::equals`. Replaces unsigned public POST endpoints with shared-secret authentication. |
 | `br-owned-resource-guards` | Add v0.5.0 ownership checks for user-owned REST resources — `OwnershipGuardMiddleware` for raw routes, `OwnedResourcePolicy::currentUserOwns()` for the Resource DSL. Use when authentication is not enough and the requested object must belong to the authenticated user (orders, profiles, tokens, subscriptions, memberships). Bypass via `bypassCapability` for admins; default `deniedStatus: 404` does not leak existence. |
+| `br-single-use-token` | v0.6.0 `SingleUseTokenMiddleware` for auth codes, password-reset links, magic links, email-confirmation tokens — any token that must be consumed exactly once. Stores: `WpdbSingleUseTokenStore` (production, atomic SQL `UPDATE … WHERE used = 0`), `WpCacheSingleUseTokenStore` (object-cache add/get/delete), `ArraySingleUseTokenStore` (tests). Fixes auth-code TOCTOU by reserving the token BEFORE the handler runs. |
 
 ## Write safety
 
@@ -39,7 +42,19 @@
 | Skill | Purpose |
 |---|---|
 | `br-etag-cache` | HTTP ETag caching for GET/HEAD endpoints via ETagMiddleware — `sha1(json_encode($body))` by default, custom `etagResolver` for cheap hashing on large bodies, `weak: true` for W/-prefixed validators. Skips non-2xx-non-204; combine with `Cache-Control` for unconditional caching. |
-| `br-rate-limiting` | Throttling via RateLimitMiddleware with WpObjectCacheRateLimiter (preferred, throws if no persistent object cache) or TransientRateLimiter (fallback). v0.3.0 default key is identity-aware. ClientIpResolver requires REMOTE_ADDR to be in `trustedProxies` before reading X-Forwarded-For (otherwise IP spoofing is trivial). v0.5.0 — array handler responses are wrapped into `Response` so rate-limit headers survive. |
+| `br-rate-limiting` | Throttling via RateLimitMiddleware with WpObjectCacheRateLimiter (preferred, throws if no persistent object cache) or TransientRateLimiter (fallback). v0.3.0 default key is identity-aware. ClientIpResolver requires REMOTE_ADDR to be in `trustedProxies` before reading X-Forwarded-For (otherwise IP spoofing is trivial). v0.5.0 — array handler responses are wrapped into `Response` so rate-limit headers survive. v0.6.0 — `clientIpResolver` constructor parameter accepts a `ClientIpResolverInterface` (e.g. `TrustedProxyClientIpResolver`); see `br-network-security`. |
+
+## Network
+
+| Skill | Purpose |
+|---|---|
+| `br-network-security` | v0.6.0 `TrustedProxyClientIpResolver` (replacement for the legacy `ClientIpResolver`) + `IpAllowlistMiddleware` + `CidrMatcher`. Requires `REMOTE_ADDR` to be inside the configured trusted-proxy CIDR set before honoring `X-Forwarded-For` / `CF-Connecting-IP` — prevents header-spoofed IP injection. Pin webhook callbacks to issuer CIDRs (Stripe, GitHub, Cloudflare). Inject as `clientIpResolver` into rate-limit / audit middleware. |
+
+## Crypto / primitives
+
+| Skill | Purpose |
+|---|---|
+| `br-crypto` | v0.6.0 `Crypto` and `CryptoEncoding` helpers for cryptographically secure token generation (`Crypto::token`, `Crypto::tokenHex`), URL-safe base64 (`Crypto::base64UrlEncode/Decode`), and constant-time comparison (`Crypto::equals`). Use anywhere you'd otherwise compare tokens with `===`/`!==` (HMAC, password reset codes, PKCE verifier, CSRF, webhook signatures). |
 
 ## Observability
 
