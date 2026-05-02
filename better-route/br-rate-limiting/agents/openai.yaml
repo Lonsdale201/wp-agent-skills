@@ -1,0 +1,4 @@
+interface:
+  display_name: "Better Route Rate Limiting"
+  short_description: "Throttle better-route endpoints safely."
+  default_prompt: "Use better-route rate limiting with identity-aware keys and trusted proxy IPs."

@@ -10,17 +10,19 @@ description: Throttle better-route endpoints via RateLimitMiddleware
   {provider}:sub:{subject} → 'guest', so authenticated users get a
   per-user limit and anonymous traffic keys on 'guest'. Pre-v0.3
   default was IP-based; pass an explicit keyResolver to preserve old
-  keys. Use ClientIpResolver behind proxies — REMOTE_ADDR must be in
-  trustedProxies before any X-Forwarded-For / CF-Connecting-IP / X-
-  Real-IP header is consulted (otherwise IP spoofing is trivial). Use
+  keys. In 0.6.0 RateLimitMiddleware can use either legacy
+  Http\ClientIpResolver or new TrustedProxyClientIpResolver /
+  ClientIpResolverInterface with IPv4/IPv6 CIDRs. REMOTE_ADDR must be in
+  trusted proxy CIDRs before any X-Forwarded-For / CF-Connecting-IP header is consulted. Use
   when adding throttling. Triggers on RateLimitMiddleware,
-  WpObjectCacheRateLimiter, TransientRateLimiter, ClientIpResolver.
+  WpObjectCacheRateLimiter, TransientRateLimiter, ClientIpResolver,
+  TrustedProxyClientIpResolver.
 author: Soczó Kristóf
 contact: mailto:lonsdale201@hotmail.com
 plugin: better-route
-plugin-version-tested: "0.5.0"
+plugin-version-tested: "0.6.0"
 php-min: "8.1"
-last-updated: "2026-05-01"
+last-updated: "2026-05-02"
 docs:
   - https://lonsdale201.github.io/better-docs/docs/better-route/agents
 source-refs:
@@ -30,12 +32,15 @@ source-refs:
   - src/Middleware/RateLimit/WpObjectCacheRateLimiter.php
   - src/Middleware/RateLimit/TransientRateLimiter.php
   - src/Http/ClientIpResolver.php
+  - src/Middleware/Network/TrustedProxyClientIpResolver.php
+  - src/Middleware/Network/ClientIpResolverInterface.php
+  - src/Middleware/Network/CidrMatcher.php
   - src/Http/ApiException.php
 ---
 
 # better-route: Rate limiting and client IP resolution
 
-For developers protecting endpoints with rate limits — N requests per M seconds per identity. Two backend implementations cover the deployment matrix (in-memory object cache, transient fallback), plus the `ClientIpResolver` for correct IP detection behind proxies.
+For developers protecting endpoints with rate limits — N requests per M seconds per identity. Two backend implementations cover the deployment matrix (in-memory object cache, transient fallback). For client IPs, 0.6.0 adds `TrustedProxyClientIpResolver`; the legacy `Http\ClientIpResolver` remains BC-safe.
 
 ## Misconception this skill corrects
 
@@ -62,12 +67,13 @@ Other AI-prone misconceptions:
 - "I'll use `WpObjectCacheRateLimiter` everywhere — it's the recommended option." Half-true. It THROWS at construction if `wp_cache_*` functions are unavailable ([WpObjectCacheRateLimiter.php:21-25](WpObjectCacheRateLimiter.php)) — which is true for vanilla WP installs WITHOUT a persistent object cache plugin (Redis Object Cache, Memcached). On those installs, fall back to `TransientRateLimiter`.
 - "Default v0.3.0 rate limit key is per-IP." Wrong (post-v0.3.0) — the default key is identity-aware: authenticated user's ID first, then `sub`, then `guest`. To preserve pre-v0.3 IP-based keys, pass an explicit `keyResolver`.
 - "I'll combine `JwtAuthMiddleware` after `RateLimitMiddleware` so unauthenticated requests still get rate limited." Wrong order — when JWT runs AFTER rate limit, the rate-limit `keyResolver` doesn't see the authenticated user yet, so it falls back to `'guest'` (every authenticated user shares one bucket). Run JWT FIRST.
+- "IP allowlists belong in a custom rate-limit key resolver." Wrong tool. Use `IpAllowlistMiddleware` from `br-network-security`; rate limiting throttles, allowlists authorize by network.
 
 ## When to use this skill
 
 Trigger when ANY of the following is true:
 
-- The diff instantiates `RateLimitMiddleware`, `WpObjectCacheRateLimiter`, `TransientRateLimiter`, or `ClientIpResolver`.
+- The diff instantiates `RateLimitMiddleware`, `WpObjectCacheRateLimiter`, `TransientRateLimiter`, `ClientIpResolver`, or `TrustedProxyClientIpResolver`.
 - The user asks "how do I throttle this endpoint" / "rate limit per user".
 - Reviewing PR with `$_SERVER['HTTP_X_FORWARDED_FOR']` or similar header reads in handler code.
 - Triaging "users get rate-limited as if they were anonymous" — usually middleware ordering.
@@ -199,6 +205,28 @@ Resolution algorithm (verified at [ClientIpResolver.php:23-46](ClientIpResolver.
 
 Default `$trustedHeaders`: `['HTTP_X_FORWARDED_FOR', 'HTTP_CF_CONNECTING_IP', 'HTTP_X_REAL_IP']`. Override the order if you have a specific deployment (e.g. CF in front of nginx → `HTTP_CF_CONNECTING_IP` first).
 
+### 5b. v0.6.0 hardened resolver
+
+For new code, prefer `TrustedProxyClientIpResolver` because it accepts IPv4/IPv6 CIDRs and implements `ClientIpResolverInterface`, which can be injected into `RateLimitMiddleware`:
+
+```php
+use \BetterRoute\Middleware\Network\TrustedProxyClientIpResolver;
+
+$resolver = new TrustedProxyClientIpResolver(
+    trustedProxyCidrs: ['10.0.0.0/24', '2001:db8:1234::/48'],
+    forwardedHeaders: ['CF-Connecting-IP', 'X-Forwarded-For'],
+);
+
+$rateLimit = new RateLimitMiddleware(
+    limiter: $limiter,
+    limit: 60,
+    windowSeconds: 60,
+    clientIpResolver: $resolver,
+);
+```
+
+Use the legacy `BetterRoute\Http\ClientIpResolver` only when preserving older constructor shapes is useful.
+
 ### 6. Layer rate limits
 
 ```php
@@ -224,6 +252,7 @@ Public endpoints get a low anonymous limit. Authenticated API gets a much higher
 - **Default v0.3.0 key is identity-aware.** `{provider}:user:{userId}` → `{provider}:sub:{subject}` → `'guest'`. Authenticated users get per-user; anonymous share `'guest'`.
 - **Run auth middleware BEFORE rate limit** so the rate limiter sees the authenticated user. Reversed order keys on `'guest'` for everyone.
 - **`ClientIpResolver` requires `REMOTE_ADDR` to be in `trustedProxies`** before reading forwarded headers. Otherwise spoofing is trivial.
+- **Prefer `TrustedProxyClientIpResolver` for new 0.6.0 code.** It supports CIDRs and the shared `ClientIpResolverInterface`.
 - **Default `trustedHeaders`** = `['HTTP_X_FORWARDED_FOR', 'HTTP_CF_CONNECTING_IP', 'HTTP_X_REAL_IP']`. Override the order based on your deployment.
 - **`ClientIpResolver::resolve` returns null** if `REMOTE_ADDR` is unavailable. Handle the null case in your key resolver.
 - **Limit-exceeded response is `429 rate_limited`** with `details.{limit, remaining, resetAt}`.
@@ -301,6 +330,7 @@ $globalLimit = new RateLimitMiddleware($limiter, limit: 5, windowSeconds: 60);
 ## Cross-references
 
 - Run **`br-auth-middleware`** for the auth middleware that should run BEFORE rate limit.
+- Run **`br-network-security`** for trusted-proxy CIDRs and IP allowlists.
 - Run **`br-routes`** for the middleware attachment patterns (`->middleware([...])`, group middleware).
 - Run **`br-error-contract`** for the `429 rate_limited` envelope shape.
 - Run **`br-idempotency`** when combining throttling with idempotency keys (different concerns; can co-exist).
@@ -310,7 +340,7 @@ $globalLimit = new RateLimitMiddleware($limiter, limit: 5, windowSeconds: 60);
 - Distributed rate limiting across multiple WP installs / sites. The object cache is per-install; for cross-install, point all instances at a shared Redis.
 - Token bucket / leaky bucket algorithms. The library uses fixed-window counting (simpler; some bursts cross window boundaries).
 - Cost-weighted rate limiting (some endpoints "cost" more). Implement at the keyResolver / multiple middleware layer.
-- IP allowlists / blocklists. Use a separate middleware that reads `ClientIpResolver` and rejects.
+- IP allowlists / blocklists. Use `br-network-security` and `IpAllowlistMiddleware`.
 - DDoS protection at the application layer. The library is a layer-7 limit; layer-3/4 attacks need network-level mitigation (Cloudflare, AWS Shield).
 - Honest-user fingerprinting beyond IP + user ID. Browser fingerprinting is fragile and ethically questionable.
 
@@ -320,6 +350,7 @@ $globalLimit = new RateLimitMiddleware($limiter, limit: 5, windowSeconds: 60);
 - WpObjectCacheRateLimiter: [libraries/better-route/src/Middleware/RateLimit/WpObjectCacheRateLimiter.php:17-25](WpObjectCacheRateLimiter.php) — `group: 'better_route_rate_limit'`. Throws if `wp_cache_*` unavailable.
 - TransientRateLimiter: [libraries/better-route/src/Middleware/RateLimit/TransientRateLimiter.php](TransientRateLimiter.php) — fallback for hosts without object cache; uses `get_transient` / `set_transient`.
 - ClientIpResolver: [libraries/better-route/src/Http/ClientIpResolver.php:13-17](ClientIpResolver.php) — `trustedProxies = []`, `trustedHeaders = ['HTTP_X_FORWARDED_FOR', 'HTTP_CF_CONNECTING_IP', 'HTTP_X_REAL_IP']`.
+- TrustedProxyClientIpResolver: [libraries/better-route/src/Middleware/Network/TrustedProxyClientIpResolver.php](TrustedProxyClientIpResolver.php) — CIDR-aware resolver for new 0.6.0 code.
 - IP resolution: [ClientIpResolver.php:23-46](ClientIpResolver.php) — `resolve(?array $server = null)`, walks `$_SERVER` if no override.
 - RateLimitResult: [libraries/better-route/src/Middleware/RateLimit/RateLimitResult.php](RateLimitResult.php) — `allowed`, `remaining`, `resetAt`.
 - Cloudflare IP ranges: [https://www.cloudflare.com/ips/](https://www.cloudflare.com/ips/).

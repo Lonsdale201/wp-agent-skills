@@ -2,7 +2,8 @@
 name: br-auth-middleware
 description: Pick and configure the right authentication middleware for
   a better-route endpoint — JwtAuthMiddleware (Bearer JWT, HS256 via
-  Hs256JwtVerifier), BearerTokenAuthMiddleware (custom bearer tokens
+  Hs256JwtVerifier), RS256/ES256 JWT via Rs256JwksJwtVerifier +
+  JwtBearerTokenVerifierAdapter, BearerTokenAuthMiddleware (custom bearer tokens
   with a verifier callback), ApplicationPasswordAuthMiddleware (WP
   application passwords), CookieNonceAuthMiddleware (browser-based
   cookie + nonce auth). Critical v0.3.0 JWT defaults — exp claim is
@@ -15,17 +16,22 @@ description: Pick and configure the right authentication middleware for
   authorization to the middleware pipeline. Use when adding
   authentication to an endpoint or group. Triggers on JwtAuthMiddleware,
   BearerTokenAuthMiddleware, ApplicationPasswordAuthMiddleware,
-  CookieNonceAuthMiddleware, Hs256JwtVerifier, WpClaimsUserMapper.
+  CookieNonceAuthMiddleware, Hs256JwtVerifier, Rs256JwksJwtVerifier,
+  JwtBearerTokenVerifierAdapter, WpClaimsUserMapper.
 author: Soczó Kristóf
 contact: mailto:lonsdale201@hotmail.com
 plugin: better-route
-plugin-version-tested: "0.4.0"
+plugin-version-tested: "0.6.0"
 php-min: "8.1"
-last-updated: "2026-04-29"
+last-updated: "2026-05-02"
 docs:
   - https://lonsdale201.github.io/better-docs/docs/better-route/agents
 source-refs:
   - src/Middleware/Jwt/Hs256JwtVerifier.php
+  - src/Middleware/Jwt/Rs256JwksJwtVerifier.php
+  - src/Middleware/Jwt/HttpJwksProvider.php
+  - src/Middleware/Jwt/StaticJwksProvider.php
+  - src/Middleware/Jwt/JwksProviderInterface.php
   - src/Middleware/Jwt/JwtAuthMiddleware.php
   - src/Middleware/Jwt/JwtVerifierInterface.php
   - src/Middleware/Auth/BearerTokenAuthMiddleware.php
@@ -42,7 +48,7 @@ source-refs:
 
 # better-route: Authentication middleware
 
-For developers protecting endpoints with authentication via better-route's middleware pipeline. Four middlewares cover the common patterns — JWT (server-issued tokens), application passwords (WP-native), custom bearer tokens (your own verifier), and cookie + nonce (browser-side).
+For developers protecting endpoints with authentication via better-route's middleware pipeline. Core patterns: JWT, custom bearer tokens, WordPress application passwords, and browser cookie + nonce auth. Since 0.6.0, JWT verification can be HS256 or asymmetric RS256/ES256 from JWKS.
 
 ## Misconception this skill corrects
 
@@ -92,6 +98,7 @@ Trigger when ANY of the following is true:
 | Use case | Middleware |
 |---|---|
 | Server-issued JWT tokens (HS256, you control the secret) | `JwtAuthMiddleware` + `Hs256JwtVerifier` |
+| OIDC/OAuth bearer JWTs (RS256/ES256 from JWKS) | `BearerTokenAuthMiddleware` + `JwtBearerTokenVerifierAdapter` + `Rs256JwksJwtVerifier` |
 | Custom bearer tokens (opaque tokens you verify against your DB / third-party) | `BearerTokenAuthMiddleware` + your `BearerTokenVerifierInterface` |
 | Native WP authentication (admin tools, mobile apps using WP user accounts) | `ApplicationPasswordAuthMiddleware` |
 | Browser-side AJAX from logged-in users | `CookieNonceAuthMiddleware` |
@@ -145,6 +152,31 @@ For write routes, ALSO apply `->protectedByMiddleware()` at the route layer so t
 | `maxTokenLength` | `8192` | Reject oversized tokens before base64 decode (DoS guard). |
 
 Verified at [Hs256JwtVerifier.php:21-25](Hs256JwtVerifier.php), enforcement at lines 42 (length), 116 (exp required), 140-145 (max lifetime), 154-180 (iss / aud).
+
+### 3b. RS256/ES256 JWT via JWKS (v0.6.0)
+
+For third-party OIDC/OAuth access tokens, use the dedicated JWKS verifier rather than a custom implementation:
+
+```php
+use \BetterRoute\Middleware\Auth\BearerTokenAuthMiddleware;
+use \BetterRoute\Middleware\Auth\JwtBearerTokenVerifierAdapter;
+use \BetterRoute\Middleware\Jwt\HttpJwksProvider;
+use \BetterRoute\Middleware\Jwt\Rs256JwksJwtVerifier;
+
+$verifier = new Rs256JwksJwtVerifier(
+    jwks: new HttpJwksProvider('https://issuer.example.com/jwks.json'),
+    expectedIssuer: 'https://issuer.example.com',
+    expectedAudience: 'my-api',
+    allowedAlgorithms: ['RS256'],
+);
+
+$auth = new BearerTokenAuthMiddleware(
+    verifier: new JwtBearerTokenVerifierAdapter($verifier),
+    requiredScopes: ['api:read'],
+);
+```
+
+Strict rules live in `br-jwks-jwt-auth`: `kid` must match exactly, `none` and `HS*` are rejected, HTTPS JWKS is required, and `refresh()` is attempted only once on key miss.
 
 ### 4. Custom bearer tokens (opaque, DB-backed)
 
@@ -244,6 +276,7 @@ The middleware order matters — `RateLimitMiddleware`'s default key resolver re
 ## Critical rules
 
 - **JWT `exp` claim REQUIRED by default (v0.3.0+).** Pass `requireExpiration: false` only for migration scenarios.
+- **Use `br-jwks-jwt-auth` for RS256/ES256 JWKS tokens (v0.6.0+).** Do not write a fallback verifier that tries every key.
 - **`WpClaimsUserMapper` does NOT include `sub` by default (v0.3.0+).** Re-add it explicitly via `idClaims: ['sub', ...]` if your tokens use `sub` as user ID.
 - **Set `expectedIssuer` AND `expectedAudience` for production JWT.** Without them, any JWT signed with your secret is accepted, regardless of issuer / audience — no defense against cross-service token reuse.
 - **`maxLifetimeSeconds` caps token age.** A token with `exp - iat = 86400 * 365` (a year-long token) bypasses your security policy if you don't cap.
@@ -317,8 +350,7 @@ $middleware = new ApplicationPasswordAuthMiddleware();
 $verifier = new Hs256JwtVerifier(secret: $sharedSecret);   // ← also used by 3 other services
 // Any compromise of one service compromises all.
 
-// RIGHT — per-service secret OR upgrade to RS256 / asymmetric (better-route ships only HS256;
-// for asymmetric, write a custom verifier implementing JwtVerifierInterface)
+// RIGHT — per-service secret OR upgrade to RS256 / ES256 via Rs256JwksJwtVerifier
 
 // WRONG — long-running tokens without rotation
 maxLifetimeSeconds: 86400 * 30,   // 30-day tokens
@@ -332,6 +364,8 @@ maxLifetimeSeconds: 3600,   // 1 hour
 ## Cross-references
 
 - Run **`br-routes`** for the route-layer `->protectedByMiddleware()` mechanics — auth middleware needs it for v0.4.0+ writes.
+- Run **`br-jwks-jwt-auth`** for RS256/ES256 OIDC/OAuth JWT verification from JWKS.
+- Run **`br-hmac-signature`** for signed server-to-server/webhook endpoints where no user bearer token is involved.
 - Run **`br-rate-limiting`** for combining auth with rate limiting — middleware order matters.
 - Run **`br-error-contract`** for the standard error envelope — auth failures return `401 invalid_token` shape.
 - Run **`br-install-and-migrate`** for the v0.3.0 JWT breaking changes (exp, sub) summary.
@@ -339,8 +373,7 @@ maxLifetimeSeconds: 3600,   // 1 hour
 ## What this skill does NOT cover
 
 - Token issuance / refresh-token flow. Better-route VERIFIES tokens; issuance is your responsibility (use any standard JWT library on your auth server).
-- RS256 / ES256 / asymmetric JWT. Library ships HS256 only. For asymmetric, implement `JwtVerifierInterface` yourself.
-- OAuth2 flows (authorization code, client credentials). Out of scope; pair better-route with an OAuth2 server.
+- OAuth authorization-code, refresh-token, and client credentials flows. Better-route provides middleware primitives, not a complete OAuth server/client implementation.
 - WP-side capability mapping. Once authenticated, the user is mapped via `WpClaimsUserMapper`; subsequent permission checks use `current_user_can` against the mapped user.
 - Multi-factor auth. WP user accounts handle MFA via plugins; better-route consumes the resolved authenticated user.
 - API-key-style auth (single static keys per consumer). Use `BearerTokenAuthMiddleware` with a verifier that matches against your keys table.
@@ -349,6 +382,8 @@ maxLifetimeSeconds: 3600,   // 1 hour
 
 - JwtAuthMiddleware: [libraries/better-route/src/Middleware/Jwt/JwtAuthMiddleware.php:24-29](JwtAuthMiddleware.php) — `__construct(verifier, requiredScopes, userMapper)`.
 - Hs256JwtVerifier: [libraries/better-route/src/Middleware/Jwt/Hs256JwtVerifier.php:18-26](Hs256JwtVerifier.php) — full constructor with v0.3.0 defaults.
+- Rs256JwksJwtVerifier: [libraries/better-route/src/Middleware/Jwt/Rs256JwksJwtVerifier.php](Rs256JwksJwtVerifier.php) — RS256/ES256 JWKS verifier added in v0.6.0.
+- HttpJwksProvider: [libraries/better-route/src/Middleware/Jwt/HttpJwksProvider.php](HttpJwksProvider.php) — HTTPS JWKS fetch + transient cache.
 - WpClaimsUserMapper: [libraries/better-route/src/Middleware/Auth/WpClaimsUserMapper.php:29-35](WpClaimsUserMapper.php) — default `idClaims: ['user_id', 'uid', 'wp_user_id']` (post v0.3.0; sub removed).
 - BearerTokenAuthMiddleware: [libraries/better-route/src/Middleware/Auth/BearerTokenAuthMiddleware.php:21-25](BearerTokenAuthMiddleware.php).
 - BearerTokenVerifierInterface: [libraries/better-route/src/Middleware/Auth/BearerTokenVerifierInterface.php](BearerTokenVerifierInterface.php) — `verify(string): array`.

@@ -1,7 +1,7 @@
 ---
 name: br-install-and-migrate
 description: Install better-route into a WordPress project and migrate
-  to v0.4.0 — composer VCS repository (NOT yet on Packagist), PHP 8.1+
+  to v0.6.0 — composer VCS repository (NOT yet on Packagist), PHP 8.1+
   requirement, all route registration inside rest_api_init. Important —
   v0.4.0 raw Router write methods (POST / PUT / PATCH / DELETE) DENY by
   default at the WP permission layer; every write route now needs an
@@ -10,17 +10,20 @@ description: Install better-route into a WordPress project and migrate
   unchanged. Older v0.3.0 breaking changes still apply when jumping
   from <0.3 — OpenAPI doc defaults to manage_options, custom-table
   resources are deny-by-default, JWT exp claim required, identity-aware
-  default keys for cache / idempotency / rate-limit. Use when adding
-  better-route to a project, bumping the constraint to ^0.4.0, or
+  default keys for cache / idempotency / rate-limit. v0.6.0 adds JWKS
+  JWT verification, Crypto helpers, HMAC signatures, trusted-proxy
+  IP/CIDR allowlists, single-use token stores, and opt-in OAuth error
+  format. Use when adding better-route to a project, bumping the
+  constraint to ^0.6.0, or
   triaging unintended 403s on writes after upgrade. Triggers on
   composer require better-route, ->permission, ->protectedByMiddleware,
   ->publicRoute, "better-route 403 on POST".
 author: Soczó Kristóf
 contact: mailto:lonsdale201@hotmail.com
 plugin: better-route
-plugin-version-tested: "0.4.0"
+plugin-version-tested: "0.6.0"
 php-min: "8.1"
-last-updated: "2026-04-29"
+last-updated: "2026-05-02"
 docs:
   - https://lonsdale201.github.io/better-docs/docs/better-route/agents
   - https://github.com/Lonsdale201/better-route
@@ -28,15 +31,20 @@ source-refs:
   - src/Router/RouteBuilder.php
   - src/Resource/ResourcePolicy.php
   - src/Middleware/Jwt/Hs256JwtVerifier.php
+  - src/Middleware/Jwt/Rs256JwksJwtVerifier.php
+  - src/Middleware/Auth/HmacSignatureMiddleware.php
+  - src/Middleware/Network/IpAllowlistMiddleware.php
+  - src/Middleware/Write/SingleUseTokenMiddleware.php
+  - src/Support/Crypto.php
   - src/Middleware/Auth/WpClaimsUserMapper.php
   - src/OpenApi/OpenApiRouteRegistrar.php
   - src/BetterRoute.php
   - composer.json
 ---
 
-# better-route: Install and migrate to v0.4.0
+# better-route: Install and migrate to v0.6.0
 
-For developers adding [better-route](https://github.com/Lonsdale201/better-route) to a WordPress project for the first time OR upgrading an existing v0.2.x / v0.3.x install to v0.4.0. The install path is non-Packagist (composer VCS repository), and the v0.4.0 release flips write-route permissions to deny-by-default — a silent post-upgrade source of 403s if you don't declare intent at every write callsite.
+For developers adding [better-route](https://github.com/Lonsdale201/better-route) to a WordPress project for the first time OR upgrading an existing install to v0.6.0. The install path is non-Packagist (composer VCS repository). v0.6.0 is additive, but older v0.3.0/v0.4.0 migration rules still matter: JWT `exp` is required by default, custom table resources deny by default, and write routes deny by default until intent is declared.
 
 ## Misconception this skill corrects
 
@@ -58,6 +66,7 @@ Other AI-prone misconceptions:
 
 - "I'll add `better-route` to `composer.json` like any other package." Wrong — not on Packagist yet. You need a VCS repository entry.
 - "I'm jumping from v0.2.x to v0.4.0 — I only need the v0.4.0 changelog." Wrong — the v0.3.0 breaking changes still apply (custom-table deny-by-default, JWT `exp` requirement, identity-aware default keys, OpenAPI doc admin-only). Walk through both.
+- "v0.6.0 means I must migrate all HS256 JWTs to RS256." Wrong — `Hs256JwtVerifier` remains valid. Use `Rs256JwksJwtVerifier` for OIDC/OAuth/JWKS tokens.
 
 ## When to use this skill
 
@@ -65,7 +74,7 @@ Trigger when ANY of the following is true:
 
 - The diff or task adds `better-route/better-route` to `composer.json`.
 - The user asks "how do I install better-route" / "is it on Packagist".
-- The diff bumps `better-route` from any older version to `^0.4.0`.
+- The diff bumps `better-route` from any older version to `^0.6.0`.
 - After an upgrade, write routes return 403 with no other config change.
 - The user asks about `->publicRoute()`, `->protectedByMiddleware()`, or "deny by default".
 
@@ -80,7 +89,7 @@ PHP 8.1+ and Composer required. WordPress with REST API (the default — every m
 ```json
 {
   "require": {
-    "better-route/better-route": "^0.4.0"
+    "better-route/better-route": "^0.6.0"
   },
   "repositories": [
     {
@@ -127,13 +136,24 @@ php vendor/bin/phpcs             # composer cs-check
 
 (Since v0.3.0 the convention switched from `vendor/bin/phpunit` to `php vendor/bin/phpunit` for cross-OS compatibility — both still work, the `php` prefix is the documented form.)
 
-### 4. Upgrade path: v0.2.x / v0.3.x → v0.4.0
+### 4. Upgrade path: older versions → v0.6.0
 
 ```bash
 composer update better-route/better-route
 ```
 
-Then walk both checklists:
+Then walk the additive 0.6.0 checklist and the older breaking-change checklists.
+
+#### v0.6.0 additive checklist
+
+| Area | Action |
+|---|---|
+| RS256/ES256/OIDC JWT | Replace custom asymmetric verifiers with `Rs256JwksJwtVerifier` + `HttpJwksProvider` where appropriate. |
+| Token compares / nonce / PKCE / CSRF | Prefer `Crypto::equals()` and `Crypto::token()` over ad hoc `!==` and `random_bytes` wrappers. |
+| Webhooks/back-channel POSTs | Use `HmacSignatureMiddleware` and/or `IpAllowlistMiddleware`; keep `publicRoute()` explicit. |
+| Auth codes / reset links / magic links | Use `SingleUseTokenMiddleware` with `WpdbSingleUseTokenStore` or `WpCacheSingleUseTokenStore`. |
+| Rate limit behind proxies | Prefer `TrustedProxyClientIpResolver` for new code; legacy `Http\ClientIpResolver` remains valid. |
+| OAuth-like error responses | Use `->meta(['error_format' => 'oauth_rfc6749'])` only where clients expect RFC6749 shape. |
 
 #### v0.4.0 breaking-change checklist
 
@@ -222,14 +242,14 @@ add_action('rest_api_init', function () {
 // WRONG — composer.json without repositories block
 {
   "require": {
-    "better-route/better-route": "^0.4.0"
+    "better-route/better-route": "^0.6.0"
   }
 }
 // composer install: "Could not find package better-route/better-route".
 
 // RIGHT — VCS repository entry
 {
-  "require": { "better-route/better-route": "^0.4.0" },
+  "require": { "better-route/better-route": "^0.6.0" },
   "repositories": [
     { "type": "vcs", "url": "https://github.com/Lonsdale201/better-route" }
   ]
@@ -246,6 +266,8 @@ add_action('rest_api_init', function () {
 - Run **`br-routes`** for the full custom REST route registration patterns and the deny-by-default rule's mechanics.
 - Run **`br-resource-table`** when upgrading custom-table resources — they need an explicit `->policy()` post-v0.3.0.
 - Run **`br-auth-middleware`** when configuring JWT — `exp`-required default and `WpClaimsUserMapper` `sub`-removal both apply.
+- Run **`br-jwks-jwt-auth`** for the new v0.6.0 RS256/ES256 JWKS verifier.
+- Run **`br-hmac-signature`**, **`br-network-security`**, **`br-single-use-token`**, and **`br-crypto`** for the new v0.6.0 primitives.
 - Run **`br-openapi`** when the OpenAPI doc endpoint suddenly returns 401 after upgrade.
 
 ## What this skill does NOT cover

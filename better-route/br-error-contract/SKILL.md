@@ -14,14 +14,16 @@ description: Reference for the standard better-route error envelope —
   not_found (404), idempotency_conflict / hpos_required / customer_exists
   (409), rate_limited (429), woo_unavailable (503). Use when handlers
   need to throw structured errors, or consumers need to interpret them.
-  Triggers on ApiException, ErrorNormalizer, fromThrowable, error
-  envelope, fieldErrors.
+  v0.6.0 adds opt-in OAuth RFC6749 error format via
+  ->meta(['error_format' => 'oauth_rfc6749']) and OAuthErrorNormalizer.
+  Triggers on ApiException, ErrorNormalizer, OAuthErrorNormalizer,
+  error_format, oauth_rfc6749, fromThrowable, error envelope, fieldErrors.
 author: Soczó Kristóf
 contact: mailto:lonsdale201@hotmail.com
 plugin: better-route
-plugin-version-tested: "0.4.0"
+plugin-version-tested: "0.6.0"
 php-min: "8.1"
-last-updated: "2026-04-29"
+last-updated: "2026-05-02"
 docs:
   - https://lonsdale201.github.io/better-docs/docs/better-route/agents
 source-refs:
@@ -29,6 +31,8 @@ source-refs:
   - src/Http/ConflictException.php
   - src/Http/PreconditionFailedException.php
   - src/Http/ErrorNormalizer.php
+  - src/Http/OAuthErrorNormalizer.php
+  - src/Http/ResponseNormalizer.php
   - src/Http/Response.php
   - src/Http/RequestContext.php
   - src/Resource/Resource.php
@@ -37,6 +41,8 @@ source-refs:
 # better-route: Error contract reference
 
 For developers writing handlers that throw structured errors, AND for AI agents / clients interpreting better-route's error responses. Every error in the system flows through `ErrorNormalizer::fromThrowable` and emerges as the same JSON envelope, with v0.3.0+ leak-prevention rules for unhandled exceptions.
+
+0.6.0 adds an opt-in OAuth RFC 6749 style error format for OAuth-like routes. The default better-route envelope remains unchanged.
 
 ## Misconception this skill corrects
 
@@ -114,6 +120,38 @@ Content-Type: application/json
 ```
 
 Verified at [ErrorNormalizer.php:25-37](ErrorNormalizer.php). The wrapper is invariant; `details` content varies.
+
+### 1b. OAuth RFC6749 error format (v0.6.0 opt-in)
+
+OAuth-style endpoints can opt into:
+
+```php
+$router->post('/oauth/token', $handler)
+    ->meta(['error_format' => 'oauth_rfc6749'])
+    ->publicRoute();
+```
+
+Error response shape:
+
+```json
+{
+  "error": "invalid_grant",
+  "error_description": "Authorization code is invalid."
+}
+```
+
+Optional `error_uri` can be supplied through `ApiException` details:
+
+```php
+throw new ApiException(
+    message: 'Authorization code is invalid.',
+    status: 400,
+    errorCode: 'invalid_grant',
+    details: ['error_uri' => 'https://docs.example.com/oauth/errors#invalid_grant']
+);
+```
+
+Only use this when a client expects RFC 6749 style responses. Do not switch normal application APIs away from the better-route envelope without a compatibility reason.
 
 ### 2. Throw ApiException for full control
 
@@ -290,6 +328,7 @@ Always switch on `error.code` (stable contract), not `error.message` (human-read
 
 - **Throw `ApiException` for caller-controlled errors.** Don't return error responses manually; the normalizer + envelope are the contract.
 - **Errors are envelope-shaped: `{error: {code, message, requestId, details}}`** — invariant across status codes.
+- **OAuth error shape is opt-in per route (v0.6.0).** Use `->meta(['error_format' => 'oauth_rfc6749'])`; otherwise the normal envelope is used.
 - **Status >= 500 from non-ApiException scrubs message + details** (v0.3.0+ leak prevention). Don't rely on `RuntimeException::getMessage` reaching the client.
 - **Status === 400 from non-ApiException keeps `details.exception`** as developer aid.
 - **`requestId` is for log correlation** — every response (success and error) carries the same request ID. Surface it in client logs.
@@ -378,6 +417,7 @@ $router->get('/items/{id}', $handler)
 - Run **`br-routes`** for handler patterns that throw `ApiException`.
 - Run **`br-write-schema`** for the `validation_failed` envelope produced by Resource validation.
 - Run **`br-rate-limiting`** for the `rate_limited` envelope and headers.
+- Run **`br-routes`** for route metadata patterns such as `->meta(['error_format' => 'oauth_rfc6749'])`.
 - Run **`br-idempotency`** for `idempotency_key_required` and `idempotency_conflict`.
 - Run **`br-woo-routes`** for Woo-specific codes like `hpos_required`, `customer_exists`, `woo_unavailable`.
 

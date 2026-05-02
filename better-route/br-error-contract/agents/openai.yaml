@@ -1,0 +1,4 @@
+interface:
+  display_name: "Better Route Error Contract"
+  short_description: "Return standard or OAuth-style better-route errors."
+  default_prompt: "Use better-route structured error responses for a REST handler."
