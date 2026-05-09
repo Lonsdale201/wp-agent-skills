@@ -2,6 +2,33 @@
 
 This collection is continuously evolving — entries are date-based, not version-tagged. New skills land when they're ready; updates go in when they cover real ground (a new release of an upstream plugin, a verified misconception, a corrected example).
 
+## 2026-05-10
+
+### New domains
+
+- **`fluentcrm/`** — FluentCRM extension-point skills. See [`fluentcrm/README.md`](fluentcrm/README.md).
+
+### New skills (FluentCRM 2.9.87 / FluentCampaign Pro)
+
+- **`fluentcrm/fluentcrm-overview`** — Orient skill for FluentCRM extension development. Free / Pro split (FluentCRM = funnel chassis; FluentCampaign Pro = integrations + advanced actions / benchmarks), plugin paths and constants, the bootstrap order (`fluentcrm_loaded` → `fluentcrm_addons_loaded` → `fluent_crm/after_init`), the model layer (`Subscriber`, `Funnel`, `FunnelSequence`, `FunnelSubscriber`, `FunnelMetric`), the global helpers (`FluentCrmApi`, `fluentCrmDb`, `FunnelHelper`), the contact lifecycle hooks (`fluent_crm/contact_created`, `_updated`, `_email_changed`, `_custom_data_updated`), the smart-code extension filter (`fluent_crm/extended_smart_codes`), and a decision matrix for picking the right extension contract.
+- **`fluentcrm/fluentcrm-funnel-trigger`** — Extend `BaseTrigger` to start a FluentCRM automation from a custom event. Four abstract methods, the auto-injected `__force_run_actions` field, the canonical `isProcessable` / `run_multiple` / `ifAlreadyInFunnel` guard, the `source_trigger_name` / `source_ref_id` metadata for `FunnelProcessor::startFunnelSequence`. Critical lifecycle — register on `fluentcrm_loaded` priority below 10, NEVER on `fluent_crm/after_init`. `FunnelHandler::handle` runs on `fluentcrm_addons_loaded` and locks in `actionArgNum=1` if `fluentcrm_funnel_arg_num_{name}` is absent — multi-arg hooks like `lw_lms_after_grant` silently drop args past the first.
+- **`fluentcrm/fluentcrm-funnel-action`** — Extend `BaseAction` to add a sequence step that runs per-contact when an automation reaches it. Three abstract methods, the per-step `handle($subscriber, $sequence, $funnelSubscriberId, $funnelMetric)` signature, and the canonical skip / failure semantics — `handle` ONLY overrides status on early-return, because `FunnelProcessor::processSequence` already marks the sequence `'complete'` BEFORE dispatch. Status string canon is `'complete'` (NOT `'completed'`); both the sequence-subscriber row (via `FunnelHelper::changeFunnelSubSequenceStatus`) AND the `FunnelMetric` (`->status` + `->save()`) need updating on skip.
+- **`fluentcrm/fluentcrm-funnel-benchmark`** — Extend `BaseBenchMark` to add a goal / wait point that pauses sequence execution until a matching event occurs (tag applied, list joined, course completed, custom event). Three abstract methods, Optional vs Essential semantics, the `can_enter` direct-entry toggle, the `assertCurrentGoalState` filter, `FunnelProcessor::startFunnelFromSequencePoint` as the canonical resume entry — NOT `startFunnelSequence` (that starts a new run). Benchmarks share the action listener with triggers via `FunnelHandler::mapTriggers`, so the `fluentcrm_funnel_arg_num_{name}` timing applies.
+- **`fluentcrm/fluentcrm-rest-options`** — Register a custom AJAX option list for FluentCRM trigger / action / benchmark editor pickers. Pairs `'type' => 'rest_selector', 'option_key' => '<key>'` in a settings field with `add_filter('fluentcrm_ajax_options_<key>', $cb, 10, 3)` server-side. Filter signature `($options, $search, $includedIds)` returns `[{id, title}]`. Critical — pre-selected IDs must always be returned regardless of `$search` or the editor renders saved values as raw IDs instead of human labels.
+
+### Updated skills
+
+- **`lw-plugins/lw-lms-backend-extend`** — bumped tested-version to **lw-lms 1.3.0**. New canonical enrollment hook `lw_lms_after_grant` (5 args) replaces the v1.2.x shim pattern; new `lw_lms_after_revoke` (3 args) and `lw_lms_pre_grant` filter (6 args). Free-course implicit enrollment so `after_grant` fires for free as well as Woo / manual paths. New `ProgressRepository::mark_course_completed($user_id, $course_id)` force-complete helper. Read API split — `AccessQueries` / `ProgressQueries` for reads, `AccessRepository` / `ProgressRepository` writes-only. `lw_lms_lesson_completed` / `lw_lms_course_completed` now fire from the repository / completion tracker so CLI / cron / programmatic completions are no longer silent. Added "name = `lw_lms_after_grant`, NOT `lw_lms_user_enrolled`" misconception correction; flagged the `WooCommerceChecker` / `SubscriptionVariationChecker` runtime-check (no enrollment row, no hook) as a coverage gap.
+- **`lw-plugins/lw-lms-frontend-build`** — bumped tested-version to **lw-lms 1.3.0**. Documents the v1.2.15 paid-course `access.subscription_variations` field (variation-level WC subscription upsells with `parent_id` / `variation_id` / `name` / `attributes` / `price` / `url`) alongside `products` and `subscriptions`. Notes v1.3.0 free-course implicit enrollment (server-side, transparent to the frontend but fires downstream automation).
+- **`woocommerce/wcm-membership-hooks`** — added "Active-detection canon" section: at registration time use `class_exists('WC_Memberships_Loader')` (file-scope, race-free) NOT `function_exists('wc_memberships')` or `class_exists('WC_Memberships')` (both declared inside the plugin's `plugins_loaded:10` callback — load-order race). Added `wc_memberships_get_user_membership_statuses($with_labels, $prefixed)` as the canonical status registry (honours the `wc_memberships_user_membership_statuses` filter). Added `set_start_date()` / `set_end_date()` semantics — empty string defaults to `current_time` / clears the end date (the canonical "never expires" pattern). Updated `wc_memberships_create_user_membership` notes (throws `SV_WC_Plugin_Exception` on missing plan).
+
+### Repo / docs
+
+- `fluentcrm` added to the validator and submission-form domain allowlists (`.github/scripts/validate-skill.js`, `.github/scripts/build-skill-pr.js`, `.github/ISSUE_TEMPLATE/new-skill.yml`).
+- `jet-engine` retroactively added to the same three allowlists (was missing since the domain was introduced — would have failed validation on any future jet-engine PR).
+- Root `README.md` domain table grew a `fluentcrm/` row.
+- `lw-plugins/README.md` descriptions refreshed for the lw-lms 1.3.0 hook surface.
+
 ## 2026-05-02
 
 ### New skills (better-route 0.6.0)

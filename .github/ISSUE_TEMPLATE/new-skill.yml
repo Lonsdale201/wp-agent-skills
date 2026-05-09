@@ -20,10 +20,12 @@ body:
         - plugin-scaffold
         - woocommerce
         - jetformbuilder
+        - jet-engine
         - better-data
         - better-route
         - lw-plugins
         - wp-rocket
+        - fluentcrm
         - other
     validations:
       required: true

@@ -15,10 +15,12 @@ const ALLOWED_DOMAINS = new Set([
   'plugin-scaffold',
   'woocommerce',
   'jetformbuilder',
+  'jet-engine',
   'better-data',
   'better-route',
   'lw-plugins',
   'wp-rocket',
+  'fluentcrm',
 ]);
 
 function emitOutput(key, value) {

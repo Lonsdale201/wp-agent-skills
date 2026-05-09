@@ -14,10 +14,12 @@ const ALLOWED_DOMAINS = new Set([
   'plugin-scaffold',
   'woocommerce',
   'jetformbuilder',
+  'jet-engine',
   'better-data',
   'better-route',
   'lw-plugins',
   'wp-rocket',
+  'fluentcrm',
 ]);
 
 const REQUIRED_FRONTMATTER = ['name', 'description', 'author', 'plugin', 'plugin-version-tested', 'php-min'];
@@ -294,7 +296,7 @@ function main() {
   // Path scope check
   const offlimits = files.filter((f) => {
     if (f.startsWith('.github/')) return false; // workflow / template edits validated by review only
-    if (f === 'README.md' || f === 'CONTRIBUTING.md' || f === 'SKILL_TEMPLATE.md' || f === 'LICENSE' || f === '.gitignore') return false;
+    if (f === 'README.md' || f === 'CONTRIBUTING.md' || f === 'CHANGELOG.md' || f === 'SKILL_TEMPLATE.md' || f === 'LICENSE' || f === '.gitignore') return false;
     const top = f.split('/')[0];
     return !ALLOWED_DOMAINS.has(top);
   });

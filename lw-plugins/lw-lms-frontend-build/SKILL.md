@@ -12,16 +12,18 @@ description: Build a frontend on top of the LW LMS plugin
   includes content ONLY when access.has_access === true; sections +
   lessons_without_section structure is ALWAYS present so a frontend
   can render a course outline without owning the course; per-lesson
-  accessible flag tells the UI which lessons are clickable. Use when
-  building a React / Vue / mobile / native frontend that consumes
-  lw-lms data. Triggers on /lms/v1/, lw-lms frontend, headless LMS
-  REST API consumer.
+  accessible flag tells the UI which lessons are clickable. For paid
+  courses without access, response.access carries products,
+  subscriptions, AND subscription_variations (since plugin 1.2.15)
+  for variation-specific upsells. Use when building a React / Vue /
+  mobile / native frontend that consumes lw-lms data. Triggers on
+  /lms/v1/, lw-lms frontend, headless LMS REST API consumer.
 author: Soczó Kristóf
 contact: mailto:lonsdale201@hotmail.com
 plugin: lw-lms
-plugin-version-tested: "1.2.14"
+plugin-version-tested: "1.3.0"
 php-min: "8.1"
-last-updated: "2026-04-29"
+last-updated: "2026-05-06"
 docs:
   - https://github.com/lwplugins/lw-lms
 source-refs:
@@ -42,7 +44,12 @@ source-refs:
 
 For frontend developers consuming [LW LMS](https://github.com/lwplugins/lw-lms) data — building a course catalog, single-course page, lesson player, progress dashboard. The plugin is intentionally headless: no templates, no shortcodes, no blocks. You bring your own UI (React / Vue / Astro / mobile / WP theme template). This skill is the REST API consumer reference.
 
-> **BETA NOTICE.** The plugin's README explicitly states "This plugin is under active development and is not recommended for production use." REST response shapes may shift between minor versions. Snapshot the response in tests, and review the plugin's CHANGELOG before upgrading. This skill is verified against v1.2.14.
+> **BETA NOTICE.** The plugin's README explicitly states "This plugin is under active development and is not recommended for production use." REST response shapes may shift between minor versions. Snapshot the response in tests, and review the plugin's CHANGELOG before upgrading. This skill is verified against **v1.3.0**.
+
+> **What changed for the frontend in recent versions:**
+> - **v1.3.0**: no breaking REST changes. Free-course access now implicitly creates an enrollment row server-side on first access (transparent to the frontend, but means downstream automation reacts to free enrollments — see backend skill).
+> - **v1.2.16**: per-ability `output_schema` definitions exposed on the LW Site Manager surface. Does not affect `/lms/v1/...` REST shapes.
+> - **v1.2.15**: paid-course `access` response now carries `subscription_variations` for variation-level WC subscription upsells (parent_id / variation_id / name / attributes / price / url). Render alongside `products` and `subscriptions` in your purchase gate.
 
 ## Misconception this skill corrects
 
@@ -77,6 +84,7 @@ if (response.access.has_access) {
         type={response.access.type}
         products={response.access.products}
         subscriptions={response.access.subscriptions}
+        subscriptionVariations={response.access.subscription_variations}
     />;
 }
 ```
@@ -192,8 +200,9 @@ Response shape (verified at [CourseTransformer.php:60-101](CourseTransformer.php
     "type": "paid",
     "has_access": false,
     "requires": "purchase",
-    "products":      [{"id": 200, "name": "PHP OOP Course", "price": "49.00", "url": "..."}],
-    "subscriptions": [{"id": 201, "name": "All-Access", "price": "19.00", "url": "..."}]
+    "products":                [{"id": 200, "name": "PHP OOP Course", "price": "49.00", "url": "..."}],
+    "subscriptions":           [{"id": 201, "name": "All-Access", "price": "19.00", "url": "..."}],
+    "subscription_variations": [{"parent_id": 300, "variation_id": 305, "name": "All-Access — Yearly", "attributes": {"plan": "yearly"}, "price": "190.00", "url": "..."}]
   },
 
   "sections": [
@@ -228,7 +237,7 @@ Conditional fields:
 | `content` | `access.has_access === true` |
 | `content_raw` | `access.has_access === true` AND current user has `edit_posts` (editors only — raw markdown / Gutenberg blocks for an admin-side preview) |
 | `access.expires_at` | paid course AND `has_access === true` (Unix timestamp) |
-| `access.requires`, `access.products`, `access.subscriptions` | paid course AND `has_access === false` |
+| `access.requires`, `access.products`, `access.subscriptions`, `access.subscription_variations` | paid course AND `has_access === false` |
 | `attachments[]` | populated only if `has_access === true` (otherwise empty array) |
 | `progress` | only when current user is logged in |
 
