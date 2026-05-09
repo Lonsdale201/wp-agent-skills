@@ -16,7 +16,7 @@ contact: mailto:lonsdale201@hotmail.com
 plugin: woocommerce-memberships
 plugin-version-tested: "1.28.1"
 php-min: "7.4"
-last-updated: "2026-05-01"
+last-updated: "2026-05-10"
 source-refs:
   - wp-content/plugins/woocommerce-memberships/src/class-wc-memberships-post-types.php
   - wp-content/plugins/woocommerce-memberships/src/class-wc-memberships-user-memberships.php
@@ -70,6 +70,25 @@ Membership rules are stored in the `wc_memberships_rules` option. Rule type valu
 
 When WooCommerce Subscriptions links a membership, the `wc_user_membership` post gets `_subscription_id`; subscription-linked memberships may also use `_has_installment_plan` and `_free_trial_end_date`.
 
+## Active-detection canon
+
+When gating code that registers something at FluentCRM / WP boot time (FluentCRM trigger / action, WC custom block, JFB action, etc.), use a symbol that exists at FILE LOAD — not one declared inside Memberships's own `plugins_loaded:10` callback. The symptom of getting this wrong is non-deterministic: works on some installs, your code disappears on others, depending on plugin activation order.
+
+```php
+// RIGHT — declared at file scope in woocommerce-memberships.php:83.
+// Available the moment WP includes the plugin file, before any hook fires.
+class_exists('WC_Memberships_Loader');
+
+// WRONG — load-order race.
+// wc_memberships() is declared inside class-wc-memberships.php which
+// Memberships's plugins_loaded:10 callback require_onces from init_plugin().
+// If your registration callback runs BEFORE Memberships's, function_exists
+// returns false and your code skips registration silently.
+function_exists('wc_memberships');
+```
+
+Same rule for `WC_Memberships` itself (the main class): it's loaded INSIDE `init_plugin()` so `class_exists('WC_Memberships')` is also racy. The loader class is the safe top-level checkpoint. At call time (REST endpoints, funnel handlers, AJAX) all classes/functions are loaded — the racy checks only matter at registration time.
+
 ## Public API first
 
 | Need | API | Notes |
@@ -79,8 +98,11 @@ When WooCommerce Subscriptions links a membership, the `wc_user_membership` post
 | Get active memberships | `wc_memberships_get_user_active_memberships( $user_id, $args )` | Uses Memberships status semantics. |
 | Check plan membership | `wc_memberships_is_user_member( $user_id, $plan )` | General membership check. |
 | Check active membership | `wc_memberships_is_user_active_member( $user, $plan )` | Use for "currently active member" business rules. |
-| Create membership | `wc_memberships_create_user_membership( $args, $action = 'create' )` | Lets Memberships run grant/renew/update logic. |
+| Create membership | `wc_memberships_create_user_membership( $args, $action = 'create' )` | Lets Memberships run grant/renew/update logic. Throws `SV_WC_Plugin_Exception` on missing plan — wrap in try/catch. Sets `post_status = 'wcm-active'` by default; override with `$membership->update_status('paused', $note)` after. |
 | Get plan(s) | `wc_memberships_get_membership_plan()`, `wc_memberships_get_membership_plans()` | Avoid reading plan post meta directly. |
+| Status registry | `wc_memberships_get_user_membership_statuses( $with_labels = true, $prefixed = true )` | Canonical picker / dropdown source. Pass `(true, false)` for `{key, label}` pairs with UNPREFIXED keys (`active` not `wcm-active`) — that's the form `update_status()` accepts. Honours the `wc_memberships_user_membership_statuses` filter so 3rd-party additions appear automatically. |
+| Set / clear start date | `$membership->set_start_date( $date_string_or_empty )` | Empty string defaults to `current_time('timestamp', true)` — useful for "member-since = now" semantics. |
+| Set / clear end date | `$membership->set_end_date( $timestamp_or_string_or_empty )` | Empty string clears the end date — the canonical "unlimited / never expires" pattern. Numeric timestamp or `strtotime`-able string accepted. |
 | Check access | `wc_memberships_user_can( $user_id, 'view'|'purchase', $target, $when = '' )` | Use targets like `array( 'post' => $post_id )` or `array( 'product' => $product_id )`. |
 
 ## User membership lifecycle hooks
@@ -204,6 +226,35 @@ $is_member = 'wcm-active' === get_post_status( $membership_id );
 // RIGHT: use public checks for business rules.
 if ( wc_memberships_is_user_active_member( $user_id, $plan_id ) ) {
     myplugin_enable_feature( $user_id );
+}
+
+// WRONG: function_exists() is a load-order race at registration time.
+// wc_memberships() is declared inside Memberships's plugins_loaded:10
+// callback. If your registrar runs first (also plugins_loaded:10), this
+// returns false and your integration silently doesn't register.
+add_action( 'plugins_loaded', function () {
+    if ( ! function_exists( 'wc_memberships' ) ) {
+        return; // racy — sometimes false even when Memberships is active
+    }
+    register_my_membership_integration();
+}, 11 );
+
+// RIGHT: WC_Memberships_Loader is at file scope — race-free.
+add_action( 'plugins_loaded', function () {
+    if ( ! class_exists( 'WC_Memberships_Loader' ) ) {
+        return;
+    }
+    register_my_membership_integration();
+}, 11 );
+
+// WRONG: hardcoding the status list — Memberships allows 3rd parties to add
+// their own statuses via the wc_memberships_user_membership_statuses filter.
+$statuses = array( 'active', 'paused', 'cancelled', 'expired' );
+
+// RIGHT: read from the registry (UNPREFIXED keys for object methods).
+$statuses = wc_memberships_get_user_membership_statuses( true, false );
+foreach ( $statuses as $key => $data ) {
+    // $key = 'active', 'paused', ...; $data['label'] = 'Active', 'Paused', ...
 }
 ```
 
