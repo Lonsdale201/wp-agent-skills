@@ -26,6 +26,24 @@ The single `lw-lms-frontend-build` skill was retired in favour of three more nar
 
 - `lw-plugins/README.md` skill table grew from 4 rows to 6 (added `lw-lms-rest-frontend`, `lw-lms-abilities`, `lw-lms-learndash-migration`; removed `lw-lms-frontend-build`).
 
+### WordPress 7.0 readiness
+
+WordPress 7.0 is landing with three surfaces that change what plugins should be doing in JS asset registration, Abilities, and external-service connection metadata. Two existing skills (`wp-abilities-api`, `wp-plugin-assets-loading`) updated against the 7.0 field guide + dev notes; one new skill (`wp-connectors-api`) added for the new Connectors API. Cross-references to a future `wp-ai-client` skill are placed but the skill itself is not in this batch.
+
+### New skills
+
+- **`wordpress/wp-connectors-api`** — WordPress 7.0 Connectors API. The registry for external-service connection metadata that powers the new Settings > Connectors screen and AI provider credentials for the WP AI Client. Covers the public lookup API (`wp_get_connector`, `wp_get_connectors`, `wp_is_connector_registered`), registration on the `wp_connectors_init` action with a `WP_Connector_Registry` instance, required vs optional shape fields (`name` / `type` / `authentication.method` required; `description` / `logo_url` / `credentials_url` / `setting_name` / `constant_name` / `env_var_name` / `plugin.file` / `plugin.is_active` optional), `api_key` vs `none` auth, the env > constant > database option priority for API keys, the `connectors_{$type}_{$id}_api_key` default `setting_name` generator, the masked-but-not-encrypted DB key reality (prefer env / constant for production), default AI connector metadata (`anthropic`, `google`, `openai`) plus `akismet`, WP AI Client registry auto-discovery for AI providers (do NOT duplicate-register them), the canonical unregister-modify-register override pattern, and the rule against building public plugin contracts on the still-experimental `@wordpress/connectors` script module.
+
+### Updated skills
+
+- **`wordpress/wp-abilities-api`** — bumped tested-version to **WP 6.9 – 7.0**. New WP 7.0 client-side surface: `@wordpress/abilities` (client-only registry) and `@wordpress/core-abilities` (bridge that fetches server-registered abilities over REST and exposes them via the same client API). Documents the `wp_enqueue_script_module( '@wordpress/core-abilities' )` enqueue, the `await ready` pattern, the `registerAbilityCategory` → `registerAbility` order (categories must exist first), and `executeAbility()` input/output schema validation. New WP AI Client integration section — `wp_ai_client_prompt()->using_abilities( 'core/get-site-info', … )` and the `WP_AI_Client_Ability_Function_Resolver` allowlist contract (the ability's `permission_callback` still runs; the resolver allowlist is the FIRST boundary). New REST surface: `/wp-json/wp-abilities/v1/categories` list + single endpoints. WP 7.0 REST cleanup strips `sanitize_callback` / `validate_callback` / `arg_options` from ability schemas before exposing to clients — put public constraints in JSON Schema keywords. Identifier rule sharpened — PHP server-side accepts exactly two slash-separated segments; the JS registry accepts 2–4 segments, but two-segment form is required for abilities that round-trip through PHP / REST / WP AI Client. Cross-reference added to a future `wp-ai-client` skill. Common-mistakes section grew a JS "category not registered first" antipattern.
+- **`plugin-scaffold/wp-plugin-assets-loading`** — bumped tested-version to **WP 6.3 – 7.0**. New WP 7.0 args field on `wp_enqueue_script()`: `module_dependencies` (array of registered script module identifiers) lets a classic script dynamically import script modules — but the classic script MUST set either `in_footer => true` or `strategy => 'defer'`, otherwise it can run before the import map exists. New `wp_set_script_module_translations( $module_id, $domain, $path )` (WP 7.0) for script-module i18n; pairs with `wp_set_script_translations()` for classic scripts (use the matching API per script type). Critical-rules list grew two new rules: footer-or-defer requirement for classic scripts using `module_dependencies`, and the matched translation API per script type.
+
+### Repo / docs
+
+- `wordpress/README.md` — `wp-abilities-api` row rewritten for the WP 7.0 client-side surface; added `wp-connectors-api` row.
+- `plugin-scaffold/README.md` — `wp-plugin-assets-loading` row mentions WP 7.0 `module_dependencies` and `wp_set_script_module_translations()`.
+
 ## 2026-05-10
 
 ### New domains
