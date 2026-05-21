@@ -1,66 +1,54 @@
 ---
 name: lw-lms-backend-extend
-description: Backend extension contract for the LW LMS plugin
-  (lwplugins/lw-lms, BETA — README explicitly says "not recommended
-  for production use"). Headless LMS — courses, lessons, sections,
-  progress, access control. Custom hooks (verified for v1.3.0) — six
-  actions (lw_lms_after_grant, lw_lms_after_revoke,
-  lw_lms_lesson_completed, lw_lms_course_completed,
-  lw_lms_attachment_downloaded, plus the family-shared
-  lw_plugins_overview_cards) and three filters
-  (lw_lms_pre_grant, lw_lms_has_course_access, lw_lms_has_lesson_access).
-  Single canonical enrollment event — lw_lms_after_grant fires for
-  every grant path (Woo, manual admin, free, future subscription),
-  no shim required. Public API is split read vs write — AccessRepository
-  / ProgressRepository for writes, AccessQueries / ProgressQueries
-  for reads. ProgressRepository::mark_course_completed(user_id, course_id)
-  is the canonical force-complete entry. Three DB tables (wp_lms_progress,
-  wp_lms_access, wp_lms_completion_snapshots). 11 custom capabilities
-  (manage_lms, edit_courses, etc.) added to admin role on activation.
-  Optional Site Manager / Abilities API integration. Use when extending
-  the plugin (issuing certificates, custom access logic, gamification,
-  custom analytics, FluentCRM-style enrollment automation). Triggers
-  on lw_lms_*, course / lesson CPTs, AccessChecker, AccessRepository,
-  AccessQueries, ProgressRepository, ProgressQueries, CompletionTracker.
+description: Backend extension contract for LW LMS v1.3.0. Use when
+  extending enrollment, access, progress, certificates, automation,
+  analytics, or companion-plugin logic around `lw_lms_after_grant`,
+  `lw_lms_after_revoke`, `lw_lms_pre_grant`,
+  `lw_lms_has_course_access`, `lw_lms_has_lesson_access`,
+  `AccessChecker`, `AccessRepository`, `AccessQueries`,
+  `ProgressRepository`, `ProgressQueries`, `CompletionTracker`, course
+  / lesson CPTs, `wp_lms_progress`, `wp_lms_access`, or
+  `_lw_lms_*` meta. Routes abilities, frontend, and migration topics to
+  sibling skills.
 author: Soczó Kristóf
 contact: mailto:lonsdale201@hotmail.com
 plugin: lw-lms
 plugin-version-tested: "1.3.0"
 php-min: "8.1"
-last-updated: "2026-05-06"
+last-updated: "2026-05-21"
 docs:
   - https://github.com/lwplugins/lw-lms
 source-refs:
-  - wp-content/plugins/lw-lms-main/lw-lms.php
-  - wp-content/plugins/lw-lms-main/includes/Plugin.php
-  - wp-content/plugins/lw-lms-main/includes/Activator.php
-  - wp-content/plugins/lw-lms-main/includes/Options.php
-  - wp-content/plugins/lw-lms-main/includes/PostTypes/Course.php
-  - wp-content/plugins/lw-lms-main/includes/PostTypes/Lesson.php
-  - wp-content/plugins/lw-lms-main/includes/Meta/CourseMeta.php
-  - wp-content/plugins/lw-lms-main/includes/Meta/LessonMeta.php
-  - wp-content/plugins/lw-lms-main/includes/Meta/SubscriptionVariationMeta.php
-  - wp-content/plugins/lw-lms-main/includes/Access/AccessChecker.php
-  - wp-content/plugins/lw-lms-main/includes/Access/AccessRepository.php
-  - wp-content/plugins/lw-lms-main/includes/Access/AccessQueries.php
-  - wp-content/plugins/lw-lms-main/includes/Access/AccessGranter.php
-  - wp-content/plugins/lw-lms-main/includes/Access/AccessTable.php
-  - wp-content/plugins/lw-lms-main/includes/Access/WooCommerceChecker.php
-  - wp-content/plugins/lw-lms-main/includes/Access/SubscriptionVariationChecker.php
-  - wp-content/plugins/lw-lms-main/includes/Admin/UserProfile.php
-  - wp-content/plugins/lw-lms-main/includes/Admin/UserProfile/EnrollmentHandler.php
-  - wp-content/plugins/lw-lms-main/includes/Progress/ProgressRepository.php
-  - wp-content/plugins/lw-lms-main/includes/Progress/ProgressQueries.php
-  - wp-content/plugins/lw-lms-main/includes/Progress/ProgressCalculator.php
-  - wp-content/plugins/lw-lms-main/includes/Progress/CompletionTracker.php
-  - wp-content/plugins/lw-lms-main/includes/Progress/ProgressSnapshotRepository.php
-  - wp-content/plugins/lw-lms-main/includes/Progress/ProgressSnapshotTable.php
-  - wp-content/plugins/lw-lms-main/includes/Progress/ProgressSnapshotMigration.php
-  - wp-content/plugins/lw-lms-main/includes/Api/Controllers/ProgressController.php
-  - wp-content/plugins/lw-lms-main/includes/Api/Controllers/DownloadController.php
-  - wp-content/plugins/lw-lms-main/includes/SiteManager/Integration.php
-  - wp-content/plugins/lw-lms-main/includes/SiteManager/Abilities/AbilityPermissions.php
-  - wp-content/plugins/lw-lms-main/CHANGELOG.md
+  - wp-content/plugins/lw-lms/lw-lms.php
+  - wp-content/plugins/lw-lms/includes/Plugin.php
+  - wp-content/plugins/lw-lms/includes/Activator.php
+  - wp-content/plugins/lw-lms/includes/Options.php
+  - wp-content/plugins/lw-lms/includes/PostTypes/Course.php
+  - wp-content/plugins/lw-lms/includes/PostTypes/Lesson.php
+  - wp-content/plugins/lw-lms/includes/Meta/CourseMeta.php
+  - wp-content/plugins/lw-lms/includes/Meta/LessonMeta.php
+  - wp-content/plugins/lw-lms/includes/Meta/SubscriptionVariationMeta.php
+  - wp-content/plugins/lw-lms/includes/Access/AccessChecker.php
+  - wp-content/plugins/lw-lms/includes/Access/AccessRepository.php
+  - wp-content/plugins/lw-lms/includes/Access/AccessQueries.php
+  - wp-content/plugins/lw-lms/includes/Access/AccessGranter.php
+  - wp-content/plugins/lw-lms/includes/Access/AccessTable.php
+  - wp-content/plugins/lw-lms/includes/Access/WooCommerceChecker.php
+  - wp-content/plugins/lw-lms/includes/Access/SubscriptionVariationChecker.php
+  - wp-content/plugins/lw-lms/includes/Admin/UserProfile.php
+  - wp-content/plugins/lw-lms/includes/Admin/UserProfile/EnrollmentHandler.php
+  - wp-content/plugins/lw-lms/includes/Progress/ProgressRepository.php
+  - wp-content/plugins/lw-lms/includes/Progress/ProgressQueries.php
+  - wp-content/plugins/lw-lms/includes/Progress/ProgressCalculator.php
+  - wp-content/plugins/lw-lms/includes/Progress/CompletionTracker.php
+  - wp-content/plugins/lw-lms/includes/Progress/ProgressSnapshotRepository.php
+  - wp-content/plugins/lw-lms/includes/Progress/ProgressSnapshotTable.php
+  - wp-content/plugins/lw-lms/includes/Progress/ProgressSnapshotMigration.php
+  - wp-content/plugins/lw-lms/includes/Api/Controllers/ProgressController.php
+  - wp-content/plugins/lw-lms/includes/Api/Controllers/DownloadController.php
+  - wp-content/plugins/lw-lms/includes/SiteManager/Integration.php
+  - wp-content/plugins/lw-lms/includes/SiteManager/Abilities/AbilityPermissions.php
+  - wp-content/plugins/lw-lms/CHANGELOG.md
 ---
 
 # LW LMS: backend extension contract
@@ -191,12 +179,12 @@ Trigger when ANY of the following is true:
 
 | Path | `source` value | Fires `lw_lms_after_grant`? |
 |---|---|---|
-| WooCommerce order completed → `AccessGranter::handle_order_completed()` → `grant()` | `'woocommerce'` | yes |
-| Admin user-profile manual grant → `EnrollmentHandler::process_grant()` → `grant()` | `'manual'` | yes |
-| Free-course first access → `AccessChecker::has_course_access()` lazy `grant()` | `'free'` | yes (since 1.3.0) |
-| Programmatic `AccessRepository::grant()` from companion code | whatever you pass | yes |
-| WC Subscription access (parent-level via `WooCommerceChecker::has_active_subscription()`) | (no row) | no — checked at runtime, never written |
-| WC Subscription variation access (`SubscriptionVariationChecker`) | (no row) | no — checked at runtime |
+| WooCommerce order completed → `AccessGranter::handle_order_completed()` → `grant()` | `'woocommerce'` | ✅ yes |
+| Admin user-profile manual grant → `EnrollmentHandler::process_grant()` → `grant()` | `'manual'` | ✅ yes |
+| Free-course first access → `AccessChecker::has_course_access()` lazy `grant()` | `'free'` | ✅ yes (since 1.3.0) |
+| Programmatic `AccessRepository::grant()` from companion code | whatever you pass | ✅ yes |
+| WC Subscription access (parent-level via `WooCommerceChecker::has_active_subscription()`) | (no row) | ❌ no — checked at runtime, never written |
+| WC Subscription variation access (`SubscriptionVariationChecker`) | (no row) | ❌ no — checked at runtime |
 
 If you need to react to subscription activation/cancellation, hook WC Subscriptions directly — see **`wcs-subscription-hooks`**. The subscription paths are the only enrollment routes that don't fire `lw_lms_after_grant`. A future plugin version may add a SubscriptionAccessSync to write rows on `woocommerce_subscription_status_active`, at which point this gap closes.
 
@@ -609,7 +597,7 @@ add_action( 'lw_lms_after_grant', 'my_handler', 10, 5 );
 // WRONG — assuming the lock-on-complete snapshot resets when lessons are added
 add_action( 'save_post_lesson', function ( $post_id ) {
     foreach ( get_users() as $u ) {
-        recalculate_for_user( $u->ID );   // BAD - fights the snapshot design
+        recalculate_for_user( $u->ID );   // 🔴 fights the snapshot design
     }
 } );
 
@@ -629,16 +617,18 @@ add_action( 'plugins_loaded', function () {
 
 ## Cross-references
 
-- Run **`lw-lms-frontend-build`** for the REST API consumer side — courses, lessons, progress endpoints used to build a frontend on top of this plugin.
-- Run **`lw-site-manager-extend-abilities`** when registering `lw-lms/*` abilities into the LW Site Manager hub — the plugin itself uses this contract at `includes/SiteManager/Integration.php`.
+- Run **`lw-lms-rest-frontend`** for the custom REST API consumer side — courses, lessons, progress endpoints used to build a frontend on top of this plugin.
+- Run **`lw-lms-abilities`** when calling or reviewing the built-in `lw-lms/*` Abilities API surface.
+- Run **`lw-site-manager-extend-abilities`** when adding your own companion abilities to the LW Site Manager hub.
+- Run **`lw-lms-learndash-migration`** when planning or reviewing the WP-CLI LearnDash import command.
 - Run **`wp-plugin-options-storage`** for "post meta vs custom table vs option" decisions if you're storing companion-plugin data alongside lw-lms.
 - Run **`wcs-subscription-hooks`** when integrating with `paid` access type via WC Subscriptions — the plugin checks `WooCommerceChecker::has_active_subscription()` and `SubscriptionVariationChecker::has_active()` at access-time, neither of which fires `lw_lms_after_grant`. To react to subscription lifecycle (activation, cancellation, renewal), hook WC Subscriptions directly.
 
 ## What this skill does NOT cover
 
-- **Frontend rendering.** lw-lms ships no public templates; the consumer side is `lw-lms-frontend-build`.
+- **Frontend rendering.** lw-lms core ships no public templates; custom REST consumers are covered by `lw-lms-rest-frontend`. Do not assume an unfinished companion frontend plugin is available.
 - **Per-CPT meta detailed editing UI.** Internal admin metaboxes (`CourseContentMetabox`, `LessonVideoMetabox`) are private; companion code should write meta via `update_post_meta` if needed but should NOT subclass / instantiate the metaboxes.
-- **WP-CLI migration commands.** `wp lw-lms migrate-learndash` is one-time tooling; not part of the extension contract.
+- **WP-CLI migration commands.** `wp lw-lms migrate-learndash` is one-time tooling; use `lw-lms-learndash-migration`.
 - **`Options::META_PREFIX` value mutation.** The prefix is a public class constant but treat it as read-only — mutating across plugins breaks every meta lookup.
 - **Direct `WooCommerceChecker` / `SubscriptionVariationChecker` consumption.** They're private details of the access cascade; use `AccessChecker::has_course_access()` instead.
 - **Replacing `ProgressCalculator` or `CompletionTracker`.** No supported override; the snapshot logic is internal.
@@ -647,7 +637,7 @@ add_action( 'plugins_loaded', function () {
 
 ## References
 
-- Plugin entry: [wp-content/plugins/lw-lms-main/lw-lms.php](lw-lms.php) — header, namespace, constants, `plugins_loaded` init.
+- Plugin entry: [wp-content/plugins/lw-lms/lw-lms.php](lw-lms.php) — header, namespace, constants, `plugins_loaded` init.
 - Main Plugin class: [includes/Plugin.php](Plugin.php) — `init_hooks`, `init_components`, REST + access + WC + Site Manager wiring.
 - Activator: [includes/Activator.php](Activator.php) — DB version `1.2.0`, table creation, custom caps.
 - **Filter `lw_lms_pre_grant` (6 args)**: [includes/Access/AccessRepository.php:53](AccessRepository.php).
