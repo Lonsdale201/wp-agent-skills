@@ -2,6 +2,30 @@
 
 This collection is continuously evolving — entries are date-based, not version-tagged. New skills land when they're ready; updates go in when they cover real ground (a new release of an upstream plugin, a verified misconception, a corrected example).
 
+## 2026-05-21
+
+### lw-lms skill split (all verified for lw-lms 1.3.0)
+
+The single `lw-lms-frontend-build` skill was retired in favour of three more narrowly-scoped sibling skills, so consumers / agents pick up only the surface they need (REST consumer, Abilities surface, or one-time LearnDash migration) instead of the whole bundle. `lw-lms-backend-extend` keeps its role as the backend extension hub and now routes the three new topics out.
+
+### New skills
+
+- **`lw-plugins/lw-lms-rest-frontend`** — Build a custom frontend against the headless `/wp-json/lms/v1` REST API. Replaces and supersedes the retired `lw-lms-frontend-build` skill. Covers the public list/single course endpoints, the auth+access-gated lessons / progress (GET+POST) / per-course progress / download endpoints, the conditional `content` field (present only when `access.has_access === true`), and paid-course `access` carrying `products` + `subscriptions` + `subscription_variations` (variation-level WC subscription upsells since 1.2.15). Nonce / Application Password auth patterns and the `_embed` rule for `featured_media`.
+- **`lw-plugins/lw-lms-abilities`** — Consumer / reviewer reference for the built-in `lw-lms/*` Abilities API surface registered by the plugin itself: `list-courses`, `get-course`, `get-progress`, `set-progress`, `get-options`. Documents the dual registration model (Site Manager bridge when present, standalone WP 6.9+ Abilities API fallback at `wp_abilities_api_init` priority 20, `did_action()` guards prevent double-registration). Calling pattern uses `/wp-json/wp-abilities/v1/abilities/lw-lms/.../run` with arguments wrapped in `input`. Output schemas per ability since v1.2.16, including `total_pages` / `page` / `per_page` on `list-courses`. Critical — feature-detect with `function_exists('wp_register_ability')`, not by checking for Site Manager.
+- **`lw-plugins/lw-lms-learndash-migration`** — Plan, run, or review the one-time WP-CLI LearnDash → LW LMS migration (`wp lw-lms migrate-learndash --dry-run --verbose`). Maps `sfwd-courses` / `sfwd-lessons` into `course` / `lesson` posts, writes `_lw_lms_migrated_to` reverse mappings on source posts, builds one generated section per course from `ld_course_steps`, extracts LearnDash / Elementor / embed video URLs into `_lw_lms_video`. Rerunnable (skip-if-exists by title, refresh mapping) but explicitly NOT a synchronization tool — does not migrate quizzes, certificates, groups, assignments, user progress, enrollments, or drip rules.
+
+### Retired skills
+
+- **`lw-plugins/lw-lms-frontend-build`** — folded into `lw-lms-rest-frontend` (broader scope: now covers all consumer-side REST topics including download endpoints and access shape, not just "build a frontend").
+
+### Updated skills
+
+- **`lw-plugins/lw-lms-backend-extend`** — frontmatter `description` tightened (extension-contract focus, routes abilities / frontend / migration topics out to the new sibling skills instead of trying to summarize them). Fixed `source-refs:` paths — drop the leading `lw-lms-main/` directory prefix (was a leftover from the upstream `main`-branch zip layout, never matched real installs). Cross-references rewritten to point at the new sibling skills (`lw-lms-rest-frontend`, `lw-lms-abilities`, `lw-lms-learndash-migration`). `last-updated: 2026-05-21`.
+
+### Repo / docs
+
+- `lw-plugins/README.md` skill table grew from 4 rows to 6 (added `lw-lms-rest-frontend`, `lw-lms-abilities`, `lw-lms-learndash-migration`; removed `lw-lms-frontend-build`).
+
 ## 2026-05-10
 
 ### New domains

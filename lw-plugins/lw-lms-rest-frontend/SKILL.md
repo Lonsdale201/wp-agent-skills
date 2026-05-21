@@ -1,48 +1,38 @@
 ---
-name: lw-lms-frontend-build
-description: Build a frontend on top of the LW LMS plugin
-  (lwplugins/lw-lms, BETA — README explicitly says "not recommended
-  for production use"). The plugin is intentionally HEADLESS — no
-  shipped templates, shortcodes, or blocks; only a REST API at
-  /wp-json/lms/v1. Six endpoints — GET courses (public list), GET
-  courses/{id} (public single, content gated by access), GET
-  lessons/{id} (auth + access required), GET progress (auth), POST
-  progress (auth), GET progress/course/{id} (auth), GET download/{id}
-  (auth + access). Important access semantics — single-course response
-  includes content ONLY when access.has_access === true; sections +
-  lessons_without_section structure is ALWAYS present so a frontend
-  can render a course outline without owning the course; per-lesson
-  accessible flag tells the UI which lessons are clickable. For paid
-  courses without access, response.access carries products,
-  subscriptions, AND subscription_variations (since plugin 1.2.15)
-  for variation-specific upsells. Use when building a React / Vue /
-  mobile / native frontend that consumes lw-lms data. Triggers on
-  /lms/v1/, lw-lms frontend, headless LMS REST API consumer.
+name: lw-lms-rest-frontend
+description: Build a custom frontend against LW LMS's headless
+  `/wp-json/lms/v1` REST API. Use for React, Vue, Astro, mobile, or
+  theme code that calls `/lms/v1/courses`, `/courses/{id}`,
+  `/lessons/{id}`, `/progress`, `/progress/course/{id}`, or
+  `/download/{id}` and must handle gated `content`,
+  `access.has_access`, `sections`, `lessons_without_section`,
+  per-lesson `accessible`, progress payloads, nonce/app-password auth,
+  and paid-course products/subscriptions/subscription_variations.
 author: Soczó Kristóf
 contact: mailto:lonsdale201@hotmail.com
 plugin: lw-lms
 plugin-version-tested: "1.3.0"
 php-min: "8.1"
-last-updated: "2026-05-06"
+last-updated: "2026-05-21"
 docs:
   - https://github.com/lwplugins/lw-lms
 source-refs:
-  - wp-content/plugins/lw-lms-main/includes/Api/RestApi.php
-  - wp-content/plugins/lw-lms-main/includes/Api/Controllers/CoursesController.php
-  - wp-content/plugins/lw-lms-main/includes/Api/Controllers/LessonsController.php
-  - wp-content/plugins/lw-lms-main/includes/Api/Controllers/ProgressController.php
-  - wp-content/plugins/lw-lms-main/includes/Api/Controllers/DownloadController.php
-  - wp-content/plugins/lw-lms-main/includes/Api/Transformers/CourseTransformer.php
-  - wp-content/plugins/lw-lms-main/includes/Api/Transformers/LessonTransformer.php
-  - wp-content/plugins/lw-lms-main/includes/Api/Transformers/ProgressTransformer.php
-  - wp-content/plugins/lw-lms-main/includes/Access/AccessChecker.php
-  - wp-content/plugins/lw-lms-main/includes/Meta/VideoParser.php
-  - wp-content/plugins/lw-lms-main/includes/Progress/ProgressCalculator.php
+  - wp-content/plugins/lw-lms/includes/Api/RestApi.php
+  - wp-content/plugins/lw-lms/includes/Api/Controllers/CoursesController.php
+  - wp-content/plugins/lw-lms/includes/Api/Controllers/LessonsController.php
+  - wp-content/plugins/lw-lms/includes/Api/Controllers/ProgressController.php
+  - wp-content/plugins/lw-lms/includes/Api/Controllers/DownloadController.php
+  - wp-content/plugins/lw-lms/includes/Api/Transformers/CourseTransformer.php
+  - wp-content/plugins/lw-lms/includes/Api/Transformers/LessonTransformer.php
+  - wp-content/plugins/lw-lms/includes/Api/Transformers/ProgressTransformer.php
+  - wp-content/plugins/lw-lms/includes/Access/AccessChecker.php
+  - wp-content/plugins/lw-lms/includes/Meta/VideoParser.php
+  - wp-content/plugins/lw-lms/includes/Progress/ProgressCalculator.php
 ---
 
-# LW LMS: building a frontend on the REST API
+# LW LMS: REST frontend consumer
 
-For frontend developers consuming [LW LMS](https://github.com/lwplugins/lw-lms) data — building a course catalog, single-course page, lesson player, progress dashboard. The plugin is intentionally headless: no templates, no shortcodes, no blocks. You bring your own UI (React / Vue / Astro / mobile / WP theme template). This skill is the REST API consumer reference.
+For frontend developers consuming [LW LMS](https://github.com/lwplugins/lw-lms) data — building a course catalog, single-course page, lesson player, progress dashboard. The core `lw-lms` plugin is intentionally headless: no templates, no shortcodes, no blocks. You bring your own UI (React / Vue / Astro / mobile / WP theme template).
 
 > **BETA NOTICE.** The plugin's README explicitly states "This plugin is under active development and is not recommended for production use." REST response shapes may shift between minor versions. Snapshot the response in tests, and review the plugin's CHANGELOG before upgrading. This skill is verified against **v1.3.0**.
 
@@ -726,13 +716,15 @@ if (course.access.type === 'paid' && !course.access.has_access) showPaywall();
 ## Cross-references
 
 - Run **`lw-lms-backend-extend`** for the EXTENDER's surface — the actions and filters this REST API fires, plus how to add server-side logic that integrates with the consumer.
+- Run **`lw-lms-abilities`** for AI-agent/admin ability calls (`lw-lms/*`), which are separate from learner-facing REST.
 - Run **`wp-rest-api`** for general WP REST patterns — pagination, nonce / app password auth, error response conventions.
 - Run **`wp-i18n-audit`** if you're translating the consumer-side strings — most "Purchase required", "Locked" labels live in YOUR frontend code, not the API responses.
 - Run **`wp-plugin-assets-loading`** if your frontend is a script enqueued via `wp_enqueue_script` (theme-side or block-frontend rendering).
 
 ## What this skill does NOT cover
 
-- **Server-side rendering of LW LMS data in WP themes.** You CAN consume the REST API server-side via `WP_REST_Request` → `rest_do_request`, but the canonical pattern here is client-rendered. For server-side, use `wc_get_orders` / `get_posts` style queries against the lw-lms CPTs directly.
+- **Separate frontend plugins/themes.** This skill documents the core `lw-lms` REST contract only; do not assume any unfinished companion frontend plugin exists.
+- **Server-side rendering of LW LMS data in WP themes.** You CAN consume the REST API server-side via `WP_REST_Request` → `rest_do_request`, but the canonical pattern here is client-rendered. For server-side, use `get_posts` style queries against the lw-lms CPTs directly.
 - **Specific frontend frameworks.** This skill is tech-stack-agnostic — React / Vue / Astro / Svelte / Solid all consume the same JSON. Framework-specific patterns (data fetching libs, server components, etc.) are out of scope.
 - **Live progress sync** (websockets, SSE). The API is request-response; for real-time, layer your own pub/sub.
 - **Offline / PWA support.** Out of scope; cache-warming and IndexedDB strategies are framework concerns.
