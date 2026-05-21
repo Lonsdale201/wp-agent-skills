@@ -1,20 +1,22 @@
 ---
 name: wp-plugin-assets-loading
 description: Register and enqueue WordPress plugin scripts/styles with
-  modern loading behavior, especially WP 6.9 fetchpriority support,
+  modern loading behavior, especially WP 7.0 classic-script module
+  dependencies, script module translations, fetchpriority support,
   script module args, footer placement, inline style limits, and removal
   of legacy IE conditional asset support. Covers wp_enqueue_script args
-  strategy/in_footer/fetchpriority, wp_register_script_module /
-  wp_enqueue_script_module args, wp_script_add_data, wp_style_add_data,
-  dependency handles, conditional enqueueing on the right hook, and
-  avoiding global frontend/admin asset bloat. Use when adding or reviewing
-  plugin JS/CSS enqueue code.
+  strategy/in_footer/fetchpriority/module_dependencies,
+  wp_register_script_module / wp_enqueue_script_module args,
+  wp_set_script_module_translations, wp_script_add_data,
+  wp_style_add_data, dependency handles, conditional enqueueing on the
+  right hook, and avoiding global frontend/admin asset bloat. Use when
+  adding or reviewing plugin JS/CSS enqueue code.
 author: Soczó Kristóf
 contact: mailto:lonsdale201@hotmail.com
 plugin: wordpress
-plugin-version-tested: "6.3 - 6.9.4"
+plugin-version-tested: "6.3 - 7.0"
 php-min: "7.4"
-last-updated: "2026-04-29"
+last-updated: "2026-05-21"
 docs:
   - https://make.wordpress.org/core/2025/11/18/wordpress-6-9-frontend-performance-field-guide/
   - https://developer.wordpress.org/reference/functions/wp_enqueue_script/
@@ -33,7 +35,7 @@ Trigger when ANY of the following is true:
 
 - Code calls `wp_enqueue_script()`, `wp_register_script()`, `wp_enqueue_style()`, `wp_script_add_data()`, `wp_style_add_data()`, `wp_register_script_module()`, or `wp_enqueue_script_module()`.
 - A plugin loads assets on every admin page or every frontend request without checking context.
-- The task mentions `defer`, `async`, `fetchpriority`, script modules, inline CSS, asset bloat, or frontend performance.
+- The task mentions `defer`, `async`, `fetchpriority`, script modules, module translations, `module_dependencies`, inline CSS, asset bloat, or frontend performance.
 - Code uses legacy IE conditional comments or `wp_style_add_data( $handle, 'conditional', ... )`.
 
 ## Runtime placement
@@ -70,6 +72,7 @@ add_action( 'admin_enqueue_scripts', static function ( string $hook_suffix ): vo
 ## Script loading args
 
 Since WP 6.3, the fifth `wp_enqueue_script()` parameter can be an args array. Since WP 6.9, it also accepts `fetchpriority`.
+Since WP 7.0, it also accepts `module_dependencies` so a classic script can dynamically import registered script modules.
 
 ```php
 wp_enqueue_script(
@@ -92,6 +95,22 @@ Guidance:
 - Use `strategy => 'async'` only for independent scripts that do not depend on execution order.
 - Use `fetchpriority => 'high'` rarely, only for scripts that are genuinely critical to initial rendering.
 - Use `fetchpriority => 'low'` for behavior that should not compete with LCP resources.
+- If a classic script uses `module_dependencies`, it must either set `in_footer => true` or `strategy => 'defer'`; otherwise it can run before the import map exists.
+
+```php
+wp_enqueue_script(
+    'myplugin-admin',
+    plugins_url( 'assets/admin.js', MYPLUGIN_FILE ),
+    array( 'wp-api-fetch' ),
+    MYPLUGIN_VERSION,
+    array(
+        'in_footer'           => true,
+        'module_dependencies' => array(
+            '@wordpress/abilities',
+        ),
+    )
+);
+```
 
 ## Script modules
 
@@ -119,6 +138,27 @@ if ( function_exists( 'wp_enqueue_script_module' ) ) {
     wp_enqueue_script( 'myplugin-frontend', $fallback_src, array(), MYPLUGIN_VERSION, array( 'in_footer' => true ) );
 }
 ```
+
+In WP 7.0, registered script modules can have translations:
+
+```php
+wp_register_script_module(
+    'myplugin/admin',
+    plugins_url( 'assets/admin.js', MYPLUGIN_FILE ),
+    array(),
+    MYPLUGIN_VERSION
+);
+
+wp_set_script_module_translations(
+    'myplugin/admin',
+    'myplugin',
+    plugin_dir_path( MYPLUGIN_FILE ) . 'languages'
+);
+
+wp_enqueue_script_module( 'myplugin/admin' );
+```
+
+Call `wp_set_script_module_translations()` after the module is registered. Use `wp_set_script_translations()` for classic scripts and `wp_set_script_module_translations()` for script modules.
 
 ## Styles and legacy conditionals
 
@@ -158,6 +198,8 @@ wp_add_inline_script(
 - **Gate admin assets by screen** using `$hook_suffix` or `get_current_screen()`.
 - **Use script args arrays**, not the old boolean-only fifth parameter, when setting strategy/footer/fetchpriority.
 - **Do not use `async` on dependency-sensitive scripts.**
+- **For classic scripts with `module_dependencies`, use footer placement or `defer`.**
+- **Use the matching translation API**: `wp_set_script_translations()` for classic scripts, `wp_set_script_module_translations()` for modules.
 - **Do not use legacy IE `conditional` data** on styles in WP 6.9+.
 - **Do not put `<script>` tags inside `wp_add_inline_script()`.**
 - **Prefer dependencies over manual load ordering.**
