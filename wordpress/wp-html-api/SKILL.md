@@ -175,6 +175,6 @@ $p->set_attribute( 'title', $title );
 ## References
 
 - WordPress 6.9 HTML API dev note: <https://make.wordpress.org/core/2025/11/21/updates-to-the-html-api-in-6-9/>
-- `WP_HTML_Tag_Processor`: [wp-includes/html-api/class-wp-html-tag-processor.php](wp-includes/html-api/class-wp-html-tag-processor.php)
-- `WP_HTML_Processor`: [wp-includes/html-api/class-wp-html-processor.php](wp-includes/html-api/class-wp-html-processor.php)
-- Dataset helpers: [wp-includes/script-loader.php](wp-includes/script-loader.php)
+- `WP_HTML_Tag_Processor`: `wp-includes/html-api/class-wp-html-tag-processor.php`
+- `WP_HTML_Processor`: `wp-includes/html-api/class-wp-html-processor.php`
+- Dataset helpers: `wp-includes/script-loader.php`
