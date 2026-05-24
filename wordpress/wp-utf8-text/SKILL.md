@@ -154,5 +154,5 @@ $slug = sanitize_key( $raw_slug );
 ## References
 
 - WordPress 6.9 UTF-8 dev note: <https://make.wordpress.org/core/2025/11/18/modernizing-utf-8-support-in-wordpress-6-9/>
-- UTF-8 helpers: [wp-includes/utf8.php](wp-includes/utf8.php)
-- `wp_check_invalid_utf8()` / `seems_utf8()`: [wp-includes/formatting.php](wp-includes/formatting.php)
+- UTF-8 helpers: `wp-includes/utf8.php`
+- `wp_check_invalid_utf8()` / `seems_utf8()`: `wp-includes/formatting.php`

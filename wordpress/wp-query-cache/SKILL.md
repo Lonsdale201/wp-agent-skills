@@ -149,5 +149,5 @@ wp_cache_set_salted( $key, $data, 'post-queries', $salt );
 ## References
 
 - WordPress 6.9 query cache dev note: <https://make.wordpress.org/core/2025/11/17/consistent-cache-keys-for-query-groups-in-wordpress-6-9/>
-- Salted cache helpers: [wp-includes/cache-compat.php](wp-includes/cache-compat.php)
-- Query cache usage examples: [wp-includes/class-wp-query.php](wp-includes/class-wp-query.php), [wp-includes/class-wp-term-query.php](wp-includes/class-wp-term-query.php), [wp-includes/class-wp-user-query.php](wp-includes/class-wp-user-query.php)
+- Salted cache helpers: `wp-includes/cache-compat.php`
+- Query cache usage examples: `wp-includes/class-wp-query.php`, `wp-includes/class-wp-term-query.php`, `wp-includes/class-wp-user-query.php`

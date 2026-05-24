@@ -2,6 +2,36 @@
 
 This collection is continuously evolving — entries are date-based, not version-tagged. New skills land when they're ready; updates go in when they cover real ground (a new release of an upstream plugin, a verified misconception, a corrected example).
 
+## 2026-05-24
+
+### WordPress 7.0 AI Client skill
+
+The `wp-ai-client` cross-reference placed in the 2026-05-21 batch (from `wp-abilities-api` and `wp-connectors-api`) is now backed by a real skill. Completes the WP 7.0 trio: Abilities API (machine-readable capabilities), Connectors API (external-service credentials), AI Client (provider-agnostic generation).
+
+### New skills
+
+- **`wordpress/wp-ai-client`** — WordPress 7.0 WP AI Client. Provider-agnostic text / image / speech / video / JSON / ability-powered generation. Covers the `wp_ai_client_prompt()` builder entry point, `WP_AI_Client_Prompt_Builder` fluent chain, `wp_supports_ai()` / `is_supported_*` capability gating, `using_model_preference()` modality + feature requirements (chat / image / speech / video / structured-output / system-instruction / function-calling / tool-use), the `generate_*` / `generate_*_result` method pairs, `WP_Error` handling at every step, ability-powered prompts via `->using_abilities( 'core/get-site-info', … )` and the `WP_AI_Client_Ability_Function_Resolver` allowlist (the FIRST boundary — the ability's `permission_callback` still runs after), connector-backed provider configuration (the Connectors API is where API keys live), and prompt prevention filters for safe feature gating.
+
+### Admin UI cluster (7 skills)
+
+Native WordPress admin UI patterns that plugins consistently reimplement from scratch (custom drag-and-drop libraries, ad-hoc settings forms, hand-rolled media pickers) instead of using core's bundled surface. This cluster surfaces the WP-native flow for each, with the non-obvious gotchas — the parts AI assistants tend to invent wrong defaults for. All seven verified against WP 6.0 – 7.0, PHP 7.4+.
+
+- **`wordpress/wp-admin-settings-api`** — Build plugin settings pages with the Settings API instead of custom form handlers. Covers `register_setting()`, `add_settings_section()`, `add_settings_field()`, `settings_fields()`, `do_settings_sections()`, `add_settings_error()`, `settings_errors()`, `admin_init` registration, `<form method="post" action="options.php">`, `sanitize_callback`, the `$option_group` vs `$page` distinction, single-array option storage (one row in `wp_options` per plugin), tabbed pages, `show_in_rest` schemas, custom option capabilities via `option_page_capability_{$option_group}`, and the canonical mistake of POSTing to your own handler instead of `options.php`.
+- **`wordpress/wp-admin-list-table`** — Build admin record tables by extending `WP_List_Table`. Required `require_once`, constructor `singular` / `plural` / `ajax` args, `prepare_items()`, `get_columns()`, `column_cb()`, `column_default()`, `get_sortable_columns()`, `get_bulk_actions()`, `process_bulk_action()`, `extra_tablenav()`, pagination via `set_pagination_args()`, row actions, search, views, Screen Options per-page settings, sortable `orderby` / `order`, AND the plugin CSRF gap — `check_admin_referer( 'bulk-' . $this->_args['plural'] )` MUST run before acting on `current_action()` (core's own list tables enforce this; plugin subclasses constantly forget).
+- **`wordpress/wp-admin-form-controls`** — Core admin form-control widgets: `wp-color-picker`, `jquery-ui-datepicker`, `jquery-ui-autocomplete`, `wp-pointer`. Correct script/style enqueues (datepicker's missing CSS is the #1 trap), `wpColorPicker` change / clear callbacks, datepicker `yy-mm-dd` formatting paired with strict server-side sanitization (the picker's format is display-only), autocomplete `source` shapes with `response()` for AJAX, core user/tag suggest, and `wp-pointer` dismissal through the `dismiss-wp-pointer` AJAX action.
+- **`wordpress/wp-admin-media-frame`** — Open the standard Media Library picker from plugin admin. Screen-gated `wp_enqueue_media()`, the `media-editor` dependency, `wp.media( { frame, title, button, library, multiple } )` config, `library` filters (`type` / MIME / `uploadedTo` / `author`), `multiple: true` vs `multiple: 'add'`, `select` and `open` events, reading attachments via `frame.state().get('selection').first().toJSON()`, attachment `sizes`, frame caching, pre-selecting existing attachments, and the canonical rule — save attachment IDs (not URLs) in options/meta.
+- **`wordpress/wp-admin-codemirror`** — Embed WP's bundled CodeMirror in admin via `wp_enqueue_code_editor()` + `wp.codeEditor.initialize()`. MIME / file mode selection for CSS / JS / JSON / HTML / PHP / SQL / Markdown / YAML; the **critical `false` return** when the user disabled syntax highlighting in their profile (causes silent breakage if you blindly init); passing settings to JS; the bare textarea ID requirement for `initialize( 'mytextarea', settings )`; reading values with `instance.codemirror.getValue()`; the `wp_code_editor_settings` filter for global defaults; linter handles (`csslint`, `htmlhint`, `htmlhint-kses`, `jsonlint`) WP auto-enqueues per MIME; and the `.refresh()` call required after un-hiding a tabbed / accordion editor.
+- **`wordpress/wp-admin-drag-and-drop`** — Build admin drag-and-drop UI with core's bundled jQuery UI Sortable / Draggable / Droppable, optional `jquery-touch-punch` for mobile, `wp-api-fetch` for REST persistence, and `wp-a11y.speak()` for screen-reader announcements. Flat reorder lists, connected lists / kanban columns, palette-to-dropzone clones, hierarchical tree indentation, REST order persistence, and the keyboard reorder controls accessibility audits will flag the absence of. The "use core, don't bundle Sortable.js / dnd-kit / react-dnd" guidance — they're already loaded.
+- **`wordpress/wp-admin-postbox-sortable`** — Wire up WordPress postboxes on custom plugin admin pages with collapse, drag sorting, Screen Options visibility, and core persistence. `add_meta_box()`, `do_meta_boxes()`, the `postbox` script, `postboxes.add_postbox_toggles( pageId )`, the `.meta-box-sortables` / `.postbox` / `.hndle` DOM contract, AND the two nonce fields plugins forget — `closedpostboxesnonce` and `meta-box-order-nonce` — without which core's collapse/order persistence silently no-ops. Guidance to use raw `jquery-ui-sortable` (the `wp-admin-drag-and-drop` skill) for non-postbox repeater rows.
+
+### Updated skills
+
+- **`wordpress/wp-html-api`**, **`wordpress/wp-query-cache`**, **`wordpress/wp-utf8-text`** — references section: dropped the bogus `[filename](filename)` markdown links on `wp-includes/...` paths (the links resolved relative to the skill folder, not to a real WP source tree) in favour of plain `code` spans. No content change; cosmetic / correctness fix only.
+
+### Repo / docs
+
+- `wordpress/README.md` — skill table grew by 8 rows (added `wp-ai-client` after `wp-connectors-api`, then a 7-row admin UI cluster after `wp-query-cache`).
+
 ## 2026-05-21
 
 ### lw-lms skill split (all verified for lw-lms 1.3.0)
