@@ -46,9 +46,8 @@ function myplugin_render_settings_page(): void {
         'integrations' => __( 'Integrations', 'myplugin' ),
         'advanced'     => __( 'Advanced', 'myplugin' ),
     );
-    $active = isset( $_GET['tab'] ) && isset( $tabs[ $_GET['tab'] ] )
-        ? sanitize_key( $_GET['tab'] )
-        : 'general';
+    $requested_tab = isset( $_GET['tab'] ) ? sanitize_key( wp_unslash( $_GET['tab'] ) ) : 'general';
+    $active        = isset( $tabs[ $requested_tab ] ) ? $requested_tab : 'general';
     ?>
     <div class="wrap">
         <h1><?php echo esc_html( get_admin_page_title() ); ?></h1>

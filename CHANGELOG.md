@@ -2,6 +2,23 @@
 
 This collection is continuously evolving — entries are date-based, not version-tagged. New skills land when they're ready; updates go in when they cover real ground (a new release of an upstream plugin, a verified misconception, a corrected example).
 
+## 2026-05-25
+
+### New skills
+
+- **`wordpress/wp-admin-notices`** — Render WordPress admin notices via the four core hooks (`admin_notices`, `network_admin_notices`, `user_admin_notices`, `all_admin_notices`) and the WP 6.4+ `wp_admin_notice()` / `wp_get_admin_notice()` helpers. Covers the four severity classes (`notice-error/-warning/-info/-success`), `is-dismissible`, per-user persisted dismissal via `user_meta` + REST endpoint, screen targeting via `get_current_screen()`, transient-backed flash notices after `wp_safe_redirect()`, and the `wp_admin_notice_args` / `wp_admin_notice_markup` filters. Pairs naturally with the `wp-admin-settings-api` skill (settings save → flash notice on redirect).
+- **`wordpress/wp-cli-extending`** — Add custom WP-CLI commands to a plugin via `WP_CLI::add_command( $name, $callable, $args )`. Class-based command pattern with PHPDoc-driven synopsis, positional vs `--flag` args, the I/O helpers (`WP_CLI::success` / `log` / `warning` / `error` / `confirm` / `debug`), formatted output via `WP_CLI\Utils\format_items()` + `--format=table|csv|json|yaml|count`, progress bars with `WP_CLI\Utils\make_progress_bar()`, `WP_CLI::runcommand()` for invoking other commands, the lifecycle hook system (`before_wp_load`, `before_invoke:<cmd>`, `after_invoke:<cmd>`), and the canonical `defined( 'WP_CLI' ) && WP_CLI` registration guard. Tested against WP-CLI 2.10–2.11 / WP 6.0–7.0.
+- **`wordpress/wp-filesystem-api`** — Read, write, copy, delete, chmod files from a plugin via the `WP_Filesystem` abstraction instead of bare PHP (`fopen` / `file_put_contents` / `unlink`). Covers the full bootstrap (`require_once ABSPATH . 'wp-admin/includes/file.php'` → `request_filesystem_credentials()` → `WP_Filesystem()` → `$wp_filesystem->*` methods), the four transports (direct / ssh2 / ftpext / ftpsockets) selected by `get_filesystem_method()`, the `FS_METHOD` / `FS_CHMOD_FILE` / `FS_CHMOD_DIR` constants, the credentials form flow, and when to fall back to `wp_handle_upload()` / `wp_upload_dir()` instead. The hard requirement to use this on shared hosts where PHP cannot directly write files outside its own ownership.
+- **`wordpress/wp-locale-and-dates`** — Handle dates, times, and numbers in plugins with the modern (WP 5.3+) locale-aware helpers — `wp_date()`, `current_datetime()`, `wp_timezone()`, `get_gmt_from_date()` / `get_date_from_gmt()`, `mysql_to_rfc3339()`, `number_format_i18n()` — and document the legacy foot-guns to avoid: `current_time('timestamp')` returns an offset-summed *not-quite-Unix* integer (looks like a timestamp, isn't), `date_i18n()` has timezone-handling quirks that bit half the ecosystem before 5.3, and `mysql_to_rfc3339()` doesn't actually produce strict RFC 3339 (no timezone suffix). Covers `timezone_string` vs `gmt_offset` fallback, the storing site-local + UTC MySQL columns pattern, REST date emission, and locale-aware number formatting.
+
+### Updated skills
+
+- **`wordpress/wp-admin-settings-api`** — Failure-mode clarification in the "Three identifiers" section: previously the skill said "if slugs drift, nothing renders and saves silently fail" — actually two distinct failure modes from the same bug. Render side: `do_settings_sections()` finds no matching `$page`, silently outputs nothing. Save side: `options.php` (verified line 249) calls `wp_die()` with the exact message *"Error: The `<group>` options page is not in the allowed options list"* — the form post is dropped BEFORE any `sanitize_callback` runs. Critical-rules entry updated to match (replaced the misleading `Cheatin&#8217; uh?` reference, which was the pre-WP-4.7 wording, with the current `wp_die()` message). `reference.md` tabbed-page example: split combined `isset()` check so `sanitize_key()` runs on `wp_unslash()`-ed value BEFORE the tab allowlist check — the previous form sanitized only when `$tabs[ $_GET['tab'] ]` already existed, leaving the lookup itself reading unslashed magic-quoted input on hosts where magic quotes haven't been stripped yet.
+
+### Repo / docs
+
+- `wordpress/README.md` — skill table grew by 4 rows (`wp-admin-notices` appended to the admin UI cluster; `wp-cli-extending`, `wp-filesystem-api`, `wp-locale-and-dates` follow as standalone infrastructure / locale skills).
+
 ## 2026-05-24
 
 ### WordPress 7.0 AI Client skill
