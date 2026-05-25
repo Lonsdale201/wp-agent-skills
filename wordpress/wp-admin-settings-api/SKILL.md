@@ -46,7 +46,7 @@ The Settings API uses three identifier types and reusing them inconsistently is 
 | `$page` (settings page slug) | A *rendering target* — collects sections and fields to render together. | `add_settings_section( ..., $page, ... )`, `add_settings_field( ..., $page, ... )`, `do_settings_sections( $page )` |
 | `$option_name` | The actual `wp_options` row key | `register_setting( $group, $option_name, ... )`, `get_option( $option_name )` |
 
-You CAN use the same string for `$option_group` and `$page` and the same string isn't a problem — but if you set the menu page slug to one thing, the section page to another, and `settings_fields()` to a third, nothing renders and saves silently fail. **Pick one slug, reuse it.**
+You CAN use the same string for `$option_group` and `$page` — that's the common simplification. But if you set the menu page slug to one thing, the section page to another, and `settings_fields()` to a third, the result is: nothing renders (silent — `do_settings_sections` finds no matching sections) AND the save dies loudly via `wp_die()` from `options.php` ("not in the allowed options list"). Two distinct failure modes from the same slug-drift bug. **Pick one slug, reuse it.**
 
 ## The full bootstrap — single-option-array pattern
 
@@ -227,7 +227,7 @@ The bootstrap above uses ONE option (`myplugin_options`) holding an array. This 
 ## Critical rules
 
 - **Form action MUST be `options.php`**. POSTing to your own page handler discards core's nonce + cap + option-page-allowlist check.
-- **`settings_fields( $option_group )` MUST match an `register_setting()`'s first arg**. Mismatch = `add_settings_error( 'general', 'settings_updated', 'Cheatin&#8217; uh?' )` from `options.php`.
+- **`settings_fields( $option_group )` MUST match a `register_setting()`'s first arg**. Mismatch = `options.php` (verified line 249) calls `wp_die()` with the message *"Error: The `<group>` options page is not in the allowed options list."* — the form post is dropped before any sanitize callback runs.
 - **`add_settings_section()` / `add_settings_field()` `$page` MUST match `do_settings_sections( $page )`**. Mismatch = nothing renders (no error — silent failure).
 - **Call `register_setting()` on `admin_init`, NOT in your menu-page render callback**. The menu page only renders when the user views it; `options.php` validates against the `$option_group` registry, which is built on `admin_init` for every admin request.
 - **`sanitize_callback` runs on every save, including REST writes**. Don't put side effects (sending emails, calling external APIs) directly in it — return the cleaned value. Side effects belong in a separate `update_option_myplugin_options` hook.
