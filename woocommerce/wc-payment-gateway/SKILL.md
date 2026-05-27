@@ -1,26 +1,27 @@
 ---
 name: wc-payment-gateway
-description: Register a custom WooCommerce payment gateway — extend
+description: >
+  Register a custom WooCommerce payment gateway — extend
   WC_Payment_Gateway, declare $id / $title / $supports, implement
   process_payment returning array(result, redirect), optionally
   process_refund when refunds is in supports, register via the
-  woocommerce_payment_gateways filter. The single most-confused thing
-  AI gets wrong is payment_complete vs update_status — payment_complete
-  runs the canonical paid-order state machine (status, transaction id,
-  session flag, woocommerce_payment_complete action), update_status
-  only changes the status string. Includes the always-forgotten
-  WC cart empty_cart call after success. Use when integrating a payment
-  provider, reviewing gateway code, or debugging "payment succeeded but
-  cart didn't clear" / "order stuck in pending". Triggers on
+  woocommerce_payment_gateways filter. Canonical gotcha:
+  payment_complete vs update_status — payment_complete runs the paid-order
+  state machine (status, transaction id, session flag, payment-complete
+  action), update_status only changes status. Includes the forgotten
+  WC()->cart->empty_cart() call and Store API payment requirements for
+  Checkout Blocks. Use when integrating/reviewing gateways or debugging
+  "payment succeeded but cart didn't clear" / "order stuck in pending". Triggers on
   WC_Payment_Gateway, woocommerce_payment_gateways, process_payment,
   process_refund, payment_complete, get_return_url,
-  woocommerce_payment_complete_order_status.
+  woocommerce_payment_complete_order_status,
+  woocommerce_store_api_register_payment_requirements.
 author: Soczó Kristóf
 contact: mailto:lonsdale201@hotmail.com
 plugin: woocommerce
-plugin-version-tested: "10.7"
+plugin-version-tested: "10.8.0"
 php-min: "7.4"
-last-updated: "2026-04-28"
+last-updated: "2026-05-26"
 docs:
   - https://woocommerce.com/document/payment-gateway-api/
 source-refs:
@@ -32,6 +33,8 @@ source-refs:
   - wp-content/plugins/woocommerce/includes/gateways/cheque/class-wc-gateway-cheque.php
   - wp-content/plugins/woocommerce/includes/gateways/cod/class-wc-gateway-cod.php
   - wp-content/plugins/woocommerce/includes/class-woocommerce.php
+  - wp-content/plugins/woocommerce/src/StoreApi/Schemas/ExtendSchema.php
+  - wp-content/plugins/woocommerce/assets/client/blocks/wc-blocks-registry.js
 ---
 
 # WooCommerce: register a custom payment gateway
@@ -301,6 +304,31 @@ Common values (verified in `WC_Payment_Gateway::supports()` and concrete gateway
 | `'multiple_subscriptions'` | Handles checkout containing multiple subscriptions. |
 | `'pre-orders'` | WC Pre-Orders compat. |
 
+## Store API / Checkout Blocks notes
+
+Classic `WC_Payment_Gateway` still owns the server-side gateway identity, settings, `process_payment()`, refunds, and `$supports`. The Checkout Block does **not** render `payment_fields()`; block checkout UI is registered separately in JS with Woo Blocks payment-method registration. If your extension only implements the classic PHP gateway, it may work in shortcode checkout and still be absent or incomplete in Checkout Blocks.
+
+Store API payment requirements are cart-wide flags compared against each gateway's `$supports` array. Use them when a cart condition means only gateways with a specific capability should appear:
+
+```php
+add_action( 'woocommerce_blocks_loaded', static function (): void {
+    woocommerce_store_api_register_payment_requirements( array(
+        'data_callback' => static function (): array {
+            if ( WC()->cart && myplugin_cart_requires_tokenized_payment( WC()->cart ) ) {
+                return array( 'tokenization' );
+            }
+            return array();
+        },
+    ) );
+} );
+```
+
+If this callback returns `array( 'tokenization' )`, gateways without `'tokenization'` in `$supports` are not valid for that cart. Do not return a requirement just because your gateway supports it; return one only when the cart/customer flow truly requires it.
+
+WC 10.8 also exposes a `Skeleton` component through the Checkout Blocks payment-method interface's `components` prop. Use it in block gateway UI loading states instead of shipping a mismatched custom placeholder. This is a JS-side affordance; it does not change the PHP `WC_Payment_Gateway` contract.
+
+WC 10.8 reverted the checkout-evidence validation that had been added inside `WC_Order::payment_complete()`. That does **not** make `payment_complete()` a security boundary. Gateways still have to verify provider signatures, transaction IDs, amounts, currencies, and order ownership before marking an order paid.
+
 ## Webhooks — the `wc-api` mechanism
 
 For provider callbacks (Stripe webhook, PayPal IPN, bank notification), use the `wc-api` endpoint — WC's pre-REST callback URL system:
@@ -348,6 +376,8 @@ For new code consider also exposing a REST endpoint via `register_rest_route` (s
 - **`WC()->cart->empty_cart()` after a successful `process_payment`.** The built-in BACS / cheque / COD all do this. Skip it and the customer's cart still has the items they just bought.
 - **`$this->get_return_url( $order )` for the thank-you redirect.** Don't construct your own URL — `get_return_url` honors site-specific overrides (custom thank-you pages, etc.).
 - **Only declare `'refunds'` in `$supports` if you implement `process_refund`.** Declaring without implementing leaves the admin with a broken refund button.
+- **Checkout Blocks require a block payment-method integration.** `payment_fields()` is classic-shortcode UI; Store API payment requirements only filter availability, they do not render your gateway.
+- **Use `woocommerce_store_api_register_payment_requirements()` only for cart-wide required capabilities.** Returned strings must match gateway `$supports` entries.
 - **Webhooks MUST verify signatures.** No exceptions. The `wc-api` endpoint is unauthenticated by default.
 - **Idempotent webhook handling.** Providers retry on non-2xx. Check `$order->is_paid()` before calling `payment_complete()` again on a re-delivered event.
 - **`woocommerce_payment_complete_order_status` filter to override the resolved status.** Used when a gateway naturally lands on a non-default status (COD → `'processing'`, even though `needs_processing()` would return `false`).
@@ -361,7 +391,7 @@ For new code consider also exposing a REST endpoint via `register_rest_route` (s
 public function process_payment( $order_id ) {
     $order = wc_get_order( $order_id );
     $this->call_api_charge( /* ... */ ); // succeeds
-    $order->update_status( 'completed' ); // 🔴 cart not emptied, no transaction_id, no woocommerce_payment_complete event
+    $order->update_status( 'completed' ); // BUG — cart not emptied, no transaction_id, no woocommerce_payment_complete event
     return array( 'result' => 'success', 'redirect' => $this->get_return_url( $order ) );
 }
 
@@ -388,7 +418,7 @@ $this->supports = array( 'products', 'refunds' );
 public function handle_webhook(): void {
     $data = json_decode( file_get_contents( 'php://input' ), true );
     $order = wc_get_order( $data['order_id'] );
-    $order->payment_complete(); // 🔥 anyone can POST a fake "paid" notification
+    $order->payment_complete(); // INSECURE — anyone can POST a fake "paid" notification
 }
 
 // WRONG — non-idempotent webhook handler
@@ -434,10 +464,11 @@ Storing additional gateway-specific data on the order: `$order->update_meta_data
 - Run **`wp-security-audit`** on the webhook handler — it's an unauthenticated endpoint with attacker-controlled input. Signature verification + rate limiting + idempotency.
 - Run **`wp-security-secrets`** on API key storage — gateway secrets in autoloaded options is a smell; consider `wp-config.php` constants or per-environment config.
 - Run **`wp-rest-api`** if migrating webhooks from `wc-api` to a proper REST endpoint with `permission_callback`.
+- Run **`wc-store-api`** when the gateway needs Cart/Checkout Blocks data, Store API extension fields, or `/cart/extensions` state.
 
 ## What this skill does NOT cover
 
-- Block-based checkout integration (`@woocommerce/blocks-registry`, `registerPaymentMethod`). Adjacent topic, separate React-side concern. Classic-shortcode checkout works the same way it did in WC 7.x.
+- Full block-based checkout UI integration (`@woocommerce/blocks-registry`, `registerPaymentMethod`). This skill only covers the PHP gateway contract and Store API availability requirements.
 - Subscriptions support beyond declaring `'subscriptions'` in `$supports`. WC Subscriptions has its own gateway-extension docs.
 - Stripe saved-card tokenization/account-template details — use `wc-stripe-add-payment-method`.
 - Currency conversion / multi-currency at the gateway level — usually a separate plugin handles this above the gateway.
@@ -449,6 +480,7 @@ Storing additional gateway-specific data on the order: `$order->update_meta_data
 - Abstract: [wp-content/plugins/woocommerce/includes/abstracts/abstract-wc-payment-gateway.php:31](abstract-wc-payment-gateway.php) — `process_payment`, `process_refund`, `supports`, `get_method_title`, `validate_fields`, `payment_fields`.
 - Registration filter: [wp-content/plugins/woocommerce/includes/class-wc-payment-gateways.php:92](class-wc-payment-gateways.php) — `apply_filters( 'woocommerce_payment_gateways', ... )`.
 - `payment_complete()`: [wp-content/plugins/woocommerce/includes/class-wc-order.php](class-wc-order.php) — verified flow steps.
+- Store API payment requirements: [wp-content/plugins/woocommerce/src/StoreApi/Schemas/ExtendSchema.php](ExtendSchema.php) — `register_payment_requirements()` and `$supports` comparison.
 - BACS reference: [wp-content/plugins/woocommerce/includes/gateways/bacs/class-wc-gateway-bacs.php:393](class-wc-gateway-bacs.php) — `process_payment` for awaiting-payment-then-success pattern.
 - Cheque reference: [wp-content/plugins/woocommerce/includes/gateways/cheque/class-wc-gateway-cheque.php:144](class-wc-gateway-cheque.php).
 - COD reference: [wp-content/plugins/woocommerce/includes/gateways/cod/class-wc-gateway-cod.php:311](class-wc-gateway-cod.php) — uses `woocommerce_payment_complete_order_status` filter to override default status resolution.

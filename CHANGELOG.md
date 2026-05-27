@@ -2,6 +2,34 @@
 
 This collection is continuously evolving — entries are date-based, not version-tagged. New skills land when they're ready; updates go in when they cover real ground (a new release of an upstream plugin, a verified misconception, a corrected example).
 
+## 2026-05-27
+
+### WooCommerce 10.8 batch
+
+Five new WooCommerce core skills covering the order / cart / checkout / saved-cards / background-jobs surfaces that were missing from the domain, plus an eight-skill refresh of the existing WC skills against the WooCommerce 10.8.0 release. All new and updated skills are `plugin-version-tested: "10.8.0"`.
+
+### New skills
+
+- **`woocommerce/wc-order-lifecycle-and-items`** — Work safely with WooCommerce order statuses, payment completion, status hooks, order items, line-item meta, totals, and stock side effects. Covers `payment_complete()` vs `update_status()`, `woocommerce_order_status_*` hook ordering and args, `woocommerce_order_status_changed`, `woocommerce_order_payment_status_changed`, `WC_Order_Item_Product`, `add_item()`, `calculate_totals()`, stock reduction/restoration hooks, HPOS-safe CRUD, and why not to instantiate the base `WC_Order_Item`. The "my paid order skipped its lifecycle side effects" and order-item-meta-confusion skill.
+- **`woocommerce/wc-cart-checkout-classic`** — Customize the classic (shortcode) WooCommerce cart and checkout with `woocommerce_add_cart_item_data`, `woocommerce_get_item_data`, `woocommerce_before_calculate_totals`, `woocommerce_cart_calculate_fees`, `woocommerce_checkout_fields`, `woocommerce_after_checkout_validation`, `woocommerce_checkout_update_order_meta`, and `woocommerce_checkout_create_order_line_item`. Covers cart-key merging, absolute price mutation, fees, classic checkout fields, order-line meta vs order meta, HPOS-safe order saves, and the Checkout Block / Store API boundary. Solves missing / duplicated cart and order-item data.
+- **`woocommerce/wc-store-api`** — Build against the WooCommerce Store API (`/wp-json/wc/store/v1`) for shopper-facing products / cart / checkout, the Cart & Checkout Blocks, and headless carts. Covers route choice, the Nonce header (`wp_create_nonce('wc_store_api')`) vs Cart-Token, Store API sessions / CORS / rate limits, `woocommerce_store_api_register_endpoint_data`, `/cart/extensions` + `extensionCartUpdate`, payment requirements, the `related` product-query pitfall, and when to use WC REST `wc/v4` instead. The Store-API-vs-REST boundary skill for block and headless work.
+- **`woocommerce/wc-payment-tokens`** — Store and use WooCommerce saved payment methods through `WC_Payment_Tokens` and `WC_Payment_Token_CC` safely. Covers provider token vs raw card data, tokenization gateway support, creating / updating / deleting / defaulting tokens, My Account nonce and ownership checks, `get_customer_tokens` / `get_customer_default_token` / `get_order_tokens`, attaching tokens to orders, gateway ID filtering, custom token tables, hooks, HPOS-safe order use, and checkout saved-token validation. The data layer behind saved cards and add-payment-method flows (pairs with `wc-stripe-add-payment-method`).
+- **`woocommerce/wc-action-scheduler-jobs`** — Queue and run WooCommerce background jobs with Action Scheduler. Covers `as_enqueue_async_action`, `as_schedule_single_action`, `as_schedule_recurring_action`, `as_schedule_cron_action`, `as_has_scheduled_action`, `as_next_scheduled_action`, `as_unschedule_action`, `as_unschedule_all_actions`, groups, scalar args, the WP-CLI runner, activation / deactivation scheduling, batching, idempotency, and the important WC 10.8 DB-store gotcha that `$unique` prevents another pending / running action with the same hook and group — NOT one per argument set. Use when moving slow order / product / customer work out of requests or status hooks.
+
+### Updated skills (WooCommerce 10.8.0)
+
+- **`woocommerce/wc-rest-api-v4`** — route catalog re-verified against WC 10.8 source; scope line extended from "expanded through 10.7" to "through 10.8" with stricter 10.8 order/product response behavior. New "WC 10.8 behavior changes" section: `status=any` order listings now **exclude `checkout-draft`** (aligned with `exclude_from_search` statuses) — request `status=checkout-draft` explicitly to audit draft checkout orders.
+- **`woocommerce/wc-payment-gateway`** — WC 10.8 reverted the checkout-evidence validation that had briefly been added inside `WC_Order::payment_complete()`; skill now states explicitly that this does **not** make `payment_complete()` a security boundary (gateways still verify provider signatures, transaction IDs, amounts, currencies, and order ownership). Notes the new `Skeleton` component exposed through the Checkout Blocks payment-method `components` prop for block-gateway loading states (JS affordance; PHP contract unchanged).
+- **`woocommerce/wc-hpos-compatibility`** — new "WC 10.8 HPOS changes worth knowing" section. The plugin-author contract is unchanged, but internals shifted enough that direct-table assumptions are even riskier: the `wp_wc_orders_meta` `meta_key_value` index was reshaped during the cycle and restored to `(meta_key(50), meta_value(20))` by the `wc_update_10802_restore_orders_meta_key_value_index` migration after a performance regression.
+- **`woocommerce/wc-emails-classic`** — new "WC 10.8 email additions" section documenting two template-level filters added to `templates/emails/email-order-details.php` (order-summary heading / order-number visibility); guidance to use them before overriding the whole template for those small tweaks.
+- **`woocommerce/wc-product-search-select`** — new "Visibility and capability note (WC 10.8)": the AJAX handler filters candidates through `wc_products_array_filter_readable()`, and WC 10.8 fixed hidden-product search visibility — don't assume hidden/private products appear for every admin-like request. The pre-rendered `<option selected>` loop is what preserves a saved hidden product's label.
+- **`woocommerce/wc-shipping-providers`** — new "WC 10.8 REST note": the v4 Fulfillments surface is flat (`/wc/v4/fulfillments?order_id=<id>`, `/wc/v4/fulfillments/<id>`, `/wc/v4/fulfillments/providers`), not nested under `/orders/<id>/...`; WC 10.8 tightened unauthenticated access to guest order fulfillments — require explicit ownership checks before exposing them to customer-facing code. Provider count phrasing bumped to "WC 10.8 ships ~70 built-in providers".
+- **`woocommerce/wc-customer-and-sessions`**, **`woocommerce/wc-shipping-method`** — `plugin-version-tested` bumped to `10.8.0` and `last-updated` refreshed; content re-verified against the 10.8 surface.
+
+### Repo / docs
+
+- `woocommerce/README.md` — "WooCommerce core" table grew by 5 rows (`wc-order-lifecycle-and-items`, `wc-cart-checkout-classic`, `wc-store-api`, `wc-payment-tokens`, `wc-action-scheduler-jobs`).
+
 ## 2026-05-25
 
 ### New skills

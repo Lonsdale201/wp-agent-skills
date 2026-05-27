@@ -18,15 +18,16 @@ description: Customize WooCommerce transactional emails the classic
 author: Soczó Kristóf
 contact: mailto:lonsdale201@hotmail.com
 plugin: woocommerce
-plugin-version-tested: "10.7"
+plugin-version-tested: "10.8.0"
 php-min: "7.4"
-last-updated: "2026-04-28"
+last-updated: "2026-05-26"
 docs:
   - https://woocommerce.com/document/template-structure/
 source-refs:
   - wp-content/plugins/woocommerce/includes/class-wc-emails.php
   - wp-content/plugins/woocommerce/includes/emails/class-wc-email.php
   - wp-content/plugins/woocommerce/includes/emails/class-wc-email-customer-processing-order.php
+  - wp-content/plugins/woocommerce/includes/emails/class-wc-email-customer-review-request.php
   - wp-content/plugins/woocommerce/includes/wc-core-functions.php
   - wp-content/plugins/woocommerce/templates/emails/
 ---
@@ -235,6 +236,26 @@ The variables passed to `wc_get_template_html()` become local variables in the t
 
 Your template can call `wc_get_template( 'emails/email-header.php', array( 'email_heading' => $email_heading ) )` and `wc_get_template( 'emails/email-footer.php' )` to inherit the WC header/footer style — the standard pattern across all built-in emails.
 
+## WC 10.8 email additions
+
+WooCommerce 10.8 added two useful template-level filters to `templates/emails/email-order-details.php`:
+
+```php
+add_filter( 'woocommerce_email_order_details_heading', static function ( string $heading, WC_Order $order, WC_Email $email ): string {
+    return __( 'Items in this order', 'myplugin' );
+}, 10, 3 );
+
+add_filter( 'woocommerce_email_display_order_number', static function ( bool $display, WC_Order $order, WC_Email $email ): bool {
+    return ! $email instanceof WC_Email || $email->id !== 'myplugin_internal';
+}, 10, 3 );
+```
+
+Notes:
+
+- `woocommerce_email_order_details_heading` is only used when the `email_improvements` feature is enabled; without that feature the classic template keeps the old order-heading shape.
+- `woocommerce_email_display_order_number` is applied by both HTML and plain order-details templates, so it is the safer way to hide the order number than overriding both files.
+- The new Customer Review Request email (`customer_review_request`) is feature-gated, disabled by default, scheduled through Action Scheduler, and triggered via `woocommerce_send_review_request_notification`. It has dedicated filters such as `woocommerce_should_send_review_request` and `woocommerce_review_request_delay_seconds`; do not reimplement the scheduling if you only need to adjust eligibility or timing.
+
 ## Critical rules
 
 - **Extend `WC_Email`, not `WP_Mail` or rolling your own.** The framework gives you Settings UI, locale switching, plain-text fallback, header/footer reuse for free.
@@ -245,6 +266,7 @@ Your template can call `wc_get_template( 'emails/email-header.php', array( 'emai
 - **`setup_locale()` / `restore_locale()` around `send()`** — for customer emails (`$this->is_customer_email()`), switches the active locale to the **site's default locale** via `wc_switch_to_site_locale()` so transactional content is consistent regardless of the visitor's current language. Verified at [class-wc-email.php:421-423](class-wc-email.php): `if ( $switch_email_locale && $this->is_customer_email() && apply_filters( 'woocommerce_email_setup_locale', true ) ) { wc_switch_to_site_locale(); }`. It does NOT switch to a per-customer language. Built-in emails do this; new customer-facing emails should too.
 - **`is_enabled()` + `get_recipient()` guard before `send()`.** Without it, disabled emails still fire and emails with empty recipients hard-error in `wp_mail`.
 - **Hook trigger() to `_notification`-suffixed actions** for WC status transitions. Don't bind to `woocommerce_order_status_<status>` (without `_notification`) — that fires earlier in the pipeline, before the order is fully saved.
+- **Use the 10.8 order-details filters before overriding templates** when the customization is just the order-summary heading or order-number visibility.
 - **Templates in theme override plugin override WC core.** Document your template files as overridable; users will copy them into `theme/woocommerce/emails/`.
 
 ## Common mistakes
@@ -265,7 +287,7 @@ add_filter( 'woocommerce_email_classes', function ( $emails ) {
 
 // WRONG — calling parent::__construct first
 public function __construct() {
-    parent::__construct(); // 🔴 reads $this->id before the child sets it
+    parent::__construct(); // BUG — reads $this->id before the child sets it
     $this->id = 'myplugin_custom';
 }
 
@@ -348,4 +370,6 @@ $mailer->send(
 - Registration filter: [wp-content/plugins/woocommerce/includes/class-wc-emails.php:333](class-wc-emails.php) — `apply_filters( 'woocommerce_email_classes', ... )`.
 - Reference implementation: [wp-content/plugins/woocommerce/includes/emails/class-wc-email-customer-processing-order.php](class-wc-email-customer-processing-order.php) — canonical `__construct` + `trigger` + `get_content_html` pattern.
 - Built-in email list: [wp-content/plugins/woocommerce/includes/emails/](emails/) — 14+ classes covering processing, completed, refunded, cancelled, on-hold, fulfillment lifecycle, customer note, customer invoice, admin new-order.
+- Customer review request email: [wp-content/plugins/woocommerce/includes/emails/class-wc-email-customer-review-request.php](class-wc-email-customer-review-request.php) and [wp-content/plugins/woocommerce/templates/emails/customer-review-request.php](customer-review-request.php).
+- Order-details template filters: [wp-content/plugins/woocommerce/templates/emails/email-order-details.php](email-order-details.php) — `woocommerce_email_order_details_heading`, `woocommerce_email_display_order_number`.
 - `wc_get_template_html` / `wc_locate_template`: [wp-content/plugins/woocommerce/includes/wc-core-functions.php:386-422](wc-core-functions.php) — resolution order is theme-override-first, then `default_path`: (1) `<theme>/woocommerce/<file>` (`locate_template` with `WC()->template_path()`), (2) `<theme>/<file>` (`locate_template` bare), (3) `$default_path . $file` — which is the plugin's `template_base` if you passed one to `wc_get_template_html`, otherwise WC core's `wp-content/plugins/woocommerce/templates/`. The plugin's `template_base` is the FALLBACK for unoverridden templates, NOT a first-priority lookup — theme overrides always win.

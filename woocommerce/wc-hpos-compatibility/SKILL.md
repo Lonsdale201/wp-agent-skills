@@ -5,19 +5,19 @@ description: Make a WooCommerce plugin HPOS-compatible (High-Performance
   FeaturesUtil::declare_compatibility on before_woocommerce_init, replace
   $wpdb->postmeta / WP_Query order code with wc_get_orders +
   WC_Order::get_meta / update_meta_data, gate runtime branches on
-  OrderUtil::custom_orders_table_usage_is_enabled, build admin hook
-  names dynamically with OrderUtil::get_order_admin_screen (HPOS =
-  woocommerce_page_wc-orders, legacy = shop_order). Use when scaffolding
-  an order-touching plugin, auditing existing code for HPOS readiness,
-  or fixing post-WC-10 silent breakage. Triggers on shop_order,
+  OrderUtil::custom_orders_table_usage_is_enabled, use
+  OrderUtil::get_order_admin_screen for screen IDs while branching
+  order-list hook names by HPOS vs legacy mode. Use when scaffolding an
+  order-touching plugin, auditing existing code for HPOS readiness, or
+  fixing post-WC-10 silent breakage. Triggers on shop_order,
   get_post_meta with order context, FeaturesUtil, OrderUtil,
   custom_order_tables, before_woocommerce_init.
 author: Soczó Kristóf
 contact: mailto:lonsdale201@hotmail.com
 plugin: woocommerce
-plugin-version-tested: "10.x"
+plugin-version-tested: "10.8.0"
 php-min: "7.4"
-last-updated: "2026-04-28"
+last-updated: "2026-05-26"
 docs:
   - https://developer.woocommerce.com/docs/hpos/
   - https://github.com/woocommerce/woocommerce/wiki/High-Performance-Order-Storage-Upgrade-Recipe-Book
@@ -27,6 +27,8 @@ source-refs:
   - wp-content/plugins/woocommerce/src/Internal/Utilities/COTMigrationUtil.php
   - wp-content/plugins/woocommerce/src/Internal/Admin/Orders/PageController.php
   - wp-content/plugins/woocommerce/src/Internal/DataStores/Orders/OrdersTableDataStore.php
+  - wp-content/plugins/woocommerce/src/Internal/DataStores/Orders/OrdersTableQuery.php
+  - wp-content/plugins/woocommerce/includes/wc-update-functions.php
   - wp-content/plugins/woocommerce/src/Admin/Features/Fulfillments/FulfillmentsRenderer.php
 ---
 
@@ -147,7 +149,7 @@ if ( OrderUtil::custom_orders_table_usage_is_enabled() ) {
 Other useful `OrderUtil` helpers:
 
 - `OrderUtil::is_custom_order_tables_in_sync(): bool` — sync-mode detection (legacy + HPOS both written to)
-- `OrderUtil::get_order_admin_screen(): string` — screen ID for admin hooks (see Step 4)
+- `OrderUtil::get_order_admin_screen(): string` — screen ID for meta boxes, enqueues, and `current_screen` checks (see Step 4)
 - `OrderUtil::init_theorder_object( $post_or_order )` — bridges meta-box rendering between modes
 - `OrderUtil::get_post_or_object_meta( $post, $data, $key, $single )` — unified meta read for backward-compatible code
 
@@ -250,13 +252,23 @@ Practical implications:
 
 If your plugin reads order meta and the data only exists in `wp_postmeta` (never written through `WC_Order::update_meta_data + save`), it WILL break on a default WC 10.7 install. Audit pattern: any `wc_get_order( $id )->get_meta( '_legacy_key' )` returning empty after a 10.7 upgrade is the smoking gun — the meta exists in `wp_postmeta` but not in `wp_wc_orders_meta`, and 10.7 no longer fills the gap.
 
+### WC 10.8 HPOS changes worth knowing
+
+WooCommerce 10.8 did not change the plugin-author contract above, but it changed enough internals that direct table assumptions are even riskier:
+
+- The HPOS order data cache was fixed to avoid cross-bleed between order data store subclasses (`orders`, `refunds`, subscriptions-style stores sharing cache machinery).
+- `wp_wc_orders` now has an index for `transaction_id`, so gateway/order lookups by transaction ID are less painful when done through WC APIs.
+- The `wp_wc_orders_meta` `meta_key_value` index was reshaped during the release cycle and restored to `(meta_key(50), meta_value(20))` by the 10.8.0-2 migration after a performance regression.
+
+Practical rule: if you must diagnose raw SQL performance, inspect the live schema (`SHOW INDEX FROM {$wpdb->prefix}wc_orders_meta`) instead of copying index assumptions from older docs. Plugin code should still use `wc_get_orders`, `wc_get_order`, and `WC_Order` meta APIs.
+
 ## Critical rules
 
 - **Declare compatibility on `before_woocommerce_init`** with feature_id `'custom_order_tables'`. Without it, your plugin shows up as "HPOS Incompatible" and blocks the toggle.
 - **`wc_get_order` + `$order->get_meta` / `update_meta_data` + `save`** for all order CRUD. Never `get_post`, never `get_post_meta` against an order ID.
 - **`wc_get_orders` for queries.** Never `WP_Query` for orders, never raw `$wpdb` joins on `wp_postmeta` against order IDs.
 - **`OrderUtil::custom_orders_table_usage_is_enabled()` for runtime detection** when you genuinely have to branch.
-- **`OrderUtil::get_order_admin_screen()` for admin hook names** — dynamic, works in both modes.
+- **`OrderUtil::get_order_admin_screen()` for screen IDs, not list-table hook names.** Use it for meta boxes, enqueues, and `current_screen`; branch explicitly for HPOS vs legacy columns/bulk/custom-column hooks.
 - **`init_theorder_object()` to normalize the meta-box `$post_or_order` parameter** across modes.
 - **Test on a fresh WC 10.x install** (HPOS default) before shipping. Don't assume your dev environment matches real-world.
 - **Be aware of the WC 10.7 sync-on-read default-off change.** Code that quietly relied on sync-on-read pulling missing legacy postmeta into HPOS reads will surface as empty-meta bugs after upgrade.
@@ -288,9 +300,12 @@ $value = $order ? $order->get_meta( '_my_field' ) : '';
 // WRONG — hooking only the legacy admin screen; column doesn't appear on HPOS
 add_filter( 'manage_edit-shop_order_columns', $cb );
 
-// RIGHT — dynamic screen ID
-$screen = OrderUtil::get_order_admin_screen();
-add_filter( "manage_{$screen}_columns", $cb );
+// RIGHT — hook names differ by mode; branch explicitly
+if ( OrderUtil::custom_orders_table_usage_is_enabled() ) {
+    add_filter( 'manage_woocommerce_page_wc-orders_columns', $cb );
+} else {
+    add_filter( 'manage_edit-shop_order_columns', $cb );
+}
 
 // WRONG — raw SQL join on wp_postmeta, broken on HPOS, brittle on sync
 $wpdb->get_results( "
@@ -341,7 +356,7 @@ grep -rn "get_post_meta\|update_post_meta\|delete_post_meta" --include="*.php" s
 # WP_Query for orders (replace with wc_get_orders)
 grep -rn "post_type.*shop_order\|post_type.*=.*shop_order" --include="*.php" src/
 
-# Old admin column hook (use OrderUtil::get_order_admin_screen)
+# Old admin column hook (branch HPOS vs legacy hook names)
 grep -rn "manage_edit-shop_order\|manage_shop_order_posts" --include="*.php" src/
 ```
 
@@ -368,4 +383,5 @@ The four greps catch ~90% of HPOS regressions in a typical legacy plugin.
 - `OrderUtil::custom_orders_table_usage_is_enabled` and friends: [wp-content/plugins/woocommerce/src/Utilities/OrderUtil.php](OrderUtil.php).
 - `FeaturesUtil::declare_compatibility`: [wp-content/plugins/woocommerce/src/Utilities/FeaturesUtil.php:87](FeaturesUtil.php).
 - HPOS data store implementations: [wp-content/plugins/woocommerce/src/Internal/DataStores/Orders/](Orders/).
+- WC 10.8 HPOS index migration: [wp-content/plugins/woocommerce/includes/wc-update-functions.php](wc-update-functions.php) — `wc_update_10802_restore_orders_meta_key_value_index`.
 - `COTMigrationUtil::get_order_admin_screen`: [wp-content/plugins/woocommerce/src/Internal/Utilities/COTMigrationUtil.php:53](COTMigrationUtil.php) — confirms `'shop_order'` (legacy) vs `'woocommerce_page_wc-orders'` (HPOS) screen IDs.

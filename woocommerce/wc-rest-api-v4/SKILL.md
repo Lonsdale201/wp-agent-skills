@@ -16,15 +16,17 @@ description: Use the WooCommerce REST API v4 (namespace wc/v4, since WC 10.2)
 author: Soczó Kristóf
 contact: mailto:lonsdale201@hotmail.com
 plugin: woocommerce
-plugin-version-tested: "10.7"
+plugin-version-tested: "10.8.0"
 php-min: "7.4"
-last-updated: "2026-04-28"
+last-updated: "2026-05-26"
 docs:
   - https://woocommerce.com/document/woocommerce-rest-api/
 source-refs:
   - wp-content/plugins/woocommerce/includes/wc-rest-functions.php
   - wp-content/plugins/woocommerce/src/Internal/RestApi/Routes/V4/AbstractController.php
   - wp-content/plugins/woocommerce/src/Internal/RestApi/Routes/V4/
+  - wp-content/plugins/woocommerce/src/Internal/RestApi/Routes/V4/Orders/CollectionQuery.php
+  - wp-content/plugins/woocommerce/src/Internal/RestApi/Routes/V4/Products/Controller.php
   - wp-content/plugins/woocommerce/src/Internal/Traits/RestApiCache.php
   - wp-content/plugins/woocommerce/src/StoreApi/RoutesController.php
   - wp-content/plugins/woocommerce-subscriptions/includes/api/class-wc-rest-subscriptions-controller.php
@@ -32,7 +34,7 @@ source-refs:
 
 # WooCommerce REST API v4
 
-A second-major-version of the WC REST API, introduced in WC 10.2 (2025) and expanded through 10.7. It coexists with v3 — neither replaces the other — and adds capabilities the v3 surface lacked: per-route response caching, ID-sortable customer list, DELETE on shipping zones / methods, payment gateway PUT with top-level fields, fulfillments CRUD, and per-group settings endpoints.
+A second-major-version of the WC REST API, introduced in WC 10.2 (2025) and expanded through 10.8. It coexists with v3 — neither replaces the other — and adds capabilities the v3 surface lacked: per-route response caching, ID-sortable customer list, DELETE on shipping zones / methods, payment gateway PUT with top-level fields, fulfillments CRUD, per-group settings endpoints, and stricter 10.8 order/product response behavior.
 
 This skill is the **up-to-date reference for AI assistants whose training data predates v4**. Default behavior of LLMs is to write `/wc/v3/...` URLs and v3 controller patterns. Many of those endpoints exist in v4 with cleaner shapes, additional verbs, and per-endpoint cache headers — and a few v4 endpoints have NO v3 counterpart.
 
@@ -56,7 +58,7 @@ Trigger when ANY of the following is true:
 - Debugging "why is my v3 customers query slow" — v4 added caching infrastructure for these.
 - The diff or file contains: `/wc/v4/`, `wc/v4`, `woocommerce_rest_api_v4_*`, `AbstractController` in WC context, `RestApiCache`, `with_cache(`.
 
-## Route catalog (verified in WC 10.7 source)
+## Route catalog (verified in WC 10.8 source)
 
 All routes live under namespace `wc/v4`. Verified by directory listing of [wp-content/plugins/woocommerce/src/Internal/RestApi/Routes/V4/](V4/).
 
@@ -82,6 +84,14 @@ All routes live under namespace `wc/v4`. Verified by directory listing of [wp-co
 | Settings (products) | `/wc/v4/settings/products` | |
 
 The `Internal\RestApi\Routes\V4\` namespace maps each resource to its Controller. Verified `rest_base` values: `customers`, `orders`, `order-notes`, `refunds`, `products`, `shipping-zones`, `shipping-zone-method`, `fulfillments`. The actual URL is the namespace + the rest_base; nothing more (until you hit a sub-route like `/fulfillments/providers`).
+
+## WC 10.8 behavior changes
+
+- **`status=any` order listings exclude `checkout-draft`.** If an integration needs draft checkout orders, request them explicitly with `status=checkout-draft`. WC 10.8 aligns this with statuses marked `exclude_from_search`, and HPOS query code comments call out `checkout-draft` specifically.
+- **V4 product responses strip sensitive fields for users without product-management capabilities.** Downloads, COGS, purchase notes, and raw `meta_data` are removed when the current user can read products but cannot manage/private-read products. Do not build external clients that depend on those fields unless the request is authenticated with the right capability.
+- **Order/refund tax fields were clarified.** Inline refund data includes `total_tax`, and schema descriptions distinguish tax-inclusive/exclusive totals. Client-side financial calculations should trust explicit fields instead of inferring tax from display strings.
+- **Guest fulfillments access was tightened.** Treat fulfillment endpoints as capability-protected admin/integration APIs; do not mirror them into customer-facing screens without ownership checks.
+- **Legacy v2/v3 order PUT is stricter.** `/wc/v2/orders/<id>` and `/wc/v3/orders/<id>` no longer convert arbitrary non-`shop_order` posts into orders. If a migration depended on that side effect, fix the migration rather than working around it.
 
 ## When to pick v4 over v3
 
@@ -251,6 +261,8 @@ The endpoint surface is REST-conventional — same query params (`per_page`, `or
 - **Filter responses via `woocommerce_rest_api_v4_<route>_item_response`** when you need to add fields without rewriting the route. Same pattern works in v3 with the v3-prefixed hook (`woocommerce_rest_prepare_*`).
 - **DELETE on shipping zones is v4-only.** v3 lacks it; if you're cleaning up zones programmatically, use v4.
 - **Fulfillments only exist on v4.** v3 has no equivalent. See sibling skill `wc-shipping-providers` for the related provider abstraction.
+- **`status=any` is not "including checkout drafts" in WC 10.8+.** Ask for `status=checkout-draft` explicitly if you are auditing draft checkout orders.
+- **V4 products can omit sensitive fields depending on capabilities.** Missing `downloads`, `purchase_note`, `cost_of_goods_sold`, or `meta_data` is expected for under-privileged users.
 - **The `RestApiCache` trait is internal**. Don't rely on its existence in plugin code; it's WC's mechanism for its own routes.
 - **Authentication is unchanged from v3.** Cookie + X-WP-Nonce, Basic Auth with WC API keys, Application Passwords, OAuth 1.0a — all the same.
 
@@ -298,7 +310,7 @@ header( 'X-WC-Cache: HIT' ); // your endpoint can't fake this for clients
 
 ## What this skill does NOT cover
 
-- The Store API (`/wp-json/wc/store/v1/...`) — different surface entirely, customer-facing checkout / cart APIs. Separate scope.
+- The Store API (`/wp-json/wc/store/v1/...`) — different surface entirely, customer-facing checkout / cart APIs. See sibling skill `wc-store-api`.
 - The Blocks API (`/wp-json/wc-blocks/`) — also separate.
 - Migration tooling for moving v3 integrations to v4 — there isn't one; rewrite per-endpoint.
 - Schema-by-schema diff between v3 and v4 fields. Use `OPTIONS /wc/v4/<resource>` against a live install to fetch the JSON Schema; trust the live response over any documentation.
@@ -310,4 +322,5 @@ header( 'X-WC-Cache: HIT' ); // your endpoint can't fake this for clients
 - v4 abstract controller: [wp-content/plugins/woocommerce/src/Internal/RestApi/Routes/V4/AbstractController.php](AbstractController.php) — `@since 10.2.0`. Note the `Internal\` namespace prefix.
 - Concrete controllers: [wp-content/plugins/woocommerce/src/Internal/RestApi/Routes/V4/](V4/) — directory listing is the authoritative route catalog.
 - `RestApiCache` trait: [wp-content/plugins/woocommerce/src/Internal/Traits/RestApiCache.php](RestApiCache.php) — `@since 10.5.0`.
-- WC REST API official docs: <https://woocommerce.com/document/woocommerce-rest-api/> — covers v3; v4 documentation has not yet been consolidated as of WC 10.7. Trust source-verified routes over outdated public docs.
+- V4 products controller sensitivity check: [wp-content/plugins/woocommerce/src/Internal/RestApi/Routes/V4/Products/Controller.php](Controller.php) — `SENSITIVE_FIELDS`.
+- WC REST API official docs: <https://woocommerce.com/document/woocommerce-rest-api/> — covers v3; v4 documentation has not yet been consolidated as of WC 10.8. Trust source-verified routes over outdated public docs.
