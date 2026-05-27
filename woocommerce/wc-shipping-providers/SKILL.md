@@ -17,9 +17,9 @@ description: Register a custom WooCommerce shipping provider — extend
 author: Soczó Kristóf
 contact: mailto:lonsdale201@hotmail.com
 plugin: woocommerce
-plugin-version-tested: "10.7"
+plugin-version-tested: "10.8.0"
 php-min: "7.4"
-last-updated: "2026-04-28"
+last-updated: "2026-05-26"
 docs:
   - https://github.com/woocommerce/woocommerce
 source-refs:
@@ -29,13 +29,14 @@ source-refs:
   - wp-content/plugins/woocommerce/src/Admin/Features/Fulfillments/ShippingProviders.php
   - wp-content/plugins/woocommerce/src/Admin/Features/Fulfillments/FulfillmentUtils.php
   - wp-content/plugins/woocommerce/src/Admin/Features/Fulfillments/FulfillmentsManager.php
+  - wp-content/plugins/woocommerce/src/Internal/RestApi/Routes/V4/Fulfillments/Controller.php
 ---
 
 # WooCommerce: custom shipping providers (Fulfillments)
 
 For plugins that integrate a **carrier** with WooCommerce — UPS / FedEx / DHL / a national post / a private courier. A "shipping provider" in WC 10.1+ is a carrier identity tied into the Fulfillments system: tracking URL generation, tracking-number pattern detection, country-pair support, and admin filtering on the orders list. **Different from a shipping method**, which is a checkout-time rate calculator.
 
-WC 10.7 ships ~70 built-in providers (DHL, FedEx, UPS, USPS, Royal Mail, La Poste, Deutsche Post, Australia Post, Canada Post, dozens of national posts, courier services). Adding a new one is a small abstract-class extension + one filter callback.
+WC 10.8 ships ~70 built-in providers (DHL, FedEx, UPS, USPS, Royal Mail, La Poste, Deutsche Post, Australia Post, Canada Post, dozens of national posts, courier services). Adding a new one is a small abstract-class extension + one filter callback.
 
 ## Misconception this skill corrects
 
@@ -189,6 +190,10 @@ add_action( 'plugins_loaded', static function () {
 }, 20 );
 ```
 
+## WC 10.8 REST note
+
+The v4 Fulfillments REST surface is flat: `/wc/v4/fulfillments?order_id=<id>` and `/wc/v4/fulfillments/<fulfillment_id>`, plus `/wc/v4/fulfillments/providers`. It is not nested under `/wc/v4/orders/<id>/...`. WC 10.8 also tightened unauthenticated access to guest order fulfillments, so do not expose these responses to customer-facing code unless you perform explicit ownership checks.
+
 ## Critical rules
 
 - **`AbstractShippingProvider` ≠ `WC_Shipping_Method`.** Different concept, different lifecycle stage, different class hierarchy. If the goal is "show a rate at checkout", you need `WC_Shipping_Method` (sibling skill).
@@ -222,7 +227,7 @@ public function get_key(): string {
 // WRONG — returning empty array from try_parse_tracking_number when no match
 public function try_parse_tracking_number( $tn, $from, $to ): ?array {
     if ( /* no match */ ) {
-        return array(); // 🔴 WC treats this as "matched with empty data"
+        return array(); // BUG — WC treats this as "matched with empty data"
     }
 }
 
@@ -236,14 +241,14 @@ public function try_parse_tracking_number( $tn, $from, $to ): ?array {
 
 // WRONG — wrong key name; carrier is detected but tracking URL stays empty
 return array(
-    'tracking_url'    => $this->get_tracking_url( $tn ), // 🔴 should be 'url'
+    'tracking_url'    => $this->get_tracking_url( $tn ), // BUG — should be 'url'
     'ambiguity_score' => 90,
 );
 
 // WRONG — score inverted (treating 0 as "highest confidence")
 return array(
     'url'             => $this->get_tracking_url( $tn ),
-    'ambiguity_score' => 0, // 🔴 0 means LOWEST; this provider loses to any provider that returns ≥1
+    'ambiguity_score' => 0, // BUG — 0 means LOWEST; this provider loses to any provider that returns >=1
 );
 
 // RIGHT — high score for confident match
@@ -312,7 +317,7 @@ The returned providers are fully resolved instances — no further `wc_get_conta
 
 ## What this skill does NOT cover
 
-- The Fulfillments REST API endpoints (`/wc/v4/orders/<id>/fulfillments`, etc.) — adjacent topic; covered by the REST v4 skill if your plugin reads/writes fulfillments programmatically.
+- The Fulfillments REST API endpoints (`/wc/v4/fulfillments?order_id=<id>`, `/wc/v4/fulfillments/<fulfillment_id>`) — adjacent topic; covered by the REST v4 skill if your plugin reads/writes fulfillments programmatically.
 - Label generation, address printing, postage purchase flows — those are carrier-specific integrations the provider class doesn't standardize.
 - The Fulfillments meta-box in the order edit screen — admin UI, separate concern.
 - Live rate-fetching from the carrier API (used by some plugins to show real-time shipping rates) — that's a `WC_Shipping_Method` concern, not a provider concern.
@@ -322,5 +327,6 @@ The returned providers are fully resolved instances — no further `wc_get_conta
 
 - `AbstractShippingProvider`: [wp-content/plugins/woocommerce/src/Admin/Features/Fulfillments/Providers/AbstractShippingProvider.php](AbstractShippingProvider.php).
 - Provider registry & filter: [wp-content/plugins/woocommerce/src/Admin/Features/Fulfillments/FulfillmentUtils.php:417](FulfillmentUtils.php) — `get_shipping_providers()` + the `woocommerce_fulfillment_shipping_providers` filter (`@since 10.1.0`).
+- v4 Fulfillments REST controller: [wp-content/plugins/woocommerce/src/Internal/RestApi/Routes/V4/Fulfillments/Controller.php](Controller.php) — flat `fulfillments` rest_base and providers sub-route.
 - Static class-name → instance map of built-in providers: [wp-content/plugins/woocommerce/src/Admin/Features/Fulfillments/ShippingProviders.php](ShippingProviders.php) — ~70 entries, useful as a reference for naming conventions and key style.
 - Reference implementation (DHL): [wp-content/plugins/woocommerce/src/Admin/Features/Fulfillments/Providers/DHLShippingProvider.php](DHLShippingProvider.php).

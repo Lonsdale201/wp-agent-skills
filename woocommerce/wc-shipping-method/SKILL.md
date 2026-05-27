@@ -342,7 +342,7 @@ A simple smoke plugin demonstrating both variants (feature-flag-only and no-sett
 
 ## References
 
-- [`WC_Shipping_Method` abstract](wp-content/plugins/woocommerce/includes/abstracts/abstract-wc-shipping-method.php) — `instance_form_fields`, `has_settings`, `get_admin_options_html`, `add_rate`.
-- [Free Shipping reference implementation](wp-content/plugins/woocommerce/includes/shipping/free-shipping/class-wc-shipping-free-shipping.php) — example of a method declaring its full field list explicitly.
-- [`wc-shipping-zone-methods.js`](wp-content/plugins/woocommerce/assets/js/admin/wc-shipping-zone-methods.js) — Backbone modal source. Confirms PHP-rendered `settings_html`, no React.
+- `WC_Shipping_Method` abstract — `wp-content/plugins/woocommerce/includes/abstracts/abstract-wc-shipping-method.php`. Methods: `instance_form_fields`, `has_settings`, `get_admin_options_html`, `add_rate`.
+- Free Shipping reference implementation — `wp-content/plugins/woocommerce/includes/shipping/free-shipping/class-wc-shipping-free-shipping.php`. Example of a method declaring its full field list explicitly.
+- `wc-shipping-zone-methods.js` — `wp-content/plugins/woocommerce/assets/js/admin/wc-shipping-zone-methods.js`. Backbone modal source; confirms PHP-rendered `settings_html`, no React.
 - [WooCommerce Shipping Method API docs](https://woocommerce.com/document/shipping-method-api/) — official guide; cross-check against current source for new `$supports` keys or hook additions.

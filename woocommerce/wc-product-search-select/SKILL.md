@@ -18,14 +18,15 @@ description: Builds a WooCommerce-style AJAX product search select (the
 author: Soczó Kristóf
 contact: mailto:lonsdale201@hotmail.com
 plugin: woocommerce
-plugin-version-tested: "10.x"
+plugin-version-tested: "10.8.0"
 php-min: "7.4"
-last-updated: "2026-04-28"
+last-updated: "2026-05-26"
 docs:
   - https://github.com/woocommerce/selectWoo
   - https://woocommerce.com/document/woocommerce-json-search/
 source-refs:
   - wp-content/plugins/woocommerce/includes/class-wc-ajax.php
+  - wp-content/plugins/woocommerce/includes/data-stores/class-wc-product-data-store-cpt.php
   - wp-content/plugins/woocommerce/includes/admin/class-wc-admin-assets.php
   - wp-content/plugins/woocommerce/assets/js/admin/wc-enhanced-select.js
 ---
@@ -61,6 +62,10 @@ WC ships two product-search AJAX actions ([wp-content/plugins/woocommerce/includ
 The `_and_variations` variant is what you want **most of the time** for store-side features (related products, upsell/cross-sell, stock-rule targets, etc.) — variations are independently priced, stocked, and SKU'd, so a UI that can't pick variations is incomplete.
 
 The variations endpoint is a one-line wrapper around the products one (`self::json_search_products( '', true )` — `$include_variations = true`); same nonce, same data shape, the only difference is the result set.
+
+### Visibility and capability note (WC 10.8)
+
+The AJAX handler filters each candidate through `wc_products_array_filter_readable()` before sending JSON. WooCommerce 10.8 fixed hidden-product search visibility, so do not assume hidden/private products appear for every admin-like request. If a previously saved hidden product must remain visible in your field, the pre-rendered `<option selected>` loop is what preserves its label; the live search result list should still respect WC readability/capability rules.
 
 ## Minimal scaffold — meta box on the product edit screen
 
@@ -166,7 +171,7 @@ Pattern: `wc_get_product( $id )->get_formatted_name()` returns the WC-styled lab
 | `data-limit` | Max results returned (server caps) | `100` (default 30, filter `woocommerce_json_search_limit`) |
 | `data-exclude_type` | Comma-list of product types to skip | `external,grouped` |
 | `data-display_stock` | Append " — Stock: N" to labels for managed-stock items | `1` |
-| `data-allow_clear` | Show ✕ to clear single-value selects | `1` |
+| `data-allow_clear` | Show a clear (x) control on single-value selects | `1` |
 | `data-minimum_input_length` | Override default 3-char minimum | `2` |
 | `data-sortable="true"` | Enable drag-sort on multi-select chips | `true` |
 
@@ -275,4 +280,5 @@ The IDs returned by the search endpoint are post IDs that may belong to either `
 - `wc-enhanced-select.js` — the JS that turns `class="wc-product-search"` into selectWoo with AJAX wiring: [wp-content/plugins/woocommerce/assets/js/admin/wc-enhanced-select.js](wc-enhanced-select.js).
 - WC auto-enqueue on admin screens: [wp-content/plugins/woocommerce/includes/admin/class-wc-admin-assets.php:412-415](class-wc-admin-assets.php).
 - `WC_Data_Store::load( 'product' )->search_products()` — the underlying query method called by the AJAX handler. Worth reading if you need a programmatic equivalent of the AJAX search (e.g. WP-CLI command).
+- Product search query implementation: [wp-content/plugins/woocommerce/includes/data-stores/class-wc-product-data-store-cpt.php](class-wc-product-data-store-cpt.php) — `search_products()`.
 - selectWoo (WooCommerce's select2 fork): [github.com/woocommerce/selectWoo](https://github.com/woocommerce/selectWoo).

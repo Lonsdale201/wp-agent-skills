@@ -3,26 +3,23 @@ name: wc-customer-and-sessions
 description: Use WooCommerce's customer and session APIs correctly — WC
   ships its own session handler (WC_Session_Handler, single
   wp_woocommerce_sessions table for both guests and logged-in users)
-  and its own customer object (WC_Customer via WC()->customer),
-  separate from $_SESSION / native PHP sessions / wp_get_current_user.
-  AI consistently reaches for $_SESSION (breaks with page caching,
-  setcookie (no signing, no namespacing), or user_meta for guests
-  (impossible). The correct path is WC()->session->set/get for
-  ephemeral per-visitor data, WC()->customer->get_billing_* for the
-  active customer context including guests, and new
-  WC_Customer($user_id) for one-off loads. Important — WC()->session
-  is auto-initialized only on frontend requests (incl. admin-ajax);
-  REST, cron, and WP-CLI must call wc_load_cart() explicitly. Use when
-  storing per-visitor state, reading the current visitor's billing
-  data, or debugging session loss across page caches / REST / cron.
+  and its own customer object (WC_Customer via WC()->customer). Avoid
+  $_SESSION, direct setcookie, and user_meta for guest/session state.
+  Use WC()->session->set/get for ephemeral visitor data,
+  WC()->customer->get_billing_* for active customer context including
+  guests, and new WC_Customer($user_id) for one-off loads. WC()->session
+  auto-inits only on frontend/admin-ajax; REST, cron, and WP-CLI must
+  call wc_load_cart() explicitly, while Store API cart/checkout routes
+  can use Cart-Token sessions. Use when storing per-visitor state,
+  reading billing data, or debugging session loss across cache/REST/cron.
   Triggers on WC_Session, WC_Session_Handler, WC_Customer,
   WC()->session, WC()->customer, wp_woocommerce_sessions.
 author: Soczó Kristóf
 contact: mailto:lonsdale201@hotmail.com
 plugin: woocommerce
-plugin-version-tested: "10.7"
+plugin-version-tested: "10.8.0"
 php-min: "7.4"
-last-updated: "2026-04-28"
+last-updated: "2026-05-26"
 docs:
   - https://woocommerce.com/document/woocommerce-data-storage/
 source-refs:
@@ -32,6 +29,9 @@ source-refs:
   - wp-content/plugins/woocommerce/includes/class-wc-cart-session.php
   - wp-content/plugins/woocommerce/includes/class-woocommerce.php
   - wp-content/plugins/woocommerce/includes/wc-core-functions.php
+  - wp-content/plugins/woocommerce/src/StoreApi/Authentication.php
+  - wp-content/plugins/woocommerce/src/StoreApi/SessionHandler.php
+  - wp-content/plugins/woocommerce/src/StoreApi/Routes/V1/AbstractCartRoute.php
   - wp-content/plugins/woocommerce/src/StoreApi/Utilities/CartController.php
 ---
 
@@ -142,6 +142,18 @@ add_action( 'wp', static function (): void {
 
 `set_customer_session_cookie( true )` writes the cookie and creates the row in `wp_woocommerce_sessions`.
 
+### Store API Cart-Token sessions
+
+Store API cart and checkout routes are the exception to the "REST has no auto-loaded session" rule. The route calls `wc_load_cart()` and sends session headers back on each cart response:
+
+- `Nonce` / `Nonce-Timestamp` for same-site cookie flows.
+- `Cart-Token` for headless flows that should identify the cart without relying on browser cookies.
+- `Cart-Hash`, `User-ID`, and `Cache-Control: no-store`.
+
+For write requests (`POST`, `PUT`, `PATCH`, `DELETE`) the Store API requires the `Nonce` header unless the request includes a valid `Cart-Token`. When a valid `Cart-Token` is present, WooCommerce swaps the session handler to `Automattic\WooCommerce\StoreApi\SessionHandler` for that request.
+
+Do not copy the Store API session handler into arbitrary custom REST routes. If the endpoint is cart/checkout/customer-facing, prefer Store API extension points (`/cart/extensions`, endpoint data callbacks). If it is your own REST route, call `wc_load_cart()` explicitly and enforce your own authentication/authorization.
+
 ### Common usage pattern
 
 ```php
@@ -211,6 +223,7 @@ This loads from user meta directly and saves back. Doesn't touch the session.
 - **Don't use `setcookie` directly for visitor data.** No signing, no expiry handshake, no automatic cleanup. Use `WC()->session` instead.
 - **Don't use `update_user_meta` for guest data.** Guests have no `$user_id`.
 - **`WC()->session` auto-init is frontend-only.** REST, cron, and CLI must call `wc_load_cart()` (or `WC()->initialize_session()`) before reading the session. Don't assume `WC()->session` is non-null in those contexts.
+- **Store API Cart-Token is not a generic WC session token.** It is valid for Store API cart/checkout routes; custom REST routes still need explicit bootstrapping and permission checks.
 - **Code running before hook `init` priority 0 cannot use `WC()->session`** — that's where `WC::init()` runs and conditionally creates the handler. `plugins_loaded` is too early.
 - **Force a session with `set_customer_session_cookie( true )`** if you need persistence for empty-cart visitors (e.g. tracking) — `set` alone does not write the cookie.
 - **Namespace all session keys with your plugin slug.** `myplugin_*` — without prefix you collide with WC core (`'cart'`, `'shipping_methods'`, `'customer'`, etc.) or other plugins.
@@ -334,6 +347,7 @@ $email = $order->get_billing_email();
 ## Cross-references
 
 - Run **`wc-payment-gateway`** when payment processing reads / mutates the customer or session — payment gateways use both heavily.
+- Run **`wc-store-api`** for Cart-Token, Nonce, `/cart/extensions`, and Store API endpoint-data extension points.
 - Run **`wc-hpos-compatibility`** for any meta you also store on orders — orders go through HPOS, sessions don't.
 - Run **`wp-plugin-options-storage`** when deciding what data goes in the session vs in user meta vs in custom tables — session is for ephemeral, options/meta for durable.
 
@@ -353,6 +367,8 @@ $email = $order->get_billing_email();
 - Frontend-only auto-init: [wp-content/plugins/woocommerce/includes/class-woocommerce.php:944-946](class-woocommerce.php) — `if ( $this->is_request( 'frontend' ) ) { wc_load_cart(); }` inside `WC::init()`.
 - `is_request('frontend')` predicate: [wp-content/plugins/woocommerce/includes/class-woocommerce.php:645](class-woocommerce.php) — true for non-admin OR `DOING_AJAX`, AND not cron, AND not REST.
 - `wc_load_cart()`: [wp-content/plugins/woocommerce/includes/wc-core-functions.php:2515-2528](wc-core-functions.php) — calls `WC()->initialize_session()` then `WC()->initialize_cart()`. Use this from REST/cron/CLI when you need the session.
+- Store API cart-session headers and nonce rules: [wp-content/plugins/woocommerce/src/StoreApi/Routes/V1/AbstractCartRoute.php](AbstractCartRoute.php).
+- Store API session handler swap on Cart-Token: [wp-content/plugins/woocommerce/src/StoreApi/Authentication.php](Authentication.php) and [wp-content/plugins/woocommerce/src/StoreApi/SessionHandler.php](SessionHandler.php).
 - Persistent-cart user meta: [wp-content/plugins/woocommerce/includes/class-wc-cart-session.php:458-471](class-wc-cart-session.php) — `_woocommerce_persistent_cart_<blog_id>` is logged-in-only and stores cart contents only, separate from the session payload.
 - Customer class: [wp-content/plugins/woocommerce/includes/class-wc-customer.php](class-wc-customer.php) — extends `WC_Legacy_Customer`, holds billing / shipping / VAT-exempt state.
 - Session handler swap filter: [wp-content/plugins/woocommerce/includes/class-woocommerce.php](class-woocommerce.php) — `apply_filters( 'woocommerce_session_handler', 'WC_Session_Handler' )` at the WC singleton's session getter.
