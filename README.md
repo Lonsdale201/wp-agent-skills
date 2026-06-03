@@ -33,6 +33,19 @@ New domain folders follow the same convention: top-level folder per plugin (or p
 
 The folder layout is the source of truth — there is intentionally no flat list of every skill in this README. As the collection grows, the per-domain READMEs scale, this file does not.
 
+## Machine-readable index
+
+The repository also publishes [`skills-index.json`](skills-index.json), a generated catalog of every skill, its domain, description, source path, raw `SKILL.md` URL, frontmatter metadata, and bundled resource files.
+
+The index is intended for thin adapters, install scripts, websites, MCP servers, and other tooling that should not have to crawl the GitHub tree. It is generated from the folder layout:
+
+```bash
+npm install --no-save --no-package-lock js-yaml@4
+node .github/scripts/build-skills-index.js
+```
+
+CI checks that `skills-index.json` stays in sync with the committed `SKILL.md` files.
+
 ## Using these skills
 
 ### Claude Code

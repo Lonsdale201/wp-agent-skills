@@ -1,4 +1,4 @@
-name: Issue → Skill PR
+name: Issue to Skill PR
 
 on:
   issues:
@@ -19,6 +19,9 @@ jobs:
         with:
           ref: contrib
           fetch-depth: 0
+
+      - name: Install deps
+        run: npm install --no-save --no-package-lock js-yaml@4
 
       - name: Parse issue form
         id: parse
@@ -70,6 +73,7 @@ jobs:
           git checkout -B "$BRANCH" origin/contrib
           # Replay the new files (built by the script under .build/output/)
           rsync -a --delete-after .build/output/ ./
+          node .github/scripts/build-skills-index.js
           git add -A
           if git diff --cached --quiet; then
             echo "No changes to commit (idempotent re-run)."
