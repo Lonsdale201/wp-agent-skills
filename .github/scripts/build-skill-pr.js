@@ -21,6 +21,7 @@ const ALLOWED_DOMAINS = new Set([
   'lw-plugins',
   'wp-rocket',
   'fluentcrm',
+  'theme-development',
 ]);
 
 function emitOutput(key, value) {

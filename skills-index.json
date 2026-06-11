@@ -11,8 +11,8 @@
     "layout": "<domain>/<skill>/SKILL.md",
     "skill_file": "SKILL.md"
   },
-  "domain_count": 10,
-  "skill_count": 112,
+  "domain_count": 11,
+  "skill_count": 124,
   "domains": [
     {
       "slug": "better-data",
@@ -55,6 +55,12 @@
       "path": "plugin-scaffold",
       "readme_path": "plugin-scaffold/README.md",
       "skill_count": 11
+    },
+    {
+      "slug": "theme-development",
+      "path": "theme-development",
+      "readme_path": "theme-development/README.md",
+      "skill_count": 12
     },
     {
       "slug": "woocommerce",
@@ -2781,6 +2787,518 @@
         "bytes": 16987,
         "lines": 315,
         "sha256": "203d77007f1abbfd2282c8cdcc9666dcf099313aeb8926355d98d7df1a799179"
+      }
+    },
+    {
+      "slug": "classic-template-hierarchy",
+      "name": "classic-template-hierarchy",
+      "domain": "theme-development",
+      "description": "Choose, create, or audit classic PHP WordPress template files for WP 7.0 using the template hierarchy. Covers `template-loader.php`, `index.php` fallback, `front-page.php` vs `home.php`, `page.php`, custom page templates, `single.php`, `singular.php`, `archive.php`, taxonomy/category/tag/author/date/search/404/attachment templates, `header.php`, `footer.php`, `comments.php`, `searchform.php`, `get_template_part()` with `$args`, child-theme override order, `template_include`, and why `template_redirect` should not include-and-exit. Use when deciding which classic template file to add or reviewing page.php/404.php/single/archive behavior.",
+      "path": "theme-development/classic-template-hierarchy",
+      "skill_path": "theme-development/classic-template-hierarchy/SKILL.md",
+      "url": "https://raw.githubusercontent.com/Lonsdale201/wp-agent-skills/main/theme-development/classic-template-hierarchy/SKILL.md",
+      "raw_url": "https://raw.githubusercontent.com/Lonsdale201/wp-agent-skills/main/theme-development/classic-template-hierarchy/SKILL.md",
+      "html_url": "https://github.com/Lonsdale201/wp-agent-skills/blob/main/theme-development/classic-template-hierarchy/SKILL.md",
+      "directory_url": "https://github.com/Lonsdale201/wp-agent-skills/tree/main/theme-development/classic-template-hierarchy",
+      "metadata": {
+        "author": "Soczó Kristóf",
+        "contact": "mailto:lonsdale201@hotmail.com",
+        "plugin": "wordpress",
+        "plugin-version-tested": "7.0",
+        "php-min": "7.4",
+        "last-updated": "2026-06-04",
+        "docs": [
+          "https://developer.wordpress.org/themes/classic-themes/basics/template-hierarchy/",
+          "https://developer.wordpress.org/themes/classic-themes/basics/template-files/",
+          "https://developer.wordpress.org/themes/classic-themes/templates/page-template-files/"
+        ],
+        "source-refs": [
+          "wp-includes/template-loader.php",
+          "wp-includes/template.php",
+          "wp-includes/general-template.php",
+          "wp-includes/class-wp-theme.php",
+          "wp-content/themes/storefront/index.php",
+          "wp-content/themes/storefront/page.php",
+          "wp-content/themes/storefront/404.php",
+          "wp-content/themes/generatepress/header.php"
+        ]
+      },
+      "resources": [],
+      "has_reference": false,
+      "has_examples": false,
+      "has_scripts": false,
+      "skill_md": {
+        "bytes": 8932,
+        "lines": 232,
+        "sha256": "2a49ebcc7ee70ff2b4841219d9025ef39980905d68302cc165c438ec74cfc09d"
+      }
+    },
+    {
+      "slug": "classic-theme-accessibility-semantics",
+      "name": "classic-theme-accessibility-semantics",
+      "domain": "theme-development",
+      "description": "Build or audit accessibility and semantic HTML in classic PHP WordPress themes on WP 7.0. Covers `language_attributes()`, `wp_head()`, `body_class()`, `wp_body_open()`, landmarks, skip links, focus management, `screen-reader-text`, heading order, nav/button semantics, `aria-controls` and `aria-expanded`, forms and labels, image alt handling, icon accessibility, reduced motion CSS, search forms, and common mistakes such as hover-only menus, hidden focus outlines, fake buttons, missing main landmarks, or unlabeled controls.",
+      "path": "theme-development/classic-theme-accessibility-semantics",
+      "skill_path": "theme-development/classic-theme-accessibility-semantics/SKILL.md",
+      "url": "https://raw.githubusercontent.com/Lonsdale201/wp-agent-skills/main/theme-development/classic-theme-accessibility-semantics/SKILL.md",
+      "raw_url": "https://raw.githubusercontent.com/Lonsdale201/wp-agent-skills/main/theme-development/classic-theme-accessibility-semantics/SKILL.md",
+      "html_url": "https://github.com/Lonsdale201/wp-agent-skills/blob/main/theme-development/classic-theme-accessibility-semantics/SKILL.md",
+      "directory_url": "https://github.com/Lonsdale201/wp-agent-skills/tree/main/theme-development/classic-theme-accessibility-semantics",
+      "metadata": {
+        "author": "Soczó Kristóf",
+        "contact": "mailto:lonsdale201@hotmail.com",
+        "plugin": "wordpress",
+        "plugin-version-tested": "7.0",
+        "php-min": "7.4",
+        "last-updated": "2026-06-04",
+        "docs": [
+          "https://developer.wordpress.org/themes/functionality/accessibility/",
+          "https://developer.wordpress.org/themes/classic-themes/basics/template-tags/"
+        ],
+        "source-refs": [
+          "wp-includes/general-template.php",
+          "wp-includes/post-template.php",
+          "wp-includes/nav-menu-template.php",
+          "wp-includes/class-walker-nav-menu.php",
+          "wp-content/themes/storefront/inc/structure/header.php",
+          "wp-content/themes/generatepress/header.php"
+        ]
+      },
+      "resources": [],
+      "has_reference": false,
+      "has_examples": false,
+      "has_scripts": false,
+      "skill_md": {
+        "bytes": 9022,
+        "lines": 282,
+        "sha256": "036fe6f14058bd4c3acf7604530b6eb1fa20d15b1438cb6d9e462f6cd185c2f7"
+      }
+    },
+    {
+      "slug": "classic-theme-assets-build",
+      "name": "classic-theme-assets-build",
+      "domain": "theme-development",
+      "description": "Build or audit frontend asset loading for classic PHP WordPress themes on WP 7.0. Covers `wp_enqueue_scripts`, child-theme-safe `get_theme_file_uri()` and `get_theme_file_path()`, cache-busting with `filemtime()`, script args with `strategy` and `in_footer`, conditional enqueues, `comment-reply`, RTL style data, inline data with `wp_json_encode()` and `wp_add_inline_script()`, build output folders, preload/resource hints, and common mistakes such as hardcoded tags, enqueues inside templates, and invalid file paths.",
+      "path": "theme-development/classic-theme-assets-build",
+      "skill_path": "theme-development/classic-theme-assets-build/SKILL.md",
+      "url": "https://raw.githubusercontent.com/Lonsdale201/wp-agent-skills/main/theme-development/classic-theme-assets-build/SKILL.md",
+      "raw_url": "https://raw.githubusercontent.com/Lonsdale201/wp-agent-skills/main/theme-development/classic-theme-assets-build/SKILL.md",
+      "html_url": "https://github.com/Lonsdale201/wp-agent-skills/blob/main/theme-development/classic-theme-assets-build/SKILL.md",
+      "directory_url": "https://github.com/Lonsdale201/wp-agent-skills/tree/main/theme-development/classic-theme-assets-build",
+      "metadata": {
+        "author": "Soczó Kristóf",
+        "contact": "mailto:lonsdale201@hotmail.com",
+        "plugin": "wordpress",
+        "plugin-version-tested": "7.0",
+        "php-min": "7.4",
+        "last-updated": "2026-06-04",
+        "docs": [
+          "https://developer.wordpress.org/themes/core-concepts/including-assets/",
+          "https://developer.wordpress.org/reference/hooks/wp_enqueue_scripts/"
+        ],
+        "source-refs": [
+          "wp-includes/script-loader.php",
+          "wp-includes/functions.wp-scripts.php",
+          "wp-includes/functions.wp-styles.php",
+          "wp-includes/class-wp-scripts.php",
+          "wp-includes/class-wp-styles.php",
+          "wp-includes/link-template.php",
+          "wp-includes/general-template.php",
+          "wp-content/themes/storefront/inc/class-storefront.php",
+          "wp-content/themes/generatepress/inc/general.php"
+        ]
+      },
+      "resources": [],
+      "has_reference": false,
+      "has_examples": false,
+      "has_scripts": false,
+      "skill_md": {
+        "bytes": 8136,
+        "lines": 243,
+        "sha256": "6ebf3f641d7c33244ad592af354d111206b823a6070d5857f011717da20b2898"
+      }
+    },
+    {
+      "slug": "classic-theme-comments-discussion",
+      "name": "classic-theme-comments-discussion",
+      "domain": "theme-development",
+      "description": "Build or audit classic theme comments output for WP 7.0. Covers `comments_template()`, `comments.php`, `post_password_required()`, `have_comments()`, `wp_list_comments()`, comment pagination, `comment_form()`, threaded comment reply script loading, closed-comment messaging, accessible comment navigation, escaping comment titles and labels, and common mistakes such as custom comment forms, missing password guards, loading `comment-reply` globally, broken callback walkers, or showing comments on unsupported post types.",
+      "path": "theme-development/classic-theme-comments-discussion",
+      "skill_path": "theme-development/classic-theme-comments-discussion/SKILL.md",
+      "url": "https://raw.githubusercontent.com/Lonsdale201/wp-agent-skills/main/theme-development/classic-theme-comments-discussion/SKILL.md",
+      "raw_url": "https://raw.githubusercontent.com/Lonsdale201/wp-agent-skills/main/theme-development/classic-theme-comments-discussion/SKILL.md",
+      "html_url": "https://github.com/Lonsdale201/wp-agent-skills/blob/main/theme-development/classic-theme-comments-discussion/SKILL.md",
+      "directory_url": "https://github.com/Lonsdale201/wp-agent-skills/tree/main/theme-development/classic-theme-comments-discussion",
+      "metadata": {
+        "author": "Soczó Kristóf",
+        "contact": "mailto:lonsdale201@hotmail.com",
+        "plugin": "wordpress",
+        "plugin-version-tested": "7.0",
+        "php-min": "7.4",
+        "last-updated": "2026-06-04",
+        "docs": [
+          "https://developer.wordpress.org/themes/classic-themes/templates/partial-and-miscellaneous-template-files/comment-template/",
+          "https://developer.wordpress.org/reference/functions/comment_form/",
+          "https://developer.wordpress.org/reference/functions/wp_list_comments/"
+        ],
+        "source-refs": [
+          "wp-includes/comment-template.php",
+          "wp-includes/script-loader.php",
+          "wp-content/themes/storefront/comments.php",
+          "wp-content/themes/generatepress/comments.php"
+        ]
+      },
+      "resources": [],
+      "has_reference": false,
+      "has_examples": false,
+      "has_scripts": false,
+      "skill_md": {
+        "bytes": 7515,
+        "lines": 230,
+        "sha256": "7abd328ad0d6b1cdc7e15c96802c280ab360d87ecaf1a466b2a9243227cfdcde"
+      }
+    },
+    {
+      "slug": "classic-theme-customizer",
+      "name": "classic-theme-customizer",
+      "domain": "theme-development",
+      "description": "Add or audit WordPress Customizer options for classic PHP themes on WP 7.0. Covers `customize_register`, `WP_Customize_Manager`, settings, sections, controls, `theme_mod` vs `option`, `sanitize_callback`, `validate_callback`, `WP_Customize_Color_Control`, allowlisted select values, `postMessage`, `customize_preview_init`, selective refresh partials, escaping `get_theme_mod()` output in templates, and common bugs such as raw Customizer values, missing sanitization, or `postMessage` without preview JavaScript.",
+      "path": "theme-development/classic-theme-customizer",
+      "skill_path": "theme-development/classic-theme-customizer/SKILL.md",
+      "url": "https://raw.githubusercontent.com/Lonsdale201/wp-agent-skills/main/theme-development/classic-theme-customizer/SKILL.md",
+      "raw_url": "https://raw.githubusercontent.com/Lonsdale201/wp-agent-skills/main/theme-development/classic-theme-customizer/SKILL.md",
+      "html_url": "https://github.com/Lonsdale201/wp-agent-skills/blob/main/theme-development/classic-theme-customizer/SKILL.md",
+      "directory_url": "https://github.com/Lonsdale201/wp-agent-skills/tree/main/theme-development/classic-theme-customizer",
+      "metadata": {
+        "author": "Soczó Kristóf",
+        "contact": "mailto:lonsdale201@hotmail.com",
+        "plugin": "wordpress",
+        "plugin-version-tested": "7.0",
+        "php-min": "7.4",
+        "last-updated": "2026-06-04",
+        "docs": [
+          "https://developer.wordpress.org/themes/customize-api/",
+          "https://developer.wordpress.org/themes/customize-api/customizer-objects/",
+          "https://developer.wordpress.org/themes/customize-api/the-customizer-javascript-api/"
+        ],
+        "source-refs": [
+          "wp-includes/class-wp-customize-manager.php",
+          "wp-includes/class-wp-customize-setting.php",
+          "wp-includes/class-wp-customize-control.php",
+          "wp-includes/class-wp-customize-selective-refresh.php",
+          "wp-content/themes/storefront/inc/customizer/",
+          "wp-content/themes/generatepress/inc/customizer.php"
+        ]
+      },
+      "resources": [],
+      "has_reference": false,
+      "has_examples": false,
+      "has_scripts": false,
+      "skill_md": {
+        "bytes": 8546,
+        "lines": 283,
+        "sha256": "4cc189b26b032035de89cad539a28916bd8df289f078cd0122deb2bb3803bb97"
+      }
+    },
+    {
+      "slug": "classic-theme-i18n-textdomain",
+      "name": "classic-theme-i18n-textdomain",
+      "domain": "theme-development",
+      "description": "Build or audit internationalization in classic WordPress themes on WP 7.0. Covers `style.css` `Text Domain` and `Domain Path`, slug-matching domains, `load_theme_textdomain()` and `load_child_theme_textdomain()` on `after_setup_theme`, WP 6.7+ early translation warnings, escaped translation functions, `_x`, `_n`, translator comments, placeholders, JavaScript translation setup, and common mistakes such as variable text domains, string concatenation, missing domains, raw translated output, or wrongly named theme `.mo` files.",
+      "path": "theme-development/classic-theme-i18n-textdomain",
+      "skill_path": "theme-development/classic-theme-i18n-textdomain/SKILL.md",
+      "url": "https://raw.githubusercontent.com/Lonsdale201/wp-agent-skills/main/theme-development/classic-theme-i18n-textdomain/SKILL.md",
+      "raw_url": "https://raw.githubusercontent.com/Lonsdale201/wp-agent-skills/main/theme-development/classic-theme-i18n-textdomain/SKILL.md",
+      "html_url": "https://github.com/Lonsdale201/wp-agent-skills/blob/main/theme-development/classic-theme-i18n-textdomain/SKILL.md",
+      "directory_url": "https://github.com/Lonsdale201/wp-agent-skills/tree/main/theme-development/classic-theme-i18n-textdomain",
+      "metadata": {
+        "author": "Soczó Kristóf",
+        "contact": "mailto:lonsdale201@hotmail.com",
+        "plugin": "wordpress",
+        "plugin-version-tested": "7.0",
+        "php-min": "7.4",
+        "last-updated": "2026-06-04",
+        "docs": [
+          "https://developer.wordpress.org/themes/advanced-topics/internationalization/",
+          "https://developer.wordpress.org/themes/classic-themes/functionality/internationalization/",
+          "https://developer.wordpress.org/reference/functions/load_theme_textdomain/"
+        ],
+        "source-refs": [
+          "wp-includes/l10n.php",
+          "wp-includes/class-wp-theme.php",
+          "wp-includes/link-template.php",
+          "wp-content/themes/storefront/style.css",
+          "wp-content/themes/storefront/inc/class-storefront.php",
+          "wp-content/themes/generatepress/style.css"
+        ]
+      },
+      "resources": [],
+      "has_reference": false,
+      "has_examples": false,
+      "has_scripts": false,
+      "skill_md": {
+        "bytes": 7008,
+        "lines": 231,
+        "sha256": "7f30a6e5661c62a31f8f34c3a8bf6183266d4de00b321b5ec2b015b42ffe8306"
+      }
+    },
+    {
+      "slug": "classic-theme-loop-template-parts",
+      "name": "classic-theme-loop-template-parts",
+      "domain": "theme-development",
+      "description": "Build or audit classic theme loops and PHP template parts for WP 7.0 without block/FSE assumptions. Covers the main Loop with `have_posts()` and `the_post()`, archive/search/single/page content choices, `get_template_part()` with `$args`, `content-none.php`, `post_class()`, secondary `WP_Query` loops with `wp_reset_postdata()`, `rewind_posts()`, pagination, single post navigation, and common bugs such as `query_posts()`, nested loops without reset, raw globals in template parts, and missing no-results states.",
+      "path": "theme-development/classic-theme-loop-template-parts",
+      "skill_path": "theme-development/classic-theme-loop-template-parts/SKILL.md",
+      "url": "https://raw.githubusercontent.com/Lonsdale201/wp-agent-skills/main/theme-development/classic-theme-loop-template-parts/SKILL.md",
+      "raw_url": "https://raw.githubusercontent.com/Lonsdale201/wp-agent-skills/main/theme-development/classic-theme-loop-template-parts/SKILL.md",
+      "html_url": "https://github.com/Lonsdale201/wp-agent-skills/blob/main/theme-development/classic-theme-loop-template-parts/SKILL.md",
+      "directory_url": "https://github.com/Lonsdale201/wp-agent-skills/tree/main/theme-development/classic-theme-loop-template-parts",
+      "metadata": {
+        "author": "Soczó Kristóf",
+        "contact": "mailto:lonsdale201@hotmail.com",
+        "plugin": "wordpress",
+        "plugin-version-tested": "7.0",
+        "php-min": "7.4",
+        "last-updated": "2026-06-04",
+        "docs": [
+          "https://developer.wordpress.org/themes/classic-themes/basics/the-loop/",
+          "https://developer.wordpress.org/themes/classic-themes/basics/template-tags/"
+        ],
+        "source-refs": [
+          "wp-includes/query.php",
+          "wp-includes/class-wp-query.php",
+          "wp-includes/template.php",
+          "wp-includes/post-template.php",
+          "wp-includes/link-template.php",
+          "wp-content/themes/storefront/",
+          "wp-content/themes/generatepress/"
+        ]
+      },
+      "resources": [],
+      "has_reference": false,
+      "has_examples": false,
+      "has_scripts": false,
+      "skill_md": {
+        "bytes": 7887,
+        "lines": 230,
+        "sha256": "449da412652a4b55673a811cb0c0bc00c9487e45391b82a7b113a5ec253b935b"
+      }
+    },
+    {
+      "slug": "classic-theme-media-images",
+      "name": "classic-theme-media-images",
+      "domain": "theme-development",
+      "description": "Build or audit media and image output in classic WordPress themes on WP 7.0. Covers `add_theme_support( 'post-thumbnails' )`, `add_image_size()`, `set_post_thumbnail_size()`, `has_post_thumbnail()`, `the_post_thumbnail()`, `get_the_post_thumbnail()`, `wp_get_attachment_image()`, responsive `srcset` and `sizes`, `loading`/`decoding`/`fetchpriority`, attachment alt text, decorative images, theme asset images, regeneration requirements, and common mistakes such as hand-built `<img>` tags, full-size archive images, removed dimensions, and broken CLS.",
+      "path": "theme-development/classic-theme-media-images",
+      "skill_path": "theme-development/classic-theme-media-images/SKILL.md",
+      "url": "https://raw.githubusercontent.com/Lonsdale201/wp-agent-skills/main/theme-development/classic-theme-media-images/SKILL.md",
+      "raw_url": "https://raw.githubusercontent.com/Lonsdale201/wp-agent-skills/main/theme-development/classic-theme-media-images/SKILL.md",
+      "html_url": "https://github.com/Lonsdale201/wp-agent-skills/blob/main/theme-development/classic-theme-media-images/SKILL.md",
+      "directory_url": "https://github.com/Lonsdale201/wp-agent-skills/tree/main/theme-development/classic-theme-media-images",
+      "metadata": {
+        "author": "Soczó Kristóf",
+        "contact": "mailto:lonsdale201@hotmail.com",
+        "plugin": "wordpress",
+        "plugin-version-tested": "7.0",
+        "php-min": "7.4",
+        "last-updated": "2026-06-04",
+        "docs": [
+          "https://developer.wordpress.org/themes/functionality/featured-images-post-thumbnails/",
+          "https://developer.wordpress.org/themes/classic-themes/functionality/media/images/",
+          "https://developer.wordpress.org/reference/functions/the_post_thumbnail/"
+        ],
+        "source-refs": [
+          "wp-includes/media.php",
+          "wp-includes/post-thumbnail-template.php",
+          "wp-includes/theme.php",
+          "wp-content/themes/storefront/inc/storefront-template-functions.php",
+          "wp-content/themes/generatepress/inc/structure/featured-images.php"
+        ]
+      },
+      "resources": [],
+      "has_reference": false,
+      "has_examples": false,
+      "has_scripts": false,
+      "skill_md": {
+        "bytes": 7758,
+        "lines": 229,
+        "sha256": "5ab16b1c10867997cbab797eccd1d6b240ba589a5f4915528128118fcf686a26"
+      }
+    },
+    {
+      "slug": "classic-theme-navigation-menus",
+      "name": "classic-theme-navigation-menus",
+      "domain": "theme-development",
+      "description": "Build or audit navigation menus in classic PHP WordPress themes on WP 7.0. Covers `register_nav_menus()` on `after_setup_theme`, rendering with `wp_nav_menu()`, `theme_location`, `container => nav`, `container_aria_label`, `fallback_cb => false`, `has_nav_menu()`, menu IDs/classes, mobile toggle buttons with `aria-controls` and `aria-expanded`, safe filters for menu attributes/classes, when to avoid custom walkers, and common accessibility/security mistakes around raw menu meta and anchor-based toggles.",
+      "path": "theme-development/classic-theme-navigation-menus",
+      "skill_path": "theme-development/classic-theme-navigation-menus/SKILL.md",
+      "url": "https://raw.githubusercontent.com/Lonsdale201/wp-agent-skills/main/theme-development/classic-theme-navigation-menus/SKILL.md",
+      "raw_url": "https://raw.githubusercontent.com/Lonsdale201/wp-agent-skills/main/theme-development/classic-theme-navigation-menus/SKILL.md",
+      "html_url": "https://github.com/Lonsdale201/wp-agent-skills/blob/main/theme-development/classic-theme-navigation-menus/SKILL.md",
+      "directory_url": "https://github.com/Lonsdale201/wp-agent-skills/tree/main/theme-development/classic-theme-navigation-menus",
+      "metadata": {
+        "author": "Soczó Kristóf",
+        "contact": "mailto:lonsdale201@hotmail.com",
+        "plugin": "wordpress",
+        "plugin-version-tested": "7.0",
+        "php-min": "7.4",
+        "last-updated": "2026-06-04",
+        "docs": [
+          "https://developer.wordpress.org/themes/functionality/navigation-menus/"
+        ],
+        "source-refs": [
+          "wp-includes/nav-menu.php",
+          "wp-includes/nav-menu-template.php",
+          "wp-includes/class-walker-nav-menu.php",
+          "wp-content/themes/storefront/inc/structure/header.php",
+          "wp-content/themes/generatepress/inc/structure/navigation.php"
+        ]
+      },
+      "resources": [],
+      "has_reference": false,
+      "has_examples": false,
+      "has_scripts": false,
+      "skill_md": {
+        "bytes": 7390,
+        "lines": 213,
+        "sha256": "ef735e98fef93fba697516bde662a2717e3950335a3b732eb71a1910756fd038"
+      }
+    },
+    {
+      "slug": "classic-theme-security-standards",
+      "name": "classic-theme-security-standards",
+      "domain": "theme-development",
+      "description": "Write or audit secure modern classic PHP WordPress theme code for WP 7.0. Covers template output escaping, `esc_html`, `esc_attr`, `esc_url`, `wp_kses_post`, `wp_json_encode`, translation escaping, `wp_unslash` + sanitize input, validation, nonces and capability checks for theme forms, safe `template_include`/`get_template_part`, enqueued assets instead of inline tags, `$wpdb->prepare`, WPCS naming/filenames, namespacing/prefixing, no shorthand PHP tags, and no closing PHP tag. Use when reviewing `functions.php`, `header.php`, `page.php`, `404.php`, template parts, search/comment forms, or any classic theme code touching request data or dynamic output.",
+      "path": "theme-development/classic-theme-security-standards",
+      "skill_path": "theme-development/classic-theme-security-standards/SKILL.md",
+      "url": "https://raw.githubusercontent.com/Lonsdale201/wp-agent-skills/main/theme-development/classic-theme-security-standards/SKILL.md",
+      "raw_url": "https://raw.githubusercontent.com/Lonsdale201/wp-agent-skills/main/theme-development/classic-theme-security-standards/SKILL.md",
+      "html_url": "https://github.com/Lonsdale201/wp-agent-skills/blob/main/theme-development/classic-theme-security-standards/SKILL.md",
+      "directory_url": "https://github.com/Lonsdale201/wp-agent-skills/tree/main/theme-development/classic-theme-security-standards",
+      "metadata": {
+        "author": "Soczó Kristóf",
+        "contact": "mailto:lonsdale201@hotmail.com",
+        "plugin": "wordpress",
+        "plugin-version-tested": "7.0",
+        "php-min": "7.4",
+        "last-updated": "2026-06-04",
+        "docs": [
+          "https://developer.wordpress.org/themes/advanced-topics/security/",
+          "https://developer.wordpress.org/apis/security/",
+          "https://developer.wordpress.org/apis/security/escaping/",
+          "https://developer.wordpress.org/apis/security/sanitizing/",
+          "https://developer.wordpress.org/coding-standards/wordpress-coding-standards/php/"
+        ],
+        "source-refs": [
+          "wp-includes/template-loader.php",
+          "wp-includes/template.php",
+          "wp-includes/general-template.php",
+          "wp-includes/functions.wp-scripts.php",
+          "wp-includes/formatting.php",
+          "wp-content/themes/storefront/404.php",
+          "wp-content/themes/generatepress/header.php"
+        ]
+      },
+      "resources": [],
+      "has_reference": false,
+      "has_examples": false,
+      "has_scripts": false,
+      "skill_md": {
+        "bytes": 8709,
+        "lines": 242,
+        "sha256": "163a1faa07f249f8227c342b8c15a81a79558ac8bad72d6b22a03cb8d1ffda77"
+      }
+    },
+    {
+      "slug": "classic-theme-sidebars-widgets",
+      "name": "classic-theme-sidebars-widgets",
+      "domain": "theme-development",
+      "description": "Build or audit classic theme widget areas and sidebars for WP 7.0. Covers `widgets_init`, `register_sidebar()`, stable sidebar IDs, `before_widget` and `before_title` wrappers, `dynamic_sidebar()`, `is_active_sidebar()`, `get_sidebar()`, `sidebar-{name}.php`, `show_in_rest`, semantic aside/footer/header widget areas, block-widget era compatibility, and common mistakes such as missing IDs, changing IDs after release, hardcoded widgets, bad wrapper placeholders, and rendering empty sidebars.",
+      "path": "theme-development/classic-theme-sidebars-widgets",
+      "skill_path": "theme-development/classic-theme-sidebars-widgets/SKILL.md",
+      "url": "https://raw.githubusercontent.com/Lonsdale201/wp-agent-skills/main/theme-development/classic-theme-sidebars-widgets/SKILL.md",
+      "raw_url": "https://raw.githubusercontent.com/Lonsdale201/wp-agent-skills/main/theme-development/classic-theme-sidebars-widgets/SKILL.md",
+      "html_url": "https://github.com/Lonsdale201/wp-agent-skills/blob/main/theme-development/classic-theme-sidebars-widgets/SKILL.md",
+      "directory_url": "https://github.com/Lonsdale201/wp-agent-skills/tree/main/theme-development/classic-theme-sidebars-widgets",
+      "metadata": {
+        "author": "Soczó Kristóf",
+        "contact": "mailto:lonsdale201@hotmail.com",
+        "plugin": "wordpress",
+        "plugin-version-tested": "7.0",
+        "php-min": "7.4",
+        "last-updated": "2026-06-04",
+        "docs": [
+          "https://developer.wordpress.org/themes/classic-themes/functionality/sidebars/",
+          "https://developer.wordpress.org/themes/classic-themes/functionality/widgets/",
+          "https://developer.wordpress.org/reference/functions/register_sidebar/",
+          "https://developer.wordpress.org/reference/functions/dynamic_sidebar/"
+        ],
+        "source-refs": [
+          "wp-includes/widgets.php",
+          "wp-includes/theme.php",
+          "wp-includes/general-template.php",
+          "wp-content/themes/storefront/sidebar.php",
+          "wp-content/themes/storefront/inc/class-storefront.php",
+          "wp-content/themes/generatepress/sidebar.php",
+          "wp-content/themes/generatepress/inc/general.php"
+        ]
+      },
+      "resources": [],
+      "has_reference": false,
+      "has_examples": false,
+      "has_scripts": false,
+      "skill_md": {
+        "bytes": 7036,
+        "lines": 203,
+        "sha256": "e68c1809a5a805db92ac483616ce58ce18e5a7b25a2c3e84dedef72541af8506"
+      }
+    },
+    {
+      "slug": "classic-theme-structure",
+      "name": "classic-theme-structure",
+      "domain": "theme-development",
+      "description": "Build or audit a modern classic PHP WordPress theme structure for WP 7.0 without FSE/block-theme assumptions. Covers required `style.css` + `index.php`, `functions.php` as bootstrap, `after_setup_theme`, `wp_enqueue_scripts`, `get_theme_file_uri/path`, `wp_head`, `wp_body_open`, `wp_footer`, recommended `assets/`, `inc/`, `template-parts/`, `page-templates/`, `languages/`, child-theme-safe paths, theme supports, menus, sidebars, and what belongs in a plugin instead of a theme. Use when scaffolding/reviewing a non-FSE theme, converting static HTML to a theme, or deciding where theme files/hooks belong.",
+      "path": "theme-development/classic-theme-structure",
+      "skill_path": "theme-development/classic-theme-structure/SKILL.md",
+      "url": "https://raw.githubusercontent.com/Lonsdale201/wp-agent-skills/main/theme-development/classic-theme-structure/SKILL.md",
+      "raw_url": "https://raw.githubusercontent.com/Lonsdale201/wp-agent-skills/main/theme-development/classic-theme-structure/SKILL.md",
+      "html_url": "https://github.com/Lonsdale201/wp-agent-skills/blob/main/theme-development/classic-theme-structure/SKILL.md",
+      "directory_url": "https://github.com/Lonsdale201/wp-agent-skills/tree/main/theme-development/classic-theme-structure",
+      "metadata": {
+        "author": "Soczó Kristóf",
+        "contact": "mailto:lonsdale201@hotmail.com",
+        "plugin": "wordpress",
+        "plugin-version-tested": "7.0",
+        "php-min": "7.4",
+        "last-updated": "2026-06-04",
+        "docs": [
+          "https://developer.wordpress.org/themes/classic-themes/",
+          "https://developer.wordpress.org/themes/releasing-your-theme/required-theme-files/",
+          "https://developer.wordpress.org/themes/classic-themes/basics/main-stylesheet-style-css/",
+          "https://developer.wordpress.org/themes/core-concepts/custom-functionality/",
+          "https://developer.wordpress.org/themes/core-concepts/including-assets/"
+        ],
+        "source-refs": [
+          "wp-includes/template-loader.php",
+          "wp-includes/template.php",
+          "wp-includes/general-template.php",
+          "wp-includes/theme.php",
+          "wp-includes/link-template.php",
+          "wp-includes/functions.wp-scripts.php",
+          "wp-includes/functions.wp-styles.php",
+          "wp-includes/class-wp-theme.php",
+          "wp-content/themes/storefront/",
+          "wp-content/themes/generatepress/"
+        ]
+      },
+      "resources": [],
+      "has_reference": false,
+      "has_examples": false,
+      "has_scripts": false,
+      "skill_md": {
+        "bytes": 9059,
+        "lines": 277,
+        "sha256": "3bcdbec5c52dfe0ebc76c22e941ae8b5a27287f91e7df031ac65444fdc4d54c8"
       }
     },
     {
