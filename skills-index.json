@@ -12,7 +12,7 @@
     "skill_file": "SKILL.md"
   },
   "domain_count": 11,
-  "skill_count": 124,
+  "skill_count": 125,
   "domains": [
     {
       "slug": "better-data",
@@ -72,7 +72,7 @@
       "slug": "wordpress",
       "path": "wordpress",
       "readme_path": "wordpress/README.md",
-      "skill_count": 23
+      "skill_count": 24
     },
     {
       "slug": "wp-rocket",
@@ -4287,6 +4287,51 @@
         "bytes": 22255,
         "lines": 416,
         "sha256": "418f870b478623c47ff2a7a5f47e08ec6bbb3e5742bcbc49519594e1a4a4f392"
+      }
+    },
+    {
+      "slug": "wp-accessibility-audit",
+      "name": "wp-accessibility-audit",
+      "domain": "wordpress",
+      "description": "Audit or implement accessibility for WordPress plugins, admin screens, frontend plugin output, and classic themes against WCAG 2.2 A/AA and WordPress accessibility patterns. Use when the user asks for akadalymentesites/accessibility/a11y, form field labels, `aria-label`, `aria-describedby`, keyboard navigation, focus states, admin notices, live AJAX updates, modal/dialog UI, color contrast, font sizing, reduced motion, target size, screen-reader text, image alt text, or making a plugin/theme usable without a mouse or screen.",
+      "path": "wordpress/wp-accessibility-audit",
+      "skill_path": "wordpress/wp-accessibility-audit/SKILL.md",
+      "url": "https://raw.githubusercontent.com/Lonsdale201/wp-agent-skills/main/wordpress/wp-accessibility-audit/SKILL.md",
+      "raw_url": "https://raw.githubusercontent.com/Lonsdale201/wp-agent-skills/main/wordpress/wp-accessibility-audit/SKILL.md",
+      "html_url": "https://github.com/Lonsdale201/wp-agent-skills/blob/main/wordpress/wp-accessibility-audit/SKILL.md",
+      "directory_url": "https://github.com/Lonsdale201/wp-agent-skills/tree/main/wordpress/wp-accessibility-audit",
+      "metadata": {
+        "author": "Soczó Kristóf",
+        "contact": "mailto:lonsdale201@hotmail.com",
+        "plugin": "wordpress",
+        "plugin-version-tested": "7.0",
+        "php-min": "7.4",
+        "last-updated": "2026-06-11",
+        "docs": [
+          "https://developer.wordpress.org/coding-standards/wordpress-coding-standards/accessibility/",
+          "https://www.w3.org/TR/WCAG22/",
+          "https://www.w3.org/WAI/ARIA/apg/",
+          "https://www.w3.org/WAI/ARIA/apg/practices/names-and-descriptions/",
+          "https://www.section508.gov/develop/guide-accessible-web-design-development/"
+        ],
+        "source-refs": [
+          "wp-admin/css/common.css",
+          "wp-includes/js/dist/a11y.js",
+          "wp-includes/script-loader.php",
+          "wp-includes/comment-template.php",
+          "wp-includes/media-template.php",
+          "wp-includes/class-wp-customize-control.php",
+          "wp-admin/js/common.js"
+        ]
+      },
+      "resources": [],
+      "has_reference": false,
+      "has_examples": false,
+      "has_scripts": false,
+      "skill_md": {
+        "bytes": 12160,
+        "lines": 295,
+        "sha256": "b98c3efbb7d98c5c49b2f1a50424112dca87fddc964e3fb1764b6a5b8911ad42"
       }
     },
     {
