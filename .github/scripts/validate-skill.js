@@ -20,6 +20,7 @@ const ALLOWED_DOMAINS = new Set([
   'lw-plugins',
   'wp-rocket',
   'fluentcrm',
+  'theme-development',
 ]);
 
 const REQUIRED_FRONTMATTER = ['name', 'description', 'author', 'plugin', 'plugin-version-tested', 'php-min'];

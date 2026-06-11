@@ -28,6 +28,7 @@ Skills are grouped by domain. Each domain has its own README listing the skills 
 | [`lw-plugins/`](lw-plugins) | LW Plugins family — LW LMS, LW Site Manager. |
 | [`wp-rocket/`](wp-rocket) | WP Rocket integration skills — cache invalidation and filter hooks for third-party plugins / themes. |
 | [`fluentcrm/`](fluentcrm) | Extending FluentCRM — funnel triggers / actions / benchmarks, `rest_selector` option lists, and the Free / Pro extension contract. |
+| [`theme-development/`](theme-development) | Classic (non-FSE) PHP theme development — structure, template hierarchy, the Loop, menus, widgets, comments, media, the Customizer, assets, i18n, accessibility, security. |
 
 New domain folders follow the same convention: top-level folder per plugin (or plugin family), one subfolder per skill, each containing at minimum a `SKILL.md`. Larger skills may also include `reference.md`, `examples/`, or `scripts/`.
 

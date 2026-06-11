@@ -2,6 +2,39 @@
 
 This collection is continuously evolving — entries are date-based, not version-tagged. New skills land when they're ready; updates go in when they cover real ground (a new release of an upstream plugin, a verified misconception, a corrected example).
 
+## 2026-06-11
+
+### New domains
+
+- **`theme-development/`** — Classic (non-FSE / non-block) PHP WordPress theme skills, verified against WP 7.0. See [`theme-development/README.md`](theme-development/README.md).
+
+### Classic theme batch (12 skills, WP 7.0)
+
+A full classic-PHP-theme domain — the surface a theme author touches end to end, with the gotchas AI assistants get wrong (FSE/block assumptions leaking into classic themes, raw template output, unstable widget IDs, `query_posts()`, hand-built `<img>` tags). Every skill is `plugin: wordpress`, `plugin-version-tested: "7.0"`, `php-min: "7.4"`, and explicitly scoped to classic themes — no `theme.json` / `templates/*.html` assumptions.
+
+### New skills
+
+- **`theme-development/classic-theme-structure`** — The overall shape of a modern classic theme: required `style.css` + `index.php`, `functions.php` as bootstrap, `after_setup_theme` / `wp_enqueue_scripts`, `get_theme_file_uri()` / `get_theme_file_path()`, `wp_head` / `wp_body_open` / `wp_footer`, the recommended `assets/` `inc/` `template-parts/` `page-templates/` `languages/` layout, child-theme-safe paths, theme supports, menus, sidebars, and what belongs in a plugin instead of a theme. The "where do theme files and hooks belong" scaffolding skill.
+- **`theme-development/classic-template-hierarchy`** — Choose, create, or audit which PHP template file WordPress loads: `index.php` fallback, `front-page.php` vs `home.php`, `page.php` + custom page templates, `single.php` / `singular.php`, the `archive.php` / taxonomy / category / tag / author / date / search / 404 / attachment chain, `header.php` / `footer.php` / `comments.php` / `searchform.php`, `get_template_part()` with `$args`, child-theme override order, `template_include`, and why `template_redirect` should not include-and-exit.
+- **`theme-development/classic-theme-loop-template-parts`** — The main Loop (`have_posts()` / `the_post()`), archive/search/single/page content choices, `get_template_part()` with `$args`, `content-none.php`, `post_class()`, secondary `WP_Query` loops with `wp_reset_postdata()`, `rewind_posts()`, pagination, single post navigation, and the canonical bugs: `query_posts()`, nested loops without reset, raw globals in template parts, missing no-results states.
+- **`theme-development/classic-theme-navigation-menus`** — Register and render nav menus: `register_nav_menus()` on `after_setup_theme`, `wp_nav_menu()` with `theme_location` / `container` / `container_aria_label` / `fallback_cb => false`, `has_nav_menu()`, mobile toggle buttons with `aria-controls` / `aria-expanded`, safe filters for menu attributes and classes, when to avoid custom walkers, and the accessibility/security traps around raw menu meta and anchor-based toggles.
+- **`theme-development/classic-theme-sidebars-widgets`** — Widget areas: `widgets_init`, `register_sidebar()` with stable IDs, the `before_widget` / `before_title` wrappers, `dynamic_sidebar()`, `is_active_sidebar()`, `get_sidebar()`, `sidebar-{name}.php`, `show_in_rest`, semantic aside/footer/header areas, block-widget-era compatibility, and the mistakes that break sites: missing or post-release-changed IDs, hardcoded widgets, bad wrapper placeholders, rendering empty sidebars.
+- **`theme-development/classic-theme-comments-discussion`** — Comments output: `comments_template()`, `comments.php`, `post_password_required()`, `have_comments()`, `wp_list_comments()`, comment pagination, `comment_form()`, threaded `comment-reply` script loading, closed-comment messaging, accessible comment navigation, escaping comment titles/labels, and the mistakes: custom comment forms, missing password guards, loading `comment-reply` globally, broken walker callbacks, comments on unsupported post types.
+- **`theme-development/classic-theme-media-images`** — Featured images and media output: `add_theme_support( 'post-thumbnails' )`, `add_image_size()`, `set_post_thumbnail_size()`, `the_post_thumbnail()` / `get_the_post_thumbnail()`, `wp_get_attachment_image()`, responsive `srcset` / `sizes`, `loading` / `decoding` / `fetchpriority`, attachment alt text, decorative images, theme asset images, regeneration requirements, and the CLS-breaking traps: hand-built `<img>` tags, full-size archive images, removed dimensions.
+- **`theme-development/classic-theme-customizer`** — Add Customizer options for classic themes: `customize_register`, `WP_Customize_Manager`, settings / sections / controls, `theme_mod` vs `option`, `sanitize_callback` / `validate_callback`, `WP_Customize_Color_Control`, allowlisted select values, `postMessage` + `customize_preview_init`, selective-refresh partials, escaping `get_theme_mod()` in templates, and the bugs: raw Customizer values, missing sanitization, `postMessage` without preview JS.
+- **`theme-development/classic-theme-assets-build`** — Frontend asset loading: `wp_enqueue_scripts`, child-theme-safe `get_theme_file_uri()` / `get_theme_file_path()`, cache-busting with `filemtime()`, script args (`strategy`, `in_footer`), conditional enqueues, `comment-reply`, RTL style data, inline data via `wp_json_encode()` + `wp_add_inline_script()`, build output folders, preload / resource hints, and the mistakes: hardcoded tags, enqueues inside templates, invalid file paths.
+- **`theme-development/classic-theme-i18n-textdomain`** — Theme internationalization: `style.css` `Text Domain` / `Domain Path`, slug-matching domains, `load_theme_textdomain()` / `load_child_theme_textdomain()` on `after_setup_theme`, WP 6.7+ early-translation warnings, escaped translation functions, `_x` / `_n`, translator comments, placeholders, JS translation setup, and the mistakes: variable text domains, string concatenation, raw translated output, wrongly named theme `.mo` files.
+- **`theme-development/classic-theme-accessibility-semantics`** — Accessibility and semantic HTML: `language_attributes()`, `wp_head()`, `body_class()`, `wp_body_open()`, landmarks, skip links, focus management, `screen-reader-text`, heading order, nav/button semantics, `aria-controls` / `aria-expanded`, forms and labels, image alt handling, icon accessibility, reduced-motion CSS, search forms, and the common failures: hover-only menus, hidden focus outlines, fake buttons, missing main landmarks, unlabeled controls.
+- **`theme-development/classic-theme-security-standards`** — Secure modern classic-theme code: template output escaping (`esc_html` / `esc_attr` / `esc_url` / `wp_kses_post`), `wp_json_encode`, translation escaping, `wp_unslash` + sanitize input, validation, nonces and capability checks for theme forms, safe `template_include` / `get_template_part`, enqueued assets instead of inline tags, `$wpdb->prepare`, WPCS naming / filenames, namespacing / prefixing, no shorthand PHP tags, no closing PHP tag. The cross-cutting review skill for `functions.php`, `header.php`, `404.php`, template parts, and any classic theme code touching request data or dynamic output.
+
+### Repo / docs
+
+- Root `README.md` domain table grew a `theme-development/` row.
+- New `theme-development/README.md` with the 12-skill table.
+- `theme-development` added to the three domain allowlists in lockstep — `.github/scripts/validate-skill.js`, `.github/scripts/build-skill-pr.js`, and the `.github/ISSUE_TEMPLATE/new-skill.yml` domain dropdown — so future contributor PRs / form submissions targeting the domain pass validation.
+- `skills-index.json` regenerated (`domain_count` 10 → 11, `skill_count` 112 → 124) so the machine-readable catalog and its CI sync check include the new domain.
+- `.gitignore` — ignore `*.csv` / `*.xlsx` so spreadsheet exports never get committed.
+
 ## 2026-05-27
 
 ### WooCommerce 10.8 batch

@@ -26,6 +26,7 @@ body:
         - lw-plugins
         - wp-rocket
         - fluentcrm
+        - theme-development
         - other
     validations:
       required: true
