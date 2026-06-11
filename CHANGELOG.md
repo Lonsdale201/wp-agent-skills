@@ -2,6 +2,17 @@
 
 This collection is continuously evolving — entries are date-based, not version-tagged. New skills land when they're ready; updates go in when they cover real ground (a new release of an upstream plugin, a verified misconception, a corrected example).
 
+## 2026-06-12
+
+### New skills
+
+- **`wordpress/wp-accessibility-audit`** — Audit or implement accessibility for WordPress plugin admin screens, frontend plugin output, and classic themes against WCAG 2.2 Level A/AA and the WordPress accessibility patterns. Covers the ARIA-vs-native decision order, accessible form field names (`<label for>`, `aria-labelledby`, `aria-describedby` for help/errors, `aria-invalid`, `<fieldset>`/`<legend>`), icon-only button names via `.screen-reader-text` / `aria-label`, keyboard reachability and deliberate focus management (no positive `tabindex`, `:focus-visible`, modal focus return), `wp.a11y.speak()` polite/assertive live announcements for AJAX UI, color contrast / 200% zoom / text-spacing / reduced-motion / WCAG 2.2 target-size (24px) rules, landmarks / heading order / data-table scope, informative-vs-decorative media alt text, and WAI-ARIA APG patterns for custom widgets — plus a severity guide, an audit workflow, and a common-mistakes list. `plugin: wordpress`, `plugin-version-tested: "7.0"`, `php-min: "7.4"`.
+
+### Repo / docs
+
+- Root `wordpress/README.md` skills table grew a `wp-accessibility-audit` row.
+- `skills-index.json` regenerated (`skill_count` 124 → 125; `wordpress` domain 22 → 23) so the machine-readable catalog and its CI sync check include the new skill.
+
 ## 2026-06-11
 
 ### New domains
