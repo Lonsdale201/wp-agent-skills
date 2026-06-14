@@ -14,9 +14,9 @@ description: WooCommerce Subscriptions data model, switcher, and gifting
 author: Soczo Kristof
 contact: mailto:lonsdale201@hotmail.com
 plugin: woocommerce-subscriptions
-plugin-version-tested: "8.6.0"
+plugin-version-tested: "8.8.1"
 php-min: "7.4"
-last-updated: "2026-05-01"
+last-updated: "2026-06-14"
 source-refs:
   - wp-content/plugins/woocommerce-subscriptions/includes/core/class-wc-subscriptions-core-plugin.php
   - wp-content/plugins/woocommerce-subscriptions/includes/core/class-wc-subscription.php
@@ -27,6 +27,7 @@ source-refs:
   - wp-content/plugins/woocommerce-subscriptions/includes/core/wcs-switch-functions.php
   - wp-content/plugins/woocommerce-subscriptions/includes/switching/class-wc-subscriptions-switcher.php
   - wp-content/plugins/woocommerce-subscriptions/includes/switching/class-wcs-switch-totals-calculator.php
+  - wp-content/plugins/woocommerce-subscriptions/includes/downloads/
   - wp-content/plugins/woocommerce-subscriptions/includes/gifting/class-wcs-gifting.php
   - wp-content/plugins/woocommerce-subscriptions/includes/gifting/class-wcsg-product.php
   - wp-content/plugins/woocommerce-subscriptions/includes/gifting/class-wcsg-cart.php
@@ -225,10 +226,24 @@ Important item meta:
 | Proration price/day | `wcs_switch_proration_old_price_per_day`, `wcs_switch_proration_new_price_per_day` | Calculator context. |
 | Switch type | `wcs_switch_proration_switch_type` | `$type, $subscription, $cart_item, $old_price_per_day, $new_price_per_day` |
 | Prorate recurring/sign-up fee | `wcs_switch_should_prorate_recurring_price`, `wcs_switch_should_prorate_sign_up_fee` | `$bool, $switch_item` |
-| Extra amount | `wcs_switch_proration_extra_to_pay` | `$extra, $subscription, $cart_item, $days_in_old_cycle` |
+| Extra amount | `wcs_switch_proration_extra_to_pay` | `$extra, $subscription, $cart_item, $days_in_old_cycle, $switch_item` in WCS 8.8+ |
 | Completion | `woocommerce_subscriptions_switch_completed` | `$order` |
 | Item switched | `woocommerce_subscriptions_switched_item` | `$subscription, $new_order_item, $old_subscription_item` |
 | Subscription item switched | `woocommerce_subscription_item_switched` | `$order, $subscription, $new_item_id, $old_item_id` |
+
+Use an accepted-args value of `5` when the switch cart item object matters:
+
+```php
+add_filter( 'wcs_switch_proration_extra_to_pay', function ( $extra, WC_Subscription $subscription, array $cart_item, int $days_in_old_cycle, $switch_item ) {
+    if ( $switch_item instanceof WCS_Switch_Cart_Item && $switch_item->is_switch_during_trial() ) {
+        return 0;
+    }
+
+    return $extra;
+}, 10, 5 );
+```
+
+Older callback signatures still receive the first four arguments, but do not infer missing switch context from cart data when the 5th argument is available.
 
 ## Gifting storage
 
@@ -301,4 +316,5 @@ $recipient_id = WCS_Gifting::get_recipient_user( $subscription );
 
 - Use `wcs-subscription-hooks` for general lifecycle hook selection.
 - Use `wcs-renewal-scheduler` for renewal dates, Action Scheduler, and payment retry timing.
+- Use `wcs-subscription-downloads` for linked downloadable products, download permission grants/revokes, and the subscription downloads mapping table.
 - Use `wcm-data-model-subscriptions-link` for Memberships CPT/meta and the Memberships-to-Subscriptions relation.

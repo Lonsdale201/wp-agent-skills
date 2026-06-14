@@ -12,7 +12,7 @@
     "skill_file": "SKILL.md"
   },
   "domain_count": 11,
-  "skill_count": 125,
+  "skill_count": 132,
   "domains": [
     {
       "slug": "better-data",
@@ -60,13 +60,13 @@
       "slug": "theme-development",
       "path": "theme-development",
       "readme_path": "theme-development/README.md",
-      "skill_count": 12
+      "skill_count": 16
     },
     {
       "slug": "woocommerce",
       "path": "woocommerce",
       "readme_path": "woocommerce/README.md",
-      "skill_count": 23
+      "skill_count": 26
     },
     {
       "slug": "wordpress",
@@ -3302,6 +3302,188 @@
       }
     },
     {
+      "slug": "classic-woocommerce-shop-loop",
+      "name": "classic-woocommerce-shop-loop",
+      "domain": "theme-development",
+      "description": "Build or audit WooCommerce shop/archive loops and product cards in a classic PHP theme. Covers `archive-product.php`, `content-product.php`, product taxonomy templates, `woocommerce_product_loop()`, `woocommerce_product_loop_start/end()`, `wc_get_loop_prop()`, `wc_get_template_part( 'content', 'product' )`, `wc_product_class()`, loop hooks, product cards, sale flash, thumbnails, ratings, price, add-to-cart ARIA, result count, ordering, pagination, no-products state, grid columns, and avoiding raw `WP_Query`/postmeta product loops.",
+      "path": "theme-development/classic-woocommerce-shop-loop",
+      "skill_path": "theme-development/classic-woocommerce-shop-loop/SKILL.md",
+      "url": "https://raw.githubusercontent.com/Lonsdale201/wp-agent-skills/main/theme-development/classic-woocommerce-shop-loop/SKILL.md",
+      "raw_url": "https://raw.githubusercontent.com/Lonsdale201/wp-agent-skills/main/theme-development/classic-woocommerce-shop-loop/SKILL.md",
+      "html_url": "https://github.com/Lonsdale201/wp-agent-skills/blob/main/theme-development/classic-woocommerce-shop-loop/SKILL.md",
+      "directory_url": "https://github.com/Lonsdale201/wp-agent-skills/tree/main/theme-development/classic-woocommerce-shop-loop",
+      "metadata": {
+        "author": "Soczó Kristóf",
+        "contact": "mailto:lonsdale201@hotmail.com",
+        "plugin": "woocommerce",
+        "plugin-version-tested": "10.8.1",
+        "wp-version-tested": "7.0",
+        "php-min": "7.4",
+        "last-updated": "2026-06-14",
+        "docs": [
+          "https://developer.woocommerce.com/docs/theming/theme-development/template-structure/",
+          "https://developer.woocommerce.com/docs/theming/theme-development/conditional-tags/",
+          "https://developer.woocommerce.com/docs/theming/theme-development/image-sizes/",
+          "https://developer.woocommerce.com/docs/theming/theme-development/theme-design-ux-guidelines/"
+        ],
+        "source-refs": [
+          "wp-content/plugins/woocommerce/templates/archive-product.php",
+          "wp-content/plugins/woocommerce/templates/content-product.php",
+          "wp-content/plugins/woocommerce/templates/loop/add-to-cart.php",
+          "wp-content/plugins/woocommerce/templates/loop/loop-start.php",
+          "wp-content/plugins/woocommerce/templates/loop/pagination.php",
+          "wp-content/plugins/woocommerce/includes/wc-template-hooks.php",
+          "wp-content/plugins/woocommerce/includes/wc-template-functions.php",
+          "wp-content/plugins/woocommerce/includes/wc-product-functions.php"
+        ]
+      },
+      "resources": [],
+      "has_reference": false,
+      "has_examples": false,
+      "has_scripts": false,
+      "skill_md": {
+        "bytes": 8208,
+        "lines": 207,
+        "sha256": "bd53708c7379028caa40317b757612a2a380a0a5a5d860d54ffcbd5ee58055d2"
+      }
+    },
+    {
+      "slug": "classic-woocommerce-single-product",
+      "name": "classic-woocommerce-single-product",
+      "domain": "theme-development",
+      "description": "Build or audit WooCommerce single product templates in a classic PHP theme. Covers `single-product.php`, `content-single-product.php`, `woocommerce_before_single_product`, product gallery hooks, `woocommerce_single_product_summary`, add-to-cart templates for simple/variable/grouped/external products, variation form accessibility, tabs, upsells, related products, structured data hook preservation, `WC_Product` CRUD methods, image gallery support, reviews/comments, and avoiding fragile overrides of `product-image.php` and `variable.php`.",
+      "path": "theme-development/classic-woocommerce-single-product",
+      "skill_path": "theme-development/classic-woocommerce-single-product/SKILL.md",
+      "url": "https://raw.githubusercontent.com/Lonsdale201/wp-agent-skills/main/theme-development/classic-woocommerce-single-product/SKILL.md",
+      "raw_url": "https://raw.githubusercontent.com/Lonsdale201/wp-agent-skills/main/theme-development/classic-woocommerce-single-product/SKILL.md",
+      "html_url": "https://github.com/Lonsdale201/wp-agent-skills/blob/main/theme-development/classic-woocommerce-single-product/SKILL.md",
+      "directory_url": "https://github.com/Lonsdale201/wp-agent-skills/tree/main/theme-development/classic-woocommerce-single-product",
+      "metadata": {
+        "author": "Soczó Kristóf",
+        "contact": "mailto:lonsdale201@hotmail.com",
+        "plugin": "woocommerce",
+        "plugin-version-tested": "10.8.1",
+        "wp-version-tested": "7.0",
+        "php-min": "7.4",
+        "last-updated": "2026-06-14",
+        "docs": [
+          "https://developer.woocommerce.com/docs/theming/theme-development/template-structure/",
+          "https://developer.woocommerce.com/docs/theming/theme-development/image-sizes/",
+          "https://developer.woocommerce.com/docs/theming/theme-development/theme-design-ux-guidelines/"
+        ],
+        "source-refs": [
+          "wp-content/plugins/woocommerce/templates/single-product.php",
+          "wp-content/plugins/woocommerce/templates/content-single-product.php",
+          "wp-content/plugins/woocommerce/templates/single-product/product-image.php",
+          "wp-content/plugins/woocommerce/templates/single-product/add-to-cart/variable.php",
+          "wp-content/plugins/woocommerce/includes/wc-template-hooks.php",
+          "wp-content/plugins/woocommerce/includes/wc-template-functions.php",
+          "wp-content/plugins/woocommerce/includes/wc-product-functions.php"
+        ]
+      },
+      "resources": [],
+      "has_reference": false,
+      "has_examples": false,
+      "has_scripts": false,
+      "skill_md": {
+        "bytes": 8333,
+        "lines": 225,
+        "sha256": "1c1ace8b26860324bb28898565a373c1e305dc22b4531b6617f52e7c5df37c69"
+      }
+    },
+    {
+      "slug": "classic-woocommerce-template-overrides",
+      "name": "classic-woocommerce-template-overrides",
+      "domain": "theme-development",
+      "description": "Create or audit WooCommerce template overrides in a classic PHP theme. Covers the `yourtheme/woocommerce/` override path, `WC()->template_path()`, `wc_get_template()`, `wc_get_template_part()`, `woocommerce.php`, `single-product.php`, `archive-product.php`, taxonomy templates, `WC_TEMPLATE_DEBUG_MODE`, template `@version` headers, WooCommerce Status outdated-template checks, hook/filter-first customization, child themes, escaping, and when not to override cart/checkout/account/email templates.",
+      "path": "theme-development/classic-woocommerce-template-overrides",
+      "skill_path": "theme-development/classic-woocommerce-template-overrides/SKILL.md",
+      "url": "https://raw.githubusercontent.com/Lonsdale201/wp-agent-skills/main/theme-development/classic-woocommerce-template-overrides/SKILL.md",
+      "raw_url": "https://raw.githubusercontent.com/Lonsdale201/wp-agent-skills/main/theme-development/classic-woocommerce-template-overrides/SKILL.md",
+      "html_url": "https://github.com/Lonsdale201/wp-agent-skills/blob/main/theme-development/classic-woocommerce-template-overrides/SKILL.md",
+      "directory_url": "https://github.com/Lonsdale201/wp-agent-skills/tree/main/theme-development/classic-woocommerce-template-overrides",
+      "metadata": {
+        "author": "Soczó Kristóf",
+        "contact": "mailto:lonsdale201@hotmail.com",
+        "plugin": "woocommerce",
+        "plugin-version-tested": "10.8.1",
+        "wp-version-tested": "7.0",
+        "php-min": "7.4",
+        "last-updated": "2026-06-14",
+        "docs": [
+          "https://developer.woocommerce.com/docs/theming/theme-development/template-structure/",
+          "https://developer.woocommerce.com/docs/theming/theme-development/fixing-outdated-woocommerce-templates/",
+          "https://developer.woocommerce.com/docs/theming/theme-development/classic-theme-developer-handbook/",
+          "https://developer.woocommerce.com/docs/theming/theme-development/set-up-a-child-theme/"
+        ],
+        "source-refs": [
+          "wp-content/plugins/woocommerce/includes/class-wc-template-loader.php",
+          "wp-content/plugins/woocommerce/includes/wc-core-functions.php",
+          "wp-content/plugins/woocommerce/includes/wc-template-hooks.php",
+          "wp-content/plugins/woocommerce/templates/archive-product.php",
+          "wp-content/plugins/woocommerce/templates/content-product.php",
+          "wp-content/plugins/woocommerce/templates/content-single-product.php",
+          "wp-content/plugins/woocommerce/templates/single-product.php",
+          "wp-content/plugins/woocommerce/includes/rest-api/Controllers/Version2/class-wc-rest-system-status-v2-controller.php"
+        ]
+      },
+      "resources": [],
+      "has_reference": false,
+      "has_examples": false,
+      "has_scripts": false,
+      "skill_md": {
+        "bytes": 8062,
+        "lines": 193,
+        "sha256": "f814f9bf51a655237754f866a25854c9eb8b2e7bb96fdde6293390c9c04afc7d"
+      }
+    },
+    {
+      "slug": "classic-woocommerce-theme-support",
+      "name": "classic-woocommerce-theme-support",
+      "domain": "theme-development",
+      "description": "Build or audit WooCommerce support in a classic PHP WordPress theme. Covers `add_theme_support( 'woocommerce' )`, `wc_current_theme_supports_woocommerce_or_fse()`, supported vs unsupported theme rendering, shop/single wrappers, `woocommerce_before_main_content` and `woocommerce_after_main_content`, product image widths, `product_grid`, gallery zoom/lightbox/slider support, Woo body/post classes, conditional asset loading with `is_woocommerce()`/`is_shop()`/`is_product()`, and the classic-theme boundary versus Woo block templates.",
+      "path": "theme-development/classic-woocommerce-theme-support",
+      "skill_path": "theme-development/classic-woocommerce-theme-support/SKILL.md",
+      "url": "https://raw.githubusercontent.com/Lonsdale201/wp-agent-skills/main/theme-development/classic-woocommerce-theme-support/SKILL.md",
+      "raw_url": "https://raw.githubusercontent.com/Lonsdale201/wp-agent-skills/main/theme-development/classic-woocommerce-theme-support/SKILL.md",
+      "html_url": "https://github.com/Lonsdale201/wp-agent-skills/blob/main/theme-development/classic-woocommerce-theme-support/SKILL.md",
+      "directory_url": "https://github.com/Lonsdale201/wp-agent-skills/tree/main/theme-development/classic-woocommerce-theme-support",
+      "metadata": {
+        "author": "Soczó Kristóf",
+        "contact": "mailto:lonsdale201@hotmail.com",
+        "plugin": "woocommerce",
+        "plugin-version-tested": "10.8.1",
+        "wp-version-tested": "7.0",
+        "php-min": "7.4",
+        "last-updated": "2026-06-14",
+        "docs": [
+          "https://developer.woocommerce.com/docs/theming/theme-development/classic-theme-developer-handbook/",
+          "https://developer.woocommerce.com/docs/theming/theme-development/template-structure/",
+          "https://developer.woocommerce.com/docs/theming/theme-development/image-sizes/",
+          "https://developer.woocommerce.com/docs/theming/theme-development/conditional-tags/"
+        ],
+        "source-refs": [
+          "wp-content/plugins/woocommerce/woocommerce.php",
+          "wp-content/plugins/woocommerce/includes/class-wc-template-loader.php",
+          "wp-content/plugins/woocommerce/includes/wc-conditional-functions.php",
+          "wp-content/plugins/woocommerce/includes/wc-core-functions.php",
+          "wp-content/plugins/woocommerce/includes/wc-template-functions.php",
+          "wp-content/plugins/woocommerce/includes/wc-template-hooks.php",
+          "wp-content/plugins/woocommerce/templates/global/wrapper-start.php",
+          "wp-content/plugins/woocommerce/templates/global/wrapper-end.php"
+        ]
+      },
+      "resources": [],
+      "has_reference": false,
+      "has_examples": false,
+      "has_scripts": false,
+      "skill_md": {
+        "bytes": 9030,
+        "lines": 228,
+        "sha256": "759d7eb22f05a37e0a93e85900f3ae57f7340365a9ecfa70bc27351159c065ac"
+      }
+    },
+    {
       "slug": "wc-action-scheduler-jobs",
       "name": "wc-action-scheduler-jobs",
       "domain": "woocommerce",
@@ -4012,6 +4194,42 @@
       }
     },
     {
+      "slug": "wcm-abilities-api",
+      "name": "wcm-abilities-api",
+      "domain": "woocommerce",
+      "description": "WooCommerce Memberships 1.28+ WordPress Abilities API reference for membership plan and user membership abilities, category slugs, registration requirements, permissions, schemas, annotations, and safe automation guardrails. Use when code or a task mentions wp_register_ability, wp_get_ability, WP Abilities API, woocommerce-memberships/plans-create, plans-delete, plans-get, plans-list, user-memberships-create, user-memberships-delete, user-memberships-get, user-memberships-list, or privileged agent/headless/admin automation for WooCommerce Memberships.",
+      "path": "woocommerce/wcm-abilities-api",
+      "skill_path": "woocommerce/wcm-abilities-api/SKILL.md",
+      "url": "https://raw.githubusercontent.com/Lonsdale201/wp-agent-skills/main/woocommerce/wcm-abilities-api/SKILL.md",
+      "raw_url": "https://raw.githubusercontent.com/Lonsdale201/wp-agent-skills/main/woocommerce/wcm-abilities-api/SKILL.md",
+      "html_url": "https://github.com/Lonsdale201/wp-agent-skills/blob/main/woocommerce/wcm-abilities-api/SKILL.md",
+      "directory_url": "https://github.com/Lonsdale201/wp-agent-skills/tree/main/woocommerce/wcm-abilities-api",
+      "metadata": {
+        "author": "Soczó Kristóf",
+        "contact": "mailto:lonsdale201@hotmail.com",
+        "plugin": "woocommerce-memberships",
+        "plugin-version-tested": "1.28.3",
+        "php-min": "7.4",
+        "last-updated": "2026-06-14",
+        "source-refs": [
+          "wp-content/plugins/woocommerce-memberships/class-wc-memberships.php",
+          "wp-content/plugins/woocommerce-memberships/src/Abilities/Provider.php",
+          "wp-content/plugins/woocommerce-memberships/src/Plans/Abilities/",
+          "wp-content/plugins/woocommerce-memberships/src/UserMemberships/Abilities/",
+          "wp-content/plugins/woocommerce-memberships/vendor/skyverge/wc-plugin-framework/woocommerce/Abilities/"
+        ]
+      },
+      "resources": [],
+      "has_reference": false,
+      "has_examples": false,
+      "has_scripts": false,
+      "skill_md": {
+        "bytes": 9693,
+        "lines": 199,
+        "sha256": "e4ce9ccba909314fc7cc853bc9f5e4505f62f2dce5cb83b9764fd4e26de8b6d3"
+      }
+    },
+    {
       "slug": "wcm-access-discounts",
       "name": "wcm-access-discounts",
       "domain": "woocommerce",
@@ -4026,9 +4244,9 @@
         "author": "Soczó Kristóf",
         "contact": "mailto:lonsdale201@hotmail.com",
         "plugin": "woocommerce-memberships",
-        "plugin-version-tested": "1.28.1",
+        "plugin-version-tested": "1.28.3",
         "php-min": "7.4",
-        "last-updated": "2026-04-29",
+        "last-updated": "2026-06-14",
         "source-refs": [
           "wp-content/plugins/woocommerce-memberships/src/class-wc-memberships-capabilities.php",
           "wp-content/plugins/woocommerce-memberships/src/Restrictions.php",
@@ -4044,9 +4262,9 @@
       "has_examples": false,
       "has_scripts": false,
       "skill_md": {
-        "bytes": 13297,
-        "lines": 195,
-        "sha256": "a91d66950f874841a837934a1920dcec0e1d06807270b0f0667196dc8ed6e12a"
+        "bytes": 14216,
+        "lines": 206,
+        "sha256": "4e0c39604732294ad26747670a9185135fc8df1f1cfcc48634e8f282a8e8a882"
       }
     },
     {
@@ -4064,9 +4282,9 @@
         "author": "Soczo Kristof",
         "contact": "mailto:lonsdale201@hotmail.com",
         "plugin": "woocommerce-memberships",
-        "plugin-version-tested": "1.28.1",
+        "plugin-version-tested": "1.28.3",
         "php-min": "7.4",
-        "last-updated": "2026-05-01",
+        "last-updated": "2026-06-14",
         "source-refs": [
           "wp-content/plugins/woocommerce-memberships/src/class-wc-memberships-post-types.php",
           "wp-content/plugins/woocommerce-memberships/src/class-wc-memberships-membership-plan.php",
@@ -4075,6 +4293,8 @@
           "wp-content/plugins/woocommerce-memberships/src/functions/wc-memberships-functions-orders.php",
           "wp-content/plugins/woocommerce-memberships/src/Data_Stores/Profile_Field/User_Meta.php",
           "wp-content/plugins/woocommerce-memberships/src/Data_Stores/Profile_Field_Definition/Option.php",
+          "wp-content/plugins/woocommerce-memberships/src/API/Controller/User_Memberships.php",
+          "wp-content/plugins/woocommerce-memberships/src/Helpers/Directory_Block_Validator.php",
           "wp-content/plugins/woocommerce-memberships/src/integrations/subscriptions/class-wc-memberships-integration-subscriptions-user-membership.php",
           "wp-content/plugins/woocommerce-memberships/src/integrations/subscriptions/class-wc-memberships-integration-subscriptions.php"
         ]
@@ -4084,9 +4304,9 @@
       "has_examples": false,
       "has_scripts": false,
       "skill_md": {
-        "bytes": 11395,
-        "lines": 204,
-        "sha256": "f51ec97763d41fae05b5c95e061fde95f7aab638988ef16cefcc468660945d56"
+        "bytes": 12765,
+        "lines": 220,
+        "sha256": "63a4671132cc2fc85c503fccf7b29d665cb850abcef199dd7ed394d67047d9a8"
       }
     },
     {
@@ -4104,9 +4324,9 @@
         "author": "Soczó Kristóf",
         "contact": "mailto:lonsdale201@hotmail.com",
         "plugin": "woocommerce-memberships",
-        "plugin-version-tested": "1.28.1",
+        "plugin-version-tested": "1.28.3",
         "php-min": "7.4",
-        "last-updated": "2026-05-10",
+        "last-updated": "2026-06-14",
         "source-refs": [
           "wp-content/plugins/woocommerce-memberships/src/class-wc-memberships-post-types.php",
           "wp-content/plugins/woocommerce-memberships/src/class-wc-memberships-user-memberships.php",
@@ -4115,6 +4335,10 @@
           "wp-content/plugins/woocommerce-memberships/src/class-wc-memberships-rules.php",
           "wp-content/plugins/woocommerce-memberships/src/API/Controller/User_Memberships.php",
           "wp-content/plugins/woocommerce-memberships/src/API/Webhooks.php",
+          "wp-content/plugins/woocommerce-memberships/src/Abilities/Provider.php",
+          "wp-content/plugins/woocommerce-memberships/src/Plans/Abilities/",
+          "wp-content/plugins/woocommerce-memberships/src/UserMemberships/Abilities/",
+          "wp-content/plugins/woocommerce-memberships/src/Helpers/Directory_Block_Validator.php",
           "wp-content/plugins/woocommerce-memberships/src/Profile_Fields.php",
           "wp-content/plugins/woocommerce-memberships/src/integrations/subscriptions/"
         ]
@@ -4124,9 +4348,9 @@
       "has_examples": false,
       "has_scripts": false,
       "skill_md": {
-        "bytes": 22922,
-        "lines": 266,
-        "sha256": "12021bbf6d5e63b2bd9427e373cdd352c1c443e9d59a886df3eaa3d8999ca656"
+        "bytes": 24734,
+        "lines": 288,
+        "sha256": "c922c8ab78dfa1b6b8a3812de63155c32817a672076ffab7144a8f6e9c7686eb"
       }
     },
     {
@@ -4144,9 +4368,9 @@
         "author": "Soczo Kristof",
         "contact": "mailto:lonsdale201@hotmail.com",
         "plugin": "woocommerce-subscriptions",
-        "plugin-version-tested": "8.6.0",
+        "plugin-version-tested": "8.8.1",
         "php-min": "7.4",
-        "last-updated": "2026-05-01",
+        "last-updated": "2026-06-14",
         "source-refs": [
           "wp-content/plugins/woocommerce-subscriptions/includes/core/class-wc-subscriptions-core-plugin.php",
           "wp-content/plugins/woocommerce-subscriptions/includes/core/class-wc-subscription.php",
@@ -4157,6 +4381,7 @@
           "wp-content/plugins/woocommerce-subscriptions/includes/core/wcs-switch-functions.php",
           "wp-content/plugins/woocommerce-subscriptions/includes/switching/class-wc-subscriptions-switcher.php",
           "wp-content/plugins/woocommerce-subscriptions/includes/switching/class-wcs-switch-totals-calculator.php",
+          "wp-content/plugins/woocommerce-subscriptions/includes/downloads/",
           "wp-content/plugins/woocommerce-subscriptions/includes/gifting/class-wcs-gifting.php",
           "wp-content/plugins/woocommerce-subscriptions/includes/gifting/class-wcsg-product.php",
           "wp-content/plugins/woocommerce-subscriptions/includes/gifting/class-wcsg-cart.php",
@@ -4169,9 +4394,46 @@
       "has_examples": false,
       "has_scripts": false,
       "skill_md": {
-        "bytes": 18463,
-        "lines": 305,
-        "sha256": "94a25622384f134f78cbf90538735a871a230c3319898abbadbaa9790985eb2d"
+        "bytes": 19270,
+        "lines": 321,
+        "sha256": "7d57bd4bd810a97b5ddd0be66ea3a322a3d2df09232da6bebd60ce7dc02667e7"
+      }
+    },
+    {
+      "slug": "wcs-health-check-processing",
+      "name": "wcs-health-check-processing",
+      "domain": "woocommerce",
+      "description": "WooCommerce Subscriptions 8.8+ Health Check and Processing Reliability playbook for diagnosing missing renewal schedules, subscriptions that should support automatic renewal, Resolve actions, dedicated Action Scheduler processing, web cron support, health-check candidate tables, logs, AJAX nonces, and queue tuning filters. Use when code or support work mentions WCS Health Check, WooCommerce > Status > Subscriptions, wcs_health_check_candidates, wcs_health_check_runs, Processing reliability, Dedicated processing, Web cron support, subscriptions/job-queue, wcs_external_trigger_rate_limit_window, or renewal scans/remediation.",
+      "path": "woocommerce/wcs-health-check-processing",
+      "skill_path": "woocommerce/wcs-health-check-processing/SKILL.md",
+      "url": "https://raw.githubusercontent.com/Lonsdale201/wp-agent-skills/main/woocommerce/wcs-health-check-processing/SKILL.md",
+      "raw_url": "https://raw.githubusercontent.com/Lonsdale201/wp-agent-skills/main/woocommerce/wcs-health-check-processing/SKILL.md",
+      "html_url": "https://github.com/Lonsdale201/wp-agent-skills/blob/main/woocommerce/wcs-health-check-processing/SKILL.md",
+      "directory_url": "https://github.com/Lonsdale201/wp-agent-skills/tree/main/woocommerce/wcs-health-check-processing",
+      "metadata": {
+        "author": "Soczó Kristóf",
+        "contact": "mailto:lonsdale201@hotmail.com",
+        "plugin": "woocommerce-subscriptions",
+        "plugin-version-tested": "8.8.1",
+        "php-min": "7.4",
+        "last-updated": "2026-06-14",
+        "source-refs": [
+          "wp-content/plugins/woocommerce-subscriptions/changelog.txt",
+          "wp-content/plugins/woocommerce-subscriptions/includes/class-wc-subscriptions-plugin.php",
+          "wp-content/plugins/woocommerce-subscriptions/includes/health-check/class-wcs-health-check-table-maker.php",
+          "wp-content/plugins/woocommerce-subscriptions/src/Internal/HealthCheck/",
+          "wp-content/plugins/woocommerce-subscriptions/src/Internal/Queue_Management/",
+          "wp-content/plugins/woocommerce-subscriptions/includes/core/class-wc-subscriptions-change-payment-gateway.php"
+        ]
+      },
+      "resources": [],
+      "has_reference": false,
+      "has_examples": false,
+      "has_scripts": false,
+      "skill_md": {
+        "bytes": 10799,
+        "lines": 197,
+        "sha256": "2090a8b8c166858bc4c4d93238688eea10ce9dcc530e0e7303e5a8e9bdf7ccfd"
       }
     },
     {
@@ -4189,15 +4451,18 @@
         "author": "Soczó Kristóf",
         "contact": "mailto:lonsdale201@hotmail.com",
         "plugin": "woocommerce-subscriptions",
-        "plugin-version-tested": "8.6.0",
+        "plugin-version-tested": "8.8.1",
         "php-min": "7.4",
-        "last-updated": "2026-04-29",
+        "last-updated": "2026-06-14",
         "source-refs": [
           "wp-content/plugins/woocommerce-subscriptions/includes/core/class-wcs-action-scheduler.php",
           "wp-content/plugins/woocommerce-subscriptions/includes/core/abstracts/abstract-wcs-scheduler.php",
           "wp-content/plugins/woocommerce-subscriptions/includes/core/class-wc-subscriptions-manager.php",
           "wp-content/plugins/woocommerce-subscriptions/includes/gateways/class-wc-subscriptions-payment-gateways.php",
-          "wp-content/plugins/woocommerce-subscriptions/includes/payment-retry/class-wcs-retry-manager.php"
+          "wp-content/plugins/woocommerce-subscriptions/includes/payment-retry/class-wcs-retry-manager.php",
+          "wp-content/plugins/woocommerce-subscriptions/includes/core/class-wc-subscriptions-change-payment-gateway.php",
+          "wp-content/plugins/woocommerce-subscriptions/src/Internal/Queue_Management/",
+          "wp-content/plugins/woocommerce-subscriptions/src/Internal/HealthCheck/"
         ]
       },
       "resources": [],
@@ -4205,9 +4470,44 @@
       "has_examples": false,
       "has_scripts": false,
       "skill_md": {
-        "bytes": 12281,
-        "lines": 245,
-        "sha256": "337774883c1755e5eb9a115f147e7d9f9104ec09f9290447c690dcf03dec13b7"
+        "bytes": 14824,
+        "lines": 277,
+        "sha256": "aa11e7c6ab9a89eb7a66a6c73f1edf1d9286ae849b629f97a0bb834a0080dffe"
+      }
+    },
+    {
+      "slug": "wcs-subscription-downloads",
+      "name": "wcs-subscription-downloads",
+      "domain": "woocommerce",
+      "description": "WooCommerce Subscriptions built-in Subscription Downloads reference for linking downloadable products to subscription products, the woocommerce_subscription_downloads mapping table, downloadable file sharing settings, download permission grants/revokes, email download lists, switch cleanup, the performance setting that avoids zero-cost line items, and WCS Gifting download permission edge cases. Use when code mentions WC_Subscription_Downloads, subscription downloads, shared downloadable products, linked downloadable products, woocommerce_subscription_downloads, downloadable subscription access, or subscription-related download permissions.",
+      "path": "woocommerce/wcs-subscription-downloads",
+      "skill_path": "woocommerce/wcs-subscription-downloads/SKILL.md",
+      "url": "https://raw.githubusercontent.com/Lonsdale201/wp-agent-skills/main/woocommerce/wcs-subscription-downloads/SKILL.md",
+      "raw_url": "https://raw.githubusercontent.com/Lonsdale201/wp-agent-skills/main/woocommerce/wcs-subscription-downloads/SKILL.md",
+      "html_url": "https://github.com/Lonsdale201/wp-agent-skills/blob/main/woocommerce/wcs-subscription-downloads/SKILL.md",
+      "directory_url": "https://github.com/Lonsdale201/wp-agent-skills/tree/main/woocommerce/wcs-subscription-downloads",
+      "metadata": {
+        "author": "Soczó Kristóf",
+        "contact": "mailto:lonsdale201@hotmail.com",
+        "plugin": "woocommerce-subscriptions",
+        "plugin-version-tested": "8.8.1",
+        "php-min": "7.4",
+        "last-updated": "2026-06-14",
+        "source-refs": [
+          "wp-content/plugins/woocommerce-subscriptions/changelog.txt",
+          "wp-content/plugins/woocommerce-subscriptions/includes/class-wc-subscriptions-plugin.php",
+          "wp-content/plugins/woocommerce-subscriptions/includes/downloads/",
+          "wp-content/plugins/woocommerce-subscriptions/includes/gifting/class-wcsg-download-handler.php"
+        ]
+      },
+      "resources": [],
+      "has_reference": false,
+      "has_examples": false,
+      "has_scripts": false,
+      "skill_md": {
+        "bytes": 8730,
+        "lines": 180,
+        "sha256": "987528e150711b0b2be4dcdb0b120e968a189e2b8cfb07e2a3fc290ad8a0e967"
       }
     },
     {
@@ -4225,9 +4525,9 @@
         "author": "Soczó Kristóf",
         "contact": "mailto:lonsdale201@hotmail.com",
         "plugin": "woocommerce-subscriptions",
-        "plugin-version-tested": "8.6.0",
+        "plugin-version-tested": "8.8.1",
         "php-min": "7.4",
-        "last-updated": "2026-05-01",
+        "last-updated": "2026-06-14",
         "source-refs": [
           "wp-content/plugins/woocommerce-subscriptions/includes/core/wcs-functions.php",
           "wp-content/plugins/woocommerce-subscriptions/includes/core/class-wc-subscription.php",
@@ -4240,7 +4540,10 @@
           "wp-content/plugins/woocommerce-subscriptions/includes/switching/class-wc-subscriptions-switcher.php",
           "wp-content/plugins/woocommerce-subscriptions/includes/switching/class-wcs-cart-switch.php",
           "wp-content/plugins/woocommerce-subscriptions/includes/gifting/class-wcs-gifting.php",
-          "wp-content/plugins/woocommerce-subscriptions/includes/gifting/class-wcsg-checkout.php"
+          "wp-content/plugins/woocommerce-subscriptions/includes/gifting/class-wcsg-checkout.php",
+          "wp-content/plugins/woocommerce-subscriptions/src/Internal/HealthCheck/",
+          "wp-content/plugins/woocommerce-subscriptions/src/Internal/Queue_Management/",
+          "wp-content/plugins/woocommerce-subscriptions/src/Internal/Abilities/"
         ]
       },
       "resources": [],
@@ -4248,9 +4551,9 @@
       "has_examples": false,
       "has_scripts": false,
       "skill_md": {
-        "bytes": 19991,
-        "lines": 224,
-        "sha256": "523ace7614a10adc72425250a897c14536682fa1d5bd5f154881f5c8156f1f85"
+        "bytes": 22365,
+        "lines": 245,
+        "sha256": "29486859e287c9e9a28a3320aa2357888c810f889f35e017de7370ff5009f4e2"
       }
     },
     {

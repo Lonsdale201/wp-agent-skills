@@ -12,9 +12,9 @@ description: WooCommerce Memberships access, restriction, drip-content,
 author: Soczó Kristóf
 contact: mailto:lonsdale201@hotmail.com
 plugin: woocommerce-memberships
-plugin-version-tested: "1.28.1"
+plugin-version-tested: "1.28.3"
 php-min: "7.4"
-last-updated: "2026-04-29"
+last-updated: "2026-06-14"
 source-refs:
   - wp-content/plugins/woocommerce-memberships/src/class-wc-memberships-capabilities.php
   - wp-content/plugins/woocommerce-memberships/src/Restrictions.php
@@ -87,6 +87,16 @@ Do not replace `wc_memberships_user_can()` with a raw membership status check wh
 | Rule access time | `wc_memberships_rule_access_start_time` | filter | `int $access_time, int $from_time, WC_Memberships_Membership_Plan_Rule $rule` | Lower-level rule access timing. |
 
 There is not a single universal `wc_memberships_user_can` result filter to "just allow access". Change the rule inputs, public-content decision, access start time, or membership status intentionally.
+
+## Boot-time safety
+
+Do not call Memberships restriction APIs at file load or very early WordPress bootstrap just to decide whether to register your own plugin components. Memberships 1.28.3 specifically hardened "translations loaded too early" paths during WP-Cron and WP-CLI; avoid reintroducing that pattern from integrations.
+
+Safe timing:
+
+- Register hooks/classes with a file-scope active check such as `class_exists( 'WC_Memberships_Loader' )`.
+- Perform actual access checks inside request-time callbacks, REST/AJAX handlers, template rendering, WooCommerce price filters, or after normal WordPress initialization.
+- Do not instantiate `SkyVerge\WooCommerce\Memberships\Restrictions` or read restriction mode only to decide whether your plugin should load.
 
 ## Product grants
 
@@ -191,4 +201,5 @@ add_filter( 'wc_memberships_access_from_time', function ( $from_time, $rule, $me
 ## Cross-references
 
 - Use `wcm-membership-hooks` for creation, status transitions, profile fields, REST/webhooks, members area, CSV, admin, and Subscriptions-linked membership hooks.
+- Use `wcm-data-model-subscriptions-link` when previous-purchase grant logic touches order storage; HPOS means raw `shop_order` post queries are unsafe.
 - Use `wc-variations-pricing-filters` when combining Memberships discounts with custom variation price logic and cached variation price hashes.

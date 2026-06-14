@@ -13,15 +13,18 @@ description: Safely integrate with WooCommerce Subscriptions renewal,
 author: Soczó Kristóf
 contact: mailto:lonsdale201@hotmail.com
 plugin: woocommerce-subscriptions
-plugin-version-tested: "8.6.0"
+plugin-version-tested: "8.8.1"
 php-min: "7.4"
-last-updated: "2026-04-29"
+last-updated: "2026-06-14"
 source-refs:
   - wp-content/plugins/woocommerce-subscriptions/includes/core/class-wcs-action-scheduler.php
   - wp-content/plugins/woocommerce-subscriptions/includes/core/abstracts/abstract-wcs-scheduler.php
   - wp-content/plugins/woocommerce-subscriptions/includes/core/class-wc-subscriptions-manager.php
   - wp-content/plugins/woocommerce-subscriptions/includes/gateways/class-wc-subscriptions-payment-gateways.php
   - wp-content/plugins/woocommerce-subscriptions/includes/payment-retry/class-wcs-retry-manager.php
+  - wp-content/plugins/woocommerce-subscriptions/includes/core/class-wc-subscriptions-change-payment-gateway.php
+  - wp-content/plugins/woocommerce-subscriptions/src/Internal/Queue_Management/
+  - wp-content/plugins/woocommerce-subscriptions/src/Internal/HealthCheck/
 ---
 
 # WooCommerce Subscriptions: renewal scheduler
@@ -185,6 +188,34 @@ add_filter( 'woocommerce_email_enabled_customer_processing_renewal_order', funct
 
 Only hook `wcs_is_scheduled_payment_attempt` when you intentionally need to override WCS retry detection.
 
+## Same-gateway failed-renewal retries in WCS 8.8+
+
+When a failed renewal is paid/retried with the same gateway, WCS 8.8 no longer calls `WC_Subscriptions_Change_Payment_Gateway::update_payment_method()` just to rewrite the same gateway onto the subscription. That means these hooks do not fire for same-gateway retry events:
+
+- `woocommerce_subscriptions_pre_update_payment_method`
+- `woocommerce_subscription_payment_method_updated`
+- `woocommerce_subscription_payment_method_updated_to_{gateway_id}`
+
+Use `woocommerce_subscription_failing_payment_method_updated` or `woocommerce_subscription_failing_payment_method_updated_{gateway_id}` for retry-event side effects such as clearing external failure counters. Those hooks still fire after the failed renewal payment method handling.
+
+```php
+add_action( 'woocommerce_subscription_failing_payment_method_updated', function ( WC_Subscription $subscription, WC_Order $renewal_order ): void {
+    my_gateway_clear_retry_failure_state( $subscription->get_id(), $renewal_order->get_id() );
+}, 10, 2 );
+```
+
+Do not move ordinary payment-method migration logic to the failing-payment hook. Keep token/gateway migration behavior on `woocommerce_subscription_payment_method_updated`; use the failing-payment hook only for failed-renewal recovery behavior.
+
+## Processing reliability in WCS 8.8+
+
+WCS 8.8 adds Subscriptions settings under "Processing reliability":
+
+- Dedicated processing scopes some Action Scheduler runs to subscription actions.
+- Web cron support exposes a tokenized REST trigger at `/wp-json/wc/v3/subscriptions/job-queue?wcs_token=...`.
+- The external trigger is rate-limited and returns `not_dispatched` when no subscription Action Scheduler group exists yet.
+
+Do not create duplicate runners for WCS renewal actions just because a store has low traffic or `DISABLE_WP_CRON`. Prefer the built-in Processing reliability settings and only tune with documented filters such as `woocommerce_subscriptions_queue_rotation`, `wcs_dedicated_queue_enabled`, `wcs_external_trigger_rate_limit_window`, and Action Scheduler's `action_scheduler_queue_runner_concurrent_batches`.
+
 ## Scheduler customization
 
 Only use these when you intentionally extend WCS scheduling. For ordinary next-payment changes, use `update_dates()`.
@@ -241,4 +272,5 @@ add_action( 'woocommerce_subscription_renewal_payment_complete', 'provision_cust
 ## Cross-references
 
 - Run `wcs-subscription-hooks` when you need a broader action/filter map beyond renewal timing.
+- Run `wcs-health-check-processing` when diagnosing the 8.8 Health Check tab, Resolve actions, dedicated processing, or web-cron queue support.
 - Run `wc-hpos-compatibility` before writing SQL or `WP_Query` over subscriptions/orders.

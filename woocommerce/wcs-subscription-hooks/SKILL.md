@@ -15,9 +15,9 @@ description: Curated WooCommerce Subscriptions hook and extension-point map
 author: Soczó Kristóf
 contact: mailto:lonsdale201@hotmail.com
 plugin: woocommerce-subscriptions
-plugin-version-tested: "8.6.0"
+plugin-version-tested: "8.8.1"
 php-min: "7.4"
-last-updated: "2026-05-01"
+last-updated: "2026-06-14"
 source-refs:
   - wp-content/plugins/woocommerce-subscriptions/includes/core/wcs-functions.php
   - wp-content/plugins/woocommerce-subscriptions/includes/core/class-wc-subscription.php
@@ -31,6 +31,9 @@ source-refs:
   - wp-content/plugins/woocommerce-subscriptions/includes/switching/class-wcs-cart-switch.php
   - wp-content/plugins/woocommerce-subscriptions/includes/gifting/class-wcs-gifting.php
   - wp-content/plugins/woocommerce-subscriptions/includes/gifting/class-wcsg-checkout.php
+  - wp-content/plugins/woocommerce-subscriptions/src/Internal/HealthCheck/
+  - wp-content/plugins/woocommerce-subscriptions/src/Internal/Queue_Management/
+  - wp-content/plugins/woocommerce-subscriptions/src/Internal/Abilities/
 ---
 
 # WooCommerce Subscriptions: hook map
@@ -141,7 +144,7 @@ WCS uses Action Scheduler with group `wc_subscription_scheduled_event`, but the 
 | Area | Hooks | Use |
 |---|---|---|
 | Switch eligibility | `wcs_is_product_switchable`, `woocommerce_subscriptions_can_item_be_switched`, `woocommerce_subscriptions_can_item_be_switched_by_user` | Allow/block switching by product, item, or user. |
-| Switch pricing | `wcs_switch_should_prorate_recurring_price`, `wcs_switch_should_prorate_sign_up_fee`, `wcs_switch_sign_up_fee`, `wcs_switch_proration_extra_to_pay` | Adjust proration math. |
+| Switch pricing | `wcs_switch_should_prorate_recurring_price`, `wcs_switch_should_prorate_sign_up_fee`, `wcs_switch_sign_up_fee`, `wcs_switch_proration_extra_to_pay` | Adjust proration math. In WCS 8.8+, `wcs_switch_proration_extra_to_pay` receives a 5th `$switch_item` argument. |
 | Switch completion | `woocommerce_subscriptions_switch_completed` | React after switch order flow completes. |
 | Early renewal | `wcs_is_early_renewal_enabled`, `woocommerce_subscriptions_can_user_renew_early`, `woocommerce_subscriptions_get_early_renewal_url` | Enable/disable and route early renewal. |
 | Gifting product/checkout | `wcsg_enable_gifting`, `wcsg_is_enabled_for_all_products`, `wcsg_is_giftable_product`, `wcsg_cart_item_data` | Control whether gifting is available and persisted in cart. |
@@ -155,9 +158,26 @@ WCS uses Action Scheduler with group `wc_subscription_scheduled_event`, but the 
 | Status changed for gateway | `woocommerce_subscription_activated_{gateway_id}`, `woocommerce_subscription_on-hold_{gateway_id}`, `woocommerce_subscription_pending-cancel_{gateway_id}`, `woocommerce_subscription_cancelled_{gateway_id}`, `woocommerce_subscription_expired_{gateway_id}` | action | `WC_Subscription $subscription` | Gateway-specific remote profile updates. |
 | Payment method updated | `woocommerce_subscription_payment_method_updated` | action | `WC_Subscription $subscription, string $new, string $old` | Sync token/payment method changes. |
 | Payment method updated to/from gateway | `woocommerce_subscription_payment_method_updated_to_{gateway_id}`, `woocommerce_subscription_payment_method_updated_from_{gateway_id}` | action | `WC_Subscription $subscription, string $other_gateway_id` | Gateway-specific migration logic. |
-| Failing method updated | `woocommerce_subscription_failing_payment_method_updated` and `..._{gateway_id}` | action | `WC_Subscription $subscription, WC_Order $renewal_order` | After customer changes method for a failed renewal. |
+| Failing method updated | `woocommerce_subscription_failing_payment_method_updated` and `..._{gateway_id}` | action | `WC_Subscription $subscription, WC_Order $renewal_order` | After failed-renewal payment method handling. Use this for same-gateway failed-renewal retries in WCS 8.8+, because `update_payment_method()` hooks are skipped when the gateway did not actually change. |
 | Payment meta fields | `woocommerce_subscription_payment_meta` | filter | `array $payment_meta, WC_Subscription $subscription` | Add fields to payment-method change UI. |
 | Validate payment meta | `woocommerce_subscription_validate_payment_meta` and `..._{gateway_id}` | action | `array $payment_meta, WC_Subscription $subscription` | Throw/notice on invalid payment details. |
+
+## Health Check and Processing reliability
+
+WCS 8.8 adds operational surfaces that are not ordinary renewal hooks:
+
+| Area | Surface | Use |
+|---|---|---|
+| Health Check tab | `Automattic\WooCommerce_Subscriptions\Internal\HealthCheck\StatusTab` | WooCommerce > Status > Subscriptions scan UI. It stores run/candidate rows and uses nonce-protected actions/AJAX for scan, cancel, suggestion, and remediation. |
+| Resolve actions | `RemediationAdvisor`, `ToolRunner` | Built-in remediation can switch a flagged subscription to automatic renewal or process a missed renewal now. Do not call these internal classes from plugin business logic. |
+| Dedicated processing | `Automattic\WooCommerce_Subscriptions\Internal\Queue_Management\Manager` | Merchant setting for subscription Action Scheduler isolation/focused runs. Tune via filters instead of creating competing runners. |
+| External web cron | `/wp-json/wc/v3/subscriptions/job-queue?wcs_token=...` | Tokenized, rate-limited queue trigger created by the Web cron support setting. |
+
+Use `wcs-health-check-processing` for implementation details and debugging patterns.
+
+## Abilities API caveat
+
+WCS 8.8 includes read-only Abilities API classes under `src/Internal/Abilities`, but registration is gated by `woocommerce_subscriptions_abilities_enabled` and defaults to `false`. The registrar also requires WooCommerce Core's 10.9 `AbilitiesLoader`. Do not assume these abilities exist on ordinary WCS 8.8.1 installs, and do not build a production integration that depends on them unless your plugin explicitly controls that feature gate and Core version.
 
 ## Customer action guardrails
 
@@ -174,7 +194,7 @@ Payment-method actions:
 
 - Verify the selected payment token belongs to the same WP user and gateway customer.
 - Do not update only payment meta/source IDs. Use `WC_Subscriptions_Change_Payment_Gateway::update_payment_method()` or the gateway's change-payment flow so hooks and remote gateway side effects run.
-- Preserve `woocommerce_subscriptions_pre_update_payment_method` and `woocommerce_subscription_payment_method_updated`; gateways use them for remote profile cleanup and migration.
+- Preserve `woocommerce_subscriptions_pre_update_payment_method` and `woocommerce_subscription_payment_method_updated` when the gateway actually changes; gateways use them for remote profile cleanup and migration. For same-gateway failed-renewal retries in WCS 8.8+, use `woocommerce_subscription_failing_payment_method_updated` for retry side effects.
 
 Switch actions:
 
@@ -220,4 +240,5 @@ add_action( 'woocommerce_subscription_renewal_payment_complete', function ( WC_S
 
 - Run `wcs-data-model-switching-gifting` when exact Subscriptions meta names, product type slugs, switch payloads, switched item meta/types, or WCS Gifting recipient storage matters.
 - Run `wcs-renewal-scheduler` for changes to next payment dates, renewal order creation, scheduled actions, or payment retry timing.
+- Run `wcs-health-check-processing` for WCS 8.8 Health Check, Resolve actions, dedicated processing, and web-cron queue support.
 - Run `wc-hpos-compatibility` if the integration queries orders/subscriptions directly.

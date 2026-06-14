@@ -14,9 +14,9 @@ description: Curated WooCommerce Memberships hook and extension-point map
 author: Soczó Kristóf
 contact: mailto:lonsdale201@hotmail.com
 plugin: woocommerce-memberships
-plugin-version-tested: "1.28.1"
+plugin-version-tested: "1.28.3"
 php-min: "7.4"
-last-updated: "2026-05-10"
+last-updated: "2026-06-14"
 source-refs:
   - wp-content/plugins/woocommerce-memberships/src/class-wc-memberships-post-types.php
   - wp-content/plugins/woocommerce-memberships/src/class-wc-memberships-user-memberships.php
@@ -25,6 +25,10 @@ source-refs:
   - wp-content/plugins/woocommerce-memberships/src/class-wc-memberships-rules.php
   - wp-content/plugins/woocommerce-memberships/src/API/Controller/User_Memberships.php
   - wp-content/plugins/woocommerce-memberships/src/API/Webhooks.php
+  - wp-content/plugins/woocommerce-memberships/src/Abilities/Provider.php
+  - wp-content/plugins/woocommerce-memberships/src/Plans/Abilities/
+  - wp-content/plugins/woocommerce-memberships/src/UserMemberships/Abilities/
+  - wp-content/plugins/woocommerce-memberships/src/Helpers/Directory_Block_Validator.php
   - wp-content/plugins/woocommerce-memberships/src/Profile_Fields.php
   - wp-content/plugins/woocommerce-memberships/src/integrations/subscriptions/
 ---
@@ -49,7 +53,7 @@ Trigger when ANY of the following is true:
 
 ## Workflow
 
-1. Identify the layer first: user membership lifecycle, purchase/free-signup grant, access/restriction, discount, profile fields, REST/webhook, members area, CSV/admin, or Subscriptions integration.
+1. Identify the layer first: user membership lifecycle, purchase/free-signup grant, access/restriction, discount, profile fields, REST/webhook, Abilities API, members area, CSV/admin, or Subscriptions integration.
 2. Prefer public functions and objects over raw `WP_Query`, `wp_update_post()`, or direct post meta writes.
 3. For status strings, know the boundary: WP post statuses use `wcm-` prefix, but object methods and lifecycle hooks commonly use unprefixed statuses such as `active`, `paused`, `cancelled`, `expired`, `free_trial`, `delayed`.
 4. Before implementing, inspect the installed plugin line with:
@@ -171,6 +175,23 @@ Same rule for `WC_Memberships` itself (the main class): it's loaded INSIDE `init
 | User membership webhook events | `wc_memberships_webhook_user_membership_created`, `updated`, `transferred`, `deleted` | Webhook topic source events; usually observe, not replace. |
 | Plan webhook events | `wc_memberships_webhook_membership_plan_created`, `updated`, `deleted`, `restored` | Webhook topic source events for plans. |
 
+The public member directory endpoint is not a generic user-memberships list shortcut. `/wc/v4/memberships/members/directory` requires a `page_id` that contains a Memberships Directory block and validates the referenced block context. In Memberships 1.28.3, directory responses are intentionally narrowed to the fields the block renders: `id`, `customer_data`, `plan_name`, `profile_fields`, and `meta_data` with `meta_data` blanked and `profile_fields` filtered to the block's allowed slugs. Cross-resource REST links are stripped. Use the admin-gated user memberships endpoint for full membership records.
+
+## Abilities API
+
+Memberships 1.28.0+ registers WordPress Abilities API abilities when `wp_register_ability()` and `wp_register_ability_category()` exist:
+
+- `woocommerce-memberships/plans-create`
+- `woocommerce-memberships/plans-delete`
+- `woocommerce-memberships/plans-get`
+- `woocommerce-memberships/plans-list`
+- `woocommerce-memberships/user-memberships-create`
+- `woocommerce-memberships/user-memberships-delete`
+- `woocommerce-memberships/user-memberships-get`
+- `woocommerce-memberships/user-memberships-list`
+
+All built-in Memberships abilities use `current_user_can( 'manage_woocommerce' )`. Treat them as privileged admin automation, not front-end/headless customer endpoints. Use `wcm-abilities-api` when implementing or reviewing ability-based automation.
+
 ## Members area, directory, CSV, admin
 
 | Area | Hooks | Use |
@@ -262,4 +283,5 @@ foreach ( $statuses as $key => $data ) {
 
 - Use `wcm-data-model-subscriptions-link` for exact CPT names, meta keys, rule storage, profile-field storage, and Memberships-Subscriptions relation details.
 - Use `wcm-access-discounts` for access checks, restriction/drip hooks, member discounts, and price-adjustment recursion safety.
+- Use `wcm-abilities-api` for Memberships 1.28+ WP Abilities API names, permissions, schemas, and guardrails.
 - Use `wcs-subscription-hooks` or `wcs-renewal-scheduler` when the membership is tied to WooCommerce Subscriptions renewal/payment flow.
