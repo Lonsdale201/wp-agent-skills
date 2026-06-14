@@ -2,6 +2,41 @@
 
 This collection is continuously evolving — entries are date-based, not version-tagged. New skills land when they're ready; updates go in when they cover real ground (a new release of an upstream plugin, a verified misconception, a corrected example).
 
+## 2026-06-14
+
+### WooCommerce batch — classic-theme Woo + Subscriptions/Memberships refresh
+
+Seven new skills and a six-skill refresh, all WooCommerce-family. Four classic-theme WooCommerce skills extend the `theme-development/` domain to the shop-rendering surface a classic PHP theme actually touches; three new `woocommerce/` skills cover the Subscriptions Health Check / downloads surfaces and the Memberships Abilities API. The six updated skills are re-verified against **WooCommerce Subscriptions 8.8.1** and **WooCommerce Memberships 1.28.3**.
+
+### New skills (classic-theme WooCommerce, WC 10.8.1 / WP 7.0)
+
+- **`theme-development/classic-woocommerce-theme-support`** — Declare and audit WooCommerce support in a classic PHP theme: `add_theme_support( 'woocommerce' )`, `wc_current_theme_supports_woocommerce_or_fse()`, supported vs unsupported rendering, the shop/single content wrappers (`woocommerce_before_main_content` / `woocommerce_after_main_content`), product image widths, `product_grid`, gallery zoom / lightbox / slider support, Woo body/post classes, conditional asset loading via `is_woocommerce()` / `is_shop()` / `is_product()`, and the classic-theme vs Woo block-template boundary.
+- **`theme-development/classic-woocommerce-template-overrides`** — Create and audit WooCommerce template overrides from a classic theme: the `yourtheme/woocommerce/` override path, `WC()->template_path()`, `wc_get_template()` / `wc_get_template_part()`, `woocommerce.php` vs page templates, `WC_TEMPLATE_DEBUG_MODE`, template `@version` headers, the WooCommerce Status outdated-template check, hook/filter-first customization, child themes, escaping, and when **not** to override cart / checkout / account / email templates.
+- **`theme-development/classic-woocommerce-shop-loop`** — Build and audit WooCommerce shop/archive loops and product cards: `archive-product.php`, `content-product.php`, product taxonomy templates, `woocommerce_product_loop()`, `woocommerce_product_loop_start/end()`, `wc_get_loop_prop()`, `wc_get_template_part( 'content', 'product' )`, `wc_product_class()`, loop hooks, sale flash, thumbnails, ratings, price, add-to-cart ARIA, result count, ordering, pagination, the no-products state, grid columns, and avoiding raw `WP_Query` / postmeta product loops.
+- **`theme-development/classic-woocommerce-single-product`** — Build and audit WooCommerce single product templates: `single-product.php`, `content-single-product.php`, `woocommerce_before_single_product`, product gallery hooks, `woocommerce_single_product_summary`, add-to-cart templates for simple / variable / grouped / external products, variation-form accessibility, tabs, upsells, related products, structured-data hook preservation, `WC_Product` CRUD methods, image-gallery support, reviews, and avoiding fragile overrides of `product-image.php` / `variable.php`.
+
+### New skills (WooCommerce extensions)
+
+- **`woocommerce/wcm-abilities-api`** — WooCommerce Memberships 1.28+ WordPress Abilities API reference: the `woocommerce-memberships/*` abilities (`plans-create` / `-delete` / `-get` / `-list` and `user-memberships-create` / `-delete` / `-get` / `-list`), ability category slugs, `wp_register_ability` / `wp_get_ability` registration requirements, permission callbacks, input/output schemas, annotations, and the guardrails for privileged agent / headless / admin automation against Memberships. `plugin: woocommerce-memberships`, `plugin-version-tested: "1.28.3"`.
+- **`woocommerce/wcs-health-check-processing`** — WooCommerce Subscriptions 8.8+ Health Check & Processing Reliability playbook: diagnose missing renewal schedules and subscriptions that should support automatic renewal, the Resolve actions, dedicated Action Scheduler processing, web cron support, the `wcs_health_check_candidates` / `wcs_health_check_runs` candidate tables under WooCommerce → Status → Subscriptions, logs, AJAX nonces, and queue-tuning filters such as `wcs_external_trigger_rate_limit_window`. `plugin: woocommerce-subscriptions`, `plugin-version-tested: "8.8.1"`.
+- **`woocommerce/wcs-subscription-downloads`** — WooCommerce Subscriptions built-in Subscription Downloads reference: linking downloadable products to subscription products via the `woocommerce_subscription_downloads` mapping table, downloadable-file sharing settings, download permission grants/revokes, email download lists, switch cleanup, the performance setting that avoids zero-cost line items, and WCS Gifting download-permission edge cases. `plugin: woocommerce-subscriptions`, `plugin-version-tested: "8.8.1"`.
+
+### Updated skills (WooCommerce Subscriptions 8.8.1 / Memberships 1.28.3)
+
+- **`woocommerce/wcs-renewal-scheduler`** — `plugin-version-tested` 8.6.0 → 8.8.1. New "Same-gateway failed-renewal retries in WCS 8.8+" and "Processing reliability in WCS 8.8+" sections.
+- **`woocommerce/wcs-subscription-hooks`** — `plugin-version-tested` 8.6.0 → 8.8.1. New "Health Check and Processing reliability" section and an "Abilities API caveat" (cross-links `wcs-health-check-processing`).
+- **`woocommerce/wcs-data-model-switching-gifting`** — `plugin-version-tested` 8.6.0 → 8.8.1. Documents the WCS 8.8+ 5-argument `wcs_switch_proration_extra_to_pay` signature (the `WCS_Switch_Cart_Item` switch object arrives as the 5th arg; use `accepted_args` `5`, don't infer switch context from cart data); cross-links `wcs-subscription-downloads`.
+- **`woocommerce/wcm-access-discounts`** — `plugin-version-tested` 1.28.1 → 1.28.3. New "Boot-time safety" section — don't call Memberships restriction APIs at file load / early bootstrap (1.28.3 hardened the "translations loaded too early" paths during WP-Cron / WP-CLI); register with a file-scope `class_exists( 'WC_Memberships_Loader' )` check and run access checks request-time.
+- **`woocommerce/wcm-membership-hooks`** — `plugin-version-tested` 1.28.1 → 1.28.3. New "Abilities API" section (routes to the new `wcm-abilities-api` skill).
+- **`woocommerce/wcm-data-model-subscriptions-link`** — `plugin-version-tested` 1.28.1 → 1.28.3. New "REST and directory data boundaries" section.
+
+### Repo / docs
+
+- `theme-development/README.md` — intro extended to mention classic-theme WooCommerce integration; new `## WooCommerce (classic theme)` section with the 4-skill table.
+- `woocommerce/README.md` — "WooCommerce Subscriptions" table grew by 2 rows (`wcs-health-check-processing`, `wcs-subscription-downloads`); "WooCommerce Memberships" table grew by 1 row (`wcm-abilities-api`).
+- Root `README.md` — `theme-development/` domain row now mentions classic-theme WooCommerce integration.
+- `skills-index.json` regenerated (`skill_count` 125 → 132; `theme-development` 12 → 16; `woocommerce` 23 → 26) so the machine-readable catalog and its CI sync check include the new skills. `domain_count` unchanged at 11 — both domains already existed, so no allowlist changes were needed.
+
 ## 2026-06-12
 
 ### New skills
