@@ -27,6 +27,7 @@ Skills are grouped by domain. Each domain has its own README listing the skills 
 | [`better-route/`](better-route) | **Consumer** skills for the [better-route](https://github.com/Lonsdale201/better-route) PHP library. |
 | [`lw-plugins/`](lw-plugins) | LW Plugins family — LW LMS, LW Site Manager. |
 | [`wp-rocket/`](wp-rocket) | WP Rocket integration skills — cache invalidation and filter hooks for third-party plugins / themes. |
+| [`redis-object-cache/`](redis-object-cache) | Redis Object Cache (`redis-cache`) integration — drop-in lifecycle, `WP_REDIS_*` config, `wp redis` CLI, and correct `wp_cache_*` usage with persistent object caching. |
 | [`fluentcrm/`](fluentcrm) | Extending FluentCRM — funnel triggers / actions / benchmarks, `rest_selector` option lists, and the Free / Pro extension contract. |
 | [`theme-development/`](theme-development) | Classic (non-FSE) PHP theme development — structure, template hierarchy, the Loop, menus, widgets, comments, media, the Customizer, assets, i18n, accessibility, security, and classic-theme WooCommerce integration. |
 

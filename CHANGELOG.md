@@ -4,6 +4,21 @@ This collection is continuously evolving — entries are date-based, not version
 
 ## 2026-06-15
 
+### New domain — `redis-object-cache/` (Redis Object Cache)
+
+A new top-level domain for the free/OSS [Redis Object Cache](https://wordpress.org/plugins/redis-cache/) plugin (`redis-cache` by Rhubarb Group), following the same one-domain-per-third-party-plugin pattern as `wp-rocket/`.
+
+### New skills (redis-cache 2.8.0 / WP 7.0)
+
+- **`redis-object-cache/wp-redis-object-cache`** — Configure, audit, troubleshoot, and extend the `redis-cache` plugin. Covers the `wp-content/object-cache.php` drop-in lifecycle and the five distinct states agents conflate (plugin-active vs drop-in-installed vs valid vs current vs Redis-connected), the `wp redis status|enable|disable|update-dropin` command behavior (status is read-only; enable/disable/update-dropin write the drop-in and may flush Redis), the full `WP_REDIS_*` constant surface (connection, auth, Unix socket / TLS, prefixing + selective flush, client selection, and topology — servers / sentinel / cluster / shards), Predis/PhpRedis/Relay/Credis client choice and their topology limits, correct `wp_cache_*` usage with the `$found` flag and intentional groups (`wp_cache_add_non_persistent_groups()` / `wp_cache_add_global_groups()` / `wp_cache_supports('flush_group')`), the `redis_object_cache_*` lifecycle/runtime hooks and `redis_cache_*` behavior filters, metrics/diagnostics with credential masking, and the critical operational rules (don't equate "plugin active" with "cache enabled"; never touch the drop-in or flush Redis as a casual check; always set a unique `WP_REDIS_PREFIX` / `WP_CACHE_KEY_SALT` on shared Redis; selective flush needs both prefix and `WP_REDIS_SELECTIVE_FLUSH`). Cross-links `wp-query-cache`, `wp-filesystem-api`, `wp-cli-extending`, `wp-security-audit`. `plugin: redis-cache`, `plugin-version-tested: "2.8.0"`, `wp-version-tested: "7.0"`, `php-min: "7.2"`, `license: GPLv3`.
+
+### Repo / docs
+
+- New `redis-object-cache/README.md` with the 1-skill table.
+- Root `README.md` domain table grew a `redis-object-cache/` row (next to `wp-rocket/`).
+- `redis-object-cache` added to the three domain allowlists in lockstep — `.github/scripts/validate-skill.js`, `.github/scripts/build-skill-pr.js`, and the `.github/ISSUE_TEMPLATE/new-skill.yml` domain dropdown — so future contributor PRs / form submissions targeting the domain pass validation.
+- `skills-index.json` regenerated (`domain_count` 11 → 12; `skill_count` 133 → 134).
+
 ### LW LMS refresh (v1.3.0 → v1.5.1) + new WP-CLI operations skill
 
 The `lw-plugins/` LW LMS cluster re-verified against local **lw-lms v1.5.1**, plus one new skill for the operational WP-CLI commands introduced in v1.4.0. The two version deltas that matter across the cluster: **v1.4.0** added the operational WP-CLI workflow, the `lw_lms_settings_tabs` companion-settings-tab filter (shared `options.php` saving via `SettingsPage::get_settings_group()`), and made single-course REST `content` public (only lesson content stays access-gated); **v1.5.0** added read-time WooCommerce Memberships access for paid courses via `_lw_lms_membership_plan_ids` / `MembershipChecker` (no DB schema change, no access row written). v1.5.1 is a maintenance release.

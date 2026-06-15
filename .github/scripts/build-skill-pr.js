@@ -20,6 +20,7 @@ const ALLOWED_DOMAINS = new Set([
   'better-route',
   'lw-plugins',
   'wp-rocket',
+  'redis-object-cache',
   'fluentcrm',
   'theme-development',
 ]);
