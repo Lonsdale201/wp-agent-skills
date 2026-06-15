@@ -1,12 +1,12 @@
 ---
 name: lw-lms-abilities
-description: Consumer and reviewer reference for LW LMS Abilities API registrations in lw-lms v1.3.0. Use when calling or auditing `lw-lms/list-courses`, `lw-lms/get-course`, `lw-lms/get-progress`, `lw-lms/set-progress`, `lw-lms/get-options`, `/wp-json/wp-abilities/v1/abilities/lw-lms/.../run`, Site Manager bridge integration, standalone WP 6.9+ Abilities API fallback, ability `input_schema` / `output_schema`, or AI-agent access to LMS course/progress data.
+description: Consumer and reviewer reference for LW LMS Abilities API registrations in lw-lms v1.5.1. Use when calling or auditing `lw-lms/list-courses`, `lw-lms/get-course`, `lw-lms/get-progress`, `lw-lms/set-progress`, `lw-lms/get-options`, `/wp-json/wp-abilities/v1/abilities/lw-lms/.../run`, Site Manager bridge integration, standalone WP 6.9+ Abilities API fallback, ability `input_schema` / `output_schema`, or AI-agent access to LMS course/progress data.
 author: Soczó Kristóf
 contact: mailto:lonsdale201@hotmail.com
 plugin: lw-lms
-plugin-version-tested: "1.3.0"
+plugin-version-tested: "1.5.1"
 php-min: "8.1"
-last-updated: "2026-05-21"
+last-updated: "2026-06-15"
 docs:
   - https://github.com/lwplugins/lw-lms
   - https://developer.wordpress.org/apis/abilities-api/
@@ -38,7 +38,7 @@ Trigger this skill when ANY of the following is true:
 
 ## Verified registration model
 
-LW LMS v1.3.0 registers abilities in two modes:
+LW LMS v1.5.1 registers abilities in two modes. The v1.4.0 WP-CLI/settings work and the v1.5.0 WooCommerce Memberships access work did not add new `lw-lms/*` abilities.
 
 1. Site Manager bridge: hooks `lw_site_manager_register_categories` and `lw_site_manager_register_abilities`, receives the Site Manager `PermissionManager`, and registers into category `lms`.
 2. Standalone fallback: hooks `wp_abilities_api_categories_init` and `wp_abilities_api_init` at priority 20. `did_action()` guards prevent duplicate registration when Site Manager is active.
