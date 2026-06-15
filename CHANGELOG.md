@@ -2,6 +2,28 @@
 
 This collection is continuously evolving — entries are date-based, not version-tagged. New skills land when they're ready; updates go in when they cover real ground (a new release of an upstream plugin, a verified misconception, a corrected example).
 
+## 2026-06-15
+
+### LW LMS refresh (v1.3.0 → v1.5.1) + new WP-CLI operations skill
+
+The `lw-plugins/` LW LMS cluster re-verified against local **lw-lms v1.5.1**, plus one new skill for the operational WP-CLI commands introduced in v1.4.0. The two version deltas that matter across the cluster: **v1.4.0** added the operational WP-CLI workflow, the `lw_lms_settings_tabs` companion-settings-tab filter (shared `options.php` saving via `SettingsPage::get_settings_group()`), and made single-course REST `content` public (only lesson content stays access-gated); **v1.5.0** added read-time WooCommerce Memberships access for paid courses via `_lw_lms_membership_plan_ids` / `MembershipChecker` (no DB schema change, no access row written). v1.5.1 is a maintenance release.
+
+### New skills
+
+- **`lw-plugins/lw-lms-wp-cli-operations`** — The day-to-day LW LMS WP-CLI commands added in v1.4.0, verified against v1.5.1: `wp lw-lms course create|list|delete|set-section`, `lesson create|list|assign`, `enroll`, `revoke`, `force-complete`. Documents `CliResolver` argument resolution (numeric ID / slug / login / email), the repository calls each command makes (`AccessRepository::grant()` / `revoke()`, `ProgressRepository::mark_course_completed()`) and the enrollment / progress hooks they fire, plus the CLI footguns: `enroll` always passes `source_id = null` so `--source` alone does not create a distinct access row (the unique key is `(user_id, course_id, source_id)`); `course set-section` and `lesson assign` are separate operations; `force-complete` writes progress, not access; there is no dry-run flag. Explicitly **not** `wp lw-lms migrate-learndash` (that stays in `lw-lms-learndash-migration`). `plugin: lw-lms`, `plugin-version-tested: "1.5.1"`, `php-min: "8.1"`.
+
+### Updated skills (lw-lms 1.3.0 → 1.5.1)
+
+- **`lw-plugins/lw-lms-backend-extend`** — `plugin-version-tested` 1.3.0 → 1.5.1. New "Version deltas that matter" section (v1.3.0 → v1.5.1). Added the v1.4.0 `lw_lms_settings_tabs` filter and `SettingsPage::get_settings_group()` settings-extension pattern, the `lw_lms_attachment_downloaded` action, and the v1.5.0 WooCommerce Memberships read-time access path (`_lw_lms_membership_plan_ids` / `MembershipChecker`, no access row). Reorganized; routes the WP-CLI operational commands out to the new `lw-lms-wp-cli-operations` sibling. BETA notice and references rewritten to point at the in-repo `CHANGELOG.md` instead of guessing.
+- **`lw-plugins/lw-lms-rest-frontend`** — `plugin-version-tested` 1.3.0 → 1.5.1. New "Version deltas that matter" section. Corrects the single-course `content` field — since v1.4.0 it is PUBLIC marketing/about content, no longer gated behind `access.has_access` (only lesson content via `/lessons/{id}` stays gated); open-course preview lessons stay accessible to guests. Documents the v1.5.0 denied-paid-course `access.memberships` payload (linked WooCommerce Memberships plans) alongside `products` / `subscriptions` / `subscription_variations`, plus `content_raw` (editors only).
+- **`lw-plugins/lw-lms-abilities`** — `plugin-version-tested` 1.3.0 → 1.5.1. Frontmatter `description` refreshed; notes that the v1.4.0 WP-CLI/settings work and the v1.5.0 Memberships access work added no new `lw-lms/*` abilities (the surface is still `list-courses` / `get-course` / `get-progress` / `set-progress` / `get-options`).
+- **`lw-plugins/lw-lms-learndash-migration`** — `plugin-version-tested` 1.3.0 → 1.5.1. Frontmatter `description` refreshed; notes the v1.4.0 WP-CLI release added operational commands but did not change the `migrate-learndash` flow, and routes those non-migration commands to `lw-lms-wp-cli-operations`.
+
+### Repo / docs
+
+- `lw-plugins/README.md` — new `lw-lms-wp-cli-operations` row; the four LW LMS skill descriptions refreshed for v1.5.1 (Memberships access, public course content, companion settings tabs, no-new-abilities note).
+- `skills-index.json` regenerated (`skill_count` 132 → 133; `lw-plugins` domain 6 → 7). `domain_count` unchanged at 11 — the domain already existed, so no allowlist changes were needed.
+
 ## 2026-06-14
 
 ### WooCommerce batch — classic-theme Woo + Subscriptions/Memberships refresh

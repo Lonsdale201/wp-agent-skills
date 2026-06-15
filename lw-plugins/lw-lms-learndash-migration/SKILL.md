@@ -1,12 +1,12 @@
 ---
 name: lw-lms-learndash-migration
-description: Plan, run, or review the LW LMS WP-CLI LearnDash migration command `wp lw-lms migrate-learndash` in lw-lms v1.3.0. Use when migrating `sfwd-courses` / `sfwd-lessons`, checking `--dry-run` / `--verbose`, verifying `_lw_lms_migrated_to` mappings, course sections, lesson order, WooCommerce product links, LearnDash video extraction, or safe reruns after partial migration.
+description: Plan, run, or review the LW LMS WP-CLI LearnDash migration command `wp lw-lms migrate-learndash` in lw-lms v1.5.1. Use when migrating `sfwd-courses` / `sfwd-lessons`, checking `--dry-run` / `--verbose`, verifying `_lw_lms_migrated_to` mappings, course sections, lesson order, WooCommerce product links, LearnDash video extraction, or safe reruns after partial migration.
 author: Soczó Kristóf
 contact: mailto:lonsdale201@hotmail.com
 plugin: lw-lms
-plugin-version-tested: "1.3.0"
+plugin-version-tested: "1.5.1"
 php-min: "8.1"
-last-updated: "2026-05-21"
+last-updated: "2026-06-15"
 docs:
   - https://github.com/lwplugins/lw-lms
 source-refs:
@@ -24,6 +24,8 @@ source-refs:
 # LW LMS LearnDash Migration
 
 Use this for the one-time WP-CLI migration from LearnDash post types into LW LMS. The command copies course and lesson posts, maps key metadata, then builds a single LW LMS section per migrated course using LearnDash lesson order.
+
+Verified against local lw-lms **v1.5.1**. The v1.4.0 WP-CLI release added operational course/lesson/enrollment commands, but did not change the `migrate-learndash` command flow. Use `lw-lms-wp-cli-operations` for the non-migration commands.
 
 ## When to use this skill
 
@@ -96,6 +98,7 @@ The command is intentionally rerunnable, but not a full synchronization tool:
 
 - Run `lw-lms-backend-extend` after migration when adding enrollment/progress automation to the new LMS.
 - Run `lw-lms-rest-frontend` to validate learner-facing output against the core REST API.
+- Run `lw-lms-wp-cli-operations` for `course create|list|delete|set-section`, `lesson create|list|assign`, `enroll`, `revoke`, and `force-complete`.
 - Run `wp-security-audit` if modifying the migration command.
 
 ## What this skill does NOT cover
