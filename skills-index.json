@@ -11,8 +11,8 @@
     "layout": "<domain>/<skill>/SKILL.md",
     "skill_file": "SKILL.md"
   },
-  "domain_count": 11,
-  "skill_count": 133,
+  "domain_count": 12,
+  "skill_count": 134,
   "domains": [
     {
       "slug": "better-data",
@@ -55,6 +55,12 @@
       "path": "plugin-scaffold",
       "readme_path": "plugin-scaffold/README.md",
       "skill_count": 11
+    },
+    {
+      "slug": "redis-object-cache",
+      "path": "redis-object-cache",
+      "readme_path": "redis-object-cache/README.md",
+      "skill_count": 1
     },
     {
       "slug": "theme-development",
@@ -2840,6 +2846,51 @@
         "bytes": 16987,
         "lines": 315,
         "sha256": "203d77007f1abbfd2282c8cdcc9666dcf099313aeb8926355d98d7df1a799179"
+      }
+    },
+    {
+      "slug": "wp-redis-object-cache",
+      "name": "wp-redis-object-cache",
+      "domain": "redis-object-cache",
+      "description": "Configure, audit, troubleshoot, and extend the Redis Object Cache plugin (`redis-cache`) for WordPress persistent object caching. Covers the `wp-content/object-cache.php` drop-in, `wp redis status|enable|disable|update-dropin`, `WP_REDIS_*` constants, Predis/PhpRedis/Relay client selection, cache groups, selective flush, metrics, Query Monitor integration, and correct plugin code that uses `wp_cache_*` with Redis Object Cache.",
+      "path": "redis-object-cache/wp-redis-object-cache",
+      "skill_path": "redis-object-cache/wp-redis-object-cache/SKILL.md",
+      "url": "https://raw.githubusercontent.com/Lonsdale201/wp-agent-skills/main/redis-object-cache/wp-redis-object-cache/SKILL.md",
+      "raw_url": "https://raw.githubusercontent.com/Lonsdale201/wp-agent-skills/main/redis-object-cache/wp-redis-object-cache/SKILL.md",
+      "html_url": "https://github.com/Lonsdale201/wp-agent-skills/blob/main/redis-object-cache/wp-redis-object-cache/SKILL.md",
+      "directory_url": "https://github.com/Lonsdale201/wp-agent-skills/tree/main/redis-object-cache/wp-redis-object-cache",
+      "metadata": {
+        "author": "Soczó Kristóf",
+        "contact": "mailto:lonsdale201@hotmail.com",
+        "plugin": "redis-cache",
+        "plugin-version-tested": "2.8.0",
+        "wp-version-tested": "7.0",
+        "php-min": "7.2",
+        "last-updated": "2026-06-15",
+        "docs": [
+          "https://wordpress.org/plugins/redis-cache/",
+          "https://github.com/rhubarbgroup/redis-cache"
+        ],
+        "source-refs": [
+          "wp-content/plugins/redis-cache/redis-cache.php",
+          "wp-content/plugins/redis-cache/readme.txt",
+          "wp-content/plugins/redis-cache/includes/class-plugin.php",
+          "wp-content/plugins/redis-cache/includes/object-cache.php",
+          "wp-content/plugins/redis-cache/includes/class-predis.php",
+          "wp-content/plugins/redis-cache/includes/cli/class-commands.php",
+          "wp-content/plugins/redis-cache/includes/diagnostics.php",
+          "wp-content/plugins/redis-cache/includes/class-metrics.php"
+        ],
+        "license": "GPLv3"
+      },
+      "resources": [],
+      "has_reference": false,
+      "has_examples": false,
+      "has_scripts": false,
+      "skill_md": {
+        "bytes": 12497,
+        "lines": 294,
+        "sha256": "443b1fbd57a79ee1a80899fca28413eb2628d64c16bc503e8da3abed8901f48a"
       }
     },
     {
