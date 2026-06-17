@@ -25,6 +25,7 @@ const ALLOWED_DOMAINS = new Set([
   'theme-development',
   'translatepress',
   'elementor',
+  'szamlazzhu',
 ]);
 
 function emitOutput(key, value) {

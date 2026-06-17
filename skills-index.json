@@ -11,8 +11,8 @@
     "layout": "<domain>/<skill>/SKILL.md",
     "skill_file": "SKILL.md"
   },
-  "domain_count": 14,
-  "skill_count": 142,
+  "domain_count": 15,
+  "skill_count": 144,
   "domains": [
     {
       "slug": "better-data",
@@ -67,6 +67,12 @@
       "path": "redis-object-cache",
       "readme_path": "redis-object-cache/README.md",
       "skill_count": 1
+    },
+    {
+      "slug": "szamlazzhu",
+      "path": "szamlazzhu",
+      "readme_path": "szamlazzhu/README.md",
+      "skill_count": 2
     },
     {
       "slug": "theme-development",
@@ -3077,6 +3083,97 @@
         "bytes": 12497,
         "lines": 294,
         "sha256": "443b1fbd57a79ee1a80899fca28413eb2628d64c16bc503e8da3abed8901f48a"
+      }
+    },
+    {
+      "slug": "szamlazzhu-document-xml-compatibility",
+      "name": "szamlazzhu-document-xml-compatibility",
+      "domain": "szamlazzhu",
+      "description": "Integrate another WooCommerce plugin with Integration for Szamlazz.hu & WooCommerce document generation. Covers `WC_Szamlazz()->generate_invoice()`, `wc_szamlazz_xml`, `wc_szamlazz_invoice_line_item`, `wc_szamlazz_before_generate_invoice_check`, document meta, Action Scheduler deferral, Pro webhooks/IPN, PDF links, HUF rounding, VAT labels, multilingual line text, and HPOS-safe order access. Use when a plugin must add invoice notes/lines/accounting data, block or trigger invoices, react after document creation, expose Szamlazz.hu documents, or avoid breaking invoices from custom products, fees, discounts, subscriptions, bundles, shipping, order numbers, or payment workflows.",
+      "path": "szamlazzhu/szamlazzhu-document-xml-compatibility",
+      "skill_path": "szamlazzhu/szamlazzhu-document-xml-compatibility/SKILL.md",
+      "url": "https://raw.githubusercontent.com/Lonsdale201/wp-agent-skills/main/szamlazzhu/szamlazzhu-document-xml-compatibility/SKILL.md",
+      "raw_url": "https://raw.githubusercontent.com/Lonsdale201/wp-agent-skills/main/szamlazzhu/szamlazzhu-document-xml-compatibility/SKILL.md",
+      "html_url": "https://github.com/Lonsdale201/wp-agent-skills/blob/main/szamlazzhu/szamlazzhu-document-xml-compatibility/SKILL.md",
+      "directory_url": "https://github.com/Lonsdale201/wp-agent-skills/tree/main/szamlazzhu/szamlazzhu-document-xml-compatibility",
+      "metadata": {
+        "author": "Soczó Kristóf",
+        "contact": "mailto:lonsdale201@hotmail.com",
+        "plugin": "integration-for-szamlazzhu-woocommerce",
+        "plugin-version-tested": "6.2.2 on WooCommerce 10.8.1",
+        "wp-version-tested": "7.0",
+        "php-min": "7.4",
+        "last-updated": "2026-06-17",
+        "docs": [
+          "https://wordpress.org/plugins/integration-for-szamlazzhu-woocommerce/",
+          "https://docs.szamlazz.hu/hu/agent/generating_invoice/xml",
+          "https://docs.szamlazz.hu/hu/agent/generating_invoice/rounding",
+          "https://docs.szamlazz.hu/hu/agent/generating_invoice/vat-rates"
+        ],
+        "source-refs": [
+          "wp-content/plugins/integration-for-szamlazzhu-woocommerce/index.php",
+          "wp-content/plugins/integration-for-szamlazzhu-woocommerce/includes/class-xml-generator.php",
+          "wp-content/plugins/integration-for-szamlazzhu-woocommerce/includes/class-helpers.php",
+          "wp-content/plugins/integration-for-szamlazzhu-woocommerce/includes/class-automations.php",
+          "wp-content/plugins/integration-for-szamlazzhu-woocommerce/includes/class-ipn.php",
+          "wp-content/plugins/integration-for-szamlazzhu-woocommerce/includes/class-webhooks.php",
+          "wp-content/plugins/integration-for-szamlazzhu-woocommerce/includes/compatibility/class-compatibility.php",
+          "wp-content/plugins/integration-for-szamlazzhu-woocommerce/includes/compatibility/modules/class-wc-szamlazz-translatepress.php"
+        ],
+        "license": "GPLv3"
+      },
+      "resources": [],
+      "has_reference": false,
+      "has_examples": false,
+      "has_scripts": false,
+      "skill_md": {
+        "bytes": 15276,
+        "lines": 301,
+        "sha256": "16b1b69688d77f5f681d6367239721a407e05993e7e6a59cfa7e18d29214098c"
+      }
+    },
+    {
+      "slug": "szamlazzhu-vat-checkout-compatibility",
+      "name": "szamlazzhu-vat-checkout-compatibility",
+      "domain": "szamlazzhu",
+      "description": "Make WooCommerce checkout, B2B, VAT/tax-number, address, and headless checkout code compatible with Integration for Szamlazz.hu & WooCommerce. Covers the classic checkout field `wc_szamlazz_adoszam`, order meta `_billing_wc_szamlazz_adoszam` and `_wc_szamlazz_adoszam_data`, user meta `wc_szamlazz_adoszam`, Checkout Block/Store API extension namespace `wc-szamlazz-vat-number`, NAV/VIES validation filters, EU VAT exemption, company billing rules, admin/customer address display, and how another plugin should map its own VAT fields into Szamlazz.hu invoice XML without creating duplicate checkout state.",
+      "path": "szamlazzhu/szamlazzhu-vat-checkout-compatibility",
+      "skill_path": "szamlazzhu/szamlazzhu-vat-checkout-compatibility/SKILL.md",
+      "url": "https://raw.githubusercontent.com/Lonsdale201/wp-agent-skills/main/szamlazzhu/szamlazzhu-vat-checkout-compatibility/SKILL.md",
+      "raw_url": "https://raw.githubusercontent.com/Lonsdale201/wp-agent-skills/main/szamlazzhu/szamlazzhu-vat-checkout-compatibility/SKILL.md",
+      "html_url": "https://github.com/Lonsdale201/wp-agent-skills/blob/main/szamlazzhu/szamlazzhu-vat-checkout-compatibility/SKILL.md",
+      "directory_url": "https://github.com/Lonsdale201/wp-agent-skills/tree/main/szamlazzhu/szamlazzhu-vat-checkout-compatibility",
+      "metadata": {
+        "author": "Soczó Kristóf",
+        "contact": "mailto:lonsdale201@hotmail.com",
+        "plugin": "integration-for-szamlazzhu-woocommerce",
+        "plugin-version-tested": "6.2.2 on WooCommerce 10.8.1",
+        "wp-version-tested": "7.0",
+        "php-min": "7.4",
+        "last-updated": "2026-06-17",
+        "docs": [
+          "https://wordpress.org/plugins/integration-for-szamlazzhu-woocommerce/",
+          "https://docs.szamlazz.hu/hu/agent/querying_taxpayer/xml",
+          "https://ec.europa.eu/taxation_customs/vies/"
+        ],
+        "source-refs": [
+          "wp-content/plugins/integration-for-szamlazzhu-woocommerce/includes/class-vat-number.php",
+          "wp-content/plugins/integration-for-szamlazzhu-woocommerce/includes/block/vat-number-block.php",
+          "wp-content/plugins/integration-for-szamlazzhu-woocommerce/includes/block/vat-number-block-endpoints.php",
+          "wp-content/plugins/integration-for-szamlazzhu-woocommerce/includes/block/vat-number-block-integration.php",
+          "wp-content/plugins/integration-for-szamlazzhu-woocommerce/index.php",
+          "wp-content/plugins/integration-for-szamlazzhu-woocommerce/includes/compatibility/modules/class-wc-szamlazz-subscriptions.php"
+        ],
+        "license": "GPLv3"
+      },
+      "resources": [],
+      "has_reference": false,
+      "has_examples": false,
+      "has_scripts": false,
+      "skill_md": {
+        "bytes": 14165,
+        "lines": 301,
+        "sha256": "6695910ad2291f6205db8d64ce343102f94720cf0d7734df3c936193b99eca33"
       }
     },
     {

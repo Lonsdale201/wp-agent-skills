@@ -30,6 +30,7 @@ body:
         - theme-development
         - translatepress
         - elementor
+        - szamlazzhu
         - other
     validations:
       required: true

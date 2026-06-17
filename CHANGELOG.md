@@ -4,6 +4,22 @@ This collection is continuously evolving — entries are date-based, not version
 
 ## 2026-06-17
 
+### New domain — `szamlazzhu/` (Integration for Szamlazz.hu & WooCommerce)
+
+A new top-level domain for the WooCommerce ↔ [Számlázz.hu](https://www.szamlazz.hu) invoicing bridge **[Integration for Szamlazz.hu & WooCommerce](https://wordpress.org/plugins/integration-for-szamlazzhu-woocommerce/)** (`integration-for-szamlazzhu-woocommerce`). Compatibility skills, not a re-implementation: the plugin already owns the Számlázz.hu Agent request, invoice XML, PDF storage, order meta, automations, IPN, and Woo webhooks — a crossover plugin hooks that contract instead of sending its own invoice or duplicating checkout state. Verified against plugin 6.2.2 on WooCommerce 10.8.1.
+
+### New skills (integration-for-szamlazzhu-woocommerce 6.2.2 / WC 10.8.1 / WP 7.0)
+
+- **`szamlazzhu/szamlazzhu-document-xml-compatibility`** — Cooperate with document generation: the `WC_Szamlazz()->generate_invoice( $order_id, $type, $options )` mental model and the document-type → order-meta map (`invoice` / `proform` / `deposit` / `delivery` / `corrected` / `void` / `receipt`), the extension points organized by timing (`wc_szamlazz_before_generate_invoice_check` hard guard, `wc_szamlazz_invoice_line_item` per-`<tetel>`, `wc_szamlazz_xml` final XML, `wc_szamlazz_after_invoice_success` / `wc_szamlazz_document_created` post-send), blocking vs deferring auto-generation (`wc_szamlazz_should_generate_auto_invoice`), HUF (0-decimal) vs foreign-currency rounding and keeping net/VAT/gross/unit consistent, Action Scheduler deferral (`wc-szamlazz` group, the async hooks), Pro webhooks/IPN and `wc_szamlazz_ipn_request_parameters` order-number mapping, multilingual line text, and HPOS-safe order access throughout. `plugin: integration-for-szamlazzhu-woocommerce`.
+- **`szamlazzhu/szamlazzhu-vat-checkout-compatibility`** — Keep B2B VAT/tax-number checkout consistent across surfaces: the canonical data contract (classic field `wc_szamlazz_adoszam`, order meta `_billing_wc_szamlazz_adoszam` + validation payload `_wc_szamlazz_adoszam_data`, user meta, Store API namespace `wc-szamlazz-vat-number`, session `vat-number-data`), reading the number HPOS-safely via the plugin helper, mapping another plugin's VAT field into the invoice with `wc_szamlazz_xml_adoszam` / `_eu`, populating canonical meta at `woocommerce_checkout_create_order` / `woocommerce_store_api_checkout_update_order_from_request`, classic vs Checkout-Block/Store-API flows, the NAV/VIES validation-result and message filters, EU VAT exemption as session-only state, subscription-renewal meta copying, and treating VAT numbers as protected billing data. `plugin: integration-for-szamlazzhu-woocommerce`.
+
+### Repo / docs
+
+- New `szamlazzhu/README.md` with the 2-skill table and a domain intro (compatibility-not-reimplementation framing; verified 6.2.2 / WC 10.8.1).
+- Root `README.md` domain table grew a `szamlazzhu/` row.
+- `szamlazzhu` added to the three domain allowlists in lockstep — `.github/scripts/validate-skill.js`, `.github/scripts/build-skill-pr.js`, and the `.github/ISSUE_TEMPLATE/new-skill.yml` domain dropdown.
+- `skills-index.json` regenerated (`domain_count` 14 → 15; `skill_count` 142 → 144).
+
 ### New domain — `elementor/` (Elementor)
 
 A new top-level domain for building **[Elementor](https://elementor.com)** addon / companion plugins — the developer-extension pattern (like `jetformbuilder/` and `jet-engine/`), not a compatibility domain. Four skills covering the Dynamic Tags extension surface plus a deprecations audit. The running theme: the Dynamic Tags **infrastructure ships in free Elementor** (`Elementor\Core\DynamicTags\*`) while the editor picker and AJAX query control are **Pro**, so the skills extend the free base classes, feature-detect Pro, and degrade gracefully. Every claim is grounded in source line references against the tested version (Elementor 4.0.7 free / 4.0.4 Pro).
