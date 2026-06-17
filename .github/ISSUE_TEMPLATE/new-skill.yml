@@ -29,6 +29,7 @@ body:
         - fluentcrm
         - theme-development
         - translatepress
+        - elementor
         - other
     validations:
       required: true

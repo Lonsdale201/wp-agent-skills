@@ -4,6 +4,24 @@ This collection is continuously evolving — entries are date-based, not version
 
 ## 2026-06-17
 
+### New domain — `elementor/` (Elementor)
+
+A new top-level domain for building **[Elementor](https://elementor.com)** addon / companion plugins — the developer-extension pattern (like `jetformbuilder/` and `jet-engine/`), not a compatibility domain. Four skills covering the Dynamic Tags extension surface plus a deprecations audit. The running theme: the Dynamic Tags **infrastructure ships in free Elementor** (`Elementor\Core\DynamicTags\*`) while the editor picker and AJAX query control are **Pro**, so the skills extend the free base classes, feature-detect Pro, and degrade gracefully. Every claim is grounded in source line references against the tested version (Elementor 4.0.7 free / 4.0.4 Pro).
+
+### New skills (Elementor 4.0.7 free / 4.0.4 Pro / WP 7.0)
+
+- **`elementor/elementor-dynamic-tag-register`** — Register a custom Dynamic Tag: the modern `elementor/dynamic_tags/register` action + `$manager->register( new MyTag() )` (an **instance**), with the legacy `elementor/dynamic_tags/register_tags` + `register_tag( $class )` (a **string**) pair flagged as deprecated since 3.5.0; the four required methods (`get_name` / `get_title` / `get_group` / `get_categories`), `register_group()`, bootstrap timing on `elementor/loaded`, extending the **free** `Tag` / `Data_Tag` bases (not the Pro `Pro_Tag`) for portability, and the Pro-feature reality (free Elementor registers zero tags of its own; Pro ships ~34 behind a license check). `plugin: elementor`.
+- **`elementor/elementor-dynamic-tag-fields`** — The body of a tag: `Tag` (echoes via `render()`, content type `ui`) vs `Data_Tag` (returns via `get_value()`, content type `plain`); the value-kind declaration via `get_categories()` and the `Module::*_CATEGORY` constants (so the right controls accept the tag); settings via `register_controls()` (not the deprecated `_register_controls()`) with `Controls_Manager` types; and the fallback asymmetry — a `Tag` gets Before / After / Fallback automatically (applied on empty `render()` output), a `Data_Tag` gets none and must register a `fallback` control and consult it in `get_value()`. Has `reference.md` (full control-type catalog + complete worked `Tag` / `Data_Tag`). `plugin: elementor`.
+- **`elementor/elementor-dynamic-tag-ajax-select`** — Pick one item from a large dataset (products / posts / terms / users) without freezing the editor: why a preloaded `SELECT2` hangs the panel at scale, the Pro AJAX query control (`QueryControlModule::QUERY_CONTROL_ID` + `autocomplete` with `QUERY_OBJECT_POST|TAX|AUTHOR|USER|ATTACHMENT`, search-scoped server-side so catalog size is irrelevant), using it inside a Dynamic Tag, that you write **no** `wp_ajax_` handler (Pro owns it), and the required `class_exists( QueryControlModule::class )` feature-detect that degrades to a manual ID `TEXT` field. `plugin: elementor-pro`.
+- **`elementor/elementor-deprecations`** — Audit addon code for deprecated Elementor APIs and deprecate your own correctly: the central `Deprecation` class (3.1+) and its six methods (each carrying name + version + replacement, so the list is **source-greppable**), the underscore→no-underscore method renames (`_register_controls` → `register_controls`, `_content_template` → `content_template`, …), the 3.5.0 registration-hook renames (`*_registered` / `register_tags` / `finder/categories/init` → `*/register`), and the debugging gotcha that Elementor's PHP `_deprecated_*` notices need `WP_DEBUG` **and** `ELEMENTOR_DEBUG` within a 4-major window (`SOFT=4` / `HARD=8`). Has `reference.md` (extraction recipe + per-version snapshot). `plugin: elementor`.
+
+### Repo / docs
+
+- New `elementor/README.md` with the 4-skill table and a domain intro (free infrastructure vs Pro picker/AJAX; extend-free-bases-and-degrade framing).
+- Root `README.md` domain table grew an `elementor/` row.
+- `elementor` added to the three domain allowlists in lockstep — `.github/scripts/validate-skill.js`, `.github/scripts/build-skill-pr.js`, and the `.github/ISSUE_TEMPLATE/new-skill.yml` domain dropdown.
+- `skills-index.json` regenerated (`domain_count` 13 → 14; `skill_count` 138 → 142).
+
 ### New domain — `translatepress/` (TranslatePress)
 
 A new top-level domain for the [TranslatePress](https://translatepress.com) multilingual plugin, following the same one-domain-per-third-party-plugin pattern as `wp-rocket/`, `redis-object-cache/`, and `fluentcrm/`. These are **compatibility** skills — they make your own plugin/theme behave correctly when TranslatePress is active, rather than extending TranslatePress itself. The domain spans the free core **TranslatePress Multilingual** (`translatepress-multilingual`) and the paid **TranslatePress Business** add-ons (SEO Pack, Multiple Domains, Navigation Based on Language, Translator Accounts, Browse as User Role, Automatic User Language Detection).
