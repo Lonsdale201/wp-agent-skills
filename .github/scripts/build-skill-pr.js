@@ -23,6 +23,7 @@ const ALLOWED_DOMAINS = new Set([
   'redis-object-cache',
   'fluentcrm',
   'theme-development',
+  'translatepress',
 ]);
 
 function emitOutput(key, value) {

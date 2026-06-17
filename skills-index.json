@@ -11,8 +11,8 @@
     "layout": "<domain>/<skill>/SKILL.md",
     "skill_file": "SKILL.md"
   },
-  "domain_count": 12,
-  "skill_count": 134,
+  "domain_count": 13,
+  "skill_count": 138,
   "domains": [
     {
       "slug": "better-data",
@@ -67,6 +67,12 @@
       "path": "theme-development",
       "readme_path": "theme-development/README.md",
       "skill_count": 16
+    },
+    {
+      "slug": "translatepress",
+      "path": "translatepress",
+      "readme_path": "translatepress/README.md",
+      "skill_count": 4
     },
     {
       "slug": "woocommerce",
@@ -3585,6 +3591,208 @@
         "bytes": 9030,
         "lines": 228,
         "sha256": "759d7eb22f05a37e0a93e85900f3ae57f7340365a9ecfa70bc27351159c065ac"
+      }
+    },
+    {
+      "slug": "translatepress-email-notification-compatibility",
+      "name": "translatepress-email-notification-compatibility",
+      "domain": "translatepress",
+      "description": "Audit or implement TranslatePress-compatible WordPress plugin emails, WooCommerce emails, transactional notifications, cron/CLI emails, wp_mail usage, preferred-user-language delivery, trp_translate(), trp_switch_language(), trp_language user/order meta, and email gettext scanning. Use when code sends registration, order, membership, LMS, subscription, invoice, reminder, status, or admin-triggered emails that must arrive in the recipient's language.",
+      "path": "translatepress/translatepress-email-notification-compatibility",
+      "skill_path": "translatepress/translatepress-email-notification-compatibility/SKILL.md",
+      "url": "https://raw.githubusercontent.com/Lonsdale201/wp-agent-skills/main/translatepress/translatepress-email-notification-compatibility/SKILL.md",
+      "raw_url": "https://raw.githubusercontent.com/Lonsdale201/wp-agent-skills/main/translatepress/translatepress-email-notification-compatibility/SKILL.md",
+      "html_url": "https://github.com/Lonsdale201/wp-agent-skills/blob/main/translatepress/translatepress-email-notification-compatibility/SKILL.md",
+      "directory_url": "https://github.com/Lonsdale201/wp-agent-skills/tree/main/translatepress/translatepress-email-notification-compatibility",
+      "metadata": {
+        "author": "Soczó Kristóf",
+        "contact": "mailto:lonsdale201@hotmail.com",
+        "plugin": "translatepress-multilingual",
+        "plugin-version-tested": "TranslatePress Multilingual 3.2.1 + Business 1.8.2",
+        "wp-version-tested": "7.0",
+        "php-min": "7.4",
+        "last-updated": "2026-06-17",
+        "docs": [
+          "https://translatepress.com/docs/send-emails-in-users-preferred-language/",
+          "https://translatepress.com/docs/translating-woocommerce-emails/",
+          "https://translatepress.com/docs/translation-function/"
+        ],
+        "source-refs": [
+          "wp-content/plugins/translatepress-multilingual/index.php",
+          "wp-content/plugins/translatepress-multilingual/readme.txt",
+          "wp-content/plugins/translatepress-multilingual/class-translate-press.php",
+          "wp-content/plugins/translatepress-multilingual/includes/class-translation-render.php",
+          "wp-content/plugins/translatepress-multilingual/includes/functions.php",
+          "wp-content/plugins/translatepress-multilingual/includes/class-preferred-user-language.php",
+          "wp-content/plugins/translatepress-multilingual/includes/class-woocommerce-emails.php",
+          "wp-content/plugins/translatepress-multilingual/includes/string-translation/class-gettext-scan.php",
+          "wp-content/plugins/translatepress-multilingual/includes/string-translation/class-string-translation.php",
+          "wp-content/plugins/translatepress-multilingual/includes/string-translation/class-string-translation-helper.php",
+          "wp-content/plugins/translatepress-multilingual/includes/compatibility-functions.php"
+        ],
+        "license": "GPLv2-or-later"
+      },
+      "resources": [],
+      "has_reference": false,
+      "has_examples": false,
+      "has_scripts": false,
+      "skill_md": {
+        "bytes": 11940,
+        "lines": 238,
+        "sha256": "79771b62ea07bd7bfc22b66c52b404261f7306c1cd492858d2fa963d1c323ed7"
+      }
+    },
+    {
+      "slug": "translatepress-language-ui-navigation",
+      "name": "translatepress-language-ui-navigation",
+      "domain": "translatepress",
+      "description": "Build or audit TranslatePress language UI compatibility for WordPress themes/plugins. Use for custom language switchers, `[language-switcher]`, `trp_custom_language_switcher()`, `[language-include]`, `[language-exclude]`, legacy `[trp_language]`, per-language menus, Navigation Based on Language, conditional language content, Automatic User Language Detection popup/hello bar, translator accounts, Browse as User Role previews, admin bar visibility, and role-specific or logged-in/logged-out translated content.",
+      "path": "translatepress/translatepress-language-ui-navigation",
+      "skill_path": "translatepress/translatepress-language-ui-navigation/SKILL.md",
+      "url": "https://raw.githubusercontent.com/Lonsdale201/wp-agent-skills/main/translatepress/translatepress-language-ui-navigation/SKILL.md",
+      "raw_url": "https://raw.githubusercontent.com/Lonsdale201/wp-agent-skills/main/translatepress/translatepress-language-ui-navigation/SKILL.md",
+      "html_url": "https://github.com/Lonsdale201/wp-agent-skills/blob/main/translatepress/translatepress-language-ui-navigation/SKILL.md",
+      "directory_url": "https://github.com/Lonsdale201/wp-agent-skills/tree/main/translatepress/translatepress-language-ui-navigation",
+      "metadata": {
+        "author": "Soczó Kristóf",
+        "contact": "mailto:lonsdale201@hotmail.com",
+        "plugin": "translatepress-multilingual + translatepress-business",
+        "plugin-version-tested": "TranslatePress Multilingual 3.2.1 + Business 1.8.2",
+        "wp-version-tested": "7.0",
+        "php-min": "7.4",
+        "last-updated": "2026-06-17",
+        "docs": [
+          "https://translatepress.com/docs/developers/custom-language-switcher/",
+          "https://translatepress.com/docs/addons/navigate-based-language/",
+          "https://translatepress.com/docs/addons/automatic-user-language-detection/",
+          "https://translatepress.com/docs/addons/browse-as-role/"
+        ],
+        "source-refs": [
+          "wp-content/plugins/translatepress-multilingual/index.php",
+          "wp-content/plugins/translatepress-multilingual/readme.txt",
+          "wp-content/plugins/translatepress-multilingual/includes/functions.php",
+          "wp-content/plugins/translatepress-multilingual/includes/shortcodes.php",
+          "wp-content/plugins/translatepress-multilingual/includes/class-language-switcher.php",
+          "wp-content/plugins/translatepress-multilingual/includes/class-language-switcher-v2.php",
+          "wp-content/plugins/translatepress-business/readme.txt",
+          "wp-content/plugins/translatepress-business/add-ons-pro/navigation-based-on-language/class-navigation-based-on-language.php",
+          "wp-content/plugins/translatepress-business/add-ons-pro/navigation-based-on-language/includes/class-tp-nbl-walker-nav-menu.php",
+          "wp-content/plugins/translatepress-business/add-ons-pro/automatic-language-detection/class-automatic-language-detection.php",
+          "wp-content/plugins/translatepress-business/add-ons-pro/automatic-language-detection/includes/class-determine-language.php",
+          "wp-content/plugins/translatepress-business/add-ons-pro/translator-accounts/includes/class-translator-accounts.php",
+          "wp-content/plugins/translatepress-business/add-ons-pro/translator-accounts/includes/class-translator-accounts-activator.php",
+          "wp-content/plugins/translatepress-business/add-ons-pro/browse-as-other-roles/class-browse-as-other-role.php"
+        ],
+        "license": "GPLv2-or-later"
+      },
+      "resources": [],
+      "has_reference": false,
+      "has_examples": false,
+      "has_scripts": false,
+      "skill_md": {
+        "bytes": 11654,
+        "lines": 206,
+        "sha256": "8015d198c9445ceaa18425970e3678d5b385b77f28cb06602d8964eb4ac8bb3f"
+      }
+    },
+    {
+      "slug": "translatepress-output-compatibility",
+      "name": "translatepress-output-compatibility",
+      "domain": "translatepress",
+      "description": "Audit or implement WordPress plugin/theme output so TranslatePress can translate it correctly. Use when code must be compatible with TranslatePress visual translation, gettext string translation, dynamic JS-inserted text, automatic translation exclusions, AJAX/REST-rendered fragments, language-aware caches, or user-facing text generated by shortcodes, widgets, forms, WooCommerce templates, page builders, or theme templates.",
+      "path": "translatepress/translatepress-output-compatibility",
+      "skill_path": "translatepress/translatepress-output-compatibility/SKILL.md",
+      "url": "https://raw.githubusercontent.com/Lonsdale201/wp-agent-skills/main/translatepress/translatepress-output-compatibility/SKILL.md",
+      "raw_url": "https://raw.githubusercontent.com/Lonsdale201/wp-agent-skills/main/translatepress/translatepress-output-compatibility/SKILL.md",
+      "html_url": "https://github.com/Lonsdale201/wp-agent-skills/blob/main/translatepress/translatepress-output-compatibility/SKILL.md",
+      "directory_url": "https://github.com/Lonsdale201/wp-agent-skills/tree/main/translatepress/translatepress-output-compatibility",
+      "metadata": {
+        "author": "Soczó Kristóf",
+        "contact": "mailto:lonsdale201@hotmail.com",
+        "plugin": "translatepress-multilingual + translatepress-business",
+        "plugin-version-tested": "TranslatePress Multilingual 3.2.1 + Business 1.8.2",
+        "wp-version-tested": "7.0",
+        "php-min": "7.4",
+        "last-updated": "2026-06-17",
+        "docs": [
+          "https://translatepress.com/docs/developers/exclude-certain-text-or-element-from-being-translated/",
+          "https://translatepress.com/docs/developers/disable-translation-of-gettext-strings/",
+          "https://translatepress.com/docs/developers/translate-only-certain-pages/",
+          "https://translatepress.com/docs/addons/automatic-user-language-detection/"
+        ],
+        "source-refs": [
+          "wp-content/plugins/translatepress-multilingual/index.php",
+          "wp-content/plugins/translatepress-multilingual/readme.txt",
+          "wp-content/plugins/translatepress-multilingual/includes/class-translation-render.php",
+          "wp-content/plugins/translatepress-multilingual/includes/advanced-settings/exclude-selectors.php",
+          "wp-content/plugins/translatepress-multilingual/includes/advanced-settings/exclude-dynamic-selectors.php",
+          "wp-content/plugins/translatepress-multilingual/includes/advanced-settings/exclude-selectors-automatic-translation.php",
+          "wp-content/plugins/translatepress-business/index.php",
+          "wp-content/plugins/translatepress-business/readme.txt",
+          "wp-content/plugins/translatepress-business/add-ons-pro/automatic-language-detection/class-automatic-language-detection.php",
+          "wp-content/plugins/translatepress-business/add-ons-pro/automatic-language-detection/includes/trp-ald-ajax.php",
+          "wp-content/plugins/translatepress-business/add-ons-pro/automatic-language-detection/includes/class-ald-cookie-sync.php"
+        ],
+        "license": "GPLv2-or-later"
+      },
+      "resources": [],
+      "has_reference": false,
+      "has_examples": false,
+      "has_scripts": false,
+      "skill_md": {
+        "bytes": 10528,
+        "lines": 208,
+        "sha256": "5f042f20bda85e14c21497b34d8adfc8791201898184865a9a4f7533f0d3ef2a"
+      }
+    },
+    {
+      "slug": "translatepress-url-seo-compatibility",
+      "name": "translatepress-url-seo-compatibility",
+      "domain": "translatepress",
+      "description": "Audit or implement TranslatePress-compatible URLs, routing, slugs, SEO metadata, sitemaps, hreflang, canonical links, redirects, AJAX URLs, REST routes, WooCommerce permalinks, and Different Domain per Language behavior. Use when plugin/theme code builds links, parses REQUEST_URI, registers CPT/taxonomy rewrites, emits SEO tags or sitemaps, caches absolute URLs, handles forms on translated URLs, or must work with the TranslatePress SEO Pack and Multiple Domains add-ons.",
+      "path": "translatepress/translatepress-url-seo-compatibility",
+      "skill_path": "translatepress/translatepress-url-seo-compatibility/SKILL.md",
+      "url": "https://raw.githubusercontent.com/Lonsdale201/wp-agent-skills/main/translatepress/translatepress-url-seo-compatibility/SKILL.md",
+      "raw_url": "https://raw.githubusercontent.com/Lonsdale201/wp-agent-skills/main/translatepress/translatepress-url-seo-compatibility/SKILL.md",
+      "html_url": "https://github.com/Lonsdale201/wp-agent-skills/blob/main/translatepress/translatepress-url-seo-compatibility/SKILL.md",
+      "directory_url": "https://github.com/Lonsdale201/wp-agent-skills/tree/main/translatepress/translatepress-url-seo-compatibility",
+      "metadata": {
+        "author": "Soczó Kristóf",
+        "contact": "mailto:lonsdale201@hotmail.com",
+        "plugin": "translatepress-multilingual + translatepress-business",
+        "plugin-version-tested": "TranslatePress Multilingual 3.2.1 + Business 1.8.2",
+        "wp-version-tested": "7.0",
+        "php-min": "7.4",
+        "last-updated": "2026-06-17",
+        "docs": [
+          "https://translatepress.com/docs/developers/translating-an-internal-url/",
+          "https://translatepress.com/docs/developers/different-domain-per-language/",
+          "https://translatepress.com/docs/addons/seo-pack/",
+          "https://translatepress.com/docs/developers/excluding-translation-of-external-domain-links/"
+        ],
+        "source-refs": [
+          "wp-content/plugins/translatepress-multilingual/index.php",
+          "wp-content/plugins/translatepress-multilingual/readme.txt",
+          "wp-content/plugins/translatepress-multilingual/includes/class-url-converter.php",
+          "wp-content/plugins/translatepress-multilingual/includes/class-translation-render.php",
+          "wp-content/plugins/translatepress-business/readme.txt",
+          "wp-content/plugins/translatepress-business/add-ons-advanced/seo-pack/class-seo-pack.php",
+          "wp-content/plugins/translatepress-business/add-ons-advanced/seo-pack/includes/class-slug-manager.php",
+          "wp-content/plugins/translatepress-business/add-ons-advanced/seo-pack/includes/class-gettext-slugs.php",
+          "wp-content/plugins/translatepress-business/add-ons-advanced/seo-pack/includes/class-slug-query.php",
+          "wp-content/plugins/translatepress-business/add-ons-pro/multiple-domains/class-multiple-domains.php",
+          "wp-content/plugins/translatepress-business/add-ons-pro/multiple-domains/class-trp-language-domains-sso.php"
+        ],
+        "license": "GPLv2-or-later"
+      },
+      "resources": [],
+      "has_reference": false,
+      "has_examples": false,
+      "has_scripts": false,
+      "skill_md": {
+        "bytes": 11709,
+        "lines": 208,
+        "sha256": "4ec3e71bdeaa3bba167a2d5c6a989c82501a4472172602fc7b3875b549e0ed73"
       }
     },
     {

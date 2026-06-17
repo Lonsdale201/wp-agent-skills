@@ -28,6 +28,7 @@ body:
         - redis-object-cache
         - fluentcrm
         - theme-development
+        - translatepress
         - other
     validations:
       required: true
