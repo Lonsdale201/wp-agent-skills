@@ -33,6 +33,7 @@ Skills are grouped by domain. Each domain has its own README listing the skills 
 | [`translatepress/`](translatepress) | Making your own plugin/theme **TranslatePress-compatible** — translatable output and exclusions, URL/SEO/slug and Different-Domain behavior, language switchers and navigation, and recipient-language emails. Covers the free core plus the Business add-ons. |
 | [`elementor/`](elementor) | Building **Elementor** addon plugins — registering Dynamic Tags, their controls and fallback behavior, AJAX item pickers for large datasets, and auditing deprecated Elementor APIs. Extends the free base classes and feature-detects Pro. |
 | [`szamlazzhu/`](szamlazzhu) | Making your own WooCommerce extension cooperate with **Integration for Szamlazz.hu & WooCommerce** — invoice line items / XML / document timing and B2B VAT-number checkout, via the plugin's hooks and canonical data model rather than duplicating it. |
+| [`dev-tooling/`](dev-tooling) | Testing & QA tooling for plugins/themes — PHPUnit (scaffold, harness, CI, writing tests), PHP_CodeSniffer + WordPress Coding Standards, and PHPStan, wired through Composer. The developer pipeline beside the code, not WP runtime APIs. |
 
 New domain folders follow the same convention: top-level folder per plugin (or plugin family), one subfolder per skill, each containing at minimum a `SKILL.md`. Larger skills may also include `reference.md`, `examples/`, or `scripts/`.
 

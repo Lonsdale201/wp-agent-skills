@@ -11,8 +11,8 @@
     "layout": "<domain>/<skill>/SKILL.md",
     "skill_file": "SKILL.md"
   },
-  "domain_count": 15,
-  "skill_count": 147,
+  "domain_count": 16,
+  "skill_count": 151,
   "domains": [
     {
       "slug": "better-data",
@@ -25,6 +25,12 @@
       "path": "better-route",
       "readme_path": "better-route/README.md",
       "skill_count": 22
+    },
+    {
+      "slug": "dev-tooling",
+      "path": "dev-tooling",
+      "readme_path": "dev-tooling/README.md",
+      "skill_count": 4
     },
     {
       "slug": "elementor",
@@ -1496,6 +1502,187 @@
         "bytes": 15479,
         "lines": 308,
         "sha256": "e043c074d7a320f547cb06a12ca1addf2b8d697f9392bf75c8ba479f0d0908ad"
+      }
+    },
+    {
+      "slug": "wp-phpcs-coding-standards",
+      "name": "wp-phpcs-coding-standards",
+      "domain": "dev-tooling",
+      "description": "Set up and run PHP_CodeSniffer with the WordPress Coding Standards (WPCS) and PHPCompatibility on a plugin or theme. Covers the composer dev-dependencies and their exact (and confusingly-named) packages — `squizlabs/php_codesniffer`, `wp-coding-standards/wpcs`, `phpcompatibility/phpcompatibility-wp`, `dealerdirect/phpcodesniffer-composer-installer` — the required `allow-plugins` config, the `phpcs.xml.dist` ruleset (the `WordPress` / `-Core` / `-Extra` / `-Docs` standards, `prefixes`, `text_domain`, `minimum_wp_version`, `testVersion`), running `phpcs` (check) vs `phpcbf` (auto-fix), `phpcs -i`, `phpcs:ignore` / `disable` comments, and the WPCS 3.x breaking changes (sniff and property renames such as `minimum_supported_version` -> `minimum_wp_version`). Use when adding coding-standards linting, writing/auditing a ruleset, or fixing \"standard not installed\" / WPCS 2.x-to-3.x migration problems.",
+      "path": "dev-tooling/wp-phpcs-coding-standards",
+      "skill_path": "dev-tooling/wp-phpcs-coding-standards/SKILL.md",
+      "url": "https://raw.githubusercontent.com/Lonsdale201/wp-agent-skills/main/dev-tooling/wp-phpcs-coding-standards/SKILL.md",
+      "raw_url": "https://raw.githubusercontent.com/Lonsdale201/wp-agent-skills/main/dev-tooling/wp-phpcs-coding-standards/SKILL.md",
+      "html_url": "https://github.com/Lonsdale201/wp-agent-skills/blob/main/dev-tooling/wp-phpcs-coding-standards/SKILL.md",
+      "directory_url": "https://github.com/Lonsdale201/wp-agent-skills/tree/main/dev-tooling/wp-phpcs-coding-standards",
+      "metadata": {
+        "author": "Soczó Kristóf",
+        "contact": "mailto:lonsdale201@hotmail.com",
+        "plugin": "wordpress",
+        "plugin-version-tested": "WPCS 3.3; PHP_CodeSniffer 3.13; PHPCompatibilityWP 2.1; WP 7.0",
+        "wp-version-tested": "7.0",
+        "php-min": "7.4",
+        "last-updated": "2026-06-17",
+        "docs": [
+          "https://github.com/WordPress/WordPress-Coding-Standards",
+          "https://github.com/WordPress/WordPress-Coding-Standards/wiki/Customizable-sniff-properties",
+          "https://github.com/PHPCompatibility/PHPCompatibilityWP"
+        ],
+        "source-refs": [
+          "https://github.com/WordPress/WordPress-Coding-Standards/releases/tag/3.0.0",
+          "https://github.com/PHPCSStandards/PHP_CodeSniffer",
+          "https://github.com/PHPCSStandards/composer-installer",
+          "https://github.com/PHPCSStandards/PHP_CodeSniffer/wiki/Advanced-Usage"
+        ],
+        "license": "GPLv2-or-later"
+      },
+      "resources": [],
+      "has_reference": false,
+      "has_examples": false,
+      "has_scripts": false,
+      "skill_md": {
+        "bytes": 10078,
+        "lines": 190,
+        "sha256": "57befacaba0bec0890c1a820a194ce809f94147ebc228807caa83c6d243c9700"
+      }
+    },
+    {
+      "slug": "wp-phpstan-static-analysis",
+      "name": "wp-phpstan-static-analysis",
+      "domain": "dev-tooling",
+      "description": "Run PHPStan static analysis on a WordPress plugin or theme using `szepeviktor/phpstan-wordpress`. Covers the composer dev-dependencies and what is pulled transitively (`phpstan/phpstan` ^2.0, `php-stubs/wordpress-stubs`), the optional `phpstan/extension-installer` that auto-registers the extension, the `phpstan.neon.dist` config (level 0-10 / `max`, `paths`, the `vendor/szepeviktor/phpstan-wordpress/extension.neon` include when not using the installer), why WordPress needs stubs, adding WooCommerce stubs (`php-stubs/woocommerce-stubs`) for cross-plugin analysis, the `--generate-baseline` workflow for legacy code, common WP false positives the extension fixes (apply_filters arg counts, is_wp_error narrowing, hook callbacks, dynamic constants), and running with `--level` / `--memory-limit`. Use when adding static analysis, writing phpstan.neon, raising the level, or taming WP-specific PHPStan errors.",
+      "path": "dev-tooling/wp-phpstan-static-analysis",
+      "skill_path": "dev-tooling/wp-phpstan-static-analysis/SKILL.md",
+      "url": "https://raw.githubusercontent.com/Lonsdale201/wp-agent-skills/main/dev-tooling/wp-phpstan-static-analysis/SKILL.md",
+      "raw_url": "https://raw.githubusercontent.com/Lonsdale201/wp-agent-skills/main/dev-tooling/wp-phpstan-static-analysis/SKILL.md",
+      "html_url": "https://github.com/Lonsdale201/wp-agent-skills/blob/main/dev-tooling/wp-phpstan-static-analysis/SKILL.md",
+      "directory_url": "https://github.com/Lonsdale201/wp-agent-skills/tree/main/dev-tooling/wp-phpstan-static-analysis",
+      "metadata": {
+        "author": "Soczó Kristóf",
+        "contact": "mailto:lonsdale201@hotmail.com",
+        "plugin": "wordpress",
+        "plugin-version-tested": "PHPStan 2.x; phpstan-wordpress 2.0.3; wordpress-stubs 6.6+; WP 7.0",
+        "wp-version-tested": "7.0",
+        "php-min": "7.4",
+        "last-updated": "2026-06-17",
+        "docs": [
+          "https://github.com/szepeviktor/phpstan-wordpress",
+          "https://phpstan.org/user-guide/rule-levels",
+          "https://phpstan.org/user-guide/baseline",
+          "https://github.com/php-stubs/wordpress-stubs"
+        ],
+        "source-refs": [
+          "https://github.com/szepeviktor/phpstan-wordpress/blob/master/extension.neon",
+          "https://github.com/szepeviktor/phpstan-wordpress/blob/master/examples/phpstan.neon.dist",
+          "https://github.com/php-stubs/woocommerce-stubs",
+          "https://github.com/phpstan/extension-installer"
+        ],
+        "license": "GPLv2-or-later"
+      },
+      "resources": [],
+      "has_reference": false,
+      "has_examples": false,
+      "has_scripts": false,
+      "skill_md": {
+        "bytes": 9116,
+        "lines": 195,
+        "sha256": "9558a1a8abbe5e35c7b6f3524516cadb305999508929208b32c3221086f74790"
+      }
+    },
+    {
+      "slug": "wp-phpunit-test-setup",
+      "name": "wp-phpunit-test-setup",
+      "domain": "dev-tooling",
+      "description": "Set up the PHPUnit test harness for a WordPress plugin or theme, the WP way. Covers `wp scaffold plugin-tests` / `wp scaffold theme-tests` and the files it generates (`phpunit.xml.dist`, `bin/install-wp-tests.sh`, `tests/bootstrap.php`, `tests/test-sample.php`, `.phpcs.xml.dist`, a CI workflow), installing the WordPress test suite with `install-wp-tests.sh` (curl-based, no SVN), the test database, `yoast/phpunit-polyfills`, the critical fact that the WP core test suite is capped at PHPUnit 9.x, composer `require-dev` / scripts wiring, a GitHub Actions PHP x WP matrix with `shivammathur/setup-php`, and the modern `wp-env` / `wp-phpunit/wp-phpunit` alternatives. Use when adding a test harness, wiring CI, or debugging install-wp-tests / bootstrap / PHPUnit-version problems. For writing the tests themselves see wp-phpunit-writing-tests.",
+      "path": "dev-tooling/wp-phpunit-test-setup",
+      "skill_path": "dev-tooling/wp-phpunit-test-setup/SKILL.md",
+      "url": "https://raw.githubusercontent.com/Lonsdale201/wp-agent-skills/main/dev-tooling/wp-phpunit-test-setup/SKILL.md",
+      "raw_url": "https://raw.githubusercontent.com/Lonsdale201/wp-agent-skills/main/dev-tooling/wp-phpunit-test-setup/SKILL.md",
+      "html_url": "https://github.com/Lonsdale201/wp-agent-skills/blob/main/dev-tooling/wp-phpunit-test-setup/SKILL.md",
+      "directory_url": "https://github.com/Lonsdale201/wp-agent-skills/tree/main/dev-tooling/wp-phpunit-test-setup",
+      "metadata": {
+        "author": "Soczó Kristóf",
+        "contact": "mailto:lonsdale201@hotmail.com",
+        "plugin": "wordpress",
+        "plugin-version-tested": "WP-CLI scaffold-command 2.x; PHPUnit 9.x; phpunit-polyfills 1.1; WP 7.0",
+        "wp-version-tested": "7.0",
+        "php-min": "7.4",
+        "last-updated": "2026-06-17",
+        "docs": [
+          "https://make.wordpress.org/core/handbook/testing/automated-testing/",
+          "https://developer.wordpress.org/cli/commands/scaffold/plugin-tests/",
+          "https://make.wordpress.org/core/handbook/references/phpunit-compatibility-and-wordpress-versions/",
+          "https://github.com/Yoast/PHPUnit-Polyfills"
+        ],
+        "source-refs": [
+          "https://github.com/wp-cli/scaffold-command",
+          "https://github.com/wp-cli/scaffold-command/blob/main/templates/install-wp-tests.sh",
+          "https://github.com/wp-cli/scaffold-command/blob/main/templates/plugin-github.mustache",
+          "https://github.com/WordPress/wordpress-develop",
+          "https://github.com/wp-phpunit/wp-phpunit",
+          "https://developer.wordpress.org/block-editor/reference-guides/packages/packages-env/"
+        ],
+        "license": "GPLv2-or-later"
+      },
+      "resources": [],
+      "has_reference": false,
+      "has_examples": false,
+      "has_scripts": false,
+      "skill_md": {
+        "bytes": 10958,
+        "lines": 198,
+        "sha256": "1291353652dbdef6e06562704110b88a426049a2bbf40f02e56220cc8ed7e178"
+      }
+    },
+    {
+      "slug": "wp-phpunit-writing-tests",
+      "name": "wp-phpunit-writing-tests",
+      "domain": "dev-tooling",
+      "description": "Write PHPUnit tests for a WordPress plugin or theme. Covers the integration base class `WP_UnitTestCase` and its snake_case `set_up()` / `tear_down()` fixtures (and why WordPress uses them via phpunit-polyfills), the per-test DB transaction rollback, the factory system (`self::factory()->post->create()`, `create_many()`, `create_and_get()`, `wpSetUpBeforeClass()`), WP assertions (`assertWPError`, `assertEqualSets`), HTTP mocking with the `pre_http_request` filter, data providers and `@group`, and the crucial distinction that `WP_UnitTestCase` is an INTEGRATION test (real WP + DB) while true unit tests need Brain Monkey or WP_Mock to mock WP functions. Use when authoring or reviewing tests, choosing unit vs integration, mocking HTTP/WP functions, or fixing fixture/factory mistakes. For scaffolding and CI see wp-phpunit-test-setup.",
+      "path": "dev-tooling/wp-phpunit-writing-tests",
+      "skill_path": "dev-tooling/wp-phpunit-writing-tests/SKILL.md",
+      "url": "https://raw.githubusercontent.com/Lonsdale201/wp-agent-skills/main/dev-tooling/wp-phpunit-writing-tests/SKILL.md",
+      "raw_url": "https://raw.githubusercontent.com/Lonsdale201/wp-agent-skills/main/dev-tooling/wp-phpunit-writing-tests/SKILL.md",
+      "html_url": "https://github.com/Lonsdale201/wp-agent-skills/blob/main/dev-tooling/wp-phpunit-writing-tests/SKILL.md",
+      "directory_url": "https://github.com/Lonsdale201/wp-agent-skills/tree/main/dev-tooling/wp-phpunit-writing-tests",
+      "metadata": {
+        "author": "Soczó Kristóf",
+        "contact": "mailto:lonsdale201@hotmail.com",
+        "plugin": "wordpress",
+        "plugin-version-tested": "PHPUnit 9.x; phpunit-polyfills 1.1; Brain Monkey 2.7; WP_Mock 1.1; WP 7.0",
+        "wp-version-tested": "7.0",
+        "php-min": "7.4",
+        "last-updated": "2026-06-17",
+        "docs": [
+          "https://make.wordpress.org/core/handbook/testing/automated-testing/writing-phpunit-tests/",
+          "https://developer.wordpress.org/reference/hooks/pre_http_request/",
+          "https://github.com/Brain-WP/BrainMonkey",
+          "https://github.com/10up/wp_mock"
+        ],
+        "source-refs": [
+          "https://github.com/Yoast/PHPUnit-Polyfills",
+          "https://core.trac.wordpress.org/ticket/53911",
+          "https://github.com/WordPress/wordpress-develop/tree/trunk/tests/phpunit/includes",
+          "https://docs.phpunit.de/en/10.5/attributes.html"
+        ],
+        "license": "GPLv2-or-later"
+      },
+      "resources": [
+        {
+          "path": "reference.md",
+          "repo_path": "dev-tooling/wp-phpunit-writing-tests/reference.md",
+          "type": "reference",
+          "bytes": 6256,
+          "sha256": "f9b91fa6d0f6f66a4043e4032aea64beb9e149f25e3626b6f68dd88a47766782"
+        }
+      ],
+      "has_reference": true,
+      "has_examples": false,
+      "has_scripts": false,
+      "skill_md": {
+        "bytes": 10592,
+        "lines": 215,
+        "sha256": "f41cad4077fa98ae5b289bb1ee7fb3924dd7e59fd4bfe4a3cee61d16610474c8"
       }
     },
     {
