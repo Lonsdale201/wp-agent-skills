@@ -31,6 +31,7 @@ body:
         - translatepress
         - elementor
         - szamlazzhu
+        - dev-tooling
         - other
     validations:
       required: true

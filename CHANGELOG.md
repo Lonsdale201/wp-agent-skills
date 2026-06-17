@@ -4,6 +4,24 @@ This collection is continuously evolving — entries are date-based, not version
 
 ## 2026-06-17
 
+### New domain — `dev-tooling/` (testing & QA tooling)
+
+A new top-level domain for the **testing / quality-assurance pipeline** around a WordPress plugin or theme — PHPUnit, PHP_CodeSniffer + WordPress Coding Standards, and PHPStan, wired through Composer and CI. Distinct from the runtime/scaffold domains: this is the developer tooling that runs *beside* the code. Deliberately WP-specific (the WP test suite, WPCS rulesets, WP PHPStan stubs) and version-sensitive, so each skill pins tested tool versions and prefers a "verify against your installed version" stance. The version-sensitive facts in these skills (versions, package names, commands, config syntax) were verified against canonical sources (WP core handbook, WP-CLI scaffold-command, WPCS/PHPCS/PHPCompatibility repos, `szepeviktor/phpstan-wordpress`, phpstan.org) and adversarially rechecked before publishing.
+
+### New skills (PHPUnit 9.x / WPCS 3.x / PHPStan 2.x / WP 7.0)
+
+- **`dev-tooling/wp-phpunit-test-setup`** — Stand up the harness: `wp scaffold plugin-tests` / `theme-tests` and the files it emits (`phpunit.xml.dist`, `bin/install-wp-tests.sh`, `tests/bootstrap.php`, `.phpcs.xml.dist`, CI workflow), `install-wp-tests.sh` (now **curl-based, no SVN**) + the throwaway test DB, the **PHPUnit-9.x ceiling** of the WP core suite and `yoast/phpunit-polyfills` (corrects the common "require PHPUnit ^10" mistake), composer `require-dev`/scripts, a GitHub Actions PHP×WP matrix with `shivammathur/setup-php`, and the modern `wp-env` / `wp-phpunit/wp-phpunit` alternatives. `plugin: wordpress`.
+- **`dev-tooling/wp-phpunit-writing-tests`** — Write the tests: `WP_UnitTestCase` and its snake_case `set_up()`/`tear_down()` (and *why* — the PHPUnit-8 `void` return-type bridged by polyfills), per-test DB transaction rollback, the factory system (`self::factory()->post->create()`, `create_many`, `wpSetUpBeforeClass`), WP assertions, HTTP mocking via `pre_http_request`, data providers/groups, and the key correction that **`WP_UnitTestCase` is an integration test** while true unit tests use **Brain Monkey** or **WP_Mock**. Bundled `reference.md` with full runnable integration / Brain Monkey / WP_Mock / data-provider examples. `plugin: wordpress`.
+- **`dev-tooling/wp-phpcs-coding-standards`** — Lint with PHP_CodeSniffer + WPCS + PHPCompatibility: the exact composer packages (and the confusing fact that `squizlabs/php_codesniffer` + `dealerdirect/phpcodesniffer-composer-installer` are still the Packagist names after the `PHPCSStandards` org move), the required `allow-plugins`, the `phpcs.xml.dist` ruleset (`WordPress`/`-Core`/`-Extra`/`-Docs`, `prefixes`, `text_domain`, `minimum_wp_version`, `testVersion`), `phpcs` (check) vs **`phpcbf`** (auto-fix), scoped `phpcs:ignore`/`disable`, and the WPCS 2.x→3.x breaking renames (`minimum_supported_version` → `minimum_wp_version`, sniffs moved to PSR12/Generic/Universal). Notes WPCS 3.x needs PHPCS 3.x and PHPCompatibilityWP stable is `^2.1` (3.0 is alpha). `plugin: wordpress`.
+- **`dev-tooling/wp-phpstan-static-analysis`** — Type/logic analysis with `szepeviktor/phpstan-wordpress` (2.0.3, pulls PHPStan ^2.0 + `php-stubs/wordpress-stubs` transitively), `phpstan/extension-installer` + `allow-plugins`, the `phpstan.neon` config (levels 0–10 / `max`, the manual `vendor/szepeviktor/phpstan-wordpress/extension.neon` include), why WP needs stubs and adding `php-stubs/woocommerce-stubs` for cross-plugin analysis, the `--generate-baseline` workflow for legacy code, and the WP false positives the extension already fixes (`apply_filters` arg counts, `is_wp_error()` narrowing, hook callbacks, dynamic constants) plus the `global $wpdb` annotation. `plugin: wordpress`.
+
+### Repo / docs
+
+- New `dev-tooling/README.md` with the 4-skill table and a domain intro (testing/QA pipeline, WP-specific, version-sensitive framing).
+- Root `README.md` domain table grew a `dev-tooling/` row.
+- `dev-tooling` added to the three domain allowlists in lockstep — `.github/scripts/validate-skill.js`, `.github/scripts/build-skill-pr.js`, and the `.github/ISSUE_TEMPLATE/new-skill.yml` domain dropdown.
+- `skills-index.json` regenerated (`domain_count` 15 → 16; `skill_count` 147 → 151).
+
 ### New skills — `fluentcrm/` (FluentCRM 3.1.5 + Pro 3.1.0)
 
 Three skills extending the existing `fluentcrm/` domain past the funnel chassis into the data/model layer, automation/sequence state, and SmartCodes/segments — re-verified against FluentCRM core **3.1.5** (the existing funnel skills were tested on 2.9.87). The contact/list/tag/automation APIs are core; the Pro email-sequence and dynamic-segment material was verified against FluentCampaign Pro **3.1.0** (core 3.1.5 declares `FLUENTCRM_MIN_PRO_VERSION` 3.1.5, so the Pro classes are flagged for re-check after a Pro bump). Existing domain — no allowlist changes.
