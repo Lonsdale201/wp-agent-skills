@@ -24,6 +24,7 @@ const ALLOWED_DOMAINS = new Set([
   'theme-development',
   'translatepress',
   'elementor',
+  'szamlazzhu',
 ]);
 
 const REQUIRED_FRONTMATTER = ['name', 'description', 'author', 'plugin', 'plugin-version-tested', 'php-min'];
