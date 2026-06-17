@@ -22,6 +22,7 @@ const ALLOWED_DOMAINS = new Set([
   'redis-object-cache',
   'fluentcrm',
   'theme-development',
+  'translatepress',
 ]);
 
 const REQUIRED_FRONTMATTER = ['name', 'description', 'author', 'plugin', 'plugin-version-tested', 'php-min'];
