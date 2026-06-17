@@ -4,6 +4,19 @@ This collection is continuously evolving — entries are date-based, not version
 
 ## 2026-06-17
 
+### New skills — `fluentcrm/` (FluentCRM 3.1.5 + Pro 3.1.0)
+
+Three skills extending the existing `fluentcrm/` domain past the funnel chassis into the data/model layer, automation/sequence state, and SmartCodes/segments — re-verified against FluentCRM core **3.1.5** (the existing funnel skills were tested on 2.9.87). The contact/list/tag/automation APIs are core; the Pro email-sequence and dynamic-segment material was verified against FluentCampaign Pro **3.1.0** (core 3.1.5 declares `FLUENTCRM_MIN_PRO_VERSION` 3.1.5, so the Pro classes are flagged for re-check after a Pro bump). Existing domain — no allowlist changes.
+
+- **`fluentcrm/fluentcrm-contact-models`** — Contacts/lists/tags/user via the public API and ORM (core, no Pro): `FluentCrmApi('contacts')->createOrUpdate()` (delegates to `Subscriber::updateOrCreate()`, syncs lists/tags/custom fields, links a WP user, fires lifecycle hooks) over raw `$wpdb` / bare `Subscriber::create()`; lookup helpers; the seven-status model with the no-downgrade / strict-status / always-respect-unsubscribed write rules; `custom_values` and the `syncCustomFieldValues` delete flag; `importBulk` + `attachLists`/`attachTags`/`detach*` and the exact added/removed hooks; and `ContactsQuery` segment reads with allowlisted sort. `plugin: fluent-crm`.
+- **`fluentcrm/fluentcrm-automation-sequence-models`** — Automation + Pro email-sequence state without direct table writes, and the key distinction: `FunnelSequence` (automation step, `fc_funnel_sequences`) vs FluentCampaign `Sequence` (Pro email sequence, `fc_campaigns`). `FunnelSubscriber` fields/statuses, `FunnelProcessor::startFunnelSequence()` / `startFunnelFromSequencePoint()` (not manual inserts), the `ifAlreadyInFunnel` + unique-key dedupe, the `subscribed`/`transactional` processing gate + `__force_run_actions`, batch filters, ORM progress reads, and Pro `Sequence::subscribe()` / `unsubscribe()` with a `SequenceTracker` check. Canonical `last_sequence_status` is `complete` (not `completed`). `plugin: fluent-crm`.
+- **`fluentcrm/fluentcrm-smartcodes-segments`** — Custom merge tags + Pro dynamic segments: `FluentCrmApi('extender')->addSmartCode()` (callback signature, reserved group keys), the `{{group.key}}` / `##group.key##` syntax with `|` defaults and `||` transformers, parsing via `fluent_crm/parse_campaign_email_text` / `Parser::parse` and the deliberately-deferred unsubscribe/manage URLs, `fluent_crm_funnel_context_smart_codes` for automation context, Pro dynamic segments (`fluentcrm_dynamic_segments` + `fluentcrm_dynamic_segment_{slug}` returning an ORM query model, not an array), and `fluentcrm_contacts_filter_*` advanced-filter providers (mutate by reference, allowlist property/operator). `plugin: fluent-crm`.
+
+### Repo / docs
+
+- `fluentcrm/README.md` — three new rows (contact models, automation/sequence models, SmartCodes/segments); intro broadened beyond funnel registration to contact/automation data and dynamic segments.
+- `skills-index.json` regenerated (`skill_count` 144 → 147; `fluentcrm` domain 5 → 8). `domain_count` unchanged at 15 — existing domain, so no allowlist changes were needed.
+
 ### New domain — `szamlazzhu/` (Integration for Szamlazz.hu & WooCommerce)
 
 A new top-level domain for the WooCommerce ↔ [Számlázz.hu](https://www.szamlazz.hu) invoicing bridge **[Integration for Szamlazz.hu & WooCommerce](https://wordpress.org/plugins/integration-for-szamlazzhu-woocommerce/)** (`integration-for-szamlazzhu-woocommerce`). Compatibility skills, not a re-implementation: the plugin already owns the Számlázz.hu Agent request, invoice XML, PDF storage, order meta, automations, IPN, and Woo webhooks — a crossover plugin hooks that contract instead of sending its own invoice or duplicating checkout state. Verified against plugin 6.2.2 on WooCommerce 10.8.1.
