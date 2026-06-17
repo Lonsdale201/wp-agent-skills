@@ -11,8 +11,8 @@
     "layout": "<domain>/<skill>/SKILL.md",
     "skill_file": "SKILL.md"
   },
-  "domain_count": 13,
-  "skill_count": 138,
+  "domain_count": 14,
+  "skill_count": 142,
   "domains": [
     {
       "slug": "better-data",
@@ -25,6 +25,12 @@
       "path": "better-route",
       "readme_path": "better-route/README.md",
       "skill_count": 22
+    },
+    {
+      "slug": "elementor",
+      "path": "elementor",
+      "readme_path": "elementor/README.md",
+      "skill_count": 4
     },
     {
       "slug": "fluentcrm",
@@ -1484,6 +1490,180 @@
         "bytes": 15479,
         "lines": 308,
         "sha256": "e043c074d7a320f547cb06a12ca1addf2b8d697f9392bf75c8ba479f0d0908ad"
+      }
+    },
+    {
+      "slug": "elementor-deprecations",
+      "name": "elementor-deprecations",
+      "domain": "elementor",
+      "description": "Audit Elementor addon code for deprecated Elementor APIs, and deprecate your own code correctly. Elementor 3.1+ centralizes this in the Deprecation class (modules/dev-tools/deprecation.php) — deprecated_function, deprecated_hook, deprecated_argument, do_deprecated_action, apply_deprecated_filter — and every call carries name + version + replacement, so the full list is greppable from source. Covers the underscore→no-underscore widget method renames (_register_controls → register_controls in 3.1.0; _content_template / _init in 2.9.0), the 3.5.0 registration-hook renames (elementor/widgets/widgets_registered, dynamic_tags/register_tags, finder/categories/init → their /register replacements), and the debugging gotcha — Elementor's PHP _deprecated_* fires only with WP_DEBUG AND ELEMENTOR_DEBUG within 4 majors (SOFT=4 / HARD=8). Use when reviewing an addon, bumping Elementor majors, or chasing deprecation notices.",
+      "path": "elementor/elementor-deprecations",
+      "skill_path": "elementor/elementor-deprecations/SKILL.md",
+      "url": "https://raw.githubusercontent.com/Lonsdale201/wp-agent-skills/main/elementor/elementor-deprecations/SKILL.md",
+      "raw_url": "https://raw.githubusercontent.com/Lonsdale201/wp-agent-skills/main/elementor/elementor-deprecations/SKILL.md",
+      "html_url": "https://github.com/Lonsdale201/wp-agent-skills/blob/main/elementor/elementor-deprecations/SKILL.md",
+      "directory_url": "https://github.com/Lonsdale201/wp-agent-skills/tree/main/elementor/elementor-deprecations",
+      "metadata": {
+        "author": "Soczó Kristóf",
+        "contact": "mailto:lonsdale201@hotmail.com",
+        "plugin": "elementor",
+        "plugin-version-tested": "4.0.7 (free) / 4.0.4 (pro)",
+        "php-min": "7.4",
+        "last-updated": "2026-06-17",
+        "docs": [
+          "https://developers.elementor.com/docs/deprecations/"
+        ],
+        "source-refs": [
+          "wp-content/plugins/elementor/modules/dev-tools/deprecation.php",
+          "wp-content/plugins/elementor/core/dynamic-tags/base-tag.php",
+          "wp-content/plugins/elementor/includes/managers/widgets.php",
+          "wp-content/plugins/elementor/core/breakpoints/manager.php"
+        ]
+      },
+      "resources": [
+        {
+          "path": "reference.md",
+          "repo_path": "elementor/elementor-deprecations/reference.md",
+          "type": "reference",
+          "bytes": 5312,
+          "sha256": "d390cff1d60b3c8d73a940dca00a0e27187b298ae13fa707ac078d4044ffc0b5"
+        }
+      ],
+      "has_reference": true,
+      "has_examples": false,
+      "has_scripts": false,
+      "skill_md": {
+        "bytes": 12032,
+        "lines": 201,
+        "sha256": "b1007ad73466ec204e36f3a6bc5372c273ffedb1eda374273884cf43e31bddf1"
+      }
+    },
+    {
+      "slug": "elementor-dynamic-tag-ajax-select",
+      "name": "elementor-dynamic-tag-ajax-select",
+      "domain": "elementor",
+      "description": "Let an Elementor control (in a Dynamic Tag or a widget) pick one item from a large dataset — products, posts, terms, users — without freezing the editor. A plain Controls_Manager::SELECT2 with options preloaded upfront (e.g. all 20k products) hangs the panel; the fix is Elementor Pro's AJAX query control — 'type' => QueryControlModule::QUERY_CONTROL_ID with an 'autocomplete' => [ 'object' => QUERY_OBJECT_POST|TAX|AUTHOR|USER|ATTACHMENT, 'query' => [...], 'display' => 'minimal'|'detailed' ] config. It is search-scoped server-side (no query runs until the user types), so catalog size is irrelevant. The query control is Pro-only, so feature-detect class_exists( QueryControlModule::class ) and degrade to a manual ID Controls_Manager::TEXT field when Pro is absent. Use when a tag/widget setting must reference a specific post/product, on large stores, or when the editor freezes opening a SELECT2.",
+      "path": "elementor/elementor-dynamic-tag-ajax-select",
+      "skill_path": "elementor/elementor-dynamic-tag-ajax-select/SKILL.md",
+      "url": "https://raw.githubusercontent.com/Lonsdale201/wp-agent-skills/main/elementor/elementor-dynamic-tag-ajax-select/SKILL.md",
+      "raw_url": "https://raw.githubusercontent.com/Lonsdale201/wp-agent-skills/main/elementor/elementor-dynamic-tag-ajax-select/SKILL.md",
+      "html_url": "https://github.com/Lonsdale201/wp-agent-skills/blob/main/elementor/elementor-dynamic-tag-ajax-select/SKILL.md",
+      "directory_url": "https://github.com/Lonsdale201/wp-agent-skills/tree/main/elementor/elementor-dynamic-tag-ajax-select",
+      "metadata": {
+        "author": "Soczó Kristóf",
+        "contact": "mailto:lonsdale201@hotmail.com",
+        "plugin": "elementor-pro",
+        "plugin-version-tested": "4.0.7 (free) / 4.0.4 (pro)",
+        "php-min": "7.4",
+        "last-updated": "2026-06-17",
+        "docs": [
+          "https://developers.elementor.com/docs/dynamic-tags/"
+        ],
+        "source-refs": [
+          "wp-content/plugins/elementor-pro/modules/query-control/module.php",
+          "wp-content/plugins/elementor-pro/modules/query-control/controls/query.php",
+          "wp-content/plugins/elementor-pro/modules/dynamic-tags/tags/internal-url.php",
+          "wp-content/plugins/dynamic-elementor-extension-main/modules/widgets/dynamic/DynamicAddToCartWidget.php",
+          "wp-content/plugins/dynamic-elementor-extension-main/dynamic-tags/woo-tags/ProductAttributes.php"
+        ]
+      },
+      "resources": [],
+      "has_reference": false,
+      "has_examples": false,
+      "has_scripts": false,
+      "skill_md": {
+        "bytes": 12048,
+        "lines": 198,
+        "sha256": "78937a895d4a533dab48e9d47b151ef850c6319e22fd44c2d7a5d44029423145"
+      }
+    },
+    {
+      "slug": "elementor-dynamic-tag-fields",
+      "name": "elementor-dynamic-tag-fields",
+      "domain": "elementor",
+      "description": "Build the body of an Elementor Dynamic Tag — choose Tag (echoes via render(), content_type 'ui') vs Data_Tag (returns a value via get_value(), content_type 'plain'); declare what kind of value it produces via get_categories() using the Module constants (TEXT_CATEGORY, URL_CATEGORY, IMAGE_CATEGORY, MEDIA_CATEGORY, POST_META_CATEGORY, GALLERY_CATEGORY, NUMBER_CATEGORY, COLOR_CATEGORY, DATETIME_CATEGORY, SVG_CATEGORY); add settings fields in register_controls() (NOT the deprecated _register_controls()) with Controls_Manager types (TEXT, NUMBER, SELECT, SELECT2, SWITCHER, MEDIA, …); and wire the fallback system. Important — a Tag gets Before / After / Fallback controls automatically and applies the fallback when render() outputs empty, but a Data_Tag gets NONE of that and must register its own fallback control and consult it in get_value(). Use when implementing or reviewing a dynamic tag's render/get_value, controls, categories, or fallback behaviour.",
+      "path": "elementor/elementor-dynamic-tag-fields",
+      "skill_path": "elementor/elementor-dynamic-tag-fields/SKILL.md",
+      "url": "https://raw.githubusercontent.com/Lonsdale201/wp-agent-skills/main/elementor/elementor-dynamic-tag-fields/SKILL.md",
+      "raw_url": "https://raw.githubusercontent.com/Lonsdale201/wp-agent-skills/main/elementor/elementor-dynamic-tag-fields/SKILL.md",
+      "html_url": "https://github.com/Lonsdale201/wp-agent-skills/blob/main/elementor/elementor-dynamic-tag-fields/SKILL.md",
+      "directory_url": "https://github.com/Lonsdale201/wp-agent-skills/tree/main/elementor/elementor-dynamic-tag-fields",
+      "metadata": {
+        "author": "Soczó Kristóf",
+        "contact": "mailto:lonsdale201@hotmail.com",
+        "plugin": "elementor",
+        "plugin-version-tested": "4.0.7 (free) / 4.0.4 (pro)",
+        "php-min": "7.4",
+        "last-updated": "2026-06-17",
+        "docs": [
+          "https://developers.elementor.com/docs/dynamic-tags/",
+          "https://developers.elementor.com/docs/dynamic-tags/dynamic-tag-data/"
+        ],
+        "source-refs": [
+          "wp-content/plugins/elementor/core/dynamic-tags/tag.php",
+          "wp-content/plugins/elementor/core/dynamic-tags/data-tag.php",
+          "wp-content/plugins/elementor/core/dynamic-tags/base-tag.php",
+          "wp-content/plugins/elementor/modules/dynamic-tags/module.php",
+          "wp-content/plugins/elementor-pro/modules/dynamic-tags/tags/post-featured-image.php",
+          "wp-content/plugins/elementor-pro/modules/dynamic-tags/tags/post-custom-field.php"
+        ]
+      },
+      "resources": [
+        {
+          "path": "reference.md",
+          "repo_path": "elementor/elementor-dynamic-tag-fields/reference.md",
+          "type": "reference",
+          "bytes": 7128,
+          "sha256": "2e0c24987862f3c5e4b874aa34badf1531f23ede91726f7d5e438806602f071a"
+        }
+      ],
+      "has_reference": true,
+      "has_examples": false,
+      "has_scripts": false,
+      "skill_md": {
+        "bytes": 14410,
+        "lines": 258,
+        "sha256": "a308dc9d5e952375648362e42ed5a5ee5269a772b9e006df0cfe1031d8ee09bc"
+      }
+    },
+    {
+      "slug": "elementor-dynamic-tag-register",
+      "name": "elementor-dynamic-tag-register",
+      "domain": "elementor",
+      "description": "Register a custom Elementor Dynamic Tag from a companion plugin — hook the modern elementor/dynamic_tags/register action and call $manager->register( new MyTag() ), where MyTag extends \\Elementor\\Core\\DynamicTags\\Tag (echoes via render()) or \\Elementor\\Core\\DynamicTags\\Data_Tag (returns via get_value()). The legacy elementor/dynamic_tags/register_tags action + register_tag( $class ) still work but are deprecated since 3.5.0. Covers the four required methods (get_name / get_title / get_group / get_categories), registering UI groups with register_group( $slug, [ 'title' => … ] ), bootstrap timing under elementor/loaded, and the Pro-feature reality — the dynamic-tags API ships in free Elementor but the editor picker and the AJAX query control are Pro, so feature-detect and degrade. Use when scaffolding a plugin that adds dynamic tags, when a diff hooks elementor/dynamic_tags/register(_tags) or extends a DynamicTags base class, or when grouping tags in the editor.",
+      "path": "elementor/elementor-dynamic-tag-register",
+      "skill_path": "elementor/elementor-dynamic-tag-register/SKILL.md",
+      "url": "https://raw.githubusercontent.com/Lonsdale201/wp-agent-skills/main/elementor/elementor-dynamic-tag-register/SKILL.md",
+      "raw_url": "https://raw.githubusercontent.com/Lonsdale201/wp-agent-skills/main/elementor/elementor-dynamic-tag-register/SKILL.md",
+      "html_url": "https://github.com/Lonsdale201/wp-agent-skills/blob/main/elementor/elementor-dynamic-tag-register/SKILL.md",
+      "directory_url": "https://github.com/Lonsdale201/wp-agent-skills/tree/main/elementor/elementor-dynamic-tag-register",
+      "metadata": {
+        "author": "Soczó Kristóf",
+        "contact": "mailto:lonsdale201@hotmail.com",
+        "plugin": "elementor",
+        "plugin-version-tested": "4.0.7 (free) / 4.0.4 (pro)",
+        "php-min": "7.4",
+        "last-updated": "2026-06-17",
+        "docs": [
+          "https://developers.elementor.com/docs/dynamic-tags/",
+          "https://developers.elementor.com/docs/dynamic-tags/register-tag/"
+        ],
+        "source-refs": [
+          "wp-content/plugins/elementor/core/dynamic-tags/manager.php",
+          "wp-content/plugins/elementor/core/dynamic-tags/base-tag.php",
+          "wp-content/plugins/elementor/modules/dynamic-tags/module.php",
+          "wp-content/plugins/elementor-pro/modules/dynamic-tags/module.php",
+          "wp-content/plugins/dynamic-elementor-extension-main/dynamic-tags/TagManager.php"
+        ]
+      },
+      "resources": [],
+      "has_reference": false,
+      "has_examples": false,
+      "has_scripts": false,
+      "skill_md": {
+        "bytes": 13887,
+        "lines": 231,
+        "sha256": "089c9703a9f505b224beb16ad0ce790ebafeb4463049e6e84bd47bd7eae4037f"
       }
     },
     {

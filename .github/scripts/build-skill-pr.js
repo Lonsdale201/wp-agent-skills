@@ -24,6 +24,7 @@ const ALLOWED_DOMAINS = new Set([
   'fluentcrm',
   'theme-development',
   'translatepress',
+  'elementor',
 ]);
 
 function emitOutput(key, value) {
