@@ -12,7 +12,7 @@
     "skill_file": "SKILL.md"
   },
   "domain_count": 15,
-  "skill_count": 144,
+  "skill_count": 147,
   "domains": [
     {
       "slug": "better-data",
@@ -36,7 +36,7 @@
       "slug": "fluentcrm",
       "path": "fluentcrm",
       "readme_path": "fluentcrm/README.md",
-      "skill_count": 5
+      "skill_count": 8
     },
     {
       "slug": "jet-engine",
@@ -1673,6 +1673,103 @@
       }
     },
     {
+      "slug": "fluentcrm-automation-sequence-models",
+      "name": "fluentcrm-automation-sequence-models",
+      "domain": "fluentcrm",
+      "description": "Work with FluentCRM 3.x automation subscriber state and FluentCampaign Pro email sequences. Covers FunnelSubscriber, FunnelSequence, FunnelProcessor, FunnelHelper, FunnelMetric, Pro Sequence, SequenceMail, and SequenceTracker. Use when enrolling a contact into an automation funnel, resuming from a benchmark, reading funnel progress, subscribing or unsubscribing contacts from Pro email sequences, or avoiding confusion between automation steps and email sequences. Triggers on FunnelSubscriber, FunnelSequence, startFunnelSequence, startFunnelFromSequencePoint, Sequence::subscribe, SequenceTracker, fc_funnel_subscribers, fc_sequence_tracker.",
+      "path": "fluentcrm/fluentcrm-automation-sequence-models",
+      "skill_path": "fluentcrm/fluentcrm-automation-sequence-models/SKILL.md",
+      "url": "https://raw.githubusercontent.com/Lonsdale201/wp-agent-skills/main/fluentcrm/fluentcrm-automation-sequence-models/SKILL.md",
+      "raw_url": "https://raw.githubusercontent.com/Lonsdale201/wp-agent-skills/main/fluentcrm/fluentcrm-automation-sequence-models/SKILL.md",
+      "html_url": "https://github.com/Lonsdale201/wp-agent-skills/blob/main/fluentcrm/fluentcrm-automation-sequence-models/SKILL.md",
+      "directory_url": "https://github.com/Lonsdale201/wp-agent-skills/tree/main/fluentcrm/fluentcrm-automation-sequence-models",
+      "metadata": {
+        "author": "Soczó Kristóf",
+        "contact": "mailto:lonsdale201@hotmail.com",
+        "plugin": "fluent-crm",
+        "plugin-version-tested": "FluentCRM 3.1.5 + FluentCRM Pro 3.1.0",
+        "wp-version-tested": "7.0",
+        "php-min": "7.4",
+        "last-updated": "2026-06-17",
+        "docs": [
+          "https://developers.fluentcrm.com/database/models/funnelSubscriber",
+          "https://developers.fluentcrm.com/database/models/funnelSequence",
+          "https://developers.fluentcrm.com/database/orm/"
+        ],
+        "source-refs": [
+          "wp-content/plugins/fluent-crm/app/Models/Funnel.php",
+          "wp-content/plugins/fluent-crm/app/Models/FunnelSubscriber.php",
+          "wp-content/plugins/fluent-crm/app/Models/FunnelSequence.php",
+          "wp-content/plugins/fluent-crm/app/Models/FunnelMetric.php",
+          "wp-content/plugins/fluent-crm/app/Services/Funnel/FunnelProcessor.php",
+          "wp-content/plugins/fluent-crm/app/Services/Funnel/FunnelHelper.php",
+          "wp-content/plugins/fluent-crm/app/Http/Controllers/SubscriberController.php",
+          "wp-content/plugins/fluentcampaign-pro/app/Models/Sequence.php",
+          "wp-content/plugins/fluentcampaign-pro/app/Models/SequenceMail.php",
+          "wp-content/plugins/fluentcampaign-pro/app/Models/SequenceTracker.php",
+          "wp-content/plugins/fluentcampaign-pro/app/Http/Controllers/SequenceController.php"
+        ]
+      },
+      "resources": [],
+      "has_reference": false,
+      "has_examples": false,
+      "has_scripts": false,
+      "skill_md": {
+        "bytes": 10407,
+        "lines": 224,
+        "sha256": "95f46d3cb989c856931176de3d4f46af262ed2cddad8d4c8a8f8b3ebf4c5eeb5"
+      }
+    },
+    {
+      "slug": "fluentcrm-contact-models",
+      "name": "fluentcrm-contact-models",
+      "domain": "fluentcrm",
+      "description": "Work with FluentCRM 3.x contact data through the public PHP API and ORM models. Covers Subscriber, Lists, Tag, User, ContactsQuery, createOrUpdate, list/tag attach and detach, custom fields, WP user linking, status protection, and contact hooks. Use when a plugin must create or update a contact, map a WP user, read or create lists/tags, apply tags/lists, query contacts or segments, or handle statuses such as subscribed, pending, transactional, unsubscribed, bounced, complained, and spammed. Triggers on FluentCrmApi('contacts'), Subscriber, Lists, Tag, User, ContactsQuery, attachLists, attachTags, updateStatus, fluent_crm/contact_.",
+      "path": "fluentcrm/fluentcrm-contact-models",
+      "skill_path": "fluentcrm/fluentcrm-contact-models/SKILL.md",
+      "url": "https://raw.githubusercontent.com/Lonsdale201/wp-agent-skills/main/fluentcrm/fluentcrm-contact-models/SKILL.md",
+      "raw_url": "https://raw.githubusercontent.com/Lonsdale201/wp-agent-skills/main/fluentcrm/fluentcrm-contact-models/SKILL.md",
+      "html_url": "https://github.com/Lonsdale201/wp-agent-skills/blob/main/fluentcrm/fluentcrm-contact-models/SKILL.md",
+      "directory_url": "https://github.com/Lonsdale201/wp-agent-skills/tree/main/fluentcrm/fluentcrm-contact-models",
+      "metadata": {
+        "author": "Soczó Kristóf",
+        "contact": "mailto:lonsdale201@hotmail.com",
+        "plugin": "fluent-crm",
+        "plugin-version-tested": "FluentCRM 3.1.5",
+        "wp-version-tested": "7.0",
+        "php-min": "7.4",
+        "last-updated": "2026-06-17",
+        "docs": [
+          "https://developers.fluentcrm.com/database/models/subscriber",
+          "https://developers.fluentcrm.com/database/models/lists",
+          "https://developers.fluentcrm.com/database/models/tag",
+          "https://developers.fluentcrm.com/database/models/user",
+          "https://developers.fluentcrm.com/database/orm/"
+        ],
+        "source-refs": [
+          "wp-content/plugins/fluent-crm/app/Api/config.php",
+          "wp-content/plugins/fluent-crm/app/Api/Classes/Contacts.php",
+          "wp-content/plugins/fluent-crm/app/Api/Classes/Lists.php",
+          "wp-content/plugins/fluent-crm/app/Api/Classes/Tags.php",
+          "wp-content/plugins/fluent-crm/app/Functions/helpers.php",
+          "wp-content/plugins/fluent-crm/app/Models/Subscriber.php",
+          "wp-content/plugins/fluent-crm/app/Models/Lists.php",
+          "wp-content/plugins/fluent-crm/app/Models/Tag.php",
+          "wp-content/plugins/fluent-crm/app/Models/User.php",
+          "wp-content/plugins/fluent-crm/app/Services/ContactsQuery.php"
+        ]
+      },
+      "resources": [],
+      "has_reference": false,
+      "has_examples": false,
+      "has_scripts": false,
+      "skill_md": {
+        "bytes": 9673,
+        "lines": 230,
+        "sha256": "768f6512fa95fa1788d14a3a3a63ae7f48d4d1c1053898fe32170b9e64253f56"
+      }
+    },
+    {
       "slug": "fluentcrm-funnel-action",
       "name": "fluentcrm-funnel-action",
       "domain": "fluentcrm",
@@ -1867,6 +1964,54 @@
         "bytes": 12549,
         "lines": 203,
         "sha256": "b1bc3e1763a82bfdd0920bb0f1b0f4d7850c4d3401af2b0f13914f8694a8d7fe"
+      }
+    },
+    {
+      "slug": "fluentcrm-smartcodes-segments",
+      "name": "fluentcrm-smartcodes-segments",
+      "domain": "fluentcrm",
+      "description": "Add and parse FluentCRM 3.x SmartCodes and build Pro dynamic contact segments. Covers FluentCrmApi('extender')->addSmartCode, parser syntax, fallback/default values, transformers, funnel context smart codes, dynamic segment filters, and ContactsQuery advanced filter providers. Use when a plugin exposes custom merge tags, parses personalized text, adds automation context values, registers dynamic segments, or extends advanced contact filtering. Triggers on addSmartCode, fluent_crm/extended_smart_codes, fluent_crm/smartcode_group_callback_, Parser::parse, fluent_crm_funnel_context_smart_codes, fluentcrm_dynamic_segments, fluentcrm_dynamic_segment_, fluentcrm_contacts_filter_.",
+      "path": "fluentcrm/fluentcrm-smartcodes-segments",
+      "skill_path": "fluentcrm/fluentcrm-smartcodes-segments/SKILL.md",
+      "url": "https://raw.githubusercontent.com/Lonsdale201/wp-agent-skills/main/fluentcrm/fluentcrm-smartcodes-segments/SKILL.md",
+      "raw_url": "https://raw.githubusercontent.com/Lonsdale201/wp-agent-skills/main/fluentcrm/fluentcrm-smartcodes-segments/SKILL.md",
+      "html_url": "https://github.com/Lonsdale201/wp-agent-skills/blob/main/fluentcrm/fluentcrm-smartcodes-segments/SKILL.md",
+      "directory_url": "https://github.com/Lonsdale201/wp-agent-skills/tree/main/fluentcrm/fluentcrm-smartcodes-segments",
+      "metadata": {
+        "author": "Soczó Kristóf",
+        "contact": "mailto:lonsdale201@hotmail.com",
+        "plugin": "fluent-crm",
+        "plugin-version-tested": "FluentCRM 3.1.5 + FluentCRM Pro 3.1.0",
+        "wp-version-tested": "7.0",
+        "php-min": "7.4",
+        "last-updated": "2026-06-17",
+        "docs": [
+          "https://developers.fluentcrm.com/modules/smart-code",
+          "https://developers.fluentcrm.com/helpers/parser",
+          "https://developers.fluentcrm.com/database/orm/"
+        ],
+        "source-refs": [
+          "wp-content/plugins/fluent-crm/app/Api/config.php",
+          "wp-content/plugins/fluent-crm/app/Api/Classes/Extender.php",
+          "wp-content/plugins/fluent-crm/app/Hooks/filters.php",
+          "wp-content/plugins/fluent-crm/app/Services/Helper.php",
+          "wp-content/plugins/fluent-crm/app/Services/Libs/Parser/Parser.php",
+          "wp-content/plugins/fluent-crm/app/Services/Libs/Parser/ShortcodeParser.php",
+          "wp-content/plugins/fluent-crm/app/Http/Controllers/FunnelController.php",
+          "wp-content/plugins/fluent-crm/app/Services/ContactsQuery.php",
+          "wp-content/plugins/fluentcampaign-pro/app/Http/Controllers/DynamicSegmentController.php",
+          "wp-content/plugins/fluentcampaign-pro/app/Services/DynamicSegments/BaseSegment.php",
+          "wp-content/plugins/fluentcampaign-pro/app/Services/DynamicSegments/CustomSegment.php"
+        ]
+      },
+      "resources": [],
+      "has_reference": false,
+      "has_examples": false,
+      "has_scripts": false,
+      "skill_md": {
+        "bytes": 10524,
+        "lines": 256,
+        "sha256": "2c88c6b5e6c8f433cd764e2d691aafa145e1475619aa3ac187790d2ab0f23ccf"
       }
     },
     {
