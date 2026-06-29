@@ -12,7 +12,7 @@
     "skill_file": "SKILL.md"
   },
   "domain_count": 16,
-  "skill_count": 151,
+  "skill_count": 152,
   "domains": [
     {
       "slug": "better-data",
@@ -96,7 +96,7 @@
       "slug": "woocommerce",
       "path": "woocommerce",
       "readme_path": "woocommerce/README.md",
-      "skill_count": 26
+      "skill_count": 27
     },
     {
       "slug": "wordpress",
@@ -4568,7 +4568,7 @@
       "slug": "wc-emails-classic",
       "name": "wc-emails-classic",
       "domain": "woocommerce",
-      "description": "Customize WooCommerce transactional emails the classic PHP-template way (NOT the block email editor) — extend WC_Email, declare $id / $title / $template_html / $template_plain / $placeholders, hook trigger() to a woocommerce_order_status_*_notification action, register via the woocommerce_email_classes filter. Plus the canonical template-override pattern (copy templates/emails/*.php to your theme's /woocommerce/emails/ folder; wc_get_template resolves them automatically), and the get_default_subject / get_default_heading override pattern for admin-customizable strings. Use when adding a new transactional email (custom shipped notification, vendor split, internal alert), overriding an existing template, or customizing strings that the admin Settings cannot reach. Triggers on WC_Email, woocommerce_email_classes, woocommerce_order_status_*_notification, wc_get_template_html, template_html / template_plain in WC context, \"transactional email\" / \"send WooCommerce email programmatically\".",
+      "description": "Customize WooCommerce transactional emails the classic PHP-template way (NOT the block email editor) — extend WC_Email, declare $id / $title / $template_html / $template_plain / $placeholders, hook trigger() to a woocommerce_order_status_*_notification action, register via the woocommerce_email_classes filter. Plus the canonical template-override pattern (copy templates/emails/*.php to your theme's /woocommerce/emails/ folder; wc_get_template resolves them automatically), WC 10.9 transactional email logging hooks, and the get_default_subject / get_default_heading override pattern for admin-customizable strings. Use when adding a new transactional email (custom shipped notification, vendor split, internal alert), overriding an existing template, or customizing strings that the admin Settings cannot reach. Triggers on WC_Email, woocommerce_email_classes, woocommerce_order_status_*_notification, woocommerce_email_sent, woocommerce_email_skipped, woocommerce_email_disabled, wc_get_template_html, template_html / template_plain in WC context, \"transactional email\" / \"send WooCommerce email programmatically\".",
       "path": "woocommerce/wc-emails-classic",
       "skill_path": "woocommerce/wc-emails-classic/SKILL.md",
       "url": "https://raw.githubusercontent.com/Lonsdale201/wp-agent-skills/main/woocommerce/wc-emails-classic/SKILL.md",
@@ -4579,9 +4579,9 @@
         "author": "Soczó Kristóf",
         "contact": "mailto:lonsdale201@hotmail.com",
         "plugin": "woocommerce",
-        "plugin-version-tested": "10.8.0",
+        "plugin-version-tested": "10.9.1",
         "php-min": "7.4",
-        "last-updated": "2026-05-26",
+        "last-updated": "2026-06-29",
         "docs": [
           "https://woocommerce.com/document/template-structure/"
         ],
@@ -4591,6 +4591,7 @@
           "wp-content/plugins/woocommerce/includes/emails/class-wc-email-customer-processing-order.php",
           "wp-content/plugins/woocommerce/includes/emails/class-wc-email-customer-review-request.php",
           "wp-content/plugins/woocommerce/includes/wc-core-functions.php",
+          "wp-content/plugins/woocommerce/src/Internal/Email/EmailLogger.php",
           "wp-content/plugins/woocommerce/templates/emails/"
         ]
       },
@@ -4599,9 +4600,9 @@
       "has_examples": false,
       "has_scripts": false,
       "skill_md": {
-        "bytes": 21674,
-        "lines": 376,
-        "sha256": "455b137a45021c1830eff566fd51556df0ba289024f3b0ac1ef714fc71f36db6"
+        "bytes": 23279,
+        "lines": 399,
+        "sha256": "4601ce0b298c1efb28c2fdb8e946a1f3da0e0153ee363a581099cd7c39585f15"
       }
     },
     {
@@ -4619,9 +4620,9 @@
         "author": "Soczó Kristóf",
         "contact": "mailto:lonsdale201@hotmail.com",
         "plugin": "woocommerce",
-        "plugin-version-tested": "10.8.0",
+        "plugin-version-tested": "10.9.1",
         "php-min": "7.4",
-        "last-updated": "2026-05-26",
+        "last-updated": "2026-06-29",
         "docs": [
           "https://developer.woocommerce.com/docs/hpos/",
           "https://github.com/woocommerce/woocommerce/wiki/High-Performance-Order-Storage-Upgrade-Recipe-Book"
@@ -4634,7 +4635,8 @@
           "wp-content/plugins/woocommerce/src/Internal/DataStores/Orders/OrdersTableDataStore.php",
           "wp-content/plugins/woocommerce/src/Internal/DataStores/Orders/OrdersTableQuery.php",
           "wp-content/plugins/woocommerce/includes/wc-update-functions.php",
-          "wp-content/plugins/woocommerce/src/Admin/Features/Fulfillments/FulfillmentsRenderer.php"
+          "wp-content/plugins/woocommerce/src/Admin/Features/Fulfillments/FulfillmentsRenderer.php",
+          "wp-content/plugins/woocommerce-subscriptions/includes/core/class-wc-subscriptions-order.php"
         ]
       },
       "resources": [],
@@ -4642,9 +4644,9 @@
       "has_examples": false,
       "has_scripts": false,
       "skill_md": {
-        "bytes": 22034,
-        "lines": 388,
-        "sha256": "cb37430a9e4cf93e45823690713381cfaf76ac3c2bea526dcfa45891831013c1"
+        "bytes": 23420,
+        "lines": 411,
+        "sha256": "f9dce566e843d9a6584c8f61e4882db814338fd3a2f1e0eeb288d6bdea79a483"
       }
     },
     {
@@ -4818,7 +4820,7 @@
       "slug": "wc-rest-api-v4",
       "name": "wc-rest-api-v4",
       "domain": "woocommerce",
-      "description": "Use the WooCommerce REST API v4 (namespace wc/v4, since WC 10.2) alongside or in place of v3 — verified route catalog (Customers, Orders, Refunds, Products, ShippingZones with DELETE, ShippingZoneMethod, Fulfillments, segmented Settings under /wc/v4/settings/<group>), the hook prefix pattern woocommerce_rest_api_v4_<route>_*, shared error codes, and the RestApiCache trait (WC 10.5+) for endpoint response caching. The v4 AbstractController lives under the Internal namespace and is NOT a public extension surface; plugin-defined REST routes use WP_REST_Controller directly. Use when calling WC REST endpoints, when picking v3 vs v4, or when reviewing /wc/v3/ URLs that now have v4 equivalents. Triggers on wc/v4, /wc/v4/, woocommerce_rest_api_v4_*, RestApiCache, customer-owned Woo endpoints, REST API v4 in WooCommerce context.",
+      "description": "Use the WooCommerce REST API v4 (namespace wc/v4, since WC 10.2) alongside or in place of v3 — verified route catalog (Customers, Orders, Refunds, Products, ShippingZones with DELETE, ShippingZoneMethod, Fulfillments, segmented Settings under /wc/v4/settings/<group>), the hook prefix pattern woocommerce_rest_api_v4_<route>_*, shared error codes, and the RestApiCache trait (WC 10.5+) for endpoint response caching. The v4 AbstractController lives under the Internal namespace and is NOT a public extension surface; plugin-defined REST routes use WP_REST_Controller directly. Use when calling WC REST endpoints, when picking v3 vs v4, or when reviewing /wc/v3/ URLs that now have v4 equivalents; notes WCS 9.0 subscription-plan endpoints that remain wc/v3. Triggers on wc/v4, /wc/v4/, woocommerce_rest_api_v4_*, RestApiCache, customer-owned Woo endpoints, REST API v4 in WooCommerce context.",
       "path": "woocommerce/wc-rest-api-v4",
       "skill_path": "woocommerce/wc-rest-api-v4/SKILL.md",
       "url": "https://raw.githubusercontent.com/Lonsdale201/wp-agent-skills/main/woocommerce/wc-rest-api-v4/SKILL.md",
@@ -4829,9 +4831,9 @@
         "author": "Soczó Kristóf",
         "contact": "mailto:lonsdale201@hotmail.com",
         "plugin": "woocommerce",
-        "plugin-version-tested": "10.8.0",
+        "plugin-version-tested": "10.9.1",
         "php-min": "7.4",
-        "last-updated": "2026-05-26",
+        "last-updated": "2026-06-29",
         "docs": [
           "https://woocommerce.com/document/woocommerce-rest-api/"
         ],
@@ -4843,7 +4845,9 @@
           "wp-content/plugins/woocommerce/src/Internal/RestApi/Routes/V4/Products/Controller.php",
           "wp-content/plugins/woocommerce/src/Internal/Traits/RestApiCache.php",
           "wp-content/plugins/woocommerce/src/StoreApi/RoutesController.php",
-          "wp-content/plugins/woocommerce-subscriptions/includes/api/class-wc-rest-subscriptions-controller.php"
+          "wp-content/plugins/woocommerce-subscriptions/includes/api/class-wc-rest-subscriptions-controller.php",
+          "wp-content/plugins/woocommerce-subscriptions/includes/apfs/admin/class-wcs-att-rest-plans-controller.php",
+          "wp-content/plugins/woocommerce-subscriptions/includes/apfs/admin/class-wcs-att-rest-product-plans-controller.php"
         ]
       },
       "resources": [],
@@ -4851,9 +4855,9 @@
       "has_examples": false,
       "has_scripts": false,
       "skill_md": {
-        "bytes": 22749,
-        "lines": 327,
-        "sha256": "da17c4354403a69a95398def9172b7550c1e8df2ef46dc6e3b53c641a0380b35"
+        "bytes": 23633,
+        "lines": 334,
+        "sha256": "be72e990221162da94eb118f7decf4c2856d1517ea3b495ec9ff93a2b07d3169"
       }
     },
     {
@@ -4942,7 +4946,7 @@
       "slug": "wc-store-api",
       "name": "wc-store-api",
       "domain": "woocommerce",
-      "description": "Build against the WooCommerce Store API (`/wp-json/wc/store/v1`) for shopper-facing products, cart, checkout, Cart/Checkout Blocks, and headless carts. Covers route choice, Nonce header (`wp_create_nonce('wc_store_api')`) vs Cart-Token, Store API sessions/CORS/rate limits, `woocommerce_store_api_register_endpoint_data`, `/cart/extensions` + `extensionCartUpdate`, payment requirements, product query pitfalls such as `related`, and when to use WC REST `wc/v4` instead. Use when adding checkout-block data, Store API calls, custom cart state, Store API payment availability, or headless cart/checkout behavior.",
+      "description": "Build against the WooCommerce Store API (`/wp-json/wc/store/v1`) for shopper-facing products, cart, checkout, Cart/Checkout Blocks, and headless carts. Covers route choice, Nonce header (`wp_create_nonce('wc_store_api')`) vs Cart-Token, Store API sessions/CORS/rate limits, `woocommerce_store_api_register_endpoint_data`, `/cart/extensions` + `extensionCartUpdate`, `woocommerce_store_api_add_to_cart_data`, payment requirements, WC 10.8+ deferred checkout draft-order creation, WCS 9.0 subscription-plan validation, product query pitfalls such as `related`, and when to use WC REST `wc/v4` instead. Use when adding checkout-block data, Store API calls, custom cart state, Store API payment availability, or headless cart/checkout behavior.",
       "path": "woocommerce/wc-store-api",
       "skill_path": "woocommerce/wc-store-api/SKILL.md",
       "url": "https://raw.githubusercontent.com/Lonsdale201/wp-agent-skills/main/woocommerce/wc-store-api/SKILL.md",
@@ -4953,9 +4957,9 @@
         "author": "Soczó Kristóf",
         "contact": "mailto:lonsdale201@hotmail.com",
         "plugin": "woocommerce",
-        "plugin-version-tested": "10.8.0",
+        "plugin-version-tested": "10.9.1",
         "php-min": "7.4",
-        "last-updated": "2026-05-26",
+        "last-updated": "2026-06-29",
         "docs": [
           "https://developer.woocommerce.com/docs/apis/store-api/",
           "https://developer.woocommerce.com/docs/apis/store-api/nonce-tokens/",
@@ -4969,11 +4973,15 @@
           "wp-content/plugins/woocommerce/src/StoreApi/Schemas/ExtendSchema.php",
           "wp-content/plugins/woocommerce/src/StoreApi/functions.php",
           "wp-content/plugins/woocommerce/src/StoreApi/Routes/V1/CartExtensions.php",
+          "wp-content/plugins/woocommerce/src/StoreApi/Routes/V1/CartAddItem.php",
+          "wp-content/plugins/woocommerce/src/StoreApi/Routes/V1/Checkout.php",
           "wp-content/plugins/woocommerce/src/StoreApi/Schemas/V1/CartExtensionsSchema.php",
           "wp-content/plugins/woocommerce/src/StoreApi/Utilities/CartController.php",
           "wp-content/plugins/woocommerce/src/StoreApi/Utilities/ProductQuery.php",
           "wp-content/plugins/woocommerce/src/StoreApi/Routes/V1/Products.php",
-          "wp-content/plugins/woocommerce/assets/client/blocks/wc-blocks-data.js"
+          "wp-content/plugins/woocommerce/assets/client/blocks/wc-blocks-data.js",
+          "wp-content/plugins/woocommerce-subscriptions/includes/core/class-wc-subscriptions-extend-store-endpoint.php",
+          "wp-content/plugins/woocommerce-subscriptions/includes/apfs/api/class-wcs-att-store-api.php"
         ]
       },
       "resources": [],
@@ -4981,9 +4989,9 @@
       "has_examples": false,
       "has_scripts": false,
       "skill_md": {
-        "bytes": 16699,
-        "lines": 295,
-        "sha256": "45a4bfbf07c3edec27bef711d1a295ea010909e434da83de563fe6af59a7c8fe"
+        "bytes": 20387,
+        "lines": 334,
+        "sha256": "b87f1a47fa57833e7cba8a03816d349cf468f528f0813145a8aafc995cfcb747"
       }
     },
     {
@@ -5278,7 +5286,7 @@
       "slug": "wcs-data-model-switching-gifting",
       "name": "wcs-data-model-switching-gifting",
       "domain": "woocommerce",
-      "description": "WooCommerce Subscriptions data model, switcher, and gifting reference for exact order type names, product type slugs, subscription meta keys, schedule/date keys, related-order relation meta, switch cart data, switch order data, switched item types/meta, proration hooks, and WCS Gifting recipient storage. Use when code reads or writes shop_subscription, subscription, variable-subscription, subscription_variation, _billing_period, _schedule_next_payment, _subscription_switch_data, _subscription_switch, subscription_switch, _switched_subscription_item_id, wcsg_gift_recipients_email, _recipient_user, _recipient_user_email_address, wcsg_recipient, or when an agent needs the full WooCommerce Subscriptions switcher/gifting flow.",
+      "description": "WooCommerce Subscriptions data model, switcher, and gifting reference for exact order type names, product type slugs, subscription meta keys, schedule/date keys, related-order relation meta, switch cart data, switch order data, switched item types/meta, proration hooks, and WCS Gifting recipient storage, plus WCS 9.0 APFS subscription-plan storage for ordinary products. Use when code reads or writes shop_subscription, subscription, variable-subscription, subscription_variation, _billing_period, _schedule_next_payment, _subscription_switch_data, _subscription_switch, subscription_switch, _switched_subscription_item_id, wcsg_gift_recipients_email, _recipient_user, _recipient_user_email_address, wcsg_recipient, _wcsatt_schemes_status, _wcsatt_schemes, _wcsatt_scheme, or when an agent needs the full WooCommerce Subscriptions switcher/gifting flow.",
       "path": "woocommerce/wcs-data-model-switching-gifting",
       "skill_path": "woocommerce/wcs-data-model-switching-gifting/SKILL.md",
       "url": "https://raw.githubusercontent.com/Lonsdale201/wp-agent-skills/main/woocommerce/wcs-data-model-switching-gifting/SKILL.md",
@@ -5289,9 +5297,12 @@
         "author": "Soczo Kristof",
         "contact": "mailto:lonsdale201@hotmail.com",
         "plugin": "woocommerce-subscriptions",
-        "plugin-version-tested": "8.8.1",
+        "plugin-version-tested": "9.0.0",
         "php-min": "7.4",
-        "last-updated": "2026-06-14",
+        "last-updated": "2026-06-29",
+        "docs": [
+          "https://woocommerce.com/document/subscriptions/develop/"
+        ],
         "source-refs": [
           "wp-content/plugins/woocommerce-subscriptions/includes/core/class-wc-subscriptions-core-plugin.php",
           "wp-content/plugins/woocommerce-subscriptions/includes/core/class-wc-subscription.php",
@@ -5303,6 +5314,10 @@
           "wp-content/plugins/woocommerce-subscriptions/includes/switching/class-wc-subscriptions-switcher.php",
           "wp-content/plugins/woocommerce-subscriptions/includes/switching/class-wcs-switch-totals-calculator.php",
           "wp-content/plugins/woocommerce-subscriptions/includes/downloads/",
+          "wp-content/plugins/woocommerce-subscriptions/includes/apfs/class-wcs-att-product.php",
+          "wp-content/plugins/woocommerce-subscriptions/includes/apfs/product/class-wcs-att-product-schemes.php",
+          "wp-content/plugins/woocommerce-subscriptions/includes/apfs/class-wcs-att-cart.php",
+          "wp-content/plugins/woocommerce-subscriptions/includes/apfs/class-wcs-att-order.php",
           "wp-content/plugins/woocommerce-subscriptions/includes/gifting/class-wcs-gifting.php",
           "wp-content/plugins/woocommerce-subscriptions/includes/gifting/class-wcsg-product.php",
           "wp-content/plugins/woocommerce-subscriptions/includes/gifting/class-wcsg-cart.php",
@@ -5315,9 +5330,9 @@
       "has_examples": false,
       "has_scripts": false,
       "skill_md": {
-        "bytes": 19270,
-        "lines": 321,
-        "sha256": "7d57bd4bd810a97b5ddd0be66ea3a322a3d2df09232da6bebd60ce7dc02667e7"
+        "bytes": 21831,
+        "lines": 350,
+        "sha256": "bcebd2a4068b7a4d15792552e376ce79d446ea15b22e25cfa3a83822e68de4be"
       }
     },
     {
@@ -5335,9 +5350,12 @@
         "author": "Soczó Kristóf",
         "contact": "mailto:lonsdale201@hotmail.com",
         "plugin": "woocommerce-subscriptions",
-        "plugin-version-tested": "8.8.1",
+        "plugin-version-tested": "9.0.0",
         "php-min": "7.4",
-        "last-updated": "2026-06-14",
+        "last-updated": "2026-06-29",
+        "docs": [
+          "https://woocommerce.com/document/subscriptions/develop/"
+        ],
         "source-refs": [
           "wp-content/plugins/woocommerce-subscriptions/changelog.txt",
           "wp-content/plugins/woocommerce-subscriptions/includes/class-wc-subscriptions-plugin.php",
@@ -5352,9 +5370,9 @@
       "has_examples": false,
       "has_scripts": false,
       "skill_md": {
-        "bytes": 10799,
-        "lines": 197,
-        "sha256": "2090a8b8c166858bc4c4d93238688eea10ce9dcc530e0e7303e5a8e9bdf7ccfd"
+        "bytes": 10865,
+        "lines": 199,
+        "sha256": "139fec7e978fb9dbf8503a3fed1dd897ca138fb8ba737938773102f744c2245a"
       }
     },
     {
@@ -5372,13 +5390,19 @@
         "author": "Soczó Kristóf",
         "contact": "mailto:lonsdale201@hotmail.com",
         "plugin": "woocommerce-subscriptions",
-        "plugin-version-tested": "8.8.1",
+        "plugin-version-tested": "9.0.0",
         "php-min": "7.4",
-        "last-updated": "2026-06-14",
+        "last-updated": "2026-06-29",
+        "docs": [
+          "https://woocommerce.com/document/subscriptions/develop/"
+        ],
         "source-refs": [
+          "wp-content/plugins/woocommerce-subscriptions/includes/core/class-wc-subscription.php",
           "wp-content/plugins/woocommerce-subscriptions/includes/core/class-wcs-action-scheduler.php",
           "wp-content/plugins/woocommerce-subscriptions/includes/core/abstracts/abstract-wcs-scheduler.php",
           "wp-content/plugins/woocommerce-subscriptions/includes/core/class-wc-subscriptions-manager.php",
+          "wp-content/plugins/woocommerce-subscriptions/includes/core/wcs-time-functions.php",
+          "wp-content/plugins/woocommerce-subscriptions/includes/class-wcs-api.php",
           "wp-content/plugins/woocommerce-subscriptions/includes/gateways/class-wc-subscriptions-payment-gateways.php",
           "wp-content/plugins/woocommerce-subscriptions/includes/payment-retry/class-wcs-retry-manager.php",
           "wp-content/plugins/woocommerce-subscriptions/includes/core/class-wc-subscriptions-change-payment-gateway.php",
@@ -5391,9 +5415,9 @@
       "has_examples": false,
       "has_scripts": false,
       "skill_md": {
-        "bytes": 14824,
-        "lines": 277,
-        "sha256": "aa11e7c6ab9a89eb7a66a6c73f1edf1d9286ae849b629f97a0bb834a0080dffe"
+        "bytes": 16710,
+        "lines": 304,
+        "sha256": "486781a7490a3f5ac4dc84cc2ad18648efc5185559614d8d8e8e13200ad4d964"
       }
     },
     {
@@ -5411,9 +5435,12 @@
         "author": "Soczó Kristóf",
         "contact": "mailto:lonsdale201@hotmail.com",
         "plugin": "woocommerce-subscriptions",
-        "plugin-version-tested": "8.8.1",
+        "plugin-version-tested": "9.0.0",
         "php-min": "7.4",
-        "last-updated": "2026-06-14",
+        "last-updated": "2026-06-29",
+        "docs": [
+          "https://woocommerce.com/document/subscriptions/develop/"
+        ],
         "source-refs": [
           "wp-content/plugins/woocommerce-subscriptions/changelog.txt",
           "wp-content/plugins/woocommerce-subscriptions/includes/class-wc-subscriptions-plugin.php",
@@ -5426,16 +5453,16 @@
       "has_examples": false,
       "has_scripts": false,
       "skill_md": {
-        "bytes": 8730,
-        "lines": 180,
-        "sha256": "987528e150711b0b2be4dcdb0b120e968a189e2b8cfb07e2a3fc290ad8a0e967"
+        "bytes": 8796,
+        "lines": 182,
+        "sha256": "09a8e1e4ad5d5d623758e086d2f78a6790b595e6f7352545bdbe43a8600357af"
       }
     },
     {
       "slug": "wcs-subscription-hooks",
       "name": "wcs-subscription-hooks",
       "domain": "woocommerce",
-      "description": "Curated WooCommerce Subscriptions hook and extension-point map for choosing the right action/filter around WC_Subscription creation, status transitions, date changes, renewal orders, scheduled payments, payment retries, gateway events, switching, gifting, related orders, REST/API responses, and account/admin UI. Use when the user asks for a Woo Subscriptions hook list, \"where should I hook\", \"after renewal\", \"subscription status changed\", or when code contains WC_Subscription, wcs_create_subscription, wcs_create_renewal_order, woocommerce_scheduled_subscription_payment, wcs_renewal_order_created, payment_retry, wcs_get_subscriptions, wcsg_, subscription_switch, _subscription_switch_data, _recipient_user, wcsg_recipient, or subscription switching.",
+      "description": "Curated WooCommerce Subscriptions hook and extension-point map for choosing the right action/filter around WC_Subscription creation, status transitions, date changes, renewal orders, scheduled payments, payment retries, gateway events, switching, gifting, related orders, APFS subscription plans, REST/API responses, and account/admin UI. Use when the user asks for a Woo Subscriptions hook list, \"where should I hook\", \"after renewal\", \"subscription status changed\", or when code contains WC_Subscription, wcs_create_subscription, wcs_create_renewal_order, woocommerce_scheduled_subscription_payment, wcs_renewal_order_created, payment_retry, wcs_get_subscriptions, wcsg_, subscription_switch, _subscription_switch_data, _recipient_user, wcsg_recipient, WCS_ATT, wcsatt_, _wcsatt_scheme, convert_to_sub, or subscription switching.",
       "path": "woocommerce/wcs-subscription-hooks",
       "skill_path": "woocommerce/wcs-subscription-hooks/SKILL.md",
       "url": "https://raw.githubusercontent.com/Lonsdale201/wp-agent-skills/main/woocommerce/wcs-subscription-hooks/SKILL.md",
@@ -5446,9 +5473,12 @@
         "author": "Soczó Kristóf",
         "contact": "mailto:lonsdale201@hotmail.com",
         "plugin": "woocommerce-subscriptions",
-        "plugin-version-tested": "8.8.1",
+        "plugin-version-tested": "9.0.0",
         "php-min": "7.4",
-        "last-updated": "2026-06-14",
+        "last-updated": "2026-06-29",
+        "docs": [
+          "https://woocommerce.com/document/subscriptions/develop/"
+        ],
         "source-refs": [
           "wp-content/plugins/woocommerce-subscriptions/includes/core/wcs-functions.php",
           "wp-content/plugins/woocommerce-subscriptions/includes/core/class-wc-subscription.php",
@@ -5462,6 +5492,10 @@
           "wp-content/plugins/woocommerce-subscriptions/includes/switching/class-wcs-cart-switch.php",
           "wp-content/plugins/woocommerce-subscriptions/includes/gifting/class-wcs-gifting.php",
           "wp-content/plugins/woocommerce-subscriptions/includes/gifting/class-wcsg-checkout.php",
+          "wp-content/plugins/woocommerce-subscriptions/includes/apfs/class-wcs-att-product.php",
+          "wp-content/plugins/woocommerce-subscriptions/includes/apfs/class-wcs-att-cart.php",
+          "wp-content/plugins/woocommerce-subscriptions/includes/apfs/class-wcs-att-order.php",
+          "wp-content/plugins/woocommerce-subscriptions/includes/apfs/api/class-wcs-att-store-api.php",
           "wp-content/plugins/woocommerce-subscriptions/src/Internal/HealthCheck/",
           "wp-content/plugins/woocommerce-subscriptions/src/Internal/Queue_Management/",
           "wp-content/plugins/woocommerce-subscriptions/src/Internal/Abilities/"
@@ -5472,9 +5506,57 @@
       "has_examples": false,
       "has_scripts": false,
       "skill_md": {
-        "bytes": 22365,
-        "lines": 245,
-        "sha256": "29486859e287c9e9a28a3320aa2357888c810f889f35e017de7370ff5009f4e2"
+        "bytes": 25059,
+        "lines": 271,
+        "sha256": "776139902b4498ffe4f73991d12fb0a60f9dfbe619db5f249dc68a4814a875a1"
+      }
+    },
+    {
+      "slug": "wcs-subscription-plans-apfs",
+      "name": "wcs-subscription-plans-apfs",
+      "domain": "woocommerce",
+      "description": "Build or audit WooCommerce Subscriptions 9.0+ All Products for Subscriptions / Subscription Plans integrations. Covers the bundled APFS loader, standalone-plugin bypass, storewide and product plans, `_wcsatt_schemes_status`, `_wcsatt_schemes`, `wcsatt_subscribe_to_cart_schemes`, `wcsatt_data.active_subscription_scheme`, `_wcsatt_scheme`, plan REST endpoints, `woocommerce_is_subscription`, Store API validation, gifting support, bulk edit, and safe extension hooks. Use when any Woo product can be sold one-time, subscription, or both without being a `subscription` product type.",
+      "path": "woocommerce/wcs-subscription-plans-apfs",
+      "skill_path": "woocommerce/wcs-subscription-plans-apfs/SKILL.md",
+      "url": "https://raw.githubusercontent.com/Lonsdale201/wp-agent-skills/main/woocommerce/wcs-subscription-plans-apfs/SKILL.md",
+      "raw_url": "https://raw.githubusercontent.com/Lonsdale201/wp-agent-skills/main/woocommerce/wcs-subscription-plans-apfs/SKILL.md",
+      "html_url": "https://github.com/Lonsdale201/wp-agent-skills/blob/main/woocommerce/wcs-subscription-plans-apfs/SKILL.md",
+      "directory_url": "https://github.com/Lonsdale201/wp-agent-skills/tree/main/woocommerce/wcs-subscription-plans-apfs",
+      "metadata": {
+        "author": "Soczó Kristóf",
+        "contact": "mailto:lonsdale201@hotmail.com",
+        "plugin": "woocommerce-subscriptions",
+        "plugin-version-tested": "9.0.0",
+        "php-min": "7.4",
+        "last-updated": "2026-06-29",
+        "docs": [
+          "https://woocommerce.com/document/all-products-for-woocommerce-subscriptions/"
+        ],
+        "source-refs": [
+          "wp-content/plugins/woocommerce-subscriptions/includes/class-wc-subscriptions-plugin.php",
+          "wp-content/plugins/woocommerce-subscriptions/includes/apfs/woocommerce-all-products-for-subscriptions.php",
+          "wp-content/plugins/woocommerce-subscriptions/includes/apfs/class-wcs-att-scheme.php",
+          "wp-content/plugins/woocommerce-subscriptions/includes/apfs/class-wcs-att-product.php",
+          "wp-content/plugins/woocommerce-subscriptions/includes/apfs/product/class-wcs-att-product-schemes.php",
+          "wp-content/plugins/woocommerce-subscriptions/includes/apfs/class-wcs-att-cart.php",
+          "wp-content/plugins/woocommerce-subscriptions/includes/apfs/class-wcs-att-order.php",
+          "wp-content/plugins/woocommerce-subscriptions/includes/apfs/api/class-wcs-att-store-api.php",
+          "wp-content/plugins/woocommerce-subscriptions/includes/apfs/admin/class-wcs-att-plans-manager.php",
+          "wp-content/plugins/woocommerce-subscriptions/includes/apfs/admin/class-wcs-att-rest-plans-controller.php",
+          "wp-content/plugins/woocommerce-subscriptions/includes/apfs/admin/class-wcs-att-rest-product-plans-controller.php",
+          "wp-content/plugins/woocommerce-subscriptions/includes/core/class-wc-subscriptions-extend-store-endpoint.php",
+          "wp-content/plugins/woocommerce/src/StoreApi/Routes/V1/CartAddItem.php",
+          "wp-content/plugins/woocommerce-subscriptions/src/Internal/Products/BulkActions.php"
+        ]
+      },
+      "resources": [],
+      "has_reference": false,
+      "has_examples": false,
+      "has_scripts": false,
+      "skill_md": {
+        "bytes": 17042,
+        "lines": 323,
+        "sha256": "ea0b975937d0d80493c74c35532fb8b810c165aa46d5fc7a7736955d01e573be"
       }
     },
     {

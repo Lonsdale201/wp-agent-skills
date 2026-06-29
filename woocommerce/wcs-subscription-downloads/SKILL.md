@@ -13,9 +13,11 @@ description: WooCommerce Subscriptions built-in Subscription Downloads
 author: Soczó Kristóf
 contact: mailto:lonsdale201@hotmail.com
 plugin: woocommerce-subscriptions
-plugin-version-tested: "8.8.1"
+plugin-version-tested: "9.0.0"
 php-min: "7.4"
-last-updated: "2026-06-14"
+last-updated: "2026-06-29"
+docs:
+  - https://woocommerce.com/document/subscriptions/develop/
 source-refs:
   - wp-content/plugins/woocommerce-subscriptions/changelog.txt
   - wp-content/plugins/woocommerce-subscriptions/includes/class-wc-subscriptions-plugin.php

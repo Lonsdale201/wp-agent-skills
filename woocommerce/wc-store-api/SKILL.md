@@ -1,12 +1,12 @@
 ---
 name: wc-store-api
-description: Build against the WooCommerce Store API (`/wp-json/wc/store/v1`) for shopper-facing products, cart, checkout, Cart/Checkout Blocks, and headless carts. Covers route choice, Nonce header (`wp_create_nonce('wc_store_api')`) vs Cart-Token, Store API sessions/CORS/rate limits, `woocommerce_store_api_register_endpoint_data`, `/cart/extensions` + `extensionCartUpdate`, payment requirements, product query pitfalls such as `related`, and when to use WC REST `wc/v4` instead. Use when adding checkout-block data, Store API calls, custom cart state, Store API payment availability, or headless cart/checkout behavior.
+description: Build against the WooCommerce Store API (`/wp-json/wc/store/v1`) for shopper-facing products, cart, checkout, Cart/Checkout Blocks, and headless carts. Covers route choice, Nonce header (`wp_create_nonce('wc_store_api')`) vs Cart-Token, Store API sessions/CORS/rate limits, `woocommerce_store_api_register_endpoint_data`, `/cart/extensions` + `extensionCartUpdate`, `woocommerce_store_api_add_to_cart_data`, payment requirements, WC 10.8+ deferred checkout draft-order creation, WCS 9.0 subscription-plan validation, product query pitfalls such as `related`, and when to use WC REST `wc/v4` instead. Use when adding checkout-block data, Store API calls, custom cart state, Store API payment availability, or headless cart/checkout behavior.
 author: Soczó Kristóf
 contact: mailto:lonsdale201@hotmail.com
 plugin: woocommerce
-plugin-version-tested: "10.8.0"
+plugin-version-tested: "10.9.1"
 php-min: "7.4"
-last-updated: "2026-05-26"
+last-updated: "2026-06-29"
 docs:
   - https://developer.woocommerce.com/docs/apis/store-api/
   - https://developer.woocommerce.com/docs/apis/store-api/nonce-tokens/
@@ -19,11 +19,15 @@ source-refs:
   - wp-content/plugins/woocommerce/src/StoreApi/Schemas/ExtendSchema.php
   - wp-content/plugins/woocommerce/src/StoreApi/functions.php
   - wp-content/plugins/woocommerce/src/StoreApi/Routes/V1/CartExtensions.php
+  - wp-content/plugins/woocommerce/src/StoreApi/Routes/V1/CartAddItem.php
+  - wp-content/plugins/woocommerce/src/StoreApi/Routes/V1/Checkout.php
   - wp-content/plugins/woocommerce/src/StoreApi/Schemas/V1/CartExtensionsSchema.php
   - wp-content/plugins/woocommerce/src/StoreApi/Utilities/CartController.php
   - wp-content/plugins/woocommerce/src/StoreApi/Utilities/ProductQuery.php
   - wp-content/plugins/woocommerce/src/StoreApi/Routes/V1/Products.php
   - wp-content/plugins/woocommerce/assets/client/blocks/wc-blocks-data.js
+  - wp-content/plugins/woocommerce-subscriptions/includes/core/class-wc-subscriptions-extend-store-endpoint.php
+  - wp-content/plugins/woocommerce-subscriptions/includes/apfs/api/class-wcs-att-store-api.php
 ---
 
 # WooCommerce Store API
@@ -47,7 +51,7 @@ Trigger when ANY of the following is true:
 - Adding extension data under `extensions.<namespace>` to cart items, cart, checkout, or products.
 - Mutating custom cart state from block checkout via `/cart/extensions` or `extensionCartUpdate`.
 - Filtering payment-method availability for block checkout with Store API payment requirements.
-- The diff contains `woocommerce_store_api_register_endpoint_data`, `woocommerce_store_api_register_update_callback`, `woocommerce_store_api_register_payment_requirements`, `Cart-Token`, `wc_store_api`, or `extensionCartUpdate`.
+- The diff contains `woocommerce_store_api_register_endpoint_data`, `woocommerce_store_api_register_update_callback`, `woocommerce_store_api_register_payment_requirements`, `woocommerce_store_api_add_to_cart_data`, `Cart-Token`, `wc_store_api`, or `extensionCartUpdate`.
 
 ## Mental model
 
@@ -199,6 +203,21 @@ await extensionCartUpdate( {
 
 `/cart/extensions` loads the cart, runs your callback with `data`, recalculates totals, and returns the updated cart response. In WC 10.8, `overwriteDirtyCustomerData` can be a boolean or an object with `shipping_address` / `billing_address` booleans, so extensions can avoid overwriting the shopper's unsaved address edits independently.
 
+## Checkout draft order timing in WC 10.8+
+
+WC 10.8+ defers Store API draft order creation. A checkout `PATCH` can update live customer/session state without a `WC_Order` existing yet.
+
+Use the right hook for the lifecycle point:
+
+| Need | Hook | Order exists? |
+|---|---|---|
+| Observe every checkout form interaction | `woocommerce_store_api_checkout_update_draft` | No. Read `$request`, `WC()->cart`, `WC()->customer`, and `WC()->session`. |
+| First time the draft/checkout order is materialized | `woocommerce_store_api_checkout_order_created` | Yes. Fires at POST place-order time in WC 10.8+. |
+| Copy session/request extension state to the real order | `woocommerce_store_api_checkout_update_order_meta` | Yes. |
+| Need both order and request during POST checkout | `woocommerce_store_api_checkout_update_order_from_request` | Yes. |
+
+Do not call `$request['order_id']`, query a draft order, or expect `woocommerce_store_api_checkout_order_created` to fire during the first PATCH. Persist pre-order extension state to the session, then write order meta when the POST checkout path creates/updates the order.
+
 ## Payment requirements
 
 Payment requirements are extra cart-wide support flags. Store API merges your returned strings with the default requirement `products` and compares them against each gateway's `$supports` array.
@@ -241,9 +260,23 @@ woocommerce_store_api_product_quantity_editable
 
 Each receives the value, `WC_Product $product`, and optional `$cart_item`.
 
-## Product endpoint notes for 10.8
+## WCS 9.0 subscription plans in Store API
 
-`GET /wc/store/v1/products` is public and cache-sensitive. WC 10.8 fixed transient bloat caused by arbitrary product IDs in the `related` query parameter. In 10.8 source, `related` is an integer product ID, sanitized with `absint`, and invalid/non-visible products throw `woocommerce_rest_product_not_found`.
+WooCommerce Subscriptions 9.0 bundles All Products for Subscriptions / Subscription Plans. APFS does not expose plan CRUD under `/wc/store/v1`; plan management uses authenticated WC REST `wc/v3` routes.
+
+Store API relevance is validation:
+
+- `woocommerce_store_api_validate_cart_item` validates each cart item's selected plan.
+- `woocommerce_store_api_checkout_update_order_meta` validates checkout against the current cart.
+- Invalid/missing plans throw `woocommerce_store_api_subscription_plan_invalid`.
+
+Headless clients must preserve the selected APFS plan when adding or updating cart items. Classic APFS reads `convert_to_sub_<product_id>` or `convert_to_sub` from `$_REQUEST` and stores the selected key in cart item data under `wcsatt_data.active_subscription_scheme`.
+
+For JSON Store API add-to-cart requests, bridge request params into `cart_item_data` with `woocommerce_store_api_add_to_cart_data`; Store API core does not pass arbitrary JSON fields into cart item data automatically. Use `wcs-subscription-plans-apfs` for the bridge snippet and full APFS contract.
+
+## Product endpoint notes for 10.8+
+
+`GET /wc/store/v1/products` is public and cache-sensitive. WC 10.8 fixed transient bloat caused by arbitrary product IDs in the `related` query parameter. In 10.9.1 source, `related` is still an integer product ID, sanitized with `absint`, and invalid/non-visible products throw `woocommerce_rest_product_not_found`.
 
 Rules:
 
@@ -264,6 +297,7 @@ Rules:
 - **Do not subclass internal Store API route classes for plugin endpoints.** Use `register_rest_route()` for your own routes; use Store API helpers only where WC exposes extension points.
 - **Do not disable nonce checks outside local/dev testing.** `woocommerce_store_api_disable_nonce_check` is a development escape hatch, not production configuration.
 - **Use Store API rate-limit hooks for public write-heavy Store API flows.** `woocommerce_store_api_rate_limit_options`, `woocommerce_store_api_rate_limit_id`, and `woocommerce_store_api_rate_limit_exceeded` affect Store API requests; unrelated custom REST routes need their own limits.
+- **Do not expect a checkout `WC_Order` during PATCH in WC 10.8+.** Use session/cart/customer state until POST checkout creates the real order.
 
 ## Cross-references
 
@@ -271,6 +305,7 @@ Rules:
 - Run **`wc-customer-and-sessions`** when code uses `WC()->session`, `WC()->customer`, or needs to understand frontend/REST session bootstrapping.
 - Run **`wc-payment-gateway`** when Store API payment requirements intersect with a gateway's `$supports` and `process_payment()`.
 - Run **`wc-hpos-compatibility`** when checkout/order code stores custom order meta.
+- Run **`wcs-subscription-plans-apfs`** when Store API cart items can contain WCS 9.0 subscription-plan selections.
 - Run **`wp-rest-api`** when creating custom plugin endpoints outside Store API.
 
 ## What this skill does NOT cover
@@ -288,7 +323,11 @@ Rules:
 - Extending Store API data: <https://developer.woocommerce.com/docs/apis/store-api/extending-store-api/extend-store-api-add-data/>.
 - Route registration: [wp-content/plugins/woocommerce/src/StoreApi/RoutesController.php](RoutesController.php).
 - Cart route headers/session/nonce rules: [wp-content/plugins/woocommerce/src/StoreApi/Routes/V1/AbstractCartRoute.php](AbstractCartRoute.php).
+- Checkout deferred draft-order hooks: [wp-content/plugins/woocommerce/src/StoreApi/Routes/V1/Checkout.php](Checkout.php).
 - Store API authentication/CORS/rate limit logic: [wp-content/plugins/woocommerce/src/StoreApi/Authentication.php](Authentication.php).
 - Extension helpers: [wp-content/plugins/woocommerce/src/StoreApi/functions.php](functions.php) and [wp-content/plugins/woocommerce/src/StoreApi/Schemas/ExtendSchema.php](ExtendSchema.php).
 - `/cart/extensions`: [wp-content/plugins/woocommerce/src/StoreApi/Routes/V1/CartExtensions.php](CartExtensions.php) and [wp-content/plugins/woocommerce/src/StoreApi/Schemas/V1/CartExtensionsSchema.php](CartExtensionsSchema.php).
+- Add-to-cart request data bridge: [wp-content/plugins/woocommerce/src/StoreApi/Routes/V1/CartAddItem.php](CartAddItem.php) — `woocommerce_store_api_add_to_cart_data`.
 - Product `related` query handling: [wp-content/plugins/woocommerce/src/StoreApi/Routes/V1/Products.php](Products.php) and [wp-content/plugins/woocommerce/src/StoreApi/Utilities/ProductQuery.php](ProductQuery.php).
+- WCS subscription data in Store API responses: [wp-content/plugins/woocommerce-subscriptions/includes/core/class-wc-subscriptions-extend-store-endpoint.php](class-wc-subscriptions-extend-store-endpoint.php).
+- WCS APFS Store API validation: [wp-content/plugins/woocommerce-subscriptions/includes/apfs/api/class-wcs-att-store-api.php](class-wcs-att-store-api.php).

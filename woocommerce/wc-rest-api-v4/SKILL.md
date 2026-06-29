@@ -10,15 +10,16 @@ description: Use the WooCommerce REST API v4 (namespace wc/v4, since WC 10.2)
   and is NOT a public extension surface; plugin-defined REST routes use
   WP_REST_Controller directly. Use when calling WC REST endpoints, when
   picking v3 vs v4, or when reviewing /wc/v3/ URLs that now have v4
-  equivalents. Triggers on wc/v4, /wc/v4/, woocommerce_rest_api_v4_*,
+  equivalents; notes WCS 9.0 subscription-plan endpoints that remain wc/v3.
+  Triggers on wc/v4, /wc/v4/, woocommerce_rest_api_v4_*,
   RestApiCache, customer-owned Woo endpoints, REST API v4 in WooCommerce
   context.
 author: Soczó Kristóf
 contact: mailto:lonsdale201@hotmail.com
 plugin: woocommerce
-plugin-version-tested: "10.8.0"
+plugin-version-tested: "10.9.1"
 php-min: "7.4"
-last-updated: "2026-05-26"
+last-updated: "2026-06-29"
 docs:
   - https://woocommerce.com/document/woocommerce-rest-api/
 source-refs:
@@ -30,11 +31,13 @@ source-refs:
   - wp-content/plugins/woocommerce/src/Internal/Traits/RestApiCache.php
   - wp-content/plugins/woocommerce/src/StoreApi/RoutesController.php
   - wp-content/plugins/woocommerce-subscriptions/includes/api/class-wc-rest-subscriptions-controller.php
+  - wp-content/plugins/woocommerce-subscriptions/includes/apfs/admin/class-wcs-att-rest-plans-controller.php
+  - wp-content/plugins/woocommerce-subscriptions/includes/apfs/admin/class-wcs-att-rest-product-plans-controller.php
 ---
 
 # WooCommerce REST API v4
 
-A second-major-version of the WC REST API, introduced in WC 10.2 (2025) and expanded through 10.8. It coexists with v3 — neither replaces the other — and adds capabilities the v3 surface lacked: per-route response caching, ID-sortable customer list, DELETE on shipping zones / methods, payment gateway PUT with top-level fields, fulfillments CRUD, per-group settings endpoints, and stricter 10.8 order/product response behavior.
+A second-major-version of the WC REST API, introduced in WC 10.2 (2025) and expanded through 10.9. It coexists with v3 — neither replaces the other — and adds capabilities the v3 surface lacked: per-route response caching, ID-sortable customer list, DELETE on shipping zones / methods, payment gateway PUT with top-level fields, fulfillments CRUD, per-group settings endpoints, and stricter 10.8+ order/product response behavior.
 
 This skill is the **up-to-date reference for AI assistants whose training data predates v4**. Default behavior of LLMs is to write `/wc/v3/...` URLs and v3 controller patterns. Many of those endpoints exist in v4 with cleaner shapes, additional verbs, and per-endpoint cache headers — and a few v4 endpoints have NO v3 counterpart.
 
@@ -58,7 +61,7 @@ Trigger when ANY of the following is true:
 - Debugging "why is my v3 customers query slow" — v4 added caching infrastructure for these.
 - The diff or file contains: `/wc/v4/`, `wc/v4`, `woocommerce_rest_api_v4_*`, `AbstractController` in WC context, `RestApiCache`, `with_cache(`.
 
-## Route catalog (verified in WC 10.8 source)
+## Route catalog (verified in WC 10.9.1 source)
 
 All routes live under namespace `wc/v4`. Verified by directory listing of [wp-content/plugins/woocommerce/src/Internal/RestApi/Routes/V4/](V4/).
 
@@ -141,6 +144,7 @@ Important surfaces:
 | Saved payment methods | Woo account form/query handlers + `WC_Payment_Tokens` | No complete customer REST CRUD; wrap token APIs yourself. |
 | Stripe card setup | Stripe Gateway AJAX + SetupIntent helpers | Browser/account flow exists; custom REST must verify SetupIntent/customer server-side. |
 | Subscriptions CRUD | WCS `/wc/v3/subscriptions` | Admin/server API; customer routes should enforce ownership and allowed transitions. |
+| Subscription Plans | WCS `/wc/v3/subscriptions/storewide-plans` and `/wc/v3/products/<id>/subscription-plans` | WCS 9.0 APFS plan management; not a v4 route. |
 | Subscription switch | WCS switcher cart/checkout flow | No simple REST endpoint; wrap the switch flow, do not raw-update line items/meta. |
 | Membership access | Memberships objects/hooks | Expose only current user's membership state unless admin. |
 
@@ -265,6 +269,7 @@ The endpoint surface is REST-conventional — same query params (`per_page`, `or
 - **V4 products can omit sensitive fields depending on capabilities.** Missing `downloads`, `purchase_note`, `cost_of_goods_sold`, or `meta_data` is expected for under-privileged users.
 - **The `RestApiCache` trait is internal**. Don't rely on its existence in plugin code; it's WC's mechanism for its own routes.
 - **Authentication is unchanged from v3.** Cookie + X-WP-Nonce, Basic Auth with WC API keys, Application Passwords, OAuth 1.0a — all the same.
+- **Do not move WCS 9.0 Subscription Plans to `/wc/v4`.** Storewide/product plan CRUD is registered by WCS under `/wc/v3/...`.
 
 ## Common mistakes
 
@@ -307,6 +312,7 @@ header( 'X-WC-Cache: HIT' ); // your endpoint can't fake this for clients
 - Run **`wp-rest-api`** for the broader WP REST API patterns — `register_rest_route`, `permission_callback`, args schema. Plugin-defined REST routes belong here, NOT under WC's v4 namespace.
 - Run **`wc-shipping-providers`** when working with the v4 fulfillments / providers endpoints — the AbstractShippingProvider class is the data shape behind those routes.
 - Run **`wc-hpos-compatibility`** when v4 order endpoints are involved — order data goes through HPOS by default in WC 10.x.
+- Run **`wcs-subscription-plans-apfs`** for WCS 9.0 `/wc/v3/subscriptions/storewide-plans` and `/wc/v3/products/<id>/subscription-plans`.
 
 ## What this skill does NOT cover
 
@@ -323,4 +329,5 @@ header( 'X-WC-Cache: HIT' ); // your endpoint can't fake this for clients
 - Concrete controllers: [wp-content/plugins/woocommerce/src/Internal/RestApi/Routes/V4/](V4/) — directory listing is the authoritative route catalog.
 - `RestApiCache` trait: [wp-content/plugins/woocommerce/src/Internal/Traits/RestApiCache.php](RestApiCache.php) — `@since 10.5.0`.
 - V4 products controller sensitivity check: [wp-content/plugins/woocommerce/src/Internal/RestApi/Routes/V4/Products/Controller.php](Controller.php) — `SENSITIVE_FIELDS`.
-- WC REST API official docs: <https://woocommerce.com/document/woocommerce-rest-api/> — covers v3; v4 documentation has not yet been consolidated as of WC 10.8. Trust source-verified routes over outdated public docs.
+- WC REST API official docs: <https://woocommerce.com/document/woocommerce-rest-api/> — covers v3; v4 documentation has not yet been consolidated as of WC 10.9.1. Trust source-verified routes over outdated public docs.
+- WCS APFS storewide/product plan controllers: [wp-content/plugins/woocommerce-subscriptions/includes/apfs/admin/](admin/) — registered under namespace `wc/v3`.

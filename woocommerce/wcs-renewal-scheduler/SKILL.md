@@ -13,13 +13,18 @@ description: Safely integrate with WooCommerce Subscriptions renewal,
 author: Soczó Kristóf
 contact: mailto:lonsdale201@hotmail.com
 plugin: woocommerce-subscriptions
-plugin-version-tested: "8.8.1"
+plugin-version-tested: "9.0.0"
 php-min: "7.4"
-last-updated: "2026-06-14"
+last-updated: "2026-06-29"
+docs:
+  - https://woocommerce.com/document/subscriptions/develop/
 source-refs:
+  - wp-content/plugins/woocommerce-subscriptions/includes/core/class-wc-subscription.php
   - wp-content/plugins/woocommerce-subscriptions/includes/core/class-wcs-action-scheduler.php
   - wp-content/plugins/woocommerce-subscriptions/includes/core/abstracts/abstract-wcs-scheduler.php
   - wp-content/plugins/woocommerce-subscriptions/includes/core/class-wc-subscriptions-manager.php
+  - wp-content/plugins/woocommerce-subscriptions/includes/core/wcs-time-functions.php
+  - wp-content/plugins/woocommerce-subscriptions/includes/class-wcs-api.php
   - wp-content/plugins/woocommerce-subscriptions/includes/gateways/class-wc-subscriptions-payment-gateways.php
   - wp-content/plugins/woocommerce-subscriptions/includes/payment-retry/class-wcs-retry-manager.php
   - wp-content/plugins/woocommerce-subscriptions/includes/core/class-wc-subscriptions-change-payment-gateway.php
@@ -98,6 +103,26 @@ try {
 }
 ```
 
+## WCS 9.0 date validation details
+
+WCS 9.0 keeps the same public rule: use `WC_Subscription::update_dates()` or `update_valid_dates()`. Two source-verified edge cases matter for integrations:
+
+- `prepare_dates_for_update()` compares `next_payment` against `trial_end` at minute resolution. If both land in the same visible minute, WCS treats that as valid instead of rejecting the edit over hidden seconds.
+- Admin schedule editor text now correctly tells merchants that next payment must be after the trial end.
+
+Practical import rule: normalize external schedule dates to UTC `Y-m-d H:i:s`, but do not add arbitrary seconds just to make trial end and next payment different. If your system only stores minute precision, pass the minute value and let WCS validate it.
+
+WCS 9.0 also guards period-label helpers when a plugin filters out a period key:
+
+```php
+$label = wcs_get_subscription_period_strings( 1, 'week' );
+if ( '' === $label ) {
+    return; // The period was removed by woocommerce_subscription_periods.
+}
+```
+
+The trial label helper `wcs_get_subscription_trial_length_label()` returns an empty string for missing/invalid periods and renders one-period trials with an explicit number.
+
 ## Force a renewal safely
 
 Prefer triggering WCS's normal scheduled-payment action when you want "run the renewal flow now":
@@ -136,6 +161,8 @@ add_filter( 'wcs_renewal_order_created', function ( WC_Order $renewal_order, WC_
     return $renewal_order;
 }, 10, 2 );
 ```
+
+REST order API caution in WCS 9.0: when WooCommerce REST updates renewal, resubscribe, or switch order line items, WCS no longer reapplies the product sign-up fee to those line totals. If your integration edits those order types through REST, preserve existing WCS relation meta and do not add sign-up fees again in your own `woocommerce_rest_set_order_item` callback.
 
 ## Gateway recurring charge hook
 

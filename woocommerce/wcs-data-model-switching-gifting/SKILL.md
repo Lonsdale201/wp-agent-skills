@@ -4,19 +4,23 @@ description: WooCommerce Subscriptions data model, switcher, and gifting
   reference for exact order type names, product type slugs, subscription
   meta keys, schedule/date keys, related-order relation meta, switch cart
   data, switch order data, switched item types/meta, proration hooks, and
-  WCS Gifting recipient storage. Use when code reads or writes
+  WCS Gifting recipient storage, plus WCS 9.0 APFS subscription-plan
+  storage for ordinary products. Use when code reads or writes
   shop_subscription, subscription, variable-subscription,
   subscription_variation, _billing_period, _schedule_next_payment,
   _subscription_switch_data, _subscription_switch, subscription_switch,
   _switched_subscription_item_id, wcsg_gift_recipients_email,
-  _recipient_user, _recipient_user_email_address, wcsg_recipient, or when
+  _recipient_user, _recipient_user_email_address, wcsg_recipient,
+  _wcsatt_schemes_status, _wcsatt_schemes, _wcsatt_scheme, or when
   an agent needs the full WooCommerce Subscriptions switcher/gifting flow.
 author: Soczo Kristof
 contact: mailto:lonsdale201@hotmail.com
 plugin: woocommerce-subscriptions
-plugin-version-tested: "8.8.1"
+plugin-version-tested: "9.0.0"
 php-min: "7.4"
-last-updated: "2026-06-14"
+last-updated: "2026-06-29"
+docs:
+  - https://woocommerce.com/document/subscriptions/develop/
 source-refs:
   - wp-content/plugins/woocommerce-subscriptions/includes/core/class-wc-subscriptions-core-plugin.php
   - wp-content/plugins/woocommerce-subscriptions/includes/core/class-wc-subscription.php
@@ -28,6 +32,10 @@ source-refs:
   - wp-content/plugins/woocommerce-subscriptions/includes/switching/class-wc-subscriptions-switcher.php
   - wp-content/plugins/woocommerce-subscriptions/includes/switching/class-wcs-switch-totals-calculator.php
   - wp-content/plugins/woocommerce-subscriptions/includes/downloads/
+  - wp-content/plugins/woocommerce-subscriptions/includes/apfs/class-wcs-att-product.php
+  - wp-content/plugins/woocommerce-subscriptions/includes/apfs/product/class-wcs-att-product-schemes.php
+  - wp-content/plugins/woocommerce-subscriptions/includes/apfs/class-wcs-att-cart.php
+  - wp-content/plugins/woocommerce-subscriptions/includes/apfs/class-wcs-att-order.php
   - wp-content/plugins/woocommerce-subscriptions/includes/gifting/class-wcs-gifting.php
   - wp-content/plugins/woocommerce-subscriptions/includes/gifting/class-wcsg-product.php
   - wp-content/plugins/woocommerce-subscriptions/includes/gifting/class-wcsg-cart.php
@@ -92,6 +100,25 @@ Subscription product data lives on `product` or `product_variation` posts.
 | `_subscription_payment_sync_date` | Renewal synchronization setting. |
 
 Use `WC_Subscriptions_Product` helpers such as `get_price()`, `get_period()`, `get_interval()`, `get_length()`, `get_trial_length()`, `get_sign_up_fee()`, and `get_gifting()`.
+
+## APFS / Subscription Plans storage in WCS 9.0+
+
+All Products for Subscriptions is bundled into WooCommerce Subscriptions 9.0 as Subscription Plans. It can make ordinary product types behave as subscriptions through runtime meta and `woocommerce_is_subscription`.
+
+| Storage | Key | Purpose |
+|---|---|---|
+| Option | `wcsatt_subscribe_to_cart_schemes` | Storewide plan definitions. |
+| Product meta | `_wcsatt_schemes_status` | Product purchase mode: `disable`, `override`, or `inherit`. |
+| Product meta | `_wcsatt_schemes` | Product-specific custom plans in override mode. |
+| Product meta | `_wcsatt_storewide_selection_mode` | `all` or `specific` storewide plan selection. |
+| Product meta | `_wcsatt_selected_storewide_plans` | Storewide plan IDs allowed for a specific product. |
+| Product meta | `_wcsatt_force_subscription` | `yes` means disable one-time purchase when plans are active. |
+| Product meta | `_wcsatt_disabled` | Legacy one-time-only flag maintained for compatibility. |
+| Cart item data | `wcsatt_data.active_subscription_scheme` | Selected plan key, `false` for one-time, `null` for undefined/default. |
+| Order item meta | `_wcsatt_scheme` | Selected plan key persisted on order/subscription line items. |
+| Order item meta | `_wcsatt_scheme_id` | Legacy APFS plan key. |
+
+Use `WCS_ATT_Product::get_subscription_scheme_mode()`, `WCS_ATT_Product::set_subscription_scheme_mode()`, `WCS_ATT_Product_Schemes::get_subscription_schemes()`, `WCS_ATT_Cart::get_subscription_scheme()`, and `WCS_ATT_Order::get_subscription_scheme()`. Do not infer APFS plans from the native `_subscription_*` product meta table above; APFS sets WCS-compatible values as runtime meta when a scheme is active.
 
 ## Related order relation meta
 
@@ -276,6 +303,7 @@ Product giftability:
 
 - Global enablement comes from WCSG admin settings.
 - Product-level override is `_subscription_gifting`: `enabled`, `disabled`, or empty for global.
+- In WCS 9.0 APFS, the Subscription Plans product panel can also write the product-level gifting override while saving ordinary products sold via plans.
 - Variable subscription parent returns giftable to render UI; each variation decides final `gifting` variation data.
 - Product page gifting UI is suppressed during switching (`switch-subscription` query arg).
 
@@ -315,6 +343,7 @@ $recipient_id = WCS_Gifting::get_recipient_user( $subscription );
 ## Cross-references
 
 - Use `wcs-subscription-hooks` for general lifecycle hook selection.
+- Use `wcs-subscription-plans-apfs` for the full WCS 9.0 Subscription Plans / APFS plan API, REST endpoints, and headless cart behavior.
 - Use `wcs-renewal-scheduler` for renewal dates, Action Scheduler, and payment retry timing.
 - Use `wcs-subscription-downloads` for linked downloadable products, download permission grants/revokes, and the subscription downloads mapping table.
 - Use `wcm-data-model-subscriptions-link` for Memberships CPT/meta and the Memberships-to-Subscriptions relation.

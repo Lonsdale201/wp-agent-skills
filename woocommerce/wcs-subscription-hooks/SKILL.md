@@ -4,20 +4,22 @@ description: Curated WooCommerce Subscriptions hook and extension-point map
   for choosing the right action/filter around WC_Subscription creation,
   status transitions, date changes, renewal orders, scheduled payments,
   payment retries, gateway events, switching, gifting, related orders,
-  REST/API responses, and account/admin UI. Use when the user asks for a
+  APFS subscription plans, REST/API responses, and account/admin UI. Use when the user asks for a
   Woo Subscriptions hook list, "where should I hook", "after renewal",
   "subscription status changed", or when code contains WC_Subscription,
   wcs_create_subscription, wcs_create_renewal_order,
   woocommerce_scheduled_subscription_payment, wcs_renewal_order_created,
   payment_retry, wcs_get_subscriptions, wcsg_, subscription_switch,
-  _subscription_switch_data, _recipient_user, wcsg_recipient, or
-  subscription switching.
+  _subscription_switch_data, _recipient_user, wcsg_recipient, WCS_ATT,
+  wcsatt_, _wcsatt_scheme, convert_to_sub, or subscription switching.
 author: Soczó Kristóf
 contact: mailto:lonsdale201@hotmail.com
 plugin: woocommerce-subscriptions
-plugin-version-tested: "8.8.1"
+plugin-version-tested: "9.0.0"
 php-min: "7.4"
-last-updated: "2026-06-14"
+last-updated: "2026-06-29"
+docs:
+  - https://woocommerce.com/document/subscriptions/develop/
 source-refs:
   - wp-content/plugins/woocommerce-subscriptions/includes/core/wcs-functions.php
   - wp-content/plugins/woocommerce-subscriptions/includes/core/class-wc-subscription.php
@@ -31,6 +33,10 @@ source-refs:
   - wp-content/plugins/woocommerce-subscriptions/includes/switching/class-wcs-cart-switch.php
   - wp-content/plugins/woocommerce-subscriptions/includes/gifting/class-wcs-gifting.php
   - wp-content/plugins/woocommerce-subscriptions/includes/gifting/class-wcsg-checkout.php
+  - wp-content/plugins/woocommerce-subscriptions/includes/apfs/class-wcs-att-product.php
+  - wp-content/plugins/woocommerce-subscriptions/includes/apfs/class-wcs-att-cart.php
+  - wp-content/plugins/woocommerce-subscriptions/includes/apfs/class-wcs-att-order.php
+  - wp-content/plugins/woocommerce-subscriptions/includes/apfs/api/class-wcs-att-store-api.php
   - wp-content/plugins/woocommerce-subscriptions/src/Internal/HealthCheck/
   - wp-content/plugins/woocommerce-subscriptions/src/Internal/Queue_Management/
   - wp-content/plugins/woocommerce-subscriptions/src/Internal/Abilities/
@@ -74,6 +80,8 @@ Subscription prop meta keys include `_billing_period`, `_billing_interval`, `_su
 Related order meta keys are `_subscription_renewal`, `_subscription_switch`, and `_subscription_resubscribe`.
 
 Switch cart items store `subscription_switch` cart item data. Gift cart items store `wcsg_gift_recipients_email`; gifted subscriptions use `_recipient_user_email_address` and `_recipient_user`, with parent order item meta `wcsg_recipient`.
+
+WCS 9.0 bundles All Products for Subscriptions / Subscription Plans. APFS-selected plans store cart state under `wcsatt_data.active_subscription_scheme` and order item state under `_wcsatt_scheme`. Ordinary simple/variable products can be reported as subscriptions through the `woocommerce_is_subscription` filter when a plan is active.
 
 ## Core hook map
 
@@ -150,6 +158,23 @@ WCS uses Action Scheduler with group `wc_subscription_scheduled_event`, but the 
 | Gifting product/checkout | `wcsg_enable_gifting`, `wcsg_is_enabled_for_all_products`, `wcsg_is_giftable_product`, `wcsg_cart_item_data` | Control whether gifting is available and persisted in cart. |
 | Gifting recipient | `wcsg_recipient_details_updated`, `woocommerce_subscriptions_gifting_recipient_changed` | Sync recipient changes. |
 
+## Subscription Plans / APFS hooks in WCS 9.0+
+
+| Need | Hook/filter | Use |
+|---|---|---|
+| Make ordinary products subscription-like | `woocommerce_is_subscription` | APFS hooks this so simple/variable/variation products with active plans participate in WCS logic. Do not override without preserving APFS result. |
+| Add product type support | `wcsatt_supported_product_types` | Add only product types whose pricing/cart behavior you have tested with WCS recurring logic. |
+| Change default product APFS mode | `woocommerce_subscriptions_default_product_subscription_scheme_mode` | Default is `disable`; alternatives are `override` or `inherit`. |
+| Filter product plans | `wcsatt_product_subscription_schemes` | Adjust resolved local/storewide plans for a product. |
+| Filter cart item plans | `wcsatt_cart_item_subscription_schemes` | Adjust plans available in a specific cart context. |
+| Observe active scheme set | `wcsatt_set_product_subscription_scheme` | Runtime product object hook; not a database save hook. |
+| Storewide plan REST save | `wcsatt_processed_cart_scheme_data` | Add custom plan fields before `wcsatt_subscribe_to_cart_schemes` is persisted. |
+| Product plan REST save | `wcsatt_processed_scheme_data` | Add custom plan fields before `_wcsatt_schemes` is persisted. |
+| Store API cart validation | `woocommerce_store_api_validate_cart_item` | APFS throws `woocommerce_store_api_subscription_plan_invalid` when a selected plan is invalid. |
+| Store API checkout validation | `woocommerce_store_api_checkout_update_order_meta` | APFS validates selected plans when the real Store API checkout order exists. |
+
+Use `wcs-subscription-plans-apfs` for storage, REST endpoints, cart data, and headless request details.
+
 ## Gateway hooks
 
 | Need | Hook | Type | Args | Use |
@@ -177,7 +202,7 @@ Use `wcs-health-check-processing` for implementation details and debugging patte
 
 ## Abilities API caveat
 
-WCS 8.8 includes read-only Abilities API classes under `src/Internal/Abilities`, but registration is gated by `woocommerce_subscriptions_abilities_enabled` and defaults to `false`. The registrar also requires WooCommerce Core's 10.9 `AbilitiesLoader`. Do not assume these abilities exist on ordinary WCS 8.8.1 installs, and do not build a production integration that depends on them unless your plugin explicitly controls that feature gate and Core version.
+WCS includes read-only Abilities API classes under `src/Internal/Abilities`, but registration is gated by `woocommerce_subscriptions_abilities_enabled` and defaults to `false`. The registrar also requires WooCommerce Core's 10.9 `AbilitiesLoader`. Do not assume these abilities exist on ordinary WCS installs, and do not build a production integration that depends on them unless your plugin explicitly controls that feature gate and Core version.
 
 ## Customer action guardrails
 
@@ -239,6 +264,7 @@ add_action( 'woocommerce_subscription_renewal_payment_complete', function ( WC_S
 ## Cross-references
 
 - Run `wcs-data-model-switching-gifting` when exact Subscriptions meta names, product type slugs, switch payloads, switched item meta/types, or WCS Gifting recipient storage matters.
+- Run `wcs-subscription-plans-apfs` when ordinary Woo products can be sold as subscriptions via WCS 9.0 Subscription Plans / APFS.
 - Run `wcs-renewal-scheduler` for changes to next payment dates, renewal order creation, scheduled actions, or payment retry timing.
 - Run `wcs-health-check-processing` for WCS 8.8 Health Check, Resolve actions, dedicated processing, and web-cron queue support.
 - Run `wc-hpos-compatibility` if the integration queries orders/subscriptions directly.
