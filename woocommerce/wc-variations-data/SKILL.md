@@ -20,7 +20,7 @@ contact: mailto:lonsdale201@hotmail.com
 plugin: woocommerce
 plugin-version-tested: "10.x"
 php-min: "7.4"
-last-updated: "2026-04-29"
+last-updated: "2026-06-29"
 docs:
   - https://github.com/woocommerce/woocommerce/wiki/Product-Variations
   - https://woocommerce.com/document/managing-product-variations/
@@ -255,16 +255,7 @@ if ( current( $prices['price'] ) < 10 ) { /* ... */ }
 $prices = $variable->get_variation_prices( false );
 if ( (float) current( $prices['price'] ) < 10 ) { /* ... */ }
 
-// WRONG — bulk import without sync
-foreach ( $rows as $row ) {
-    $v = new WC_Product_Variation();
-    $v->set_parent_id( $row['parent_id'] );
-    $v->set_regular_price( $row['price'] );
-    $v->save();
-}
-// 1000 variations imported; parent lookup rows / stock aggregation can be stale.
-
-// RIGHT — sync each parent once after the loop
+// RIGHT — in bulk imports, sync each parent once after the loop
 $touched_parents = array();
 foreach ( $rows as $row ) {
     $v = new WC_Product_Variation();
@@ -277,26 +268,14 @@ foreach ( array_keys( $touched_parents ) as $parent_id ) {
     wc_delete_product_transients( $parent_id );
     WC_Product_Variable::sync( $parent_id );
 }
-
-// WRONG — assuming parent stock applies to every variation
-$variable->set_manage_stock( true );
-$variable->set_stock_quantity( 100 );
-// Only variations with manage_stock=no inherit this. Variations with manage_stock=yes
-// keep using their own stock quantity.
-
-// WRONG — querying via WP_Query, missing data-store caches
-$ids = get_posts( array(
-    'post_type' => 'product_variation',
-    'post_parent' => $parent_id,
-    'fields' => 'ids',
-) );
-// RIGHT
-$ids = wc_get_product( $parent_id )->get_children();
 ```
+
+Also avoid: assuming parent stock applies to variation-managed stock, and querying child variations via `WP_Query` / `get_posts` in hot paths instead of `$variable->get_children()`.
 
 ## Cross-references
 
 - Run **`wc-variations-pricing-filters`** for the price filter chain (`woocommerce_product_variation_get_price`, `woocommerce_variation_prices_price`, etc.) — when a plugin needs to mutate variation prices via filters rather than direct CRUD.
+- Run **`wc-variation-gallery`** for WooCommerce 10.9+ native variation gallery data (`gallery_image_ids`, `gallery_images_html`, REST v3 gallery payloads, and Additional Variation Images migration).
 - Run **`wc-product-search-select`** when the UI needs an admin product picker — `woocommerce_json_search_products_and_variations` returns variation IDs alongside parent products.
 - Run **`wp-plugin-cron`** for batch imports — cron callbacks scheduled idempotently are the right place for bulk variation operations.
 
@@ -304,7 +283,7 @@ $ids = wc_get_product( $parent_id )->get_children();
 
 - The price filter chain. Mutating variation prices via filters (without changing stored data) is a separate topic — see `wc-variations-pricing-filters`.
 - The frontend variation switching UX (`found_variation` JS event, AJAX swatch / dropdown logic). That's frontend territory; this skill is data-layer.
-- Variation image handling beyond `set_image_id()`. The image gallery / shared-image inheritance has its own quirks.
+- Variation image handling beyond `set_image_id()`. Native variation galleries are covered by `wc-variation-gallery`.
 - Grouped products and external products — different post types, different rules.
 - WC subscriptions variations (subscription products + variation pricing) — covered by the WC Subscriptions plugin, not core.
 - Product attributes registration / management — orthogonal topic; variations consume already-existing attributes.

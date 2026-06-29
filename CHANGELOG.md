@@ -32,6 +32,24 @@ One new `woocommerce/` skill for the **WooCommerce Subscriptions 9.0** Subscript
 - `woocommerce/README.md` — "WooCommerce Subscriptions" table grew a `wcs-subscription-plans-apfs` row.
 - `skills-index.json` regenerated (`skill_count` 151 → 152; `woocommerce` domain 26 → 27). `domain_count` unchanged at 16 — existing domain, so no allowlist changes were needed.
 
+### WooCommerce 10.9 variation swatches + variation gallery
+
+Two new `woocommerce/` skills for the experimental WooCommerce 10.9 product-display features — visual attribute swatches and native per-variation galleries — plus a refresh of `wc-variations-data` to cross-link them. Both features are experimental and **disabled by default** in 10.9.1; the skills lead with feature-gating, prefer public WP/Woo APIs over the `@internal` core classes, and are grounded in source line references against the tested version.
+
+### New skills (WooCommerce 10.9.1 / WP 7.0)
+
+- **`woocommerce/wc-variation-gallery`** — Build or audit WooCommerce 10.9+ native variation galleries (the merged Additional Variation Images feature). Covers the experimental `variation_gallery` feature option `wc_feature_woocommerce_additional_variation_images_enabled`, the split storage model (primary image stays in `set_image_id()` / `_thumbnail_id`, extras go to `set_gallery_image_ids()` → `_product_image_gallery`, with the primary excluded from the gallery list), CRUD-over-raw-meta read/write helpers with per-parent `wc_delete_product_transients()` + `WC_Product_Variable::sync()` after bulk imports, REST v3 `gallery_image_ids` array writes (Woo strips the primary before saving), the classic `variable.php` gallery-swap contract (`gallery_images_html`, `window.wc_variation_gallery_defaults`, the 10.9.0 reset-snapshot block, and the `wc-product-gallery-before-destroy` / `-before-init` / `-after-init` events), admin field model, and safe legacy `_wc_additional_variation_images` migration (batched via Action Scheduler group `woocommerce-db-updates`; don't delete legacy meta). `plugin: woocommerce`, `plugin-version-tested: "10.9.1"`, `php-min: "7.4"`.
+- **`woocommerce/wc-product-attribute-swatches`** — Build or audit WooCommerce 10.9+ visual attribute swatches. Covers the experimental `wc-visual` attribute type (feature ID `wc-visual-attribute`, option `woocommerce_feature_wc_visual_attribute_enabled`, gated to block themes unless a visual attribute already exists), the data model (global `pa_*` attribute taxonomy with mutually-exclusive `color` hex / `image` attachment-ID term meta — image wins, core deletes the other key), safe public-API read/write helpers that avoid the `@internal` `VisualAttributeTermMeta`, Store API opt-in reads (`__experimental_visual=true` → `__experimentalVisual`, image returns a URL not an attachment object), and the classic-theme pattern of appending accessible `<button>` swatches via `woocommerce_dropdown_variation_attribute_options_html` that drive — never replace — the native `attribute_pa_*` select. Corrects the "swatches are stored on variations" misconception (in core 10.9.1 the data is attribute-term meta). `plugin: woocommerce`, `plugin-version-tested: "10.9.1"`, `php-min: "7.4"`.
+
+### Updated skill
+
+- **`woocommerce/wc-variations-data`** — `last-updated` refreshed to 2026-06-29. Condensed the common-mistakes code block (folded the bulk-import / parent-stock / `WP_Query`-children antipatterns into tighter prose) and added cross-references to the new `wc-variation-gallery` skill, including routing native variation-image handling there from the "What this skill does NOT cover" section.
+
+### Repo / docs
+
+- `woocommerce/README.md` — "WooCommerce core" table grew two rows (`wc-variation-gallery`, `wc-product-attribute-swatches`).
+- `skills-index.json` regenerated (`skill_count` 152 → 154; `woocommerce` domain 27 → 29). `domain_count` unchanged at 16 — existing domain, no allowlist changes needed.
+
 ## 2026-06-17
 
 ### New domain — `dev-tooling/` (testing & QA tooling)

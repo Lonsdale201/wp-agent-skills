@@ -12,7 +12,7 @@
     "skill_file": "SKILL.md"
   },
   "domain_count": 16,
-  "skill_count": 152,
+  "skill_count": 154,
   "domains": [
     {
       "slug": "better-data",
@@ -96,7 +96,7 @@
       "slug": "woocommerce",
       "path": "woocommerce",
       "readme_path": "woocommerce/README.md",
-      "skill_count": 27
+      "skill_count": 29
     },
     {
       "slug": "wordpress",
@@ -4778,6 +4778,52 @@
       }
     },
     {
+      "slug": "wc-product-attribute-swatches",
+      "name": "wc-product-attribute-swatches",
+      "domain": "woocommerce",
+      "description": "Build or audit WooCommerce 10.9+ product attribute swatch integrations around the experimental `wc-visual` attribute type. Covers feature-flag gating, global `pa_*` attribute taxonomy type, color/image term meta, Store API `__experimental_visual` / `__experimentalVisual`, classic variation dropdown fallbacks, and safe plugin/theme rendering. Use when code or requests mention variation swatches, visual attributes, `wc-visual`, `wc_visual_attribute_type`, `term_color`, `term_image`, `__experimental_visual`, `ProductAttributeTerms`, or custom swatch UI.",
+      "path": "woocommerce/wc-product-attribute-swatches",
+      "skill_path": "woocommerce/wc-product-attribute-swatches/SKILL.md",
+      "url": "https://raw.githubusercontent.com/Lonsdale201/wp-agent-skills/main/woocommerce/wc-product-attribute-swatches/SKILL.md",
+      "raw_url": "https://raw.githubusercontent.com/Lonsdale201/wp-agent-skills/main/woocommerce/wc-product-attribute-swatches/SKILL.md",
+      "html_url": "https://github.com/Lonsdale201/wp-agent-skills/blob/main/woocommerce/wc-product-attribute-swatches/SKILL.md",
+      "directory_url": "https://github.com/Lonsdale201/wp-agent-skills/tree/main/woocommerce/wc-product-attribute-swatches",
+      "metadata": {
+        "author": "Soczó Kristóf",
+        "contact": "mailto:lonsdale201@hotmail.com",
+        "plugin": "woocommerce",
+        "plugin-version-tested": "10.9.1",
+        "php-min": "7.4",
+        "last-updated": "2026-06-29",
+        "docs": [
+          "https://woocommerce.com/document/variable-product/",
+          "https://developer.woocommerce.com/docs/apis/store-api/"
+        ],
+        "source-refs": [
+          "wp-content/plugins/woocommerce/includes/wc-attribute-functions.php",
+          "wp-content/plugins/woocommerce/src/Internal/Features/FeaturesController.php",
+          "wp-content/plugins/woocommerce/src/Internal/ProductAttributes/VisualAttributeTermMeta.php",
+          "wp-content/plugins/woocommerce/src/Internal/ProductAttributes/VisualAttributeTermAdmin.php",
+          "wp-content/plugins/woocommerce/src/StoreApi/Routes/V1/ProductAttributeTerms.php",
+          "wp-content/plugins/woocommerce/src/StoreApi/Schemas/V1/ProductAttributeTermSchema.php",
+          "wp-content/plugins/woocommerce/src/Blocks/BlockTypes/AddToCartWithOptions/VariationSelectorAttribute.php",
+          "wp-content/plugins/woocommerce/src/Blocks/BlockTypes/ProductFilterAttribute.php",
+          "wp-content/plugins/woocommerce/includes/admin/meta-boxes/views/html-product-attribute-inner.php",
+          "wp-content/plugins/woocommerce/includes/wc-template-functions.php",
+          "wp-content/plugins/woocommerce/templates/single-product/add-to-cart/variable.php"
+        ]
+      },
+      "resources": [],
+      "has_reference": false,
+      "has_examples": false,
+      "has_scripts": false,
+      "skill_md": {
+        "bytes": 13694,
+        "lines": 300,
+        "sha256": "9ffa3dfb0ae72d97cd0a5725bdc4fb51b193266b415674a0deef91e44c8c8d1a"
+      }
+    },
+    {
       "slug": "wc-product-search-select",
       "name": "wc-product-search-select",
       "domain": "woocommerce",
@@ -5044,6 +5090,51 @@
       }
     },
     {
+      "slug": "wc-variation-gallery",
+      "name": "wc-variation-gallery",
+      "domain": "woocommerce",
+      "description": "Build or audit WooCommerce 10.9+ native variation gallery integrations. Covers the experimental `variation_gallery` feature flag, variation `image` vs `gallery_image_ids`, `_product_image_gallery` storage, REST v3 variation payloads, classic product gallery replacement/reset behavior, theme override compatibility, and Additional Variation Images legacy migration. Use when code mentions variation galleries, multiple variation images, `set_gallery_image_ids`, `gallery_images_html`, `gallery_image_ids`, `wc_feature_woocommerce_additional_variation_images_enabled`, `_wc_additional_variation_images`, or `wc-product-gallery-before-destroy`.",
+      "path": "woocommerce/wc-variation-gallery",
+      "skill_path": "woocommerce/wc-variation-gallery/SKILL.md",
+      "url": "https://raw.githubusercontent.com/Lonsdale201/wp-agent-skills/main/woocommerce/wc-variation-gallery/SKILL.md",
+      "raw_url": "https://raw.githubusercontent.com/Lonsdale201/wp-agent-skills/main/woocommerce/wc-variation-gallery/SKILL.md",
+      "html_url": "https://github.com/Lonsdale201/wp-agent-skills/blob/main/woocommerce/wc-variation-gallery/SKILL.md",
+      "directory_url": "https://github.com/Lonsdale201/wp-agent-skills/tree/main/woocommerce/wc-variation-gallery",
+      "metadata": {
+        "author": "Soczó Kristóf",
+        "contact": "mailto:lonsdale201@hotmail.com",
+        "plugin": "woocommerce",
+        "plugin-version-tested": "10.9.1",
+        "php-min": "7.4",
+        "last-updated": "2026-06-29",
+        "docs": [
+          "https://woocommerce.com/document/managing-product-variations/"
+        ],
+        "source-refs": [
+          "wp-content/plugins/woocommerce/src/Internal/VariationGallery/Package.php",
+          "wp-content/plugins/woocommerce/src/Internal/VariationGallery/ClassicVariationGalleryAdmin.php",
+          "wp-content/plugins/woocommerce/src/Internal/VariationGallery/LegacyVariationGalleryCompatibility.php",
+          "wp-content/plugins/woocommerce/src/Internal/VariationGallery/Migration.php",
+          "wp-content/plugins/woocommerce/src/Internal/Features/FeaturesController.php",
+          "wp-content/plugins/woocommerce/includes/class-wc-product-variable.php",
+          "wp-content/plugins/woocommerce/includes/rest-api/Controllers/Version3/class-wc-rest-product-variations-controller.php",
+          "wp-content/plugins/woocommerce/includes/data-stores/class-wc-product-variation-data-store-cpt.php",
+          "wp-content/plugins/woocommerce/includes/wc-template-functions.php",
+          "wp-content/plugins/woocommerce/templates/single-product/add-to-cart/variable.php",
+          "wp-content/plugins/woocommerce/assets/js/frontend/add-to-cart-variation.js"
+        ]
+      },
+      "resources": [],
+      "has_reference": false,
+      "has_examples": false,
+      "has_scripts": false,
+      "skill_md": {
+        "bytes": 10557,
+        "lines": 197,
+        "sha256": "a6d1301148966e9caf4ca8131721ef4a3e96bedfd20be0aea8c3d0f7b89949e0"
+      }
+    },
+    {
       "slug": "wc-variations-data",
       "name": "wc-variations-data",
       "domain": "woocommerce",
@@ -5060,7 +5151,7 @@
         "plugin": "woocommerce",
         "plugin-version-tested": "10.x",
         "php-min": "7.4",
-        "last-updated": "2026-04-29",
+        "last-updated": "2026-06-29",
         "docs": [
           "https://github.com/woocommerce/woocommerce/wiki/Product-Variations",
           "https://woocommerce.com/document/managing-product-variations/"
@@ -5078,9 +5169,9 @@
       "has_examples": false,
       "has_scripts": false,
       "skill_md": {
-        "bytes": 18243,
-        "lines": 319,
-        "sha256": "96d8bd368ef2deb7b825925ac0febec2ca6b1d4ddf5866f29b2154f8b3b70e70"
+        "bytes": 17836,
+        "lines": 298,
+        "sha256": "6c1293166812c009cfaeae8b73c8b930f61fe1827a53a320fba6e2c34991f259"
       }
     },
     {
