@@ -15,9 +15,9 @@ description: Make a WooCommerce plugin HPOS-compatible (High-Performance
 author: Soczó Kristóf
 contact: mailto:lonsdale201@hotmail.com
 plugin: woocommerce
-plugin-version-tested: "10.8.0"
+plugin-version-tested: "10.9.1"
 php-min: "7.4"
-last-updated: "2026-05-26"
+last-updated: "2026-06-29"
 docs:
   - https://developer.woocommerce.com/docs/hpos/
   - https://github.com/woocommerce/woocommerce/wiki/High-Performance-Order-Storage-Upgrade-Recipe-Book
@@ -30,6 +30,7 @@ source-refs:
   - wp-content/plugins/woocommerce/src/Internal/DataStores/Orders/OrdersTableQuery.php
   - wp-content/plugins/woocommerce/includes/wc-update-functions.php
   - wp-content/plugins/woocommerce/src/Admin/Features/Fulfillments/FulfillmentsRenderer.php
+  - wp-content/plugins/woocommerce-subscriptions/includes/core/class-wc-subscriptions-order.php
 ---
 
 # WooCommerce HPOS compatibility
@@ -262,6 +263,27 @@ WooCommerce 10.8 did not change the plugin-author contract above, but it changed
 
 Practical rule: if you must diagnose raw SQL performance, inspect the live schema (`SHOW INDEX FROM {$wpdb->prefix}wc_orders_meta`) instead of copying index assumptions from older docs. Plugin code should still use `wc_get_orders`, `wc_get_order`, and `WC_Order` meta APIs.
 
+### WCS 9.0 related-order query args under HPOS
+
+WooCommerce Subscriptions 9.0 translates these friendly `wc_get_orders()` args under HPOS:
+
+```php
+$renewal_orders = wc_get_orders( array(
+    'subscription_renewal' => $subscription_id, // true, false, scalar ID, or array of IDs
+    'limit'                => 20,
+) );
+```
+
+Supported WCS relation args:
+
+| Arg | Meta key |
+|---|---|
+| `subscription_renewal` | `_subscription_renewal` |
+| `subscription_switch` | `_subscription_switch` |
+| `subscription_resubscribe` | `_subscription_resubscribe` |
+
+This is not a WooCommerce core order-query contract by itself. It exists when WooCommerce Subscriptions is active. Under HPOS WCS maps these args into a meta query on the order tables; under legacy CPT storage the older CPT-specific mapper handles them. Prefer WCS helper functions such as `wcs_get_subscriptions_for_order()` and `wcs_get_subscription_ids_for_order()` when you are starting from an order object.
+
 ## Critical rules
 
 - **Declare compatibility on `before_woocommerce_init`** with feature_id `'custom_order_tables'`. Without it, your plugin shows up as "HPOS Incompatible" and blocks the toggle.
@@ -372,7 +394,7 @@ The four greps catch ~90% of HPOS regressions in a typical legacy plugin.
 - The site-owner's decision on when to enable HPOS / migrate. That's an admin / ops topic, not a plugin author's concern.
 - Custom data store implementation (`WC_Data_Store::register`) — niche, separate skill territory if it grows.
 - Order CRUD performance tuning beyond "use the abstraction".
-- WC subscriptions / memberships specific HPOS quirks — those plugins have their own compatibility layers.
+- Deep Subscriptions / Memberships data models — those plugins have their own compatibility layers. This skill only calls out the WCS 9.0 related-order query args because they directly affect HPOS order queries.
 - Schema details of `wp_wc_orders*` tables for direct read access. The official guidance is "don't"; if you must, read the source under [src/Internal/DataStores/Orders/](Orders/).
 - The Cart / Checkout blocks compatibility (`'cart_checkout_blocks'` feature) — adjacent topic, separate skill if needed.
 
@@ -385,3 +407,4 @@ The four greps catch ~90% of HPOS regressions in a typical legacy plugin.
 - HPOS data store implementations: [wp-content/plugins/woocommerce/src/Internal/DataStores/Orders/](Orders/).
 - WC 10.8 HPOS index migration: [wp-content/plugins/woocommerce/includes/wc-update-functions.php](wc-update-functions.php) — `wc_update_10802_restore_orders_meta_key_value_index`.
 - `COTMigrationUtil::get_order_admin_screen`: [wp-content/plugins/woocommerce/src/Internal/Utilities/COTMigrationUtil.php:53](COTMigrationUtil.php) — confirms `'shop_order'` (legacy) vs `'woocommerce_page_wc-orders'` (HPOS) screen IDs.
+- WCS 9.0 subscription relation args under HPOS: [wp-content/plugins/woocommerce-subscriptions/includes/core/class-wc-subscriptions-order.php](class-wc-subscriptions-order.php) — `add_subscription_relation_meta_query()`.

@@ -7,20 +7,21 @@ description: Customize WooCommerce transactional emails the classic
   register via the woocommerce_email_classes filter. Plus the canonical
   template-override pattern (copy templates/emails/*.php to your theme's
   /woocommerce/emails/ folder; wc_get_template resolves them automatically),
-  and the get_default_subject / get_default_heading override pattern for
+  WC 10.9 transactional email logging hooks, and the get_default_subject / get_default_heading override pattern for
   admin-customizable strings. Use when adding a new transactional email
   (custom shipped notification, vendor split, internal alert), overriding
   an existing template, or customizing strings that the admin Settings
   cannot reach. Triggers on WC_Email, woocommerce_email_classes,
-  woocommerce_order_status_*_notification, wc_get_template_html,
+  woocommerce_order_status_*_notification, woocommerce_email_sent,
+  woocommerce_email_skipped, woocommerce_email_disabled, wc_get_template_html,
   template_html / template_plain in WC context, "transactional email"
   / "send WooCommerce email programmatically".
 author: Soczó Kristóf
 contact: mailto:lonsdale201@hotmail.com
 plugin: woocommerce
-plugin-version-tested: "10.8.0"
+plugin-version-tested: "10.9.1"
 php-min: "7.4"
-last-updated: "2026-05-26"
+last-updated: "2026-06-29"
 docs:
   - https://woocommerce.com/document/template-structure/
 source-refs:
@@ -29,6 +30,7 @@ source-refs:
   - wp-content/plugins/woocommerce/includes/emails/class-wc-email-customer-processing-order.php
   - wp-content/plugins/woocommerce/includes/emails/class-wc-email-customer-review-request.php
   - wp-content/plugins/woocommerce/includes/wc-core-functions.php
+  - wp-content/plugins/woocommerce/src/Internal/Email/EmailLogger.php
   - wp-content/plugins/woocommerce/templates/emails/
 ---
 
@@ -256,6 +258,26 @@ Notes:
 - `woocommerce_email_display_order_number` is applied by both HTML and plain order-details templates, so it is the safer way to hide the order number than overriding both files.
 - The new Customer Review Request email (`customer_review_request`) is feature-gated, disabled by default, scheduled through Action Scheduler, and triggered via `woocommerce_send_review_request_notification`. It has dedicated filters such as `woocommerce_should_send_review_request` and `woocommerce_review_request_delay_seconds`; do not reimplement the scheduling if you only need to adjust eligibility or timing.
 
+## WC 10.9 transactional email logging
+
+WooCommerce 10.9 registers `Automattic\WooCommerce\Internal\Email\EmailLogger` during WooCommerce bootstrap. It listens to the email outcome hooks fired by `WC_Email::send()` and writes WooCommerce logger entries with source `transactional-emails`.
+
+Observable hooks:
+
+| Hook | Args | Meaning |
+|---|---|---|
+| `woocommerce_email_sent` | `bool $success, string $email_id, WC_Email $email` | A send was attempted; `false` means `wp_mail()` failed. |
+| `woocommerce_email_disabled` | `string $email_id, WC_Email $email` | The email was disabled before send. |
+| `woocommerce_email_skipped` | `string $reason, string $email_id, WC_Email $email` | Woo skipped send, commonly because no recipient exists. |
+
+Logging filters:
+
+- `woocommerce_email_log_enabled` disables/enables logging per email.
+- `woocommerce_email_log_context` adjusts the logger context.
+- `woocommerce_email_log_add_order_note` controls private order-note creation for order-related emails.
+
+Do not use these hooks as the primary trigger for business logic. They are observability hooks after the email framework has already decided whether to send. For side effects, hook the underlying order/subscription/status event that caused the email.
+
 ## Critical rules
 
 - **Extend `WC_Email`, not `WP_Mail` or rolling your own.** The framework gives you Settings UI, locale switching, plain-text fallback, header/footer reuse for free.
@@ -267,6 +289,7 @@ Notes:
 - **`is_enabled()` + `get_recipient()` guard before `send()`.** Without it, disabled emails still fire and emails with empty recipients hard-error in `wp_mail`.
 - **Hook trigger() to `_notification`-suffixed actions** for WC status transitions. Don't bind to `woocommerce_order_status_<status>` (without `_notification`) — that fires earlier in the pipeline, before the order is fully saved.
 - **Use the 10.8 order-details filters before overriding templates** when the customization is just the order-summary heading or order-number visibility.
+- **Treat 10.9 email outcome hooks as logging/observability, not domain events.** They fire after `WC_Email::send()` has already evaluated enabled state and recipients.
 - **Templates in theme override plugin override WC core.** Document your template files as overridable; users will copy them into `theme/woocommerce/emails/`.
 
 ## Common mistakes
@@ -287,7 +310,7 @@ add_filter( 'woocommerce_email_classes', function ( $emails ) {
 
 // WRONG — calling parent::__construct first
 public function __construct() {
-    parent::__construct(); // BUG — reads $this->id before the child sets it
+    parent::__construct(); // reads $this->id before the child sets it
     $this->id = 'myplugin_custom';
 }
 

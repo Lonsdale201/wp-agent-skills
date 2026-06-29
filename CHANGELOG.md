@@ -2,6 +2,36 @@
 
 This collection is continuously evolving — entries are date-based, not version-tagged. New skills land when they're ready; updates go in when they cover real ground (a new release of an upstream plugin, a verified misconception, a corrected example).
 
+## 2026-06-29
+
+### WooCommerce Subscriptions 9.0 + WC 10.9.1 batch
+
+One new `woocommerce/` skill for the **WooCommerce Subscriptions 9.0** Subscription Plans feature (the former *All Products for Subscriptions* plugin, now bundled into WCS), plus a nine-skill refresh: the five WCS skills re-verified against **WCS 9.0.0** and four WooCommerce core skills re-verified against **WooCommerce 10.9.1**. The running theme of the batch is APFS — WCS 9.0 lets ordinary product types be sold as subscriptions via runtime meta and the `woocommerce_is_subscription` filter, so several skills gained cross-references and dedicated sections pointing at the new APFS skill.
+
+### New skill (woocommerce-subscriptions 9.0.0 / WP 7.0)
+
+- **`woocommerce/wcs-subscription-plans-apfs`** — Build or audit WCS 9.0+ All Products for Subscriptions / Subscription Plans integrations. Corrects the "APFS was merged into WooCommerce core" misconception (it is bundled into **WooCommerce Subscriptions**, and WCS skips the bundled subsystem if the standalone APFS plugin is active). Covers the `WC_Subscriptions_Plugin::init_apfs()` loader, product purchase mode (`disable` / `override` / `inherit`) vs plan pricing mode (`inherit` / `override` / `fixed_discount`), the full storage map (`wcsatt_subscribe_to_cart_schemes` option, `_wcsatt_schemes_status` / `_wcsatt_schemes` / `_wcsatt_storewide_selection_mode` / `_wcsatt_selected_storewide_plans` / `_wcsatt_force_subscription` product meta, `wcsatt_data.active_subscription_scheme` cart state with its string/`false`/`null` tri-state, `_wcsatt_scheme` order-item meta), the `WCS_ATT_Product` / `WCS_ATT_Product_Schemes` / `WCS_ATT_Cart` / `WCS_ATT_Order` helper APIs over raw `update_post_meta()`, the `wc/v3` storewide/product plan REST + reorder endpoints and their permission model, Store API validation (`woocommerce_store_api_validate_cart_item`, `woocommerce_store_api_subscription_plan_invalid`) plus the `woocommerce_store_api_add_to_cart_data` headless bridge, admin/bulk-edit fields, gifting, and the `wcsatt_*` extension hooks. `plugin: woocommerce-subscriptions`, `plugin-version-tested: "9.0.0"`, `php-min: "7.4"`.
+
+### Updated skills (WooCommerce Subscriptions 8.8.1 → 9.0.0)
+
+- **`woocommerce/wcs-subscription-hooks`** — `plugin-version-tested` 8.8.1 → 9.0.0. New "Subscription Plans / APFS hooks in WCS 9.0+" section (the `woocommerce_is_subscription` / `wcsatt_supported_product_types` / `wcsatt_product_subscription_schemes` / `wcsatt_cart_item_subscription_schemes` / `wcsatt_processed_*_scheme_data` and Store API validation hooks), a paragraph on APFS cart/order state, expanded triggers (`WCS_ATT`, `wcsatt_`, `_wcsatt_scheme`, `convert_to_sub`), APFS source-refs, and a cross-reference to the new skill. Abilities-API caveat de-versioned (no longer pinned to 8.8.1 phrasing).
+- **`woocommerce/wcs-data-model-switching-gifting`** — `plugin-version-tested` 8.8.1 → 9.0.0. New "APFS / Subscription Plans storage in WCS 9.0+" section with the full APFS storage-key table and helper-API guidance, an APFS gifting note (`_subscription_gifting` written from the Subscription Plans product panel), APFS source-refs, a `develop` docs link, and a cross-reference to the new skill.
+- **`woocommerce/wcs-renewal-scheduler`** — `plugin-version-tested` 8.8.1 → 9.0.0. New "WCS 9.0 date validation details" section (the minute-resolution `next_payment` vs `trial_end` comparison in `prepare_dates_for_update()`, and the period-label helper guards when `woocommerce_subscription_periods` removes a key), plus a REST caution that WCS 9.0 no longer reapplies sign-up fees when REST edits renewal / resubscribe / switch order line items. New source-refs and a `develop` docs link.
+- **`woocommerce/wcs-health-check-processing`** — `plugin-version-tested` 8.8.1 → 9.0.0 (re-verified on 9.0.0). Added a `develop` docs link.
+- **`woocommerce/wcs-subscription-downloads`** — `plugin-version-tested` 8.8.1 → 9.0.0 (re-verified on 9.0.0). Added a `develop` docs link.
+
+### Updated skills (WooCommerce 10.8.0 → 10.9.1)
+
+- **`woocommerce/wc-emails-classic`** — `plugin-version-tested` 10.8.0 → 10.9.1. New "WC 10.9 transactional email logging" section documenting `Automattic\WooCommerce\Internal\Email\EmailLogger` and the observable `woocommerce_email_sent` / `woocommerce_email_disabled` / `woocommerce_email_skipped` hooks plus the `woocommerce_email_log_enabled` / `_context` / `_add_order_note` logging filters — with the rule to treat these as observability, not domain-event triggers.
+- **`woocommerce/wc-hpos-compatibility`** — `plugin-version-tested` 10.8.0 → 10.9.1. New "WCS 9.0 related-order query args under HPOS" section: the friendly `wc_get_orders()` args WCS translates under HPOS (`subscription_renewal` / `subscription_switch` / `subscription_resubscribe` → `_subscription_*` meta), with the caveat that this is a WCS-provided contract, not a core order-query one. Scope note rewritten to call this out.
+- **`woocommerce/wc-rest-api-v4`** — `plugin-version-tested` 10.8.0 → 10.9.1; route catalog re-verified against 10.9.1 source. Documents that the WCS 9.0 Subscription Plans endpoints (`/wc/v3/subscriptions/storewide-plans`, `/wc/v3/products/<id>/subscription-plans`) stay on `wc/v3` and must **not** be moved to `wc/v4`. New source-refs and cross-reference to the APFS skill.
+- **`woocommerce/wc-store-api`** — `plugin-version-tested` 10.8.0 → 10.9.1. New "Checkout draft order timing in WC 10.8+" section (the deferred draft-order lifecycle and which hook fires when) and a "WCS 9.0 subscription plans in Store API" section (cart/checkout plan validation + the `woocommerce_store_api_add_to_cart_data` headless bridge). Expanded triggers/source-refs and a cross-reference to the APFS skill.
+
+### Repo / docs
+
+- `woocommerce/README.md` — "WooCommerce Subscriptions" table grew a `wcs-subscription-plans-apfs` row.
+- `skills-index.json` regenerated (`skill_count` 151 → 152; `woocommerce` domain 26 → 27). `domain_count` unchanged at 16 — existing domain, so no allowlist changes were needed.
+
 ## 2026-06-17
 
 ### New domain — `dev-tooling/` (testing & QA tooling)
