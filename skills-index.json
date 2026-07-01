@@ -11,8 +11,8 @@
     "layout": "<domain>/<skill>/SKILL.md",
     "skill_file": "SKILL.md"
   },
-  "domain_count": 16,
-  "skill_count": 154,
+  "domain_count": 17,
+  "skill_count": 160,
   "domains": [
     {
       "slug": "better-data",
@@ -67,6 +67,12 @@
       "path": "plugin-scaffold",
       "readme_path": "plugin-scaffold/README.md",
       "skill_count": 11
+    },
+    {
+      "slug": "polylang",
+      "path": "polylang",
+      "readme_path": "polylang/README.md",
+      "skill_count": 6
     },
     {
       "slug": "redis-object-cache",
@@ -3370,6 +3376,332 @@
         "bytes": 16987,
         "lines": 315,
         "sha256": "203d77007f1abbfd2282c8cdcc9666dcf099313aeb8926355d98d7df1a799179"
+      }
+    },
+    {
+      "slug": "polylang-language-api",
+      "name": "polylang-language-api",
+      "domain": "polylang",
+      "description": "Use Polylang 3.8.5 safely from WordPress plugins or classic themes. Covers guards, current/default language lookup, language fields and objects, language lists, localized home URLs, language switchers, translated post type/taxonomy registration, and common mistakes such as reading $_GET['lang'], assuming a current language exists in admin/REST/CLI, or hardcoding language URL prefixes. Use when code calls pll_current_language, pll_default_language, pll_languages_list, pll_the_languages, pll_home_url, pll_is_translated_post_type, pll_is_translated_taxonomy, pll_get_post_types, or pll_get_taxonomies.",
+      "path": "polylang/polylang-language-api",
+      "skill_path": "polylang/polylang-language-api/SKILL.md",
+      "url": "https://raw.githubusercontent.com/Lonsdale201/wp-agent-skills/main/polylang/polylang-language-api/SKILL.md",
+      "raw_url": "https://raw.githubusercontent.com/Lonsdale201/wp-agent-skills/main/polylang/polylang-language-api/SKILL.md",
+      "html_url": "https://github.com/Lonsdale201/wp-agent-skills/blob/main/polylang/polylang-language-api/SKILL.md",
+      "directory_url": "https://github.com/Lonsdale201/wp-agent-skills/tree/main/polylang/polylang-language-api",
+      "metadata": {
+        "author": "Soczo Kristof",
+        "contact": "mailto:lonsdale201@hotmail.com",
+        "plugin": "polylang",
+        "plugin-version-tested": "Polylang 3.8.5",
+        "wp-version-tested": "7.0",
+        "php-min": "7.4",
+        "last-updated": "2026-07-01",
+        "docs": [
+          "https://polylang.pro/doc/function-reference/",
+          "https://polylang.pro/doc/developpers-how-to/"
+        ],
+        "source-refs": [
+          "wp-content/plugins/polylang/polylang.php",
+          "wp-content/plugins/polylang/src/api.php",
+          "wp-content/plugins/polylang/src/switcher.php",
+          "wp-content/plugins/polylang/src/translated-post.php",
+          "wp-content/plugins/polylang/src/translated-term.php",
+          "wp-content/plugins/polylang/src/filter-rest-routes.php",
+          "wp-content/plugins/polylang/src/frontend/choose-lang.php"
+        ]
+      },
+      "resources": [
+        {
+          "path": "agents/openai.yaml",
+          "repo_path": "polylang/polylang-language-api/agents/openai.yaml",
+          "type": "resource",
+          "bytes": 263,
+          "sha256": "8dc0ed4b30cbb0727ae5668cd6971b78a2fe118f2f5e115d85932a1fafd29a86"
+        }
+      ],
+      "has_reference": false,
+      "has_examples": false,
+      "has_scripts": false,
+      "skill_md": {
+        "bytes": 7979,
+        "lines": 207,
+        "sha256": "4c775a3fa109be4ab3f04d217d910e421db0de4a8cc1d8b781033887d666371a"
+      }
+    },
+    {
+      "slug": "polylang-object-translations",
+      "name": "polylang-object-translations",
+      "domain": "polylang",
+      "description": "Create, read, link, and update translated posts and terms with Polylang 3.8.5. Covers pll_get_post, pll_get_term, pll_get_post_language, pll_get_term_language, pll_save_post_translations, pll_save_term_translations, pll_insert_post, pll_insert_term, pll_update_post, pll_update_term, translation group storage, language assignment order, media translation caveats, and why direct DB writes to language/post_translations/term_translations are unsafe. Use when a plugin imports multilingual content, syncs CPTs/taxonomies, maps IDs across languages, or repairs translation groups.",
+      "path": "polylang/polylang-object-translations",
+      "skill_path": "polylang/polylang-object-translations/SKILL.md",
+      "url": "https://raw.githubusercontent.com/Lonsdale201/wp-agent-skills/main/polylang/polylang-object-translations/SKILL.md",
+      "raw_url": "https://raw.githubusercontent.com/Lonsdale201/wp-agent-skills/main/polylang/polylang-object-translations/SKILL.md",
+      "html_url": "https://github.com/Lonsdale201/wp-agent-skills/blob/main/polylang/polylang-object-translations/SKILL.md",
+      "directory_url": "https://github.com/Lonsdale201/wp-agent-skills/tree/main/polylang/polylang-object-translations",
+      "metadata": {
+        "author": "Soczo Kristof",
+        "contact": "mailto:lonsdale201@hotmail.com",
+        "plugin": "polylang",
+        "plugin-version-tested": "Polylang 3.8.5",
+        "wp-version-tested": "7.0",
+        "php-min": "7.4",
+        "last-updated": "2026-07-01",
+        "docs": [
+          "https://polylang.pro/doc/function-reference/",
+          "https://polylang.pro/doc/developpers-how-to/"
+        ],
+        "source-refs": [
+          "wp-content/plugins/polylang/src/api.php",
+          "wp-content/plugins/polylang/src/translated-object.php",
+          "wp-content/plugins/polylang/src/translated-post.php",
+          "wp-content/plugins/polylang/src/translated-term.php",
+          "wp-content/plugins/polylang/src/crud-posts.php",
+          "wp-content/plugins/polylang/src/crud-terms.php",
+          "wp-content/plugins/polylang/src/translatable-object.php"
+        ]
+      },
+      "resources": [
+        {
+          "path": "agents/openai.yaml",
+          "repo_path": "polylang/polylang-object-translations/agents/openai.yaml",
+          "type": "resource",
+          "bytes": 257,
+          "sha256": "435cf33f1a9dbf2917b796d205c05837a5aaf1ae9f61645eed2350ec04e077fb"
+        }
+      ],
+      "has_reference": false,
+      "has_examples": false,
+      "has_scripts": false,
+      "skill_md": {
+        "bytes": 8637,
+        "lines": 275,
+        "sha256": "bbc7712ae1802736ad7a1821d4a5b9379f06a9849705a19d9e678be06a12d3d7"
+      }
+    },
+    {
+      "slug": "polylang-pro-slugs-sync-acf",
+      "name": "polylang-pro-slugs-sync-acf",
+      "domain": "polylang",
+      "description": "Work with Polylang Pro 3.8.5 features that affect plugin/theme compatibility: translated slugs, shared slugs, duplicate/sync post workflows, ACF Pro integration, translated ACF labels, ACF field translation strategies, import/export/machine-translation hooks, and sync metadata filters. Use when code touches rewrite slugs, custom permalink structures, duplicated translations, synchronized custom fields, ACF fields containing post/term/media IDs, ACF field groups, or hooks such as pll_translated_slugs, pll_sync_post_fields, pll_copy_post_metas, pll_translate_post_meta, pll_post_synchronized, pll_created_sync_post, or pll_enable_acf_labels_translation.",
+      "path": "polylang/polylang-pro-slugs-sync-acf",
+      "skill_path": "polylang/polylang-pro-slugs-sync-acf/SKILL.md",
+      "url": "https://raw.githubusercontent.com/Lonsdale201/wp-agent-skills/main/polylang/polylang-pro-slugs-sync-acf/SKILL.md",
+      "raw_url": "https://raw.githubusercontent.com/Lonsdale201/wp-agent-skills/main/polylang/polylang-pro-slugs-sync-acf/SKILL.md",
+      "html_url": "https://github.com/Lonsdale201/wp-agent-skills/blob/main/polylang/polylang-pro-slugs-sync-acf/SKILL.md",
+      "directory_url": "https://github.com/Lonsdale201/wp-agent-skills/tree/main/polylang/polylang-pro-slugs-sync-acf",
+      "metadata": {
+        "author": "Soczo Kristof",
+        "contact": "mailto:lonsdale201@hotmail.com",
+        "plugin": "polylang-pro",
+        "plugin-version-tested": "Polylang Pro 3.8.5",
+        "wp-version-tested": "7.0",
+        "php-min": "7.4",
+        "last-updated": "2026-07-01",
+        "docs": [
+          "https://polylang.pro/doc/developpers-how-to/",
+          "https://polylang.pro/doc/strings-translation/"
+        ],
+        "source-refs": [
+          "wp-content/plugins/polylang-pro/src/pro.php",
+          "wp-content/plugins/polylang-pro/src/modules/translate-slugs/translate-slugs-model.php",
+          "wp-content/plugins/polylang-pro/src/modules/share-slug/share-post-slug.php",
+          "wp-content/plugins/polylang-pro/src/modules/share-slug/share-term-slug.php",
+          "wp-content/plugins/polylang-pro/src/modules/sync-post/sync-post-model.php",
+          "wp-content/plugins/polylang-pro/src/modules/sync-post/sync-post.php",
+          "wp-content/plugins/polylang-pro/src/integrations/ACF/README.md",
+          "wp-content/plugins/polylang-pro/src/integrations/ACF/Main.php",
+          "wp-content/plugins/polylang-pro/src/integrations/ACF/Field_Settings.php",
+          "wp-content/plugins/polylang-pro/src/integrations/ACF/Dispatcher.php",
+          "wp-content/plugins/polylang-pro/src/integrations/ACF/Labels/Field_Groups.php"
+        ]
+      },
+      "resources": [
+        {
+          "path": "agents/openai.yaml",
+          "repo_path": "polylang/polylang-pro-slugs-sync-acf/agents/openai.yaml",
+          "type": "resource",
+          "bytes": 285,
+          "sha256": "20415dcaa7dcf0ffcc189807bb50be4835f64041f8b3c1c113e2b956375ed669"
+        }
+      ],
+      "has_reference": false,
+      "has_examples": false,
+      "has_scripts": false,
+      "skill_md": {
+        "bytes": 9560,
+        "lines": 251,
+        "sha256": "b2ae9190930f64115966b95847d42d5cd6dc014ba5544731b1ed93e689c2f552"
+      }
+    },
+    {
+      "slug": "polylang-rest-headless",
+      "name": "polylang-rest-headless",
+      "domain": "polylang",
+      "description": "Build or audit REST and headless integrations with Polylang 3.8.5, Polylang Pro 3.8.5, and Polylang for WooCommerce 2.2.2. Covers REST lang parameter behavior, pll/v1 languages, filterable REST routes, Pro lang/translations REST fields, pll_rest_api_post_types and pll_rest_api_taxonomies 3.8 format, pll/v1/translation and pll/v1/untranslated-posts, custom REST object-type detection, collection filtering, write permissions, and Woo REST product/order language behavior. Use when creating headless frontends, mobile clients, custom WP REST routes, or REST imports/updates for translated content.",
+      "path": "polylang/polylang-rest-headless",
+      "skill_path": "polylang/polylang-rest-headless/SKILL.md",
+      "url": "https://raw.githubusercontent.com/Lonsdale201/wp-agent-skills/main/polylang/polylang-rest-headless/SKILL.md",
+      "raw_url": "https://raw.githubusercontent.com/Lonsdale201/wp-agent-skills/main/polylang/polylang-rest-headless/SKILL.md",
+      "html_url": "https://github.com/Lonsdale201/wp-agent-skills/blob/main/polylang/polylang-rest-headless/SKILL.md",
+      "directory_url": "https://github.com/Lonsdale201/wp-agent-skills/tree/main/polylang/polylang-rest-headless",
+      "metadata": {
+        "author": "Soczo Kristof",
+        "contact": "mailto:lonsdale201@hotmail.com",
+        "plugin": "polylang + polylang-pro + polylang-wc",
+        "plugin-version-tested": "Polylang 3.8.5 + Polylang Pro 3.8.5 + Polylang for WooCommerce 2.2.2",
+        "wp-version-tested": "7.0",
+        "php-min": "7.4",
+        "last-updated": "2026-07-01",
+        "docs": [
+          "https://polylang.pro/doc/rest-api/",
+          "https://polylang.pro/doc/function-reference/"
+        ],
+        "source-refs": [
+          "wp-content/plugins/polylang/src/rest-request.php",
+          "wp-content/plugins/polylang/src/modules/REST/Request.php",
+          "wp-content/plugins/polylang/src/modules/REST/API.php",
+          "wp-content/plugins/polylang/src/modules/REST/V1/Languages.php",
+          "wp-content/plugins/polylang/src/filter-rest-routes.php",
+          "wp-content/plugins/polylang-pro/src/modules/rest/rest-api.php",
+          "wp-content/plugins/polylang-pro/src/modules/rest/Translatable/Abstract_object.php",
+          "wp-content/plugins/polylang-pro/src/modules/rest/Translated/Abstract_Object.php",
+          "wp-content/plugins/polylang-pro/src/modules/rest/V1/Translation.php",
+          "wp-content/plugins/polylang-pro/src/modules/rest/V1/Untranslated_Posts.php",
+          "wp-content/plugins/polylang-wc/src/modules/REST/Module.php",
+          "wp-content/plugins/polylang-wc/src/modules/REST/Translated/Product.php",
+          "wp-content/plugins/polylang-wc/src/modules/REST/Translated/Batch.php",
+          "wp-content/plugins/polylang-wc/src/modules/REST/Filtered/Order.php"
+        ]
+      },
+      "resources": [
+        {
+          "path": "agents/openai.yaml",
+          "repo_path": "polylang/polylang-rest-headless/agents/openai.yaml",
+          "type": "resource",
+          "bytes": 246,
+          "sha256": "a1b3168926fe958a8cb25cbe3e50e402155e2970deac5302d445e86d45605553"
+        }
+      ],
+      "has_reference": false,
+      "has_examples": false,
+      "has_scripts": false,
+      "skill_md": {
+        "bytes": 10477,
+        "lines": 282,
+        "sha256": "e3b2a3aba353fd693e77b18d196afd1f17185a7425fd26df87a8e955a6e4cc2a"
+      }
+    },
+    {
+      "slug": "polylang-strings-options",
+      "name": "polylang-strings-options",
+      "domain": "polylang",
+      "description": "Register and translate plugin/theme strings and option values with Polylang 3.8.5. Covers pll_register_string admin-only behavior, pll__, pll_e, pll_esc_html__, pll_esc_attr__, pll_translate_string, string context/name strategy, multiline strings, pll_sanitize_string_translation with the 3.8 previous-value argument, PLL_Translate_Option recursive option keys, raw option protection, and why dynamic/generated strings should not be registered as source strings. Use when a plugin stores labels, email copy, settings text, widget copy, or frontend options that site admins must translate in Polylang.",
+      "path": "polylang/polylang-strings-options",
+      "skill_path": "polylang/polylang-strings-options/SKILL.md",
+      "url": "https://raw.githubusercontent.com/Lonsdale201/wp-agent-skills/main/polylang/polylang-strings-options/SKILL.md",
+      "raw_url": "https://raw.githubusercontent.com/Lonsdale201/wp-agent-skills/main/polylang/polylang-strings-options/SKILL.md",
+      "html_url": "https://github.com/Lonsdale201/wp-agent-skills/blob/main/polylang/polylang-strings-options/SKILL.md",
+      "directory_url": "https://github.com/Lonsdale201/wp-agent-skills/tree/main/polylang/polylang-strings-options",
+      "metadata": {
+        "author": "Soczo Kristof",
+        "contact": "mailto:lonsdale201@hotmail.com",
+        "plugin": "polylang",
+        "plugin-version-tested": "Polylang 3.8.5",
+        "wp-version-tested": "7.0",
+        "php-min": "7.4",
+        "last-updated": "2026-07-01",
+        "docs": [
+          "https://polylang.pro/doc/function-reference/",
+          "https://polylang.pro/doc/strings-translation/"
+        ],
+        "source-refs": [
+          "wp-content/plugins/polylang/src/api.php",
+          "wp-content/plugins/polylang/src/admin/admin-strings.php",
+          "wp-content/plugins/polylang/src/settings/table-string.php",
+          "wp-content/plugins/polylang/src/translate-option.php",
+          "wp-content/plugins/polylang/src/base.php",
+          "wp-content/plugins/polylang-wc/src/strings.php"
+        ]
+      },
+      "resources": [
+        {
+          "path": "agents/openai.yaml",
+          "repo_path": "polylang/polylang-strings-options/agents/openai.yaml",
+          "type": "resource",
+          "bytes": 260,
+          "sha256": "1746b6238728e7e5a5359ca93faf5b2b5b90186111f3f2ef6d866940a894b0b3"
+        }
+      ],
+      "has_reference": false,
+      "has_examples": false,
+      "has_scripts": false,
+      "skill_md": {
+        "bytes": 9437,
+        "lines": 245,
+        "sha256": "73d441aff346b191edff9b70807b6e1a4a6dbe13bc806980673a4481045b9253"
+      }
+    },
+    {
+      "slug": "polylang-wc-compatibility",
+      "name": "polylang-wc-compatibility",
+      "domain": "polylang",
+      "description": "Build WooCommerce plugins and themes that are compatible with Polylang for WooCommerce 2.2.2. Covers product and variation language data stores, product/order translation groups, cart and Store API language behavior, HPOS order filtering, lang query behavior, SKU/global unique ID per-language checks, product property and attribute translation, stock/reserved stock sync, Woo REST lang/translations fields, batch create language queues, translated Woo strings/options, and hooks such as pllwc_copy_post_metas, pllwc_translate_product_meta, pllwc_translate_product_prop, pllwc_enable_cart_translation, pllwc_language_for_unique_sku, pllwc_get_order_types, and pllwc_copy_product. Use when extending Woo products, variations, orders, Store/REST integrations, stock, attributes, gateways, shipping, or emails on a Polylang multilingual shop.",
+      "path": "polylang/polylang-wc-compatibility",
+      "skill_path": "polylang/polylang-wc-compatibility/SKILL.md",
+      "url": "https://raw.githubusercontent.com/Lonsdale201/wp-agent-skills/main/polylang/polylang-wc-compatibility/SKILL.md",
+      "raw_url": "https://raw.githubusercontent.com/Lonsdale201/wp-agent-skills/main/polylang/polylang-wc-compatibility/SKILL.md",
+      "html_url": "https://github.com/Lonsdale201/wp-agent-skills/blob/main/polylang/polylang-wc-compatibility/SKILL.md",
+      "directory_url": "https://github.com/Lonsdale201/wp-agent-skills/tree/main/polylang/polylang-wc-compatibility",
+      "metadata": {
+        "author": "Soczo Kristof",
+        "contact": "mailto:lonsdale201@hotmail.com",
+        "plugin": "polylang-wc",
+        "plugin-version-tested": "Polylang for WooCommerce 2.2.2 + Polylang 3.8.5 + WooCommerce 10.9.1",
+        "wp-version-tested": "7.0",
+        "php-min": "7.4",
+        "last-updated": "2026-07-01",
+        "docs": [
+          "https://polylang.pro/doc/polylang-for-woocommerce/",
+          "https://polylang.pro/doc/function-reference/"
+        ],
+        "source-refs": [
+          "wp-content/plugins/polylang-wc/polylang-wc.php",
+          "wp-content/plugins/polylang-wc/src/data-store.php",
+          "wp-content/plugins/polylang-wc/src/object-language.php",
+          "wp-content/plugins/polylang-wc/src/translated-object-language.php",
+          "wp-content/plugins/polylang-wc/src/product-language-cpt.php",
+          "wp-content/plugins/polylang-wc/src/order-language-cpt.php",
+          "wp-content/plugins/polylang-wc/src/products.php",
+          "wp-content/plugins/polylang-wc/src/frontend/frontend-cart.php",
+          "wp-content/plugins/polylang-wc/src/store-blocks.php",
+          "wp-content/plugins/polylang-wc/src/stock.php",
+          "wp-content/plugins/polylang-wc/src/variation-data-store-cpt.php",
+          "wp-content/plugins/polylang-wc/src/hpos-orders-query.php",
+          "wp-content/plugins/polylang-wc/src/strings.php",
+          "wp-content/plugins/polylang-wc/src/modules/REST/Module.php",
+          "wp-content/plugins/polylang-wc/src/modules/REST/Translated/Product.php",
+          "wp-content/plugins/polylang-wc/src/modules/REST/Translated/Batch.php",
+          "wp-content/plugins/polylang-wc/src/modules/REST/Filtered/Order.php"
+        ]
+      },
+      "resources": [
+        {
+          "path": "agents/openai.yaml",
+          "repo_path": "polylang/polylang-wc-compatibility/agents/openai.yaml",
+          "type": "resource",
+          "bytes": 284,
+          "sha256": "e4091f2fb6bcc6497a59326b5d7f56e7586b2ec4733ef4736021a7bc73798298"
+        }
+      ],
+      "has_reference": false,
+      "has_examples": false,
+      "has_scripts": false,
+      "skill_md": {
+        "bytes": 11431,
+        "lines": 244,
+        "sha256": "aa4b188988f67d519199aa7917b9973021bfdb3685db3e0300b48714c627e295"
       }
     },
     {
