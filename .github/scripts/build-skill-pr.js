@@ -27,6 +27,7 @@ const ALLOWED_DOMAINS = new Set([
   'elementor',
   'szamlazzhu',
   'dev-tooling',
+  'polylang',
 ]);
 
 function emitOutput(key, value) {

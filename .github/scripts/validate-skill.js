@@ -26,6 +26,7 @@ const ALLOWED_DOMAINS = new Set([
   'elementor',
   'szamlazzhu',
   'dev-tooling',
+  'polylang',
 ]);
 
 const REQUIRED_FRONTMATTER = ['name', 'description', 'author', 'plugin', 'plugin-version-tested', 'php-min'];

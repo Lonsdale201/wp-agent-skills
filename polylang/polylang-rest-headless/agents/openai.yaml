@@ -1,0 +1,4 @@
+interface:
+  display_name: "Polylang REST and Headless"
+  short_description: "Polylang REST and headless language APIs"
+  default_prompt: "Use $polylang-rest-headless to build or audit REST, headless, or Woo REST language behavior for Polylang."
