@@ -4,6 +4,20 @@ This collection is continuously evolving — entries are date-based, not version
 
 ## 2026-07-01
 
+### New — `rules/` (always-on rule layer)
+
+A new top-level `rules/` folder introducing a second artifact class alongside skills: short, always-relevant **invariants** a tool injects into every (or every code-file) turn, rather than pulling in on demand. Where a skill is *pulled* (the router matches its `description` and decides), a rule is *pushed* — guaranteeing the non-negotiables (output escaping, nonce/capability checks, i18n, HPOS-safe CRUD) are present even when the router doesn't fire. Deliberately tiny: at most one or two per topic, each deferring to the deeper skill for a full pass. Portable via a canonical MD + frontmatter (`scope` / `globs` / `always-apply`) that maps onto Cursor `.mdc`, Windsurf, Copilot `applyTo`, Claude Code `CLAUDE.md`, and Antigravity rule formats.
+
+- **`rules/wp-core-baseline`** — WordPress security / i18n / coding-standard invariants (escape on output, unslash + sanitize input, nonce + capability on state changes, `$wpdb->prepare()`, no `__return_true` on write routes, string-literal text domains, global prefixing, `ABSPATH` guard, enqueue-not-inline). Glob-scoped to `**/*.php`. Defers to `wp-security-audit` / `wp-security-deep` / `wp-security-secrets` / `wp-i18n-audit` / `wp-phpcs-coding-standards` / `wp-rest-api`.
+- **`rules/woocommerce-baseline`** — WooCommerce invariants (CRUD over raw meta for products/orders, HPOS-safe access + `FeaturesUtil::declare_compatibility`, Store API for block checkout, `wc_price()` / decimals, server-side totals, stock via APIs, template-override discipline). Builds on `wp-core-baseline`; glob-scoped to `**/*.php`. Defers to `wc-hpos-compatibility` / `wc-store-api` / `wc-rest-api-v4` / `wc-emails-classic` / `wc-variations-data` / `classic-woocommerce-template-overrides`.
+
+### Repo / tooling
+
+- New `rules/README.md` explaining the rule-vs-skill distinction, the frontmatter/activation model (`always-apply` vs `globs`), and a tool-mapping table (Cursor / Windsurf / Copilot / Claude Code / Antigravity).
+- Root `README.md` grew a short "Rules (always-on)" section pointing at the new folder.
+- `.github/scripts/validate-skill.js` — `rules/` added to the permitted-path exemptions (like `schemas/`), so rule files are maintainer-reviewed rather than run through skill validation.
+- `skills-index.json` unaffected — the index generator only treats `<domain>/<slug>/SKILL.md` folders as domains, so `rules/` is ignored.
+
 ### New domain — `polylang/` (Polylang / Polylang Pro / Polylang for WooCommerce)
 
 A new top-level domain for making **your own** plugin or classic theme work correctly on a [Polylang](https://wordpress.org/plugins/polylang/) multilingual site — compatibility and extension skills, not a re-implementation. Polylang already owns language detection, the `language` / `term_language` and `post_translations` / `term_translations` private taxonomies, translated slugs, string translation, and the Woo-specific data stores; a crossover plugin should guard and call Polylang's public API and hooks rather than reading `$_GET['lang']`, concatenating `/$lang/` URLs, or writing those taxonomies by hand. The running theme across the batch: **guard the public API** (Polylang may be inactive, have no languages, or run in admin/REST/CLI with no current language), **use the model instead of raw DB/meta writes** so caches, validation, and sync hooks run, and **feature-detect the Pro and WooCommerce layers** (`POLYLANG_PRO`, `PLLWC_Data_Store`) because they change REST fields, slug uniqueness, ACF handling, and per-language SKU checks. Every skill is grounded in local source line references against the tested versions.

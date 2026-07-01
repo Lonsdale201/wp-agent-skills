@@ -40,6 +40,10 @@ New domain folders follow the same convention: top-level folder per plugin (or p
 
 The folder layout is the source of truth — there is intentionally no flat list of every skill in this README. As the collection grows, the per-domain READMEs scale, this file does not.
 
+## Rules (always-on)
+
+Alongside skills, the [`rules/`](rules) folder holds a small set of always-on **invariants** — short "always / never" baselines a tool injects into every code turn, rather than pulling in on demand. Skills are *pulled* (the router matches a `description`); rules are *pushed* (guaranteed present even when the router doesn't fire). See [`rules/README.md`](rules/README.md) for the format and how to load them into Cursor, Windsurf, Copilot, Claude Code, or Antigravity.
+
 ## Machine-readable index
 
 The repository also publishes [`skills-index.json`](skills-index.json), a generated catalog of every skill, its domain, description, source path, raw `SKILL.md` URL, frontmatter metadata, and bundled resource files.

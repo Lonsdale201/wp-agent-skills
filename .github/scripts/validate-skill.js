@@ -304,6 +304,7 @@ function main() {
   const offlimits = files.filter((f) => {
     if (f.startsWith('.github/')) return false; // workflow / template edits validated by review only
     if (f.startsWith('schemas/')) return false;
+    if (f.startsWith('rules/')) return false; // always-on rules — not skills; reviewed by maintainer
     if (f === 'skills-index.json') return false;
     if (f === 'README.md' || f === 'CONTRIBUTING.md' || f === 'CHANGELOG.md' || f === 'SKILL_TEMPLATE.md' || f === 'LICENSE' || f === '.gitignore') return false;
     const top = f.split('/')[0];
