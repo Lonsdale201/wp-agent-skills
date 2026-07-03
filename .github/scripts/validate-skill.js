@@ -27,6 +27,7 @@ const ALLOWED_DOMAINS = new Set([
   'szamlazzhu',
   'dev-tooling',
   'polylang',
+  'wpml',
 ]);
 
 const REQUIRED_FRONTMATTER = ['name', 'description', 'author', 'plugin', 'plugin-version-tested', 'php-min'];

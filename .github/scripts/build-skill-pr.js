@@ -28,6 +28,7 @@ const ALLOWED_DOMAINS = new Set([
   'szamlazzhu',
   'dev-tooling',
   'polylang',
+  'wpml',
 ]);
 
 function emitOutput(key, value) {
