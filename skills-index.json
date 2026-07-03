@@ -11,8 +11,8 @@
     "layout": "<domain>/<skill>/SKILL.md",
     "skill_file": "SKILL.md"
   },
-  "domain_count": 17,
-  "skill_count": 160,
+  "domain_count": 18,
+  "skill_count": 165,
   "domains": [
     {
       "slug": "better-data",
@@ -60,7 +60,7 @@
       "slug": "lw-plugins",
       "path": "lw-plugins",
       "readme_path": "lw-plugins/README.md",
-      "skill_count": 7
+      "skill_count": 8
     },
     {
       "slug": "plugin-scaffold",
@@ -115,6 +115,12 @@
       "path": "wp-rocket",
       "readme_path": "wp-rocket/README.md",
       "skill_count": 2
+    },
+    {
+      "slug": "wpml",
+      "path": "wpml",
+      "readme_path": "wpml/README.md",
+      "skill_count": 4
     }
   ],
   "skills": [
@@ -2598,6 +2604,53 @@
         "bytes": 17638,
         "lines": 351,
         "sha256": "feea1ce3c78fd587f2f0d9b1c835ee0e7f88578c63e4fd2c8d989eb17af48b90"
+      }
+    },
+    {
+      "slug": "lw-elallas-integration",
+      "name": "lw-elallas-integration",
+      "domain": "lw-plugins",
+      "description": "Integrate with or extend \"Elállás for WooCommerce\" (elallas-for-woo) — the EU/HU right-of-withdrawal (elállás) case-management plugin for WooCommerce. An LW-family plugin (namespace LightweightPlugins\\Elallas, wp_lw_elallas_* tables) — integrate by CONSUMING its hooks, never editing it. Covers the eligibility/deadline /B2B filters (elallas_is_order_eligible, elallas_deadline_days, elallas_is_order_b2b, elallas_delivery_date), the case lifecycle actions (elallas_case_created, elallas_case_confirmed, elallas_case_status_changed, elallas_invoicing_case_created), the elallas_pdf_html and elallas_boot hooks, the CaseStatus lifecycle (received → auto_confirmed/manual_review → admin states), the 4 custom tables + order meta, and the LW Site Manager abilities it exposes (elallas/get-case, list-cases, update-case-status). Detect with defined('ELALLAS_FOR_WOO_VERSION'). Use when building withdrawal-case compatibility, syncing cases to a CRM or invoicing, or customizing its PDF.",
+      "path": "lw-plugins/lw-elallas-integration",
+      "skill_path": "lw-plugins/lw-elallas-integration/SKILL.md",
+      "url": "https://raw.githubusercontent.com/Lonsdale201/wp-agent-skills/main/lw-plugins/lw-elallas-integration/SKILL.md",
+      "raw_url": "https://raw.githubusercontent.com/Lonsdale201/wp-agent-skills/main/lw-plugins/lw-elallas-integration/SKILL.md",
+      "html_url": "https://github.com/Lonsdale201/wp-agent-skills/blob/main/lw-plugins/lw-elallas-integration/SKILL.md",
+      "directory_url": "https://github.com/Lonsdale201/wp-agent-skills/tree/main/lw-plugins/lw-elallas-integration",
+      "metadata": {
+        "author": "Soczó Kristóf",
+        "contact": "mailto:lonsdale201@hotmail.com",
+        "plugin": "elallas-for-woo",
+        "plugin-version-tested": "1.0.11",
+        "php-min": "8.0",
+        "last-updated": "2026-07-03",
+        "docs": [
+          "https://developer.woocommerce.com/docs/features/high-performance-order-storage/"
+        ],
+        "source-refs": [
+          "wp-content/plugins/elallas-for-woo/includes/Domain/EligibilityChecker.php",
+          "wp-content/plugins/elallas-for-woo/includes/Domain/CaseService.php",
+          "wp-content/plugins/elallas-for-woo/includes/Domain/B2BDetector.php",
+          "wp-content/plugins/elallas-for-woo/includes/Models/CaseStatus.php",
+          "wp-content/plugins/elallas-for-woo/includes/SiteManager/Integration.php"
+        ]
+      },
+      "resources": [
+        {
+          "path": "reference.md",
+          "repo_path": "lw-plugins/lw-elallas-integration/reference.md",
+          "type": "reference",
+          "bytes": 6908,
+          "sha256": "c3e05e9a2448d84390aa06884c4bf0ad47b3579ca6636139e6144e7fb93df9d1"
+        }
+      ],
+      "has_reference": true,
+      "has_examples": false,
+      "has_scripts": false,
+      "skill_md": {
+        "bytes": 12685,
+        "lines": 186,
+        "sha256": "4fd57d4432d71bc6cc1d0f70bcd787a328701ba7c568fd3c245fd9398ec7a67c"
       }
     },
     {
@@ -6952,6 +7005,168 @@
         "bytes": 22280,
         "lines": 501,
         "sha256": "6e766d5022c2691f791dc688a855d68191d78acab146ccf2a99e8386b6acf68b"
+      }
+    },
+    {
+      "slug": "wpml-config",
+      "name": "wpml-config",
+      "domain": "wpml",
+      "description": "Make a WordPress plugin/theme translatable with WPML by shipping a wpml-config.xml file. Covers the sections WPML honors — <custom-fields>/<custom-field action=\"translate|copy|copy-once|ignore\"> (post meta), <custom-term-fields> (term meta), <custom-fields-texts> (translatable sub-keys inside serialized/JSON meta), <custom-types> /<custom-type translate=\"0|1\"> with display-as-translated and automatic attributes, <taxonomies>/<taxonomy translate=\"0|1\">, <admin-texts> /<key name> for options, <shortcode-list> (CSV) vs <shortcodes> (rich), <built-with-page-builder>, and <gutenberg-blocks>. Explains file discovery (plugin root, theme root, the wpml_config_array filter), the exact 0/1 boolean and action-enum values, that a typo'd action silently means \"ignore\", that the XSD is NOT enforced during normal parsing, and that admin-texts needs the String Translation add-on while gutenberg-blocks is handled by WPML's bundled page-builders add-on. Use when adding, auditing, or debugging a wpml-config.xml.",
+      "path": "wpml/wpml-config",
+      "skill_path": "wpml/wpml-config/SKILL.md",
+      "url": "https://raw.githubusercontent.com/Lonsdale201/wp-agent-skills/main/wpml/wpml-config/SKILL.md",
+      "raw_url": "https://raw.githubusercontent.com/Lonsdale201/wp-agent-skills/main/wpml/wpml-config/SKILL.md",
+      "html_url": "https://github.com/Lonsdale201/wp-agent-skills/blob/main/wpml/wpml-config/SKILL.md",
+      "directory_url": "https://github.com/Lonsdale201/wp-agent-skills/tree/main/wpml/wpml-config",
+      "metadata": {
+        "author": "Soczó Kristóf",
+        "contact": "mailto:lonsdale201@hotmail.com",
+        "plugin": "sitepress-multilingual-cms",
+        "plugin-version-tested": "4.9.5",
+        "php-min": "7.4",
+        "last-updated": "2026-07-03",
+        "docs": [
+          "https://wpml.org/documentation/support/language-configuration-files/"
+        ],
+        "source-refs": [
+          "wp-content/plugins/sitepress-multilingual-cms/wpml-config.xml",
+          "wp-content/plugins/sitepress-multilingual-cms/res/xsd/wpml-config.xsd",
+          "wp-content/plugins/sitepress-multilingual-cms/classes/xml-config/class-wpml-config.php",
+          "wp-content/plugins/sitepress-multilingual-cms/classes/settings/class-wpml-custom-field-xml-settings-import.php",
+          "wp-content/plugins/sitepress-multilingual-cms/classes/settings/class-wpml-tm-settings-update.php"
+        ]
+      },
+      "resources": [
+        {
+          "path": "reference.md",
+          "repo_path": "wpml/wpml-config/reference.md",
+          "type": "reference",
+          "bytes": 6068,
+          "sha256": "a9e861415d8b1b00555948699cc0b57ceebe7a5acc46dd0db0b84164a1ce6fa8"
+        }
+      ],
+      "has_reference": true,
+      "has_examples": false,
+      "has_scripts": false,
+      "skill_md": {
+        "bytes": 13005,
+        "lines": 205,
+        "sha256": "94e4878df96bf11d5cc61729b2a586b34f00c85ea90895840e5764e8c0a77695"
+      }
+    },
+    {
+      "slug": "wpml-language-api",
+      "name": "wpml-language-api",
+      "domain": "wpml",
+      "description": "Use WPML's runtime language hook API from plugin/theme code — read the current/active/default language, resolve the translated ID of a post/term, switch language around a query, and build language-aware URLs. Covers apply_filters('wpml_current_language','') and the ICL_LANGUAGE_CODE constant, apply_filters('wpml_active_languages', null, $args), apply_filters('wpml_default_language', null), apply_filters('wpml_object_id', $id, $type, $return_original_if_missing, $lang), do_action('wpml_switch_language', $lang) with restore via null, apply_filters('wpml_permalink', $url, $lang), apply_filters('wpml_home_url',''), apply_filters('wpml_post_language_details', null, $post_id), and apply_filters('wpml_element_language_details', null, $args). All are registered in SitePress::api_hooks(); the legacy icl_* functions (icl_object_id, icl_get_current_language) are deprecated since 3.2. Use when code must behave per-language, show the right translation, run a query in a specific language, or link across translations.",
+      "path": "wpml/wpml-language-api",
+      "skill_path": "wpml/wpml-language-api/SKILL.md",
+      "url": "https://raw.githubusercontent.com/Lonsdale201/wp-agent-skills/main/wpml/wpml-language-api/SKILL.md",
+      "raw_url": "https://raw.githubusercontent.com/Lonsdale201/wp-agent-skills/main/wpml/wpml-language-api/SKILL.md",
+      "html_url": "https://github.com/Lonsdale201/wp-agent-skills/blob/main/wpml/wpml-language-api/SKILL.md",
+      "directory_url": "https://github.com/Lonsdale201/wp-agent-skills/tree/main/wpml/wpml-language-api",
+      "metadata": {
+        "author": "Soczó Kristóf",
+        "contact": "mailto:lonsdale201@hotmail.com",
+        "plugin": "sitepress-multilingual-cms",
+        "plugin-version-tested": "4.9.5",
+        "php-min": "7.4",
+        "last-updated": "2026-07-03",
+        "docs": [
+          "https://wpml.org/documentation/support/wpml-coding-api/"
+        ],
+        "source-refs": [
+          "wp-content/plugins/sitepress-multilingual-cms/sitepress.class.php",
+          "wp-content/plugins/sitepress-multilingual-cms/inc/template-functions.php",
+          "wp-content/plugins/sitepress-multilingual-cms/classes/API/Hooks/class-wpml-api-hook-permalink.php"
+        ]
+      },
+      "resources": [],
+      "has_reference": false,
+      "has_examples": false,
+      "has_scripts": false,
+      "skill_md": {
+        "bytes": 10972,
+        "lines": 182,
+        "sha256": "51b3db84be03dc7e9584244ff7cf215872d53dc097fbe89ea95d4ff4b2469af2"
+      }
+    },
+    {
+      "slug": "wpml-overview",
+      "name": "wpml-overview",
+      "domain": "wpml",
+      "description": "Orient a developer making a WordPress plugin or theme compatible with WPML (sitepress-multilingual-cms). Explains WPML's mental model — it translates COPIES (each translation is a separate post/term with its own ID, linked by a trid in icl_translations), unlike live-translation plugins — and the three compatibility mechanisms — (1) a declarative wpml-config.xml, (2) the runtime language hook API (wpml_current_language, wpml_object_id, wpml_switch_language, wpml_permalink), (3) string registration /translation (wpml_register_string / wpml_translate_single_string). Covers detecting WPML with defined('ICL_SITEPRESS_VERSION'), the add-on split (String Translation WPML_ST_VERSION, Translation Management WPML_TM_VERSION, Media WPML_MEDIA_VERSION) and which features need which add-on, plus a decision matrix mapping intent to mechanism. Use when starting WPML compatibility, deciding config vs API vs strings, or detecting WPML / its add-ons.",
+      "path": "wpml/wpml-overview",
+      "skill_path": "wpml/wpml-overview/SKILL.md",
+      "url": "https://raw.githubusercontent.com/Lonsdale201/wp-agent-skills/main/wpml/wpml-overview/SKILL.md",
+      "raw_url": "https://raw.githubusercontent.com/Lonsdale201/wp-agent-skills/main/wpml/wpml-overview/SKILL.md",
+      "html_url": "https://github.com/Lonsdale201/wp-agent-skills/blob/main/wpml/wpml-overview/SKILL.md",
+      "directory_url": "https://github.com/Lonsdale201/wp-agent-skills/tree/main/wpml/wpml-overview",
+      "metadata": {
+        "author": "Soczó Kristóf",
+        "contact": "mailto:lonsdale201@hotmail.com",
+        "plugin": "sitepress-multilingual-cms",
+        "plugin-version-tested": "4.9.5",
+        "php-min": "7.4",
+        "last-updated": "2026-07-03",
+        "docs": [
+          "https://wpml.org/documentation/support/wpml-coding-api/",
+          "https://wpml.org/documentation/support/language-configuration-files/"
+        ],
+        "source-refs": [
+          "wp-content/plugins/sitepress-multilingual-cms/sitepress.php",
+          "wp-content/plugins/sitepress-multilingual-cms/sitepress.class.php",
+          "wp-content/plugins/sitepress-multilingual-cms/inc/functions.php",
+          "wp-content/plugins/sitepress-multilingual-cms/compatibility/"
+        ]
+      },
+      "resources": [],
+      "has_reference": false,
+      "has_examples": false,
+      "has_scripts": false,
+      "skill_md": {
+        "bytes": 9538,
+        "lines": 120,
+        "sha256": "2b23a707a80fc679bb76e2056c41f6aade4d8af497452ef2353a5dec0059ebc4"
+      }
+    },
+    {
+      "slug": "wpml-string-translation",
+      "name": "wpml-string-translation",
+      "domain": "wpml",
+      "description": "Register and translate a WordPress plugin's dynamic strings with WPML — option values, admin-entered labels, and other free-form text that is NOT a static gettext string. Register via do_action('wpml_register_single_string', $domain, $name, $value) and read back via apply_filters('wpml_translate_single_string', $value, $domain, $name[, $lang]); legacy equivalents are icl_register_string( $context, $name, $value) and icl_t(). CRITICAL — these handlers live in the WPML String Translation add-on, NOT the base plugin — the base only FIRES the hooks, so without ST the translate filter returns the original (safe) and register is a silent no-op, while raw unguarded icl_register_string / icl_t calls FATAL. Covers detecting ST (defined('WPML_ST_VERSION'), class_exists('WPML_String_Translation'), function_exists('icl_register_string')), the function_exists fallback wrapper pattern, and when to use wpml-config <admin-texts> instead. Use for translatable settings, dynamic labels, or any registered string.",
+      "path": "wpml/wpml-string-translation",
+      "skill_path": "wpml/wpml-string-translation/SKILL.md",
+      "url": "https://raw.githubusercontent.com/Lonsdale201/wp-agent-skills/main/wpml/wpml-string-translation/SKILL.md",
+      "raw_url": "https://raw.githubusercontent.com/Lonsdale201/wp-agent-skills/main/wpml/wpml-string-translation/SKILL.md",
+      "html_url": "https://github.com/Lonsdale201/wp-agent-skills/blob/main/wpml/wpml-string-translation/SKILL.md",
+      "directory_url": "https://github.com/Lonsdale201/wp-agent-skills/tree/main/wpml/wpml-string-translation",
+      "metadata": {
+        "author": "Soczó Kristóf",
+        "contact": "mailto:lonsdale201@hotmail.com",
+        "plugin": "sitepress-multilingual-cms",
+        "plugin-version-tested": "4.9.5",
+        "php-min": "7.4",
+        "last-updated": "2026-07-03",
+        "docs": [
+          "https://wpml.org/documentation/support/wpml-coding-api/",
+          "https://wpml.org/documentation/support/translate-texts-in-admin-screens-with-wpml-string-translation/"
+        ],
+        "source-refs": [
+          "wp-content/plugins/sitepress-multilingual-cms/docs/theme-integration/wpml-integration.php",
+          "wp-content/plugins/sitepress-multilingual-cms/inc/functions.php",
+          "wp-content/plugins/sitepress-multilingual-cms/classes/language-switcher/class-wpml-ls-settings-strings.php",
+          "wp-content/plugins/sitepress-multilingual-cms/classes/url-handling/class-wpml-endpoints-support.php"
+        ]
+      },
+      "resources": [],
+      "has_reference": false,
+      "has_examples": false,
+      "has_scripts": false,
+      "skill_md": {
+        "bytes": 10549,
+        "lines": 172,
+        "sha256": "8fdcb7c231dae76d10973f8ecb090b6c68a0a437ee386a3a2210c09a0bd6f49b"
       }
     }
   ]

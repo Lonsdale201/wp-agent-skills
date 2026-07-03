@@ -33,6 +33,7 @@ body:
         - szamlazzhu
         - dev-tooling
         - polylang
+        - wpml
         - other
     validations:
       required: true
