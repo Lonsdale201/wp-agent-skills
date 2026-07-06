@@ -249,6 +249,6 @@ wp_enqueue_script( 'myplugin-app', $src, array( 'jquery' ), '1.0.0', array( 'str
 ## References
 
 - WordPress 6.9 frontend performance field guide: <https://make.wordpress.org/core/2025/11/18/wordpress-6-9-frontend-performance-field-guide/>
-- Script APIs: [wp-includes/functions.wp-scripts.php](wp-includes/functions.wp-scripts.php)
-- Script Modules API: [wp-includes/script-modules.php](wp-includes/script-modules.php)
-- Style APIs: [wp-includes/functions.wp-styles.php](wp-includes/functions.wp-styles.php)
+- Script APIs: `wp-includes/functions.wp-scripts.php`
+- Script Modules API: `wp-includes/script-modules.php`
+- Style APIs: `wp-includes/functions.wp-styles.php`

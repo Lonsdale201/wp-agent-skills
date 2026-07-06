@@ -12,7 +12,7 @@
     "skill_file": "SKILL.md"
   },
   "domain_count": 18,
-  "skill_count": 165,
+  "skill_count": 167,
   "domains": [
     {
       "slug": "better-data",
@@ -66,7 +66,7 @@
       "slug": "plugin-scaffold",
       "path": "plugin-scaffold",
       "readme_path": "plugin-scaffold/README.md",
-      "skill_count": 11
+      "skill_count": 12
     },
     {
       "slug": "polylang",
@@ -102,7 +102,7 @@
       "slug": "woocommerce",
       "path": "woocommerce",
       "readme_path": "woocommerce/README.md",
-      "skill_count": 29
+      "skill_count": 30
     },
     {
       "slug": "wordpress",
@@ -3079,9 +3079,9 @@
       "has_examples": false,
       "has_scripts": false,
       "skill_md": {
-        "bytes": 16034,
+        "bytes": 15864,
         "lines": 331,
-        "sha256": "7f1538d9dee094da3f9026f77ce7fb8cc1820aa98af5fdf4a77bb87f6b8cd606"
+        "sha256": "924ff4ecdd833ba014a4676e2bbfc2ee516cfe2033fb54b59ef42b32423ab240"
       }
     },
     {
@@ -3113,9 +3113,9 @@
       "has_examples": false,
       "has_scripts": false,
       "skill_md": {
-        "bytes": 9611,
+        "bytes": 9504,
         "lines": 255,
-        "sha256": "c407162dc411515838376b185f6d0dc8e13b8c29da6d8d21a768470cf165afd8"
+        "sha256": "df1e61171cb048c952aa5d9830c2b89053cbb1ca9d979801c0468ac3300beaa3"
       }
     },
     {
@@ -3148,9 +3148,9 @@
       "has_examples": false,
       "has_scripts": false,
       "skill_md": {
-        "bytes": 18840,
+        "bytes": 18659,
         "lines": 337,
-        "sha256": "eeb902e4860d1681449af005078919791be0f637d720ccd8ef3de0fd566c9b8b"
+        "sha256": "72a994c298b01eb6478f2b4543968c7e3f5d66b677b283ac3c8b5c91fe2a7a67"
       }
     },
     {
@@ -3184,9 +3184,9 @@
       "has_examples": false,
       "has_scripts": false,
       "skill_md": {
-        "bytes": 17721,
+        "bytes": 17622,
         "lines": 336,
-        "sha256": "c0048667561c367a8a35fd4022a4c1491b7624baec3369e349f17990e4dc6399"
+        "sha256": "a388a879c968de81173a441e86d0f269447a445b59f606c233f9546459be8e5c"
       }
     },
     {
@@ -3270,16 +3270,16 @@
       "has_examples": false,
       "has_scripts": false,
       "skill_md": {
-        "bytes": 15233,
+        "bytes": 15059,
         "lines": 294,
-        "sha256": "511d652c37defacc7b20cc37c39b5f06494684b58c0e9fdc6a0efd6c2085e488"
+        "sha256": "6b95abee5b87d0ff50b722c77a87f4fc247d694e431991c980cc02487221c67b"
       }
     },
     {
       "slug": "wp-plugin-lifecycle",
       "name": "wp-plugin-lifecycle",
       "domain": "plugin-scaffold",
-      "description": "Designs and reviews the three lifecycle events of a WordPress plugin — activation (one-shot setup, dbDelta, add_option seeding, cron schedule, cap seeding), deactivation (reversible cleanup, cron clear via wp_unschedule_hook, never delete user data), and uninstall.php (standalone file, WP_UNINSTALL_PLUGIN guard, no autoloader, full data removal). Multisite-aware patterns using the $network_wide / $network_deactivating callback args, plus the recommendation against register_uninstall_hook in favor of uninstall.php. Use when scaffolding a plugin or debugging ghost cron events / orphan options. Triggers on register_activation_hook, register_deactivation_hook, uninstall.php, WP_UNINSTALL_PLUGIN, dbDelta, wp_unschedule_hook, switch_to_blog.",
+      "description": "Designs and reviews the three lifecycle events of a WordPress plugin — activation (one-shot setup, dbDelta, add_option seeding, cron schedule, cap seeding), deactivation (reversible cleanup, cron clear via wp_unschedule_hook, never delete user data), and uninstall.php (standalone file, WP_UNINSTALL_PLUGIN guard, no autoloader, full data removal). Multisite-aware patterns using the $network_wide / $network_deactivating callback args, plus the recommendation against register_uninstall_hook in favor of uninstall.php. Use when scaffolding a plugin or debugging ghost cron events / orphan options. Does not cover update-time version migrations; use wp-plugin-update-migrations for stored-version < code-version upgrades. Triggers on register_activation_hook, register_deactivation_hook, uninstall.php, WP_UNINSTALL_PLUGIN, dbDelta, wp_unschedule_hook, switch_to_blog.",
       "path": "plugin-scaffold/wp-plugin-lifecycle",
       "skill_path": "plugin-scaffold/wp-plugin-lifecycle/SKILL.md",
       "url": "https://raw.githubusercontent.com/Lonsdale201/wp-agent-skills/main/plugin-scaffold/wp-plugin-lifecycle/SKILL.md",
@@ -3290,9 +3290,9 @@
         "author": "Soczó Kristóf",
         "contact": "mailto:lonsdale201@hotmail.com",
         "plugin": "wordpress",
-        "plugin-version-tested": "6.5 - 6.9",
+        "plugin-version-tested": "6.5 - 7.0",
         "php-min": "7.4",
-        "last-updated": "2026-04-28",
+        "last-updated": "2026-07-06",
         "docs": [
           "https://developer.wordpress.org/plugins/plugin-basics/uninstall-methods/",
           "https://developer.wordpress.org/reference/functions/register_activation_hook/",
@@ -3306,9 +3306,9 @@
       "has_examples": false,
       "has_scripts": false,
       "skill_md": {
-        "bytes": 19077,
-        "lines": 353,
-        "sha256": "d52c0f7ff6b6022b87ac9afdc2b9831d114752e1ec12b66ec6fc91da656c5b37"
+        "bytes": 19172,
+        "lines": 358,
+        "sha256": "f872167a46e6b7d20d41e13607d651c3c1d0742926a388b782a93e9b702f9b83"
       }
     },
     {
@@ -3341,9 +3341,9 @@
       "has_examples": false,
       "has_scripts": false,
       "skill_md": {
-        "bytes": 16917,
+        "bytes": 16747,
         "lines": 256,
-        "sha256": "73f2427a8390bc41a17aeee7a9182a5b3dd022a8d52d06cc658eeb4ddf174677"
+        "sha256": "b9e38fc032988ca692d7f4b8ff52b3f5724c6e102f66f1b90ec85827ce5cb430"
       }
     },
     {
@@ -3426,9 +3426,52 @@
       "has_examples": false,
       "has_scripts": false,
       "skill_md": {
-        "bytes": 16987,
+        "bytes": 16709,
         "lines": 315,
-        "sha256": "203d77007f1abbfd2282c8cdcc9666dcf099313aeb8926355d98d7df1a799179"
+        "sha256": "35b1bc237489e2c602a7891bd1f16b7a1cc2724ba75b80e35a8afdd622b8af81"
+      }
+    },
+    {
+      "slug": "wp-plugin-update-migrations",
+      "name": "wp-plugin-update-migrations",
+      "domain": "plugin-scaffold",
+      "description": "Designs and reviews WordPress plugin update-time version migrations — stored schema/data version options, version_compare or integer schema versions, idempotent v1->v2->v3 migrators, dbDelta inside migrations, locks, partial reruns, multisite handling, and safe use of upgrader_process_complete. Use when code mentions plugin updates, upgrade migrations, schema version, database version, data migration, upgrader_process_complete, Plugin_Upgrader, dbDelta after activation, or when activation hooks are being used to handle updates.",
+      "path": "plugin-scaffold/wp-plugin-update-migrations",
+      "skill_path": "plugin-scaffold/wp-plugin-update-migrations/SKILL.md",
+      "url": "https://raw.githubusercontent.com/Lonsdale201/wp-agent-skills/main/plugin-scaffold/wp-plugin-update-migrations/SKILL.md",
+      "raw_url": "https://raw.githubusercontent.com/Lonsdale201/wp-agent-skills/main/plugin-scaffold/wp-plugin-update-migrations/SKILL.md",
+      "html_url": "https://github.com/Lonsdale201/wp-agent-skills/blob/main/plugin-scaffold/wp-plugin-update-migrations/SKILL.md",
+      "directory_url": "https://github.com/Lonsdale201/wp-agent-skills/tree/main/plugin-scaffold/wp-plugin-update-migrations",
+      "metadata": {
+        "author": "Soczó Kristóf",
+        "contact": "mailto:lonsdale201@hotmail.com",
+        "plugin": "wordpress",
+        "plugin-version-tested": "7.0",
+        "php-min": "7.4",
+        "last-updated": "2026-07-06",
+        "docs": [
+          "https://developer.wordpress.org/reference/hooks/upgrader_process_complete/",
+          "https://developer.wordpress.org/reference/functions/dbDelta/",
+          "https://developer.wordpress.org/reference/functions/get_option/"
+        ],
+        "source-refs": [
+          "wp-settings.php",
+          "wp-admin/update.php",
+          "wp-admin/includes/class-wp-upgrader.php",
+          "wp-admin/includes/class-plugin-upgrader.php",
+          "wp-admin/includes/plugin.php",
+          "wp-admin/includes/admin-filters.php",
+          "wp-admin/includes/upgrade.php"
+        ]
+      },
+      "resources": [],
+      "has_reference": false,
+      "has_examples": false,
+      "has_scripts": false,
+      "skill_md": {
+        "bytes": 10248,
+        "lines": 237,
+        "sha256": "bea40613054e5609794ff20ea80a40827e42eefdb886cd3a33dab8024cb36f1a"
       }
     },
     {
@@ -4829,6 +4872,43 @@
       }
     },
     {
+      "slug": "wc-admin-inline-scripts",
+      "name": "wc-admin-inline-scripts",
+      "domain": "woocommerce",
+      "description": "WooCommerce admin inline JavaScript and script-data migration guide for replacing deprecated wc_enqueue_js with wp_add_inline_script, registering/enqueueing handles on the right admin screen, preserving jQuery-ready behavior, passing PHP data safely with wp_json_encode, and avoiding footer-global queued JS. Use when code contains wc_enqueue_js, wc_print_js, woocommerce_queued_js, admin_footer inline JavaScript, wp_add_inline_script in WooCommerce admin screens, or small Woo settings modal/product/order admin script glue.",
+      "path": "woocommerce/wc-admin-inline-scripts",
+      "skill_path": "woocommerce/wc-admin-inline-scripts/SKILL.md",
+      "url": "https://raw.githubusercontent.com/Lonsdale201/wp-agent-skills/main/woocommerce/wc-admin-inline-scripts/SKILL.md",
+      "raw_url": "https://raw.githubusercontent.com/Lonsdale201/wp-agent-skills/main/woocommerce/wc-admin-inline-scripts/SKILL.md",
+      "html_url": "https://github.com/Lonsdale201/wp-agent-skills/blob/main/woocommerce/wc-admin-inline-scripts/SKILL.md",
+      "directory_url": "https://github.com/Lonsdale201/wp-agent-skills/tree/main/woocommerce/wc-admin-inline-scripts",
+      "metadata": {
+        "author": "Soczó Kristóf",
+        "contact": "mailto:lonsdale201@hotmail.com",
+        "plugin": "woocommerce",
+        "plugin-version-tested": "10.9.3",
+        "php-min": "7.4",
+        "last-updated": "2026-07-06",
+        "source-refs": [
+          "wp-content/plugins/woocommerce/includes/wc-core-functions.php",
+          "wp-content/plugins/woocommerce/includes/wc-template-hooks.php",
+          "wp-content/plugins/woocommerce/includes/admin/class-wc-admin.php",
+          "wp-content/plugins/woocommerce/includes/admin/class-wc-admin-assets.php",
+          "wp-includes/functions.wp-scripts.php",
+          "wp-includes/class-wp-scripts.php"
+        ]
+      },
+      "resources": [],
+      "has_reference": false,
+      "has_examples": false,
+      "has_scripts": false,
+      "skill_md": {
+        "bytes": 7019,
+        "lines": 182,
+        "sha256": "d93018ea840df3245e9c07d11cf2f4e437bde049b57fa2711bbc4419c128afb8"
+      }
+    },
+    {
       "slug": "wc-cart-checkout-classic",
       "name": "wc-cart-checkout-classic",
       "domain": "woocommerce",
@@ -5602,7 +5682,7 @@
       "slug": "wcm-abilities-api",
       "name": "wcm-abilities-api",
       "domain": "woocommerce",
-      "description": "WooCommerce Memberships 1.28+ WordPress Abilities API reference for membership plan and user membership abilities, category slugs, registration requirements, permissions, schemas, annotations, and safe automation guardrails. Use when code or a task mentions wp_register_ability, wp_get_ability, WP Abilities API, woocommerce-memberships/plans-create, plans-delete, plans-get, plans-list, user-memberships-create, user-memberships-delete, user-memberships-get, user-memberships-list, or privileged agent/headless/admin automation for WooCommerce Memberships.",
+      "description": "WooCommerce Memberships 1.29+ WordPress Abilities API reference for membership plan, user membership, and per-post content restriction rule abilities, category slugs, registration requirements, permissions, schemas, annotations, REST route exposure, and safe automation guardrails. Use when code or a task mentions wp_register_ability, wp_get_ability, WP Abilities API, woocommerce-memberships/plans-create, plans-delete, plans-get, plans-list, user-memberships-create, user-memberships-delete, user-memberships-get, user-memberships-list, post-restriction-rules-get, post-restriction-rules-update, /wc-memberships/v1/post-restriction-rules, or privileged agent/headless/admin automation for WooCommerce Memberships.",
       "path": "woocommerce/wcm-abilities-api",
       "skill_path": "woocommerce/wcm-abilities-api/SKILL.md",
       "url": "https://raw.githubusercontent.com/Lonsdale201/wp-agent-skills/main/woocommerce/wcm-abilities-api/SKILL.md",
@@ -5613,14 +5693,19 @@
         "author": "Soczó Kristóf",
         "contact": "mailto:lonsdale201@hotmail.com",
         "plugin": "woocommerce-memberships",
-        "plugin-version-tested": "1.28.3",
+        "plugin-version-tested": "1.29.0",
         "php-min": "7.4",
-        "last-updated": "2026-06-14",
+        "last-updated": "2026-07-06",
         "source-refs": [
           "wp-content/plugins/woocommerce-memberships/class-wc-memberships.php",
           "wp-content/plugins/woocommerce-memberships/src/Abilities/Provider.php",
           "wp-content/plugins/woocommerce-memberships/src/Plans/Abilities/",
           "wp-content/plugins/woocommerce-memberships/src/UserMemberships/Abilities/",
+          "wp-content/plugins/woocommerce-memberships/src/Posts/Abilities/",
+          "wp-content/plugins/woocommerce-memberships/src/Posts/Actions/SetPostRules.php",
+          "wp-content/plugins/woocommerce-memberships/src/Posts/Adapters/JsonSerializers/PostRestrictionRulesSerializer.php",
+          "wp-content/plugins/woocommerce-memberships/src/Posts/Traits/CanCheckRestrictablePostPermissionTrait.php",
+          "wp-content/plugins/woocommerce-memberships/src/Blocks/BlockEditorSidebar.php",
           "wp-content/plugins/woocommerce-memberships/vendor/skyverge/wc-plugin-framework/woocommerce/Abilities/"
         ]
       },
@@ -5629,9 +5714,9 @@
       "has_examples": false,
       "has_scripts": false,
       "skill_md": {
-        "bytes": 9693,
-        "lines": 199,
-        "sha256": "e4ce9ccba909314fc7cc853bc9f5e4505f62f2dce5cb83b9764fd4e26de8b6d3"
+        "bytes": 15408,
+        "lines": 288,
+        "sha256": "b8e4b74d3224681dace192d5687ea704b8beac299526d716020c8bc99064ea77"
       }
     },
     {
@@ -5649,9 +5734,9 @@
         "author": "Soczó Kristóf",
         "contact": "mailto:lonsdale201@hotmail.com",
         "plugin": "woocommerce-memberships",
-        "plugin-version-tested": "1.28.3",
+        "plugin-version-tested": "1.29.0",
         "php-min": "7.4",
-        "last-updated": "2026-06-14",
+        "last-updated": "2026-07-06",
         "source-refs": [
           "wp-content/plugins/woocommerce-memberships/src/class-wc-memberships-capabilities.php",
           "wp-content/plugins/woocommerce-memberships/src/Restrictions.php",
@@ -5659,7 +5744,8 @@
           "wp-content/plugins/woocommerce-memberships/src/Restrictions/Products.php",
           "wp-content/plugins/woocommerce-memberships/src/class-wc-memberships-member-discounts.php",
           "wp-content/plugins/woocommerce-memberships/src/functions/wc-memberships-functions-restrictions.php",
-          "wp-content/plugins/woocommerce-memberships/src/functions/wc-memberships-functions-member-discounts.php"
+          "wp-content/plugins/woocommerce-memberships/src/functions/wc-memberships-functions-member-discounts.php",
+          "wp-content/plugins/woocommerce-memberships/src/Posts/Abilities/"
         ]
       },
       "resources": [],
@@ -5667,9 +5753,9 @@
       "has_examples": false,
       "has_scripts": false,
       "skill_md": {
-        "bytes": 14216,
-        "lines": 206,
-        "sha256": "4e0c39604732294ad26747670a9185135fc8df1f1cfcc48634e8f282a8e8a882"
+        "bytes": 14725,
+        "lines": 209,
+        "sha256": "26b5816f2a0b1ec17440b7aaa7f34eb92e4047434206adb6d6a6d8a9e67e8e9d"
       }
     },
     {
@@ -5687,9 +5773,9 @@
         "author": "Soczo Kristof",
         "contact": "mailto:lonsdale201@hotmail.com",
         "plugin": "woocommerce-memberships",
-        "plugin-version-tested": "1.28.3",
+        "plugin-version-tested": "1.29.0",
         "php-min": "7.4",
-        "last-updated": "2026-06-14",
+        "last-updated": "2026-07-06",
         "source-refs": [
           "wp-content/plugins/woocommerce-memberships/src/class-wc-memberships-post-types.php",
           "wp-content/plugins/woocommerce-memberships/src/class-wc-memberships-membership-plan.php",
@@ -5700,6 +5786,8 @@
           "wp-content/plugins/woocommerce-memberships/src/Data_Stores/Profile_Field_Definition/Option.php",
           "wp-content/plugins/woocommerce-memberships/src/API/Controller/User_Memberships.php",
           "wp-content/plugins/woocommerce-memberships/src/Helpers/Directory_Block_Validator.php",
+          "wp-content/plugins/woocommerce-memberships/src/Posts/Actions/SetPostRules.php",
+          "wp-content/plugins/woocommerce-memberships/src/Posts/Adapters/JsonSerializers/PostRestrictionRulesSerializer.php",
           "wp-content/plugins/woocommerce-memberships/src/integrations/subscriptions/class-wc-memberships-integration-subscriptions-user-membership.php",
           "wp-content/plugins/woocommerce-memberships/src/integrations/subscriptions/class-wc-memberships-integration-subscriptions.php"
         ]
@@ -5709,9 +5797,9 @@
       "has_examples": false,
       "has_scripts": false,
       "skill_md": {
-        "bytes": 12765,
-        "lines": 220,
-        "sha256": "63a4671132cc2fc85c503fccf7b29d665cb850abcef199dd7ed394d67047d9a8"
+        "bytes": 13443,
+        "lines": 224,
+        "sha256": "f721a75f0b1036d0594ec156ce3c2925b68be559d0c4dfb8acff67fcdc07af2f"
       }
     },
     {
@@ -5729,9 +5817,9 @@
         "author": "Soczó Kristóf",
         "contact": "mailto:lonsdale201@hotmail.com",
         "plugin": "woocommerce-memberships",
-        "plugin-version-tested": "1.28.3",
+        "plugin-version-tested": "1.29.0",
         "php-min": "7.4",
-        "last-updated": "2026-06-14",
+        "last-updated": "2026-07-06",
         "source-refs": [
           "wp-content/plugins/woocommerce-memberships/src/class-wc-memberships-post-types.php",
           "wp-content/plugins/woocommerce-memberships/src/class-wc-memberships-user-memberships.php",
@@ -5743,6 +5831,7 @@
           "wp-content/plugins/woocommerce-memberships/src/Abilities/Provider.php",
           "wp-content/plugins/woocommerce-memberships/src/Plans/Abilities/",
           "wp-content/plugins/woocommerce-memberships/src/UserMemberships/Abilities/",
+          "wp-content/plugins/woocommerce-memberships/src/Posts/Abilities/",
           "wp-content/plugins/woocommerce-memberships/src/Helpers/Directory_Block_Validator.php",
           "wp-content/plugins/woocommerce-memberships/src/Profile_Fields.php",
           "wp-content/plugins/woocommerce-memberships/src/integrations/subscriptions/"
@@ -5753,9 +5842,9 @@
       "has_examples": false,
       "has_scripts": false,
       "skill_md": {
-        "bytes": 24734,
-        "lines": 288,
-        "sha256": "c922c8ab78dfa1b6b8a3812de63155c32817a672076ffab7144a8f6e9c7686eb"
+        "bytes": 25111,
+        "lines": 291,
+        "sha256": "cb976770f0b47f5a783b187ab7171f2fe3b4ae64a74af1582e66d87e9786a0ce"
       }
     },
     {

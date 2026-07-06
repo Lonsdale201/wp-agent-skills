@@ -168,7 +168,7 @@ do_action( 'myplugin/event', $payload, $context, $extra );
 do_action_ref_array( 'myplugin/event', $args );
 ```
 
-The naming `_ref_array` is historical. These functions accept the hook arguments as an array and pass that array to `WP_Hook`; they are primarily "args-as-array" variants. References only matter if the array elements themselves are references, so do not reach for these functions as a generic "make callback args mutable" tool. Verified in [wp-includes/plugin.php](wp-includes/plugin.php) `apply_filters_ref_array` / `do_action_ref_array`.
+The naming `_ref_array` is historical. These functions accept the hook arguments as an array and pass that array to `WP_Hook`; they are primarily "args-as-array" variants. References only matter if the array elements themselves are references, so do not reach for these functions as a generic "make callback args mutable" tool. Verified in `wp-includes/plugin.php` `apply_filters_ref_array` / `do_action_ref_array`.
 
 99% of plugin code uses the spread variants. Reach for the array variants only when forwarding (`apply_filters_deprecated` uses them internally for exactly this reason).
 
@@ -185,7 +185,7 @@ Track public hooks in your plugin's documentation / README under a "Hooks" secti
 
 ## Deprecation pathway
 
-When you genuinely must change or remove a hook, deprecate, don't delete. WordPress provides `apply_filters_deprecated` and `do_action_deprecated` ([wp-includes/plugin.php](wp-includes/plugin.php), since WP 4.6) that fire the hook for any remaining listeners AND emit a `_deprecated_hook` notice ([wp-includes/functions.php](wp-includes/functions.php)).
+When you genuinely must change or remove a hook, deprecate, don't delete. WordPress provides `apply_filters_deprecated` and `do_action_deprecated` (`wp-includes/plugin.php`, since WP 4.6) that fire the hook for any remaining listeners AND emit a `_deprecated_hook` notice (`wp-includes/functions.php`).
 
 ```php
 // OLD HOOK (now deprecated): myplugin/old_response
@@ -287,7 +287,7 @@ do_action( 'myplugin/before_request', $payload );
 ## References
 
 - Plugins Hooks Handbook: [developer.wordpress.org/plugins/hooks/](https://developer.wordpress.org/plugins/hooks/)
-- `apply_filters` / `do_action`: [wp-includes/plugin.php](wp-includes/plugin.php)
-- `apply_filters_deprecated` / `do_action_deprecated`: [wp-includes/plugin.php](wp-includes/plugin.php) (since WP 4.6)
-- `_deprecated_hook` (the underlying notice trigger): [wp-includes/functions.php](wp-includes/functions.php)
-- `did_action` / `did_filter`: [wp-includes/plugin.php](wp-includes/plugin.php) — useful in tests / debugging to assert a hook fired.
+- `apply_filters` / `do_action`: `wp-includes/plugin.php`
+- `apply_filters_deprecated` / `do_action_deprecated`: `wp-includes/plugin.php` (since WP 4.6)
+- `_deprecated_hook` (the underlying notice trigger): `wp-includes/functions.php`
+- `did_action` / `did_filter`: `wp-includes/plugin.php` — useful in tests / debugging to assert a hook fired.

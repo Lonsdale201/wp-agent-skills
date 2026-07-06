@@ -12,9 +12,9 @@ description: WooCommerce Memberships access, restriction, drip-content,
 author: Soczó Kristóf
 contact: mailto:lonsdale201@hotmail.com
 plugin: woocommerce-memberships
-plugin-version-tested: "1.28.3"
+plugin-version-tested: "1.29.0"
 php-min: "7.4"
-last-updated: "2026-06-14"
+last-updated: "2026-07-06"
 source-refs:
   - wp-content/plugins/woocommerce-memberships/src/class-wc-memberships-capabilities.php
   - wp-content/plugins/woocommerce-memberships/src/Restrictions.php
@@ -23,6 +23,7 @@ source-refs:
   - wp-content/plugins/woocommerce-memberships/src/class-wc-memberships-member-discounts.php
   - wp-content/plugins/woocommerce-memberships/src/functions/wc-memberships-functions-restrictions.php
   - wp-content/plugins/woocommerce-memberships/src/functions/wc-memberships-functions-member-discounts.php
+  - wp-content/plugins/woocommerce-memberships/src/Posts/Abilities/
 ---
 
 # WooCommerce Memberships: access and discounts
@@ -88,9 +89,11 @@ Do not replace `wc_memberships_user_can()` with a raw membership status check wh
 
 There is not a single universal `wc_memberships_user_can` result filter to "just allow access". Change the rule inputs, public-content decision, access start time, or membership status intentionally.
 
+For editor/admin automation that reads or updates per-post content restriction rows, use `wcm-abilities-api`: Memberships 1.29.0 exposes `post-restriction-rules-get` and `post-restriction-rules-update` abilities plus `/wc-memberships/v1/post-restriction-rules/{id}` routes. Those are rule-configuration APIs; `wc_memberships_user_can()` remains the final runtime access decision for frontend rendering, REST output, AJAX fragments, and headless responses.
+
 ## Boot-time safety
 
-Do not call Memberships restriction APIs at file load or very early WordPress bootstrap just to decide whether to register your own plugin components. Memberships 1.28.3 specifically hardened "translations loaded too early" paths during WP-Cron and WP-CLI; avoid reintroducing that pattern from integrations.
+Do not call Memberships restriction APIs at file load or very early WordPress bootstrap just to decide whether to register your own plugin components. Memberships has hardened "translations loaded too early" paths during WP-Cron and WP-CLI; avoid reintroducing that pattern from integrations.
 
 Safe timing:
 

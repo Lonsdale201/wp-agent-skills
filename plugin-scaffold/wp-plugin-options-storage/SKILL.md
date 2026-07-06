@@ -28,7 +28,7 @@ This skill covers picking + using them correctly. It does NOT cover one-time act
 
 ## Multisite caveat (read first)
 
-This skill's author works on single-site WordPress; the multisite advice below is **derived from WP source code but has not been end-to-end tested in a multisite environment**. The primitives — `get_site_option` / `update_site_option` / `set_site_transient` / `delete_site_option` — exist and are documented; their semantics here are taken from [wp-includes/option.php](wp-includes/option.php). If you ship a plugin that has actual multisite users, run an integration test on a real network install before relying on these patterns. Some quirks (`switch_to_blog` interactions, network admin context detection, blog-id-aware caches) only surface in a real network.
+This skill's author works on single-site WordPress; the multisite advice below is **derived from WP source code but has not been end-to-end tested in a multisite environment**. The primitives — `get_site_option` / `update_site_option` / `set_site_transient` / `delete_site_option` — exist and are documented; their semantics here are taken from `wp-includes/option.php`. If you ship a plugin that has actual multisite users, run an integration test on a real network install before relying on these patterns. Some quirks (`switch_to_blog` interactions, network admin context detection, blog-id-aware caches) only surface in a real network.
 
 ## When to use this skill
 
@@ -94,11 +94,11 @@ When NOT to group:
 - **Cached values with different TTLs** — those are transients, not options.
 - **Per-user / per-post data** — wrong primitive, use the right meta API.
 
-WP auto-serializes the array via `maybe_serialize` ([wp-includes/functions.php](wp-includes/functions.php)) using PHP `serialize()`. `get_option` auto-`maybe_unserialize`s back. You don't manually JSON-encode.
+WP auto-serializes the array via `maybe_serialize` (`wp-includes/functions.php`) using PHP `serialize()`. `get_option` auto-`maybe_unserialize`s back. You don't manually JSON-encode.
 
 ## Autoload management — WP 6.6+ semantics
 
-`autoload` controls whether the option is loaded into memory on every WordPress page request. Verified in [add_option docblock](wp-includes/option.php) (`@since 6.6.0 The $autoload parameter's default value was changed to null`, `@since 6.7.0 The autoload values 'yes' and 'no' are deprecated`):
+`autoload` controls whether the option is loaded into memory on every WordPress page request. Verified in the `add_option` docblock at `wp-includes/option.php` (`@since 6.6.0 The $autoload parameter's default value was changed to null`, `@since 6.7.0 The autoload values 'yes' and 'no' are deprecated`):
 
 ```php
 // MODERN — let WP decide via default autoload heuristics
@@ -248,8 +248,8 @@ wp_set_option_autoload( 'myplugin_large_report', false );
 
 ## References
 
-- `add_option` autoload semantics (WP 6.6 `null` default, 6.7 `'yes'`/`'no'` deprecation): [wp-includes/option.php](wp-includes/option.php)
-- `maybe_serialize` (WP's auto-PHP-serialize for arrays/objects): [wp-includes/functions.php](wp-includes/functions.php)
-- Transient API: [wp-includes/option.php](wp-includes/option.php) `set_transient` / `set_site_transient`
-- Meta API: [wp-includes/meta.php](wp-includes/meta.php) — `get_metadata` / `update_metadata` / `delete_metadata` underlie all `*_meta` functions
-- WP database schema: [wp-admin/includes/schema.php](wp-admin/includes/schema.php) — see how WP itself names tables and columns for inspiration
+- `add_option` autoload semantics (WP 6.6 `null` default, 6.7 `'yes'`/`'no'` deprecation): `wp-includes/option.php`
+- `maybe_serialize` (WP's auto-PHP-serialize for arrays/objects): `wp-includes/functions.php`
+- Transient API: `wp-includes/option.php` `set_transient` / `set_site_transient`
+- Meta API: `wp-includes/meta.php` — `get_metadata` / `update_metadata` / `delete_metadata` underlie all `*_meta` functions
+- WP database schema: `wp-admin/includes/schema.php` — see how WP itself names tables and columns for inspiration

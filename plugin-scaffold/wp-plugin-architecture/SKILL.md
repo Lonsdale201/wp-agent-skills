@@ -173,8 +173,8 @@ When in doubt: write the class as a regular class. Promote to singleton only whe
 The wrong way: enqueue every script and stylesheet on every page load via `wp_enqueue_scripts`. The right way:
 
 1. **Pick the right hook for the right context.** Verified in WP source:
-   - **Frontend pages**: `wp_enqueue_scripts` ([wp-includes/script-loader.php:2311](wp-includes/script-loader.php))
-   - **wp-admin pages**: `admin_enqueue_scripts` ([wp-admin/admin-header.php:123](wp-admin/admin-header.php)) — receives `$hook_suffix` argument identifying the current admin page
+   - **Frontend pages**: `wp_enqueue_scripts` (`wp-includes/script-loader.php:2311`)
+   - **wp-admin pages**: `admin_enqueue_scripts` (`wp-admin/admin-header.php:123`) — receives `$hook_suffix` argument identifying the current admin page
    - **Block editor (Gutenberg)**: `enqueue_block_editor_assets`
    - **Front + back of blocks**: `enqueue_block_assets`
    - **Login screen**: `login_enqueue_scripts`
@@ -203,9 +203,9 @@ The wrong way: enqueue every script and stylesheet on every page load via `wp_en
 
 ### `wp_add_inline_script` preferred over `wp_localize_script` for new code
 
-`wp_localize_script` ([since 2.2](wp-includes/functions.wp-scripts.php)) creates a JavaScript object from an associative array. It still works, but for arbitrary runtime config it is a legacy-shaped helper: it requires an array payload and creates a top-level global. Use `wp_set_script_translations()` for JavaScript translations.
+`wp_localize_script` (since 2.2; defined in `wp-includes/functions.wp-scripts.php`) creates a JavaScript object from an associative array. It still works, but for arbitrary runtime config it is a legacy-shaped helper: it requires an array payload and creates a top-level global. Use `wp_set_script_translations()` for JavaScript translations.
 
-`wp_add_inline_script` ([since 4.5](wp-includes/functions.wp-scripts.php)) is the modern path: any JS string, before or after the registered script. Use `wp_json_encode()` to serialize structured data:
+`wp_add_inline_script` (since 4.5; defined in `wp-includes/functions.wp-scripts.php`) is the modern path: any JS string, before or after the registered script. Use `wp_json_encode()` to serialize structured data:
 
 ```php
 wp_add_inline_script(
@@ -323,8 +323,8 @@ do_action( 'myplugin/before_save', $data );
 
 ## References
 
-- `wp_enqueue_script`: [wp-includes/functions.wp-scripts.php](wp-includes/functions.wp-scripts.php) — note the `@since 6.3.0` on `$args` array overload.
-- `wp_add_inline_script`: [wp-includes/functions.wp-scripts.php](wp-includes/functions.wp-scripts.php) — since WP 4.5.
-- `admin_enqueue_scripts` action with `$hook_suffix`: [wp-admin/admin-header.php:123](wp-admin/admin-header.php).
-- `wp_enqueue_scripts` action: [wp-includes/script-loader.php:2311](wp-includes/script-loader.php).
+- `wp_enqueue_script`: `wp-includes/functions.wp-scripts.php` — note the `@since 6.3.0` on `$args` array overload.
+- `wp_add_inline_script`: `wp-includes/functions.wp-scripts.php` — since WP 4.5.
+- `admin_enqueue_scripts` action with `$hook_suffix`: `wp-admin/admin-header.php:123`.
+- `wp_enqueue_scripts` action: `wp-includes/script-loader.php:2311`.
 - PHP enums: [php.net/manual/en/language.enumerations.php](https://www.php.net/manual/en/language.enumerations.php).
