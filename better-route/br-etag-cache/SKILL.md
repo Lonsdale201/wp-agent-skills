@@ -1,6 +1,7 @@
 ---
 name: br-etag-cache
-description: HTTP-level response caching for better-route GET / HEAD
+description: >-
+  HTTP-level response caching for better-route GET / HEAD
   endpoints via ETagMiddleware — computes a hash of the response body
   (sha1 of json_encode by default), emits an ETag response header, and
   returns 304 Not Modified with no body when the request's

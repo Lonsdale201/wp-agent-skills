@@ -1,6 +1,7 @@
 ---
 name: br-auth-middleware
-description: Pick and configure the right authentication middleware for
+description: >-
+  Pick and configure the right authentication middleware for
   a better-route endpoint — JwtAuthMiddleware (Bearer JWT, HS256 via
   Hs256JwtVerifier), RS256/ES256 JWT via Rs256JwksJwtVerifier +
   JwtBearerTokenVerifierAdapter, BearerTokenAuthMiddleware (custom bearer tokens

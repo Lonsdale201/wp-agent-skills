@@ -1,6 +1,7 @@
 ---
 name: bd-attribute
-description: Add a new declarative attribute to the better-data library
+description: >-
+  Add a new declarative attribute to the better-data library
   (e.g. #[ArrayOf], #[Default], domain hint). Attributes live in
   src/Attribute/ as final readonly classes with constructor-promoted
   public properties — pure data carriers, never business logic. The

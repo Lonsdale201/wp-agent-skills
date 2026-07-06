@@ -29,6 +29,14 @@ Refreshed the Memberships batch from 1.28.3 to **1.29.0**, whose headline additi
 - `woocommerce/README.md` core table grew a `wc-admin-inline-scripts` row; the `wcm-abilities-api` row updated to 1.29+ with the post-restriction abilities and REST routes.
 - `skills-index.json` regenerated (`skill_count` 165 → 167; `plugin-scaffold` and `woocommerce` domains each +1; `domain_count` unchanged at 18).
 
+### Repo / tooling — strict-YAML `description` normalization
+
+Normalized every `SKILL.md` `description` that was not strict-YAML-valid so the frontmatter parses cleanly without the index builder's `parseLooseFrontmatter` fallback. 14 skills had plain multi-line descriptions containing `: ` (colon-space) or a trailing `:` — legal for the loose parser but rejected by strict `yaml.load` (and by `validate-skill.js`, which runs on the submission/PR flows). Each was converted to a `>-` folded block scalar, which preserves the exact wording (colons and all) while making strict parsing succeed.
+
+- Converted: `better-data/bd-attribute`, `bd-security`; `better-route/br-auth-middleware`, `br-error-contract`, `br-etag-cache`, `br-idempotency`, `br-openapi`, `br-resource-policy`, `br-write-schema`; `plugin-scaffold/wp-plugin-cron`, `wp-plugin-hooks`, `wp-plugin-options-storage`, `wp-plugin-rewrite-rules`; `wordpress/wp-abilities-api`.
+- Fixed latent index corruption this surfaced: for three better-route skills (`br-error-contract`, `br-resource-policy`, `br-write-schema`) the loose fallback had been mangling PHP `->` arrows into `,>` and dropping trailing sentences in the stored description. The `>-` values are faithful to the source, so `skills-index.json` now carries the complete, correct descriptions for those skills.
+- Skill bodies and all other frontmatter fields are unchanged; `skills-index.json` regenerated.
+
 ## 2026-07-03
 
 ### New domain — `wpml/` (WPML / String Translation / Translation Management)
