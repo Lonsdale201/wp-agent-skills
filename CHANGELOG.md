@@ -2,6 +2,33 @@
 
 This collection is continuously evolving — entries are date-based, not version-tagged. New skills land when they're ready; updates go in when they cover real ground (a new release of an upstream plugin, a verified misconception, a corrected example).
 
+## 2026-07-06
+
+### New skills
+
+- **`plugin-scaffold/wp-plugin-update-migrations`** — Update-time version migrations, the layer `wp-plugin-lifecycle` deliberately does not cover. The anchoring fact: activation does NOT fire on an ordinary plugin update (browser updates silently deactivate/reactivate around the file swap, and an active plugin's already-loaded old code is what runs any `upgrader_process_complete` callback), so upgrade code belongs behind a boot-time version check, not in `register_activation_hook`. Covers the canonical pattern — store a schema/data version option, compare it to the code's version on `plugins_loaded`, run idempotent stepwise `v1→v2→v3` migrators behind a transient lock writing the version after each step, `dbDelta()` inside migration steps (and its limits for drops/renames/backfills), `version_compare()` for a semver diagnostics option, `upgrader_process_complete` as a hint/cache-clear only (with the single-vs-bulk `$hook_extra` shapes), long-running backfills split to WP-Cron / Action Scheduler with a progress cursor, and per-site vs network schema versions on multisite. `plugin: wordpress`, `plugin-version-tested: "7.0"`, `php-min: "7.4"`, `last-updated: "2026-07-06"`.
+- **`woocommerce/wc-admin-inline-scripts`** — Small WooCommerce admin JavaScript the modern way. Corrects "WooCommerce has `wc_enqueue_js()`, so use that": it is deprecated since WC 10.4.0 in favor of `wp_add_inline_script()`, appending to a hard-to-scope global footer queue (`wc_print_js()` / `woocommerce_queued_js`) not tied to a real handle. Covers registering/enqueueing a handle and attaching inline code to it, gating enqueues by `$hook_suffix` / screen / settings tab, the jQuery-ready wrapper that `wp_add_inline_script()` does NOT add (so you wrap it yourself when migrating), `wp_json_encode()` for PHP→JS data, `'before'` for boot data vs `'after'` for behavior, the inline-only `false`-src handle for tiny glue, and common Woo admin handles (`woocommerce_admin`, `wc-enhanced-select`, `wc-shipping-zones`). `plugin: woocommerce`, `plugin-version-tested: "10.9.3"`, `php-min: "7.4"`, `last-updated: "2026-07-06"`.
+
+### Updated skills — WooCommerce Memberships 1.29.0
+
+Refreshed the Memberships batch from 1.28.3 to **1.29.0**, whose headline addition is the block-editor per-post content-restriction sidebar and its Abilities API / REST surface.
+
+- **`wcm-abilities-api`** — Substantial expansion for the 1.29.0 `woocommerce-memberships/post-restriction-rules-get` and `-update` abilities and their `/wc-memberships/v1/post-restriction-rules/{id}` GET/PUT routes: the new `woocommerce-memberships-posts` category, the split permission model (plan/user-membership abilities check `manage_woocommerce`; post-restriction abilities check `manage_woocommerce_membership_plans`, with GET also reaching a numeric `edit_post` check from its integer input while UPDATE takes an array and needs a manual `edit_post` guard in wrappers), the direct-vs-inherited `editable` rule boundary, full-desired-state PUT semantics (omitted direct rules deleted, inherited-rule IDs `422`), and a safe execute shape. Corrects "these abilities have no REST routes" — the post-restriction pair does pass a framework `RestConfig`.
+- **`wcm-membership-hooks`** — Abilities list gains the two `post-restriction-rules-*` entries and the split-capability note; version-specific phrasing generalized off "1.28.3".
+- **`wcm-access-discounts`** — Cross-reference to the new post-restriction abilities as the editor/admin rule-configuration layer (with `wc_memberships_user_can()` remaining the runtime access decision); "translations loaded too early" note de-versioned.
+- **`wcm-data-model-subscriptions-link`** — Notes the 1.29.0 `PostRestrictionRulesSerializer` / `SetPostRules` layer over the same `wc_memberships_rules` store, and the direct-vs-inherited filtering rule.
+
+### Updated skills — plugin-scaffold
+
+- **`wp-plugin-lifecycle`** — Now cross-references `wp-plugin-update-migrations` (in the intro, cross-references, and "does NOT cover" section) instead of hand-waving update migrations toward `upgrader_process_complete`; `plugin-version-tested` bumped to `"6.5 - 7.0"` and `last-updated` to `2026-07-06`.
+- **`wp-plugin-architecture`, `-assets-loading`, `-bootstrap`, `-cron`, `-hooks`, `-options-storage`, `-rewrite-rules`** — Documentation cleanup: broken pseudo-Markdown links to WP source files (`[wp-includes/…](wp-includes/…)`, which never resolved) rewritten as plain inline code spans, so references read as `wp-includes/…` code rather than dead links.
+
+### Repo / docs
+
+- `plugin-scaffold/README.md` skills table grew a `wp-plugin-update-migrations` row.
+- `woocommerce/README.md` core table grew a `wc-admin-inline-scripts` row; the `wcm-abilities-api` row updated to 1.29+ with the post-restriction abilities and REST routes.
+- `skills-index.json` regenerated (`skill_count` 165 → 167; `plugin-scaffold` and `woocommerce` domains each +1; `domain_count` unchanged at 18).
+
 ## 2026-07-03
 
 ### New domain — `wpml/` (WPML / String Translation / Translation Management)

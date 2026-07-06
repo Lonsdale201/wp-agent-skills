@@ -52,7 +52,7 @@ muplugins_loaded -> [active plugin files included; top-level code runs]
 Verified in `wp-settings.php` ([wp-settings.php:511, 545-571, 593, 720, 742](wp-settings.php)) — `muplugins_loaded` fires first, then WP `include_once`s every active plugin's main file (this is when YOUR top-level code runs), then `plugins_loaded`. Two practical rules:
 
 - **Top-level code in the bootstrap file is normal and expected.** `add_action()` / `add_filter()` registrations at top level are fine — that's how plugins wire themselves into WP. What you should NOT do at top level: business logic, DB writes, calls to other plugins' functions (they may not be loaded yet), request-dependent work, or anything that triggers translation. Anything that needs other plugins available, or runtime context, goes inside a `plugins_loaded` callback.
-- **Translation calls (`__()`, `_e()`, `esc_html__`, etc.) must NOT run before `after_setup_theme`** on WP 6.7+. The just-in-time translation loader ([wp-includes/l10n.php:1380](wp-includes/l10n.php) `_load_textdomain_just_in_time`) emits `_doing_it_wrong` if a translation function triggers it before `after_setup_theme`. Bootstrap-phase strings (PHP version errors, requirement messages built during plugin file load or in a `plugins_loaded` callback) must be raw English.
+- **Translation calls (`__()`, `_e()`, `esc_html__`, etc.) must NOT run before `after_setup_theme`** on WP 6.7+. The just-in-time translation loader (`wp-includes/l10n.php:1380` `_load_textdomain_just_in_time`) emits `_doing_it_wrong` if a translation function triggers it before `after_setup_theme`. Bootstrap-phase strings (PHP version errors, requirement messages built during plugin file load or in a `plugins_loaded` callback) must be raw English.
 
 ## Anatomy of a clean bootstrap file
 
@@ -149,7 +149,7 @@ That single file is the **entire** entry-point. Everything else lives in `includ
 
 ### 1. Header fields that matter in 2026
 
-The authoritative list is in [wp-admin/includes/plugin.php `get_plugin_data()`](wp-admin/includes/plugin.php). At the WordPress runtime level **only `Plugin Name` is required** — `get_plugins()` skips files where `$plugin_data['Name']` is empty. Everything else is recommended for usability, wp.org submission, or specific features.
+The authoritative list is in `get_plugin_data()` (`wp-admin/includes/plugin.php`). At the WordPress runtime level **only `Plugin Name` is required** — `get_plugins()` skips files where `$plugin_data['Name']` is empty. Everything else is recommended for usability, wp.org submission, or specific features.
 
 | Field | Status | Purpose |
 |---|---|---|
@@ -207,7 +207,7 @@ Add the dependency at the plugin header level:
 Requires Plugins: jetformbuilder, woocommerce
 ```
 
-WP surfaces missing dependencies on the plugins screen and prevents activation when they're absent ([class-wp-plugin-dependencies.php](wp-includes/class-wp-plugin-dependencies.php)). This is **layered enforcement** — also keep your runtime requirements check (Section 4) because users on older WP, sites that bypass `validate_plugin_requirements()`, or upgrade scenarios can still get past the header check.
+WP surfaces missing dependencies on the plugins screen and prevents activation when they're absent (see `wp-includes/class-wp-plugin-dependencies.php`). This is **layered enforcement** — also keep your runtime requirements check (Section 4) because users on older WP, sites that bypass `validate_plugin_requirements()`, or upgrade scenarios can still get past the header check.
 
 Limits to know:
 
@@ -263,7 +263,7 @@ add_action( 'init', static function (): void {
 } );
 ```
 
-`load_plugin_textdomain()` itself is **safe to call earlier** — on WP 6.7+ it just registers the custom path with the textdomain registry, doesn't actually load anything. The `_doing_it_wrong` notice is triggered by **a translation function (`__()`, `_e()`, `esc_html__`, etc.)** invoking the just-in-time loader before `after_setup_theme` ([wp-includes/l10n.php:1380](wp-includes/l10n.php) `_load_textdomain_just_in_time`). So the hard rule is on the translation calls themselves, not on `load_plugin_textdomain` placement.
+`load_plugin_textdomain()` itself is **safe to call earlier** — on WP 6.7+ it just registers the custom path with the textdomain registry, doesn't actually load anything. The `_doing_it_wrong` notice is triggered by **a translation function (`__()`, `_e()`, `esc_html__`, etc.)** invoking the just-in-time loader before `after_setup_theme` (`wp-includes/l10n.php:1380` `_load_textdomain_just_in_time`). So the hard rule is on the translation calls themselves, not on `load_plugin_textdomain` placement.
 
 Practical rule: **don't translate strings during the bootstrap-phase** (top-level code, `plugins_loaded` callbacks, activation hook callbacks). PHP version errors, requirement failure messages, etc. should be raw English. Render them through `__()` only when the admin notice runs (`admin_notices`, well after `init`). The `init` hook for `load_plugin_textdomain` is convention + future-proof, not strictly required.
 
@@ -331,6 +331,6 @@ spl_autoload_register( function ( $class ) {
 - Plugin header reference: [Header Requirements](https://developer.wordpress.org/plugins/plugin-basics/header-requirements/)
 - Plugin Dependencies (WP 6.5): [make.wordpress.org announcement](https://make.wordpress.org/core/2024/03/05/introducing-plugin-dependencies-in-wordpress-6-5/)
 - `register_activation_hook`: [developer.wordpress.org](https://developer.wordpress.org/reference/functions/register_activation_hook/)
-- `is_php_version_compatible` / `is_wp_version_compatible`: [wp-includes/functions.php](wp-includes/functions.php)
-- `validate_plugin_requirements`: [wp-admin/includes/plugin.php](wp-admin/includes/plugin.php) — what WP runs before activating your plugin.
-- Just-in-time translation loader (the `_doing_it_wrong` source): [wp-includes/l10n.php](wp-includes/l10n.php) `_load_textdomain_just_in_time()`.
+- `is_php_version_compatible` / `is_wp_version_compatible`: `wp-includes/functions.php`
+- `validate_plugin_requirements`: `wp-admin/includes/plugin.php` — what WP runs before activating your plugin.
+- Just-in-time translation loader (the `_doing_it_wrong` source): `wp-includes/l10n.php` `_load_textdomain_just_in_time()`.

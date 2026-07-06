@@ -12,9 +12,9 @@ description: WooCommerce Memberships storage and relationship map for
 author: Soczo Kristof
 contact: mailto:lonsdale201@hotmail.com
 plugin: woocommerce-memberships
-plugin-version-tested: "1.28.3"
+plugin-version-tested: "1.29.0"
 php-min: "7.4"
-last-updated: "2026-06-14"
+last-updated: "2026-07-06"
 source-refs:
   - wp-content/plugins/woocommerce-memberships/src/class-wc-memberships-post-types.php
   - wp-content/plugins/woocommerce-memberships/src/class-wc-memberships-membership-plan.php
@@ -25,6 +25,8 @@ source-refs:
   - wp-content/plugins/woocommerce-memberships/src/Data_Stores/Profile_Field_Definition/Option.php
   - wp-content/plugins/woocommerce-memberships/src/API/Controller/User_Memberships.php
   - wp-content/plugins/woocommerce-memberships/src/Helpers/Directory_Block_Validator.php
+  - wp-content/plugins/woocommerce-memberships/src/Posts/Actions/SetPostRules.php
+  - wp-content/plugins/woocommerce-memberships/src/Posts/Adapters/JsonSerializers/PostRestrictionRulesSerializer.php
   - wp-content/plugins/woocommerce-memberships/src/integrations/subscriptions/class-wc-memberships-integration-subscriptions-user-membership.php
   - wp-content/plugins/woocommerce-memberships/src/integrations/subscriptions/class-wc-memberships-integration-subscriptions.php
 ---
@@ -111,6 +113,8 @@ Rules are stored in the `wc_memberships_rules` option, not as posts. Rule type v
 Common rule fields are `id`, `membership_plan_id`, `active`, `rule_type`, `content_type`, `content_type_name`, `object_ids`, `discount_type`, `discount_amount`, `access_type`, `access_schedule`, `access_schedule_exclude_trial`, and `meta_data`.
 
 Use `wc_memberships()->get_rules_instance()->get_rules()`, `get_plan_rules()`, `add_rules()`, `update_rules()`, or `delete_rules()` instead of editing the option directly.
+
+Memberships 1.29.0 adds a safer admin/editor layer for per-post content restriction rules. `PostRestrictionRulesSerializer` reads the same `wc_memberships_rules` store and returns both direct and inherited rules, while `SetPostRules` replaces only direct post-specific `content_restriction` rows for one post. If you consume the GET result, filter to rows where `editable === true` before sending an update; inherited rules must be edited at the plan/post-type/taxonomy source.
 
 ## Memberships to Subscriptions relation
 
