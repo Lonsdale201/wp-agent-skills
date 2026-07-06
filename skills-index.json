@@ -168,9 +168,9 @@
       "has_examples": false,
       "has_scripts": false,
       "skill_md": {
-        "bytes": 14588,
-        "lines": 306,
-        "sha256": "70815b3b9c46acd5515d5ab4d34d2da5ef45cdcc5ac1c8a42904c2d47f77b22f"
+        "bytes": 14593,
+        "lines": 307,
+        "sha256": "c100e9fec5dd35de8ac6b8aa2f1595bc8b6e676b7064555f638db458d1f5900f"
       }
     },
     {
@@ -430,9 +430,9 @@
       "has_examples": false,
       "has_scripts": false,
       "skill_md": {
-        "bytes": 16196,
-        "lines": 326,
-        "sha256": "d5758e5499a05980e54cea7c0da5aefbd8724f22fce07156433cd4f67c9a6512"
+        "bytes": 16201,
+        "lines": 327,
+        "sha256": "2994bbd6984748f4facbd883a3954bc44c6ed3c3fc343f43cffe25f64807e6ea"
       }
     },
     {
@@ -684,9 +684,9 @@
       "has_examples": false,
       "has_scripts": false,
       "skill_md": {
-        "bytes": 19304,
-        "lines": 392,
-        "sha256": "a7fe193e33b87cc5e70a9fd24755582f374ae778ad4b2653e8fb66d8cee88f65"
+        "bytes": 19309,
+        "lines": 393,
+        "sha256": "9d52c938fea05f84ab53efae6bba28ae84d18df055cff7187e03d64c3699ee3c"
       }
     },
     {
@@ -769,7 +769,7 @@
       "slug": "br-error-contract",
       "name": "br-error-contract",
       "domain": "better-route",
-      "description": "Reference for the standard better-route error envelope — every error response has shape {error: {code, message, requestId, details}}. Throw ApiException(message, status, errorCode, details) inside handlers; better-route's ErrorNormalizer wraps it. Critical v0.3.0 normalization — for status >= 500 from non-ApiException failures, message is normalized to 'Unexpected error.' and details is empty (internal exception class + message NO LONGER leak); for status === 400 from non-ApiException, details.exception still includes the class name (developer aid for misuse). Common error codes — validation_failed (400, fieldErrors), idempotency_key_required (400), invalid_token (401), insufficient permissions (403), not_found (404), idempotency_conflict / hpos_required / customer_exists (409), rate_limited (429), woo_unavailable (503). Use when handlers need to throw structured errors, or consumers need to interpret them. v0.6.0 adds opt-in OAuth RFC6749 error format via,>meta(['error_format' => 'oauth_rfc6749']) and OAuthErrorNormalizer.",
+      "description": "Reference for the standard better-route error envelope — every error response has shape {error: {code, message, requestId, details}}. Throw ApiException(message, status, errorCode, details) inside handlers; better-route's ErrorNormalizer wraps it. Critical v0.3.0 normalization — for status >= 500 from non-ApiException failures, message is normalized to 'Unexpected error.' and details is empty (internal exception class + message NO LONGER leak); for status === 400 from non-ApiException, details.exception still includes the class name (developer aid for misuse). Common error codes — validation_failed (400, fieldErrors), idempotency_key_required (400), invalid_token (401), insufficient permissions (403), not_found (404), idempotency_conflict / hpos_required / customer_exists (409), rate_limited (429), woo_unavailable (503). Use when handlers need to throw structured errors, or consumers need to interpret them. v0.6.0 adds opt-in OAuth RFC6749 error format via ->meta(['error_format' => 'oauth_rfc6749']) and OAuthErrorNormalizer. Triggers on ApiException, ErrorNormalizer, OAuthErrorNormalizer, error_format, oauth_rfc6749, fromThrowable, error envelope, fieldErrors.",
       "path": "better-route/br-error-contract",
       "skill_path": "better-route/br-error-contract/SKILL.md",
       "url": "https://raw.githubusercontent.com/Lonsdale201/wp-agent-skills/main/better-route/br-error-contract/SKILL.md",
@@ -811,9 +811,9 @@
       "has_examples": false,
       "has_scripts": false,
       "skill_md": {
-        "bytes": 18389,
-        "lines": 441,
-        "sha256": "16e4035de3be4461ff604a3a6a1f9e4cdbaa124d5f9fd6a2b013100a07cf6ccc"
+        "bytes": 18394,
+        "lines": 442,
+        "sha256": "6e20acaa8ea538f9ff90a72eeabbe433fc691b5f710c9b2973b392fe8ef0660d"
       }
     },
     {
@@ -852,9 +852,9 @@
       "has_examples": false,
       "has_scripts": false,
       "skill_md": {
-        "bytes": 12942,
-        "lines": 269,
-        "sha256": "ef268f149cc4a82c5d9e11369b42a52bf50944cf16b00c66f4d3fe13cd006d8e"
+        "bytes": 12947,
+        "lines": 270,
+        "sha256": "f3383b2dc560ce4289ee461d4527b5b655f42769137e0a76d5e924aa5e6e8215"
       }
     },
     {
@@ -941,9 +941,9 @@
       "has_examples": false,
       "has_scripts": false,
       "skill_md": {
-        "bytes": 16519,
-        "lines": 320,
-        "sha256": "c562fff51d488c11fac72ef6b3eddffd8fb180b2657870e46ff6f66bf20099bd"
+        "bytes": 16524,
+        "lines": 321,
+        "sha256": "d45693e1e6622202d9ded349deb19e522641618bc8af07e4475a2525089c845f"
       }
     },
     {
@@ -1137,9 +1137,9 @@
       "has_examples": false,
       "has_scripts": false,
       "skill_md": {
-        "bytes": 16010,
-        "lines": 356,
-        "sha256": "f7067c40634eb06c8229944671c38435a4d942203b0f2a46788214e9f4995f05"
+        "bytes": 16015,
+        "lines": 357,
+        "sha256": "b7d48e537471f664e42777b3a6eedcbf467fd99d10ebc7e182bf6e5af64bda59"
       }
     },
     {
@@ -1269,7 +1269,7 @@
       "slug": "br-resource-policy",
       "name": "br-resource-policy",
       "domain": "better-route",
-      "description": "Configure permission policies on a better-route Resource — use a ResourcePolicy preset (publicReadPrivateWrite, adminOnly, capabilities, callbacks) for per-action authorization, or,>fieldPolicy([...]) for per-field write authorization. The four,>policy([), ->fieldPolicy([ in better-route Resources.",
+      "description": "Configure permission policies on a better-route Resource — use a ResourcePolicy preset (publicReadPrivateWrite, adminOnly, capabilities, callbacks) for per-action authorization, or ->fieldPolicy([...]) for per-field write authorization. The four presets all return ['permissions' => [...]] with different configurations — publicReadPrivateWrite opens list/get and gates writes on a capability, adminOnly gates everything on a single capability (default manage_options), capabilities wraps any per-action map (action keys: list, get, create, update, delete, *), callbacks does the same with callable values. Important — denied fields under fieldPolicy are stripped silently from the payload, NOT rejected with an error; combine with response-side validation if consumers need to know. Use when configuring a Resource's permissions or per-field writes. Triggers on ResourcePolicy::, ->policy([), ->fieldPolicy([ in better-route Resources.",
       "path": "better-route/br-resource-policy",
       "skill_path": "better-route/br-resource-policy/SKILL.md",
       "url": "https://raw.githubusercontent.com/Lonsdale201/wp-agent-skills/main/better-route/br-resource-policy/SKILL.md",
@@ -1296,9 +1296,9 @@
       "has_examples": false,
       "has_scripts": false,
       "skill_md": {
-        "bytes": 14919,
-        "lines": 312,
-        "sha256": "9f7f26aefc7e70b9adecf3c79d58687aaa8deadd39dd6e6e2b2bd7a768e1062a"
+        "bytes": 14924,
+        "lines": 313,
+        "sha256": "e859386ee78937f1b5f4626da170e6ac4e30881583fe66e9977b071ccc2ce6e0"
       }
     },
     {
@@ -1484,7 +1484,7 @@
       "slug": "br-write-schema",
       "name": "br-write-schema",
       "domain": "better-route",
-      "description": "Validate POST / PUT / PATCH bodies on a better-route Resource via ->writeSchema([...]) (alias ->payloadSchema([...])). Maps each field to a rule array with type / required / nullable / min / max / minLength / maxLength / regex / enum-values / sanitize. Important — the source-verified shape for enum is {type: 'enum', 'values': [...]} (FLAT), NOT {type: 'enum', 'enum': {'values': [...]}} (the agents.md doc nests it). Verified at src/Resource/Resource.php: 1366 — assertValueConstraints reads $rule['values'] directly. Other shape rules — sanitize values are 'text'|'email'|'key'|'url'|callable; type values are int|integer / float|number / bool|boolean / string / date / email / url / enum / array / object / mixed (the integer / number / boolean variants are aliases). Validation failures throw ApiException with code validation_failed and details.fieldErrors. Use when adding payload validation to a Resource. Triggers on,>writeSchema(, ->payloadSchema(, fieldErrors, validation_failed.",
+      "description": "Validate POST / PUT / PATCH bodies on a better-route Resource via ->writeSchema([...]) (alias ->payloadSchema([...])). Maps each field to a rule array with type / required / nullable / min / max / minLength / maxLength / regex / enum-values / sanitize. Important — the source-verified shape for enum is {type: 'enum', 'values': [...]} (FLAT), NOT {type: 'enum', 'enum': {'values': [...]}} (the agents.md doc nests it). Verified at src/Resource/Resource.php: 1366 — assertValueConstraints reads $rule['values'] directly. Other shape rules — sanitize values are 'text'|'email'|'key'|'url'|callable; type values are int|integer / float|number / bool|boolean / string / date / email / url / enum / array / object / mixed (the integer / number / boolean variants are aliases). Validation failures throw ApiException with code validation_failed and details.fieldErrors. Use when adding payload validation to a Resource. Triggers on ->writeSchema(, ->payloadSchema(, fieldErrors, validation_failed.",
       "path": "better-route/br-write-schema",
       "skill_path": "better-route/br-write-schema/SKILL.md",
       "url": "https://raw.githubusercontent.com/Lonsdale201/wp-agent-skills/main/better-route/br-write-schema/SKILL.md",
@@ -1511,9 +1511,9 @@
       "has_examples": false,
       "has_scripts": false,
       "skill_md": {
-        "bytes": 15479,
-        "lines": 308,
-        "sha256": "e043c074d7a320f547cb06a12ca1addf2b8d697f9392bf75c8ba479f0d0908ad"
+        "bytes": 15484,
+        "lines": 309,
+        "sha256": "f389bff774ec03edb0b2457ec34d9d536b8e97530e6c37b91bf75c5796579075"
       }
     },
     {
@@ -3184,9 +3184,9 @@
       "has_examples": false,
       "has_scripts": false,
       "skill_md": {
-        "bytes": 17622,
-        "lines": 336,
-        "sha256": "a388a879c968de81173a441e86d0f269447a445b59f606c233f9546459be8e5c"
+        "bytes": 17627,
+        "lines": 337,
+        "sha256": "f3c27cfcf2fceb1b8a22c5e705dc17bf22f36676d18f7f2df325feb084fcb5e0"
       }
     },
     {
@@ -3270,9 +3270,9 @@
       "has_examples": false,
       "has_scripts": false,
       "skill_md": {
-        "bytes": 15059,
-        "lines": 294,
-        "sha256": "6b95abee5b87d0ff50b722c77a87f4fc247d694e431991c980cc02487221c67b"
+        "bytes": 15064,
+        "lines": 295,
+        "sha256": "93ff9e692ef0c7f4814231c2af040e8638f464dcbc324203384f3a667790e067"
       }
     },
     {
@@ -3341,9 +3341,9 @@
       "has_examples": false,
       "has_scripts": false,
       "skill_md": {
-        "bytes": 16747,
-        "lines": 256,
-        "sha256": "b9e38fc032988ca692d7f4b8ff52b3f5724c6e102f66f1b90ec85827ce5cb430"
+        "bytes": 16752,
+        "lines": 257,
+        "sha256": "c30c8c5a25e874912a5bbc51285548be66500a08d8c16672d5e9bf34ce3dd5eb"
       }
     },
     {
@@ -3426,9 +3426,9 @@
       "has_examples": false,
       "has_scripts": false,
       "skill_md": {
-        "bytes": 16709,
-        "lines": 315,
-        "sha256": "35b1bc237489e2c602a7891bd1f16b7a1cc2724ba75b80e35a8afdd622b8af81"
+        "bytes": 16714,
+        "lines": 316,
+        "sha256": "f437e553943e089ec85953a66a57d0e2ea6d5336e60381dd698ce1859507cf6b"
       }
     },
     {
@@ -6155,9 +6155,9 @@
       "has_examples": false,
       "has_scripts": false,
       "skill_md": {
-        "bytes": 22255,
-        "lines": 416,
-        "sha256": "418f870b478623c47ff2a7a5f47e08ec6bbb3e5742bcbc49519594e1a4a4f392"
+        "bytes": 22260,
+        "lines": 417,
+        "sha256": "08d8152f50dd90a9293c684858f6143f878bf3e819155b430fc4283d5c6530c1"
       }
     },
     {

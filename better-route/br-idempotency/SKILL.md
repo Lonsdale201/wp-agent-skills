@@ -1,6 +1,7 @@
 ---
 name: br-idempotency
-description: Configure better-route idempotent write behavior. Use
+description: >-
+  Configure better-route idempotent write behavior. Use
   IdempotencyMiddleware for replay-cache semantics and use the separate
   br-atomic-idempotency skill / AtomicIdempotencyMiddleware for
   side-effectful writes where concurrent duplicate execution must be

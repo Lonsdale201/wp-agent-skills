@@ -1,6 +1,7 @@
 ---
 name: wp-plugin-cron
-description: Designs and reviews scheduled/background work in WordPress
+description: >-
+  Designs and reviews scheduled/background work in WordPress
   plugins: wp_schedule_event, wp_schedule_single_event, cron_schedules,
   wp_next_scheduled guards, activation scheduling, deactivation cleanup,
   WP-Cron pseudo-cron timing, DISABLE_WP_CRON/system cron, multisite
