@@ -12,7 +12,7 @@
     "skill_file": "SKILL.md"
   },
   "domain_count": 19,
-  "skill_count": 171,
+  "skill_count": 172,
   "domains": [
     {
       "slug": "better-data",
@@ -126,7 +126,7 @@
       "slug": "wpml",
       "path": "wpml",
       "readme_path": "wpml/README.md",
-      "skill_count": 4
+      "skill_count": 5
     }
   ],
   "skills": [
@@ -7300,6 +7300,56 @@
         "bytes": 22280,
         "lines": 501,
         "sha256": "6e766d5022c2691f791dc688a855d68191d78acab146ccf2a99e8386b6acf68b"
+      }
+    },
+    {
+      "slug": "wpml-compatibility-audit",
+      "name": "wpml-compatibility-audit",
+      "domain": "wpml",
+      "description": "Audit whether a WordPress plugin or classic theme is WPML-compatible end to end. Use when asked \"is this plugin WPML compatible?\", \"why does this shortcode/string/page not translate?\", or when code has wpml-config.xml, stored page/product/term IDs, get_permalink/home_url, shortcode attributes, get_option option strings, custom tables, WooCommerce order/product data, emails/PDFs/background jobs, wpml_register_single_string, wpml_translate_single_string, wpml_object_id, wpml_permalink, or wpml_switch_language.",
+      "path": "wpml/wpml-compatibility-audit",
+      "skill_path": "wpml/wpml-compatibility-audit/SKILL.md",
+      "url": "https://raw.githubusercontent.com/Lonsdale201/wp-agent-skills/main/wpml/wpml-compatibility-audit/SKILL.md",
+      "raw_url": "https://raw.githubusercontent.com/Lonsdale201/wp-agent-skills/main/wpml/wpml-compatibility-audit/SKILL.md",
+      "html_url": "https://github.com/Lonsdale201/wp-agent-skills/blob/main/wpml/wpml-compatibility-audit/SKILL.md",
+      "directory_url": "https://github.com/Lonsdale201/wp-agent-skills/tree/main/wpml/wpml-compatibility-audit",
+      "metadata": {
+        "author": "Soczó Kristóf",
+        "contact": "mailto:lonsdale201@hotmail.com",
+        "plugin": "sitepress-multilingual-cms",
+        "plugin-version-tested": "4.9.5",
+        "php-min": "7.4",
+        "last-updated": "2026-07-07",
+        "docs": [
+          "https://wpml.org/documentation/support/wpml-coding-api/",
+          "https://wpml.org/documentation/support/language-configuration-files/"
+        ],
+        "source-refs": [
+          "wp-content/plugins/sitepress-multilingual-cms/sitepress.php",
+          "wp-content/plugins/sitepress-multilingual-cms/sitepress.class.php",
+          "wp-content/plugins/sitepress-multilingual-cms/inc/template-functions.php",
+          "wp-content/plugins/sitepress-multilingual-cms/classes/xml-config/class-wpml-config.php",
+          "wp-content/plugins/sitepress-multilingual-cms/classes/language-switcher/class-wpml-ls-settings-strings.php",
+          "wp-content/plugins/sitepress-multilingual-cms/classes/url-handling/class-wpml-endpoints-support.php",
+          "wp-content/plugins/sitepress-multilingual-cms/res/xsd/wpml-config.xsd"
+        ]
+      },
+      "resources": [
+        {
+          "path": "agents/openai.yaml",
+          "repo_path": "wpml/wpml-compatibility-audit/agents/openai.yaml",
+          "type": "resource",
+          "bytes": 217,
+          "sha256": "3af519369b0652a0fc9b4710c2332e39be4073daf9cbe9d52764c405d0074512"
+        }
+      ],
+      "has_reference": false,
+      "has_examples": false,
+      "has_scripts": false,
+      "skill_md": {
+        "bytes": 9239,
+        "lines": 213,
+        "sha256": "4bd3faba759ef95e90a8dfdd24cb69591cfdcac4a9aa20e15f4b9948e6aa4d6b"
       }
     },
     {
