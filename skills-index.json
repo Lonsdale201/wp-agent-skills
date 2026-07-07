@@ -5622,9 +5622,9 @@
       "has_examples": false,
       "has_scripts": false,
       "skill_md": {
-        "bytes": 10564,
-        "lines": 296,
-        "sha256": "db085ebf886ab621311a5cc275651295fc1e7a833d8eaedfd39b092f952f0b46"
+        "bytes": 11040,
+        "lines": 302,
+        "sha256": "b4e1e96abc79b54d0c9ff85a46c15808a84ec83f3dd64e4ceee9a397e84f7cc4"
       }
     },
     {

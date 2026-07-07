@@ -56,6 +56,10 @@ Same-day refinement of the audit skill added above: grounded the dynamic-string 
 - Body: noted that dynamic option/admin strings are not runtime-testable when ST is absent (the hook form still degrades to original text); documented the optional fifth `$language_code` argument to `wpml_translate_single_string` for output rendered outside the original frontend request (emails, PDFs, exports, jobs); explained that `<admin-texts>` is imported by ST via `wpml_parse_config_file` / `wpml_parse_custom_config` and attaches `option_{$option}` filters (and provides no translated output without ST); added a Medium finding for "`<admin-texts>` present but the test environment has WPML core without String Translation"; and expanded the Environment report line to include the ST version.
 - `skills-index.json` regenerated (content sha256 / line-count refresh for this skill; no count change — still 173 skills, `wpml` domain 5, `domain_count` 19).
 
+### Updated skill — `woocommerce/wc-sequential-order-numbers-pro` (correct `set_sequential_order_number()` signature)
+
+Same-day correction to the SONP skill added above: fixed the documented signature of `wc_seq_order_number_pro()->set_sequential_order_number()`. It is `( $order_id, $object = [] )`, where the first argument accepts **either** a `WC_Order` or an order ID (internally `$order_id instanceof WC_Order ? $order_id : wc_get_order( $order_id )`) and the optional second argument is the hook payload (WordPress passes the post/object as the 2nd arg on `save_post` / `woocommerce_process_shop_order_meta`); also clarified that the method is a **no-op when a number already exists**, so it never overwrites one. Added a matching inline comment to the legacy-importer repair example. `skills-index.json` regenerated (content sha256 / line-count refresh only; no count change — 173 skills, `woocommerce` domain 31, `domain_count` 19).
+
 ## 2026-07-06
 
 ### New skills
