@@ -12,7 +12,7 @@
     "skill_file": "SKILL.md"
   },
   "domain_count": 19,
-  "skill_count": 172,
+  "skill_count": 173,
   "domains": [
     {
       "slug": "better-data",
@@ -108,7 +108,7 @@
       "slug": "woocommerce",
       "path": "woocommerce",
       "readme_path": "woocommerce/README.md",
-      "skill_count": 30
+      "skill_count": 31
     },
     {
       "slug": "wordpress",
@@ -5575,6 +5575,56 @@
         "bytes": 23633,
         "lines": 334,
         "sha256": "be72e990221162da94eb118f7decf4c2856d1517ea3b495ec9ff93a2b07d3169"
+      }
+    },
+    {
+      "slug": "wc-sequential-order-numbers-pro",
+      "name": "wc-sequential-order-numbers-pro",
+      "domain": "woocommerce",
+      "description": "Build or audit compatibility with WooCommerce Sequential Order Numbers Pro. Use when code prints, stores, searches, imports, exports, invoices, emails, syncs, or filters WooCommerce order numbers, especially around $order->get_order_number(), wc_seq_order_number_pro(), find_order_by_order_number(), _order_number, _order_number_formatted, wc_sequential_order_numbers_formatted_order_number, HPOS order meta, REST-created orders, Checkout Block draft orders, free-order sequences, or WooCommerce Subscriptions renewal orders.",
+      "path": "woocommerce/wc-sequential-order-numbers-pro",
+      "skill_path": "woocommerce/wc-sequential-order-numbers-pro/SKILL.md",
+      "url": "https://raw.githubusercontent.com/Lonsdale201/wp-agent-skills/main/woocommerce/wc-sequential-order-numbers-pro/SKILL.md",
+      "raw_url": "https://raw.githubusercontent.com/Lonsdale201/wp-agent-skills/main/woocommerce/wc-sequential-order-numbers-pro/SKILL.md",
+      "html_url": "https://github.com/Lonsdale201/wp-agent-skills/blob/main/woocommerce/wc-sequential-order-numbers-pro/SKILL.md",
+      "directory_url": "https://github.com/Lonsdale201/wp-agent-skills/tree/main/woocommerce/wc-sequential-order-numbers-pro",
+      "metadata": {
+        "author": "Soczó Kristóf",
+        "contact": "mailto:lonsdale201@hotmail.com",
+        "plugin": "woocommerce-sequential-order-numbers-pro",
+        "plugin-version-tested": "1.21.9",
+        "woocommerce-version-tested": "10.9.3",
+        "wp-version-tested": "7.0",
+        "php-min": "7.4",
+        "last-updated": "2026-07-07",
+        "docs": [
+          "https://docs.woocommerce.com/document/sequential-order-numbers/",
+          "https://woocommerce.com/products/sequential-order-numbers-pro/"
+        ],
+        "source-refs": [
+          "wp-content/plugins/woocommerce-sequential-order-numbers-pro/woocommerce-sequential-order-numbers-pro.php",
+          "wp-content/plugins/woocommerce-sequential-order-numbers-pro/class-wc-seq-order-number-pro.php",
+          "wp-content/plugins/woocommerce-sequential-order-numbers-pro/src/REST_API.php",
+          "wp-content/plugins/woocommerce-sequential-order-numbers-pro/src/Lifecycle.php",
+          "wp-content/plugins/woocommerce-sequential-order-numbers-pro/changelog.txt"
+        ]
+      },
+      "resources": [
+        {
+          "path": "agents/openai.yaml",
+          "repo_path": "woocommerce/wc-sequential-order-numbers-pro/agents/openai.yaml",
+          "type": "resource",
+          "bytes": 264,
+          "sha256": "958e083469204e401346f9f657d5ae0544489ac5a60110a8d8d714c282e050b2"
+        }
+      ],
+      "has_reference": false,
+      "has_examples": false,
+      "has_scripts": false,
+      "skill_md": {
+        "bytes": 10564,
+        "lines": 296,
+        "sha256": "db085ebf886ab621311a5cc275651295fc1e7a833d8eaedfd39b092f952f0b46"
       }
     },
     {

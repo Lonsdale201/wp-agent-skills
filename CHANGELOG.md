@@ -36,6 +36,18 @@ Repo / docs:
 - `skills-index.json` regenerated (`skill_count` 171 → 172; `wpml` domain 4 → 5; `domain_count` unchanged at 19).
 - `wpml` is an existing domain, so no allowlist changes were needed — only the domain README row, this entry, and the index regen.
 
+### New skill — `woocommerce/wc-sequential-order-numbers-pro` (SONP 1.21.9)
+
+A compatibility/audit skill for the WooCommerce.com extension **Sequential Order Numbers Pro** (`woocommerce-sequential-order-numbers-pro`), landing in the existing `woocommerce` domain's extensions table alongside `wc-stripe-add-payment-method`.
+
+- **`woocommerce/wc-sequential-order-numbers-pro`** — Build or audit compatibility with Sequential Order Numbers Pro (SONP). The anchoring rule: the WooCommerce order **ID** stays the immutable database primary key, while the **sequential order number** is the human-facing business number — so never build UI/emails/PDFs/CSVs/invoices/ERP payloads from `#{$order_id}`, and never parse the formatted number back into an ID (it can carry prefixes, suffixes, date tokens, leading zeroes, or a free-order identifier). Documents the plugin contract (the `_order_number` / `_order_number_formatted` / `_order_number_free` / `_order_number_meta` fields, the `woocommerce_order_number_*` format/skip-free options and the `woocommerce_order_number_current` performance-mode counters, and the public surfaces `$order->get_order_number()`, `wc_seq_order_number_pro()->find_order_by_order_number()` / `set_sequential_order_number()` / `format_order_number()`), plus: detection via `function_exists( 'wc_seq_order_number_pro' )`; auditing display across account/admin pages, emails, PDFs, invoices, REST, webhooks, exports, and ERP/CRM sync (keep both `order_id` and `display_order_number`); customer-entered-number lookups through the helper or `wc_get_orders()` on `_order_number_formatted` (never `WP_Query` over `shop_order`); programmatic-order timing (read the number at `woocommerce_new_order` priority 20 / after save, never force a number onto a `checkout-draft`); HPOS rules; why cloning/renewing/importing must strip the SONP meta (duplicate numbers are a hard accounting/support problem); the free-order separate sequence (where `_order_number` may be `-1`); custom formatting via `wc_sequential_order_numbers_formatted_order_number`; and performance mode. Ships an audit checklist, findings taxonomy, and a full test matrix (HPOS on/off, Checkout Block draft→real, admin/REST orders, skipped free orders, subscription renewals, prefixed/suffixed/zero-padded search). Cross-references `wc-hpos-compatibility`, `wc-order-lifecycle-and-items`, `wcs-subscription-hooks`, and `wc-rest-api-v4`. `plugin: woocommerce-sequential-order-numbers-pro`, `plugin-version-tested: "1.21.9"`, `woocommerce-version-tested: "10.9.3"`, `wp-version-tested: "7.0"`, `php-min: "7.4"`.
+
+Repo / docs:
+
+- `woocommerce/README.md` — the WooCommerce extensions table grew a `wc-sequential-order-numbers-pro` row.
+- `skills-index.json` regenerated (`skill_count` 172 → 173; `woocommerce` domain 30 → 31; `domain_count` unchanged at 19).
+- `woocommerce` is an existing domain, so no allowlist changes were needed.
+
 ## 2026-07-06
 
 ### New skills
