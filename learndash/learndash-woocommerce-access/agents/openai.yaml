@@ -1,0 +1,4 @@
+interface:
+  display_name: "LearnDash Woo Access"
+  short_description: "LearnDash WooCommerce enrollment bridge"
+  default_prompt: "Use $learndash-woocommerce-access to review WooCommerce-driven LearnDash enrollment."

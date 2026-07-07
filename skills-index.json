@@ -11,8 +11,8 @@
     "layout": "<domain>/<skill>/SKILL.md",
     "skill_file": "SKILL.md"
   },
-  "domain_count": 18,
-  "skill_count": 167,
+  "domain_count": 19,
+  "skill_count": 171,
   "domains": [
     {
       "slug": "better-data",
@@ -55,6 +55,12 @@
       "path": "jetformbuilder",
       "readme_path": "jetformbuilder/README.md",
       "skill_count": 7
+    },
+    {
+      "slug": "learndash",
+      "path": "learndash",
+      "readme_path": "learndash/README.md",
+      "skill_count": 4
     },
     {
       "slug": "lw-plugins",
@@ -2604,6 +2610,206 @@
         "bytes": 17638,
         "lines": 351,
         "sha256": "feea1ce3c78fd587f2f0d9b1c835ee0e7f88578c63e4fd2c8d989eb17af48b90"
+      }
+    },
+    {
+      "slug": "learndash-course-access",
+      "name": "learndash-course-access",
+      "domain": "learndash",
+      "description": "Build or audit LearnDash course access and enrollment logic. Use when code mentions sfwd_lms_has_access, ld_update_course_access, ld_course_access_from, ld_course_access_from_update, ld_course_access_expired, learndash_user_get_enrolled_courses, course_*_access_from, open/free/paynow/closed course price types, access expiration, course start/end dates, course access activity, or custom course-gated templates.",
+      "path": "learndash/learndash-course-access",
+      "skill_path": "learndash/learndash-course-access/SKILL.md",
+      "url": "https://raw.githubusercontent.com/Lonsdale201/wp-agent-skills/main/learndash/learndash-course-access/SKILL.md",
+      "raw_url": "https://raw.githubusercontent.com/Lonsdale201/wp-agent-skills/main/learndash/learndash-course-access/SKILL.md",
+      "html_url": "https://github.com/Lonsdale201/wp-agent-skills/blob/main/learndash/learndash-course-access/SKILL.md",
+      "directory_url": "https://github.com/Lonsdale201/wp-agent-skills/tree/main/learndash/learndash-course-access",
+      "metadata": {
+        "author": "Soczó Kristóf",
+        "contact": "mailto:lonsdale201@hotmail.com",
+        "plugin": "sfwd-lms",
+        "plugin-version-tested": "5.1.6.1",
+        "php-min": "7.4",
+        "last-updated": "2026-07-07",
+        "docs": [
+          "https://developers.learndash.com/"
+        ],
+        "source-refs": [
+          "wp-content/plugins/sfwd-lms/includes/course/ld-course-user-functions.php",
+          "wp-content/plugins/sfwd-lms/includes/ld-users.php",
+          "wp-content/plugins/sfwd-lms/src/Core/Models/Product.php",
+          "wp-content/plugins/sfwd-lms/includes/course/ld-course-steps-functions.php",
+          "wp-content/plugins/sfwd-lms/includes/classes/class-ldlms-model-course-steps.php"
+        ]
+      },
+      "resources": [
+        {
+          "path": "agents/openai.yaml",
+          "repo_path": "learndash/learndash-course-access/agents/openai.yaml",
+          "type": "resource",
+          "bytes": 209,
+          "sha256": "5f2d2f501bca718deb289b7e711cdf98bfe23c754d903d4f9ac68851e04c8382"
+        }
+      ],
+      "has_reference": false,
+      "has_examples": false,
+      "has_scripts": false,
+      "skill_md": {
+        "bytes": 8556,
+        "lines": 204,
+        "sha256": "402e9941d4824c13c658249347b121e5fe0797b27fc379636c372aa1f4b2f93e"
+      }
+    },
+    {
+      "slug": "learndash-group-access",
+      "name": "learndash-group-access",
+      "domain": "learndash",
+      "description": "Build or audit LearnDash group membership, group-course access, group leaders, and hierarchical group behavior. Use when code mentions ld_update_group_access, ld_update_course_group_access, learndash_get_users_group_ids, learndash_get_groups_user_ids, learndash_group_enrolled_courses, learndash_user_group_enrolled_to_course, learndash_is_user_in_group, learndash_group_users_*, learndash_group_enrolled_*, group_*_access_from, or group leader access.",
+      "path": "learndash/learndash-group-access",
+      "skill_path": "learndash/learndash-group-access/SKILL.md",
+      "url": "https://raw.githubusercontent.com/Lonsdale201/wp-agent-skills/main/learndash/learndash-group-access/SKILL.md",
+      "raw_url": "https://raw.githubusercontent.com/Lonsdale201/wp-agent-skills/main/learndash/learndash-group-access/SKILL.md",
+      "html_url": "https://github.com/Lonsdale201/wp-agent-skills/blob/main/learndash/learndash-group-access/SKILL.md",
+      "directory_url": "https://github.com/Lonsdale201/wp-agent-skills/tree/main/learndash/learndash-group-access",
+      "metadata": {
+        "author": "Soczó Kristóf",
+        "contact": "mailto:lonsdale201@hotmail.com",
+        "plugin": "sfwd-lms",
+        "plugin-version-tested": "5.1.6.1",
+        "php-min": "7.4",
+        "last-updated": "2026-07-07",
+        "docs": [
+          "https://developers.learndash.com/"
+        ],
+        "source-refs": [
+          "wp-content/plugins/sfwd-lms/includes/ld-groups.php",
+          "wp-content/plugins/sfwd-lms/includes/course/ld-course-user-functions.php",
+          "wp-content/plugins/sfwd-lms/src/Core/Models/Product.php",
+          "wp-content/plugins/sfwd-lms/includes/rest-api/v2/class-ld-rest-groups-courses-controller.php",
+          "wp-content/plugins/sfwd-lms/includes/rest-api/v2/class-ld-rest-groups-users-controller.php",
+          "wp-content/plugins/sfwd-lms/includes/rest-api/v2/class-ld-rest-users-groups-controller.php"
+        ]
+      },
+      "resources": [
+        {
+          "path": "agents/openai.yaml",
+          "repo_path": "learndash/learndash-group-access/agents/openai.yaml",
+          "type": "resource",
+          "bytes": 208,
+          "sha256": "b79b866d3bfe2c9520d1370b54375dc422d0199a63e3a071861e29505d7f3d49"
+        }
+      ],
+      "has_reference": false,
+      "has_examples": false,
+      "has_scripts": false,
+      "skill_md": {
+        "bytes": 8020,
+        "lines": 222,
+        "sha256": "6cd0b17595807db9fe63b5a9f3d8761ced24487156b873458a2c86e3d326dfc8"
+      }
+    },
+    {
+      "slug": "learndash-rest-api",
+      "name": "learndash-rest-api",
+      "domain": "learndash",
+      "description": "Build or audit LearnDash REST API integrations for courses, lessons, topics, quizzes, groups, users, course steps, enrollments, group memberships, progress, and the modern LearnDash REST manifest/OpenAPI docs. Use when code mentions ldlms/v2, learndash/v1, LearnDash_REST_API, learndash_rest_api_enabled, learndash-rest-api-controllers, sfwd-courses REST routes, /steps, /users, /groups, /course-progress, Learndash-Experimental-Rest-Api, or headless LearnDash clients.",
+      "path": "learndash/learndash-rest-api",
+      "skill_path": "learndash/learndash-rest-api/SKILL.md",
+      "url": "https://raw.githubusercontent.com/Lonsdale201/wp-agent-skills/main/learndash/learndash-rest-api/SKILL.md",
+      "raw_url": "https://raw.githubusercontent.com/Lonsdale201/wp-agent-skills/main/learndash/learndash-rest-api/SKILL.md",
+      "html_url": "https://github.com/Lonsdale201/wp-agent-skills/blob/main/learndash/learndash-rest-api/SKILL.md",
+      "directory_url": "https://github.com/Lonsdale201/wp-agent-skills/tree/main/learndash/learndash-rest-api",
+      "metadata": {
+        "author": "Soczó Kristóf",
+        "contact": "mailto:lonsdale201@hotmail.com",
+        "plugin": "sfwd-lms",
+        "plugin-version-tested": "5.1.6.1",
+        "php-min": "7.4",
+        "last-updated": "2026-07-07",
+        "docs": [
+          "https://developers.learndash.com/"
+        ],
+        "source-refs": [
+          "wp-content/plugins/sfwd-lms/includes/rest-api/class-ld-rest-api.php",
+          "wp-content/plugins/sfwd-lms/includes/settings/settings-sections/class-ld-settings-section-general-rest-api.php",
+          "wp-content/plugins/sfwd-lms/includes/rest-api/v2/class-ld-rest-posts-controller.php",
+          "wp-content/plugins/sfwd-lms/includes/rest-api/v2/class-ld-rest-courses-controller.php",
+          "wp-content/plugins/sfwd-lms/includes/rest-api/v2/class-ld-rest-courses-steps-controller.php",
+          "wp-content/plugins/sfwd-lms/includes/rest-api/v2/class-ld-rest-courses-users-controller.php",
+          "wp-content/plugins/sfwd-lms/includes/rest-api/v2/class-ld-rest-users-courses-controller.php",
+          "wp-content/plugins/sfwd-lms/includes/rest-api/v2/class-ld-rest-groups-courses-controller.php",
+          "wp-content/plugins/sfwd-lms/includes/rest-api/v2/class-ld-rest-groups-users-controller.php",
+          "wp-content/plugins/sfwd-lms/includes/rest-api/v2/class-ld-rest-users-groups-controller.php",
+          "wp-content/plugins/sfwd-lms/src/Core/Modules/REST/V1/",
+          "wp-content/plugins/sfwd-lms/src/Core/Modules/REST/Documentation_Migration/"
+        ]
+      },
+      "resources": [
+        {
+          "path": "agents/openai.yaml",
+          "repo_path": "learndash/learndash-rest-api/agents/openai.yaml",
+          "type": "resource",
+          "bytes": 196,
+          "sha256": "eb8bfae5dfde71d50866a2892c398a924771151ff5a7acadd2cf5e072b46fc43"
+        }
+      ],
+      "has_reference": false,
+      "has_examples": false,
+      "has_scripts": false,
+      "skill_md": {
+        "bytes": 9714,
+        "lines": 262,
+        "sha256": "c45ba9453b1c08a1598690eb5172902e2be015e162d713aaaf161825a1fd1826"
+      }
+    },
+    {
+      "slug": "learndash-woocommerce-access",
+      "name": "learndash-woocommerce-access",
+      "domain": "learndash",
+      "description": "Build or audit the LearnDash WooCommerce integration that grants/revokes LearnDash course and group access from WooCommerce products, orders, refunds, subscriptions, switches, and order-item changes. Use when code mentions learndash-woocommerce, _related_course, _related_group, LearnDash\\WooCommerce\\Settings\\Status_Access, learndash_woocommerce_enrollment_status_settings, _learndash_woocommerce_enrolled_courses_access_counter, add_course_access, remove_course_access, add_subscription_course_access, HPOS compatibility, silent enrollment queue, or variable product/variation course links.",
+      "path": "learndash/learndash-woocommerce-access",
+      "skill_path": "learndash/learndash-woocommerce-access/SKILL.md",
+      "url": "https://raw.githubusercontent.com/Lonsdale201/wp-agent-skills/main/learndash/learndash-woocommerce-access/SKILL.md",
+      "raw_url": "https://raw.githubusercontent.com/Lonsdale201/wp-agent-skills/main/learndash/learndash-woocommerce-access/SKILL.md",
+      "html_url": "https://github.com/Lonsdale201/wp-agent-skills/blob/main/learndash/learndash-woocommerce-access/SKILL.md",
+      "directory_url": "https://github.com/Lonsdale201/wp-agent-skills/tree/main/learndash/learndash-woocommerce-access",
+      "metadata": {
+        "author": "Soczó Kristóf",
+        "contact": "mailto:lonsdale201@hotmail.com",
+        "plugin": "learndash-woocommerce",
+        "plugin-version-tested": "LearnDash WooCommerce 2.0.2 + LearnDash LMS 5.1.6.1",
+        "php-min": "7.4",
+        "last-updated": "2026-07-07",
+        "docs": [
+          "https://developers.learndash.com/"
+        ],
+        "source-refs": [
+          "wp-content/plugins/learndash-woocommerce/learndash_woocommerce.php",
+          "wp-content/plugins/learndash-woocommerce/includes/class-learndash-woocommerce.php",
+          "wp-content/plugins/learndash-woocommerce/src/App/Settings/Status_Access.php",
+          "wp-content/plugins/learndash-woocommerce/src/App/Admin/Pages/Sections/Settings_Enrollment_Status.php",
+          "wp-content/plugins/learndash-woocommerce/includes/class-cron.php",
+          "wp-content/plugins/learndash-woocommerce/includes/class-upgrade.php",
+          "wp-content/plugins/learndash-woocommerce/src/App/Modules/Retroactive_Access_Tool/Handler.php",
+          "wp-content/plugins/sfwd-lms/includes/course/ld-course-user-functions.php",
+          "wp-content/plugins/sfwd-lms/includes/ld-groups.php"
+        ]
+      },
+      "resources": [
+        {
+          "path": "agents/openai.yaml",
+          "repo_path": "learndash/learndash-woocommerce-access/agents/openai.yaml",
+          "type": "resource",
+          "bytes": 218,
+          "sha256": "71bb66f60e7ee729b1c081a2b7b0fd82bc9f12bdce26e8d354d2b0a19a630b52"
+        }
+      ],
+      "has_reference": false,
+      "has_examples": false,
+      "has_scripts": false,
+      "skill_md": {
+        "bytes": 9790,
+        "lines": 225,
+        "sha256": "ad0f9890d9c96f7b2b37a02bb9b308d9f0c21d0dc6250209b177b0653810cdbc"
       }
     },
     {

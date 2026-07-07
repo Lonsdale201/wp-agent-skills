@@ -29,6 +29,7 @@ const ALLOWED_DOMAINS = new Set([
   'dev-tooling',
   'polylang',
   'wpml',
+  'learndash',
 ]);
 
 function emitOutput(key, value) {
