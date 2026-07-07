@@ -1,0 +1,4 @@
+interface:
+  display_name: "WPML Compatibility Audit"
+  short_description: "Audit plugin/theme WPML compatibility"
+  default_prompt: "Use $wpml-compatibility-audit to audit a WordPress plugin for WPML compatibility."

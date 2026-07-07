@@ -24,6 +24,18 @@ A new top-level domain for making **your own** plugin, theme, import, CRM/checko
 - Each skill ships an `agents/openai.yaml` interface descriptor (same pattern as the `better-route` and `polylang` domains).
 - `skills-index.json` regenerated (`domain_count` 18 → 19; `skill_count` 167 → 171; new `learndash` domain with 4 skills).
 
+### New skill — `wpml/wpml-compatibility-audit` (WPML 4.9.5)
+
+The audit / verdict companion to the four existing WPML implementation skills. Where `wpml-overview`, `wpml-config`, `wpml-language-api`, and `wpml-string-translation` tell you *how* to make one surface compatible, this one is a workflow skill that tells you *what to inspect* across a whole plugin/theme and *how to classify* what breaks.
+
+- **`wpml/wpml-compatibility-audit`** — Audit whether a WordPress plugin or classic theme is WPML-compatible end to end, and return a verdict (Compatible / Partially compatible / Not WPML-compatible / Not testable) plus a severity-tagged findings-and-fix-plan report. Walks each surface in order: environment detection (`ICL_SITEPRESS_VERSION`, String Translation `WPML_ST_VERSION` / `wpml_is_st_loaded()`, WooCommerce Multilingual, competing multilingual plugins), static gettext vs dynamic DB/admin-entered strings (register + `wpml_translate_single_string` on every output path, `function_exists`-guarded legacy `icl_*`), stored object IDs that need runtime `wpml_object_id` / `wpml_permalink` resolution vs deliberate historical snapshots, shortcode/block config (`<shortcode-list>` / `<shortcodes>` / `<gutenberg-blocks>`), queries and custom tables (WPML does not language-filter custom SQL — needs a language column or `wpml_switch_language` + `null` restore), WooCommerce order/product paths, and async/non-page rendering (emails, PDFs, cron, REST, exports, webhooks) that does not inherit the frontend request language. Includes a `wpml-config.xml` checklist with the strict `0|1` and `translate|copy|copy-once|ignore` value rules. Defers to the four implementation skills and `wp-i18n-audit` for the actual fixes. `plugin: sitepress-multilingual-cms`, `plugin-version-tested: "4.9.5"`, `php-min: "7.4"`.
+
+Repo / docs:
+
+- `wpml/README.md` skills table grew a `wpml-compatibility-audit` row (positioned as the audit companion below the four implementation skills).
+- `skills-index.json` regenerated (`skill_count` 171 → 172; `wpml` domain 4 → 5; `domain_count` unchanged at 19).
+- `wpml` is an existing domain, so no allowlist changes were needed — only the domain README row, this entry, and the index regen.
+
 ## 2026-07-06
 
 ### New skills
