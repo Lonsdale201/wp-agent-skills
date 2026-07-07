@@ -7368,11 +7368,13 @@
         "contact": "mailto:lonsdale201@hotmail.com",
         "plugin": "sitepress-multilingual-cms",
         "plugin-version-tested": "4.9.5",
+        "wpml-string-translation-version-tested": "3.5.3",
         "php-min": "7.4",
         "last-updated": "2026-07-07",
         "docs": [
           "https://wpml.org/documentation/support/wpml-coding-api/",
-          "https://wpml.org/documentation/support/language-configuration-files/"
+          "https://wpml.org/documentation/support/language-configuration-files/",
+          "https://wpml.org/documentation/getting-started-guide/string-translation/"
         ],
         "source-refs": [
           "wp-content/plugins/sitepress-multilingual-cms/sitepress.php",
@@ -7381,7 +7383,12 @@
           "wp-content/plugins/sitepress-multilingual-cms/classes/xml-config/class-wpml-config.php",
           "wp-content/plugins/sitepress-multilingual-cms/classes/language-switcher/class-wpml-ls-settings-strings.php",
           "wp-content/plugins/sitepress-multilingual-cms/classes/url-handling/class-wpml-endpoints-support.php",
-          "wp-content/plugins/sitepress-multilingual-cms/res/xsd/wpml-config.xsd"
+          "wp-content/plugins/sitepress-multilingual-cms/res/xsd/wpml-config.xsd",
+          "wp-content/plugins/wpml-string-translation/plugin.php",
+          "wp-content/plugins/wpml-string-translation/inc/functions.php",
+          "wp-content/plugins/wpml-string-translation/inc/private-actions.php",
+          "wp-content/plugins/wpml-string-translation/inc/admin-texts/wpml-admin-texts.class.php",
+          "wp-content/plugins/wpml-string-translation/inc/admin-texts/wpml-admin-text-configuration.php"
         ]
       },
       "resources": [
@@ -7397,9 +7404,9 @@
       "has_examples": false,
       "has_scripts": false,
       "skill_md": {
-        "bytes": 9239,
-        "lines": 213,
-        "sha256": "4bd3faba759ef95e90a8dfdd24cb69591cfdcac4a9aa20e15f4b9948e6aa4d6b"
+        "bytes": 11227,
+        "lines": 244,
+        "sha256": "d6a471e24cacfe81bdf62237628282551ac98e27813dc1367376e3969a30a612"
       }
     },
     {
