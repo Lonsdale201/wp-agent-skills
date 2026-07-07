@@ -13,11 +13,13 @@ author: Soczó Kristóf
 contact: mailto:lonsdale201@hotmail.com
 plugin: sitepress-multilingual-cms
 plugin-version-tested: "4.9.5"
+wpml-string-translation-version-tested: "3.5.3"
 php-min: "7.4"
 last-updated: "2026-07-07"
 docs:
   - https://wpml.org/documentation/support/wpml-coding-api/
   - https://wpml.org/documentation/support/language-configuration-files/
+  - https://wpml.org/documentation/getting-started-guide/string-translation/
 source-refs:
   - wp-content/plugins/sitepress-multilingual-cms/sitepress.php
   - wp-content/plugins/sitepress-multilingual-cms/sitepress.class.php
@@ -26,6 +28,11 @@ source-refs:
   - wp-content/plugins/sitepress-multilingual-cms/classes/language-switcher/class-wpml-ls-settings-strings.php
   - wp-content/plugins/sitepress-multilingual-cms/classes/url-handling/class-wpml-endpoints-support.php
   - wp-content/plugins/sitepress-multilingual-cms/res/xsd/wpml-config.xsd
+  - wp-content/plugins/wpml-string-translation/plugin.php
+  - wp-content/plugins/wpml-string-translation/inc/functions.php
+  - wp-content/plugins/wpml-string-translation/inc/private-actions.php
+  - wp-content/plugins/wpml-string-translation/inc/admin-texts/wpml-admin-texts.class.php
+  - wp-content/plugins/wpml-string-translation/inc/admin-texts/wpml-admin-text-configuration.php
 ---
 
 # WPML compatibility audit
@@ -55,6 +62,8 @@ Report one of these:
    - Is WPML core active/installed? `defined( 'ICL_SITEPRESS_VERSION' )`.
    - Is String Translation installed? `defined( 'WPML_ST_VERSION' )` or
      `wpml_is_st_loaded()`.
+   - If String Translation is missing, dynamic option/admin strings are not
+     runtime-testable; the hook form still degrades to original text.
    - Is WooCommerce Multilingual relevant for products/orders?
    - Does the plugin also claim Polylang/TranslatePress compatibility?
 2. Separate static gettext from dynamic strings:
@@ -99,6 +108,11 @@ Report one of these:
 Find option reads/writes, settings textareas, admin-entered labels, and template
 data that comes from the database.
 
+WPML core exposes `wpml_is_st_loaded()` as `defined( 'WPML_ST_VERSION' )`.
+The actual handlers are in the String Translation add-on: ST 3.5.3 registers
+`wpml_register_single_string` in `inc/functions.php` and filters
+`wpml_translate_single_string` with a 5-argument callback.
+
 Correct pattern:
 
 ```php
@@ -108,7 +122,8 @@ $label = apply_filters(
     'wpml_translate_single_string',
     $value,
     'my-plugin',
-    'button_label'
+    'button_label',
+    $language_code // optional; omit for current language
 );
 ```
 
@@ -116,6 +131,8 @@ Rules:
 
 - Registering alone is not enough; output must call
   `wpml_translate_single_string`.
+- Passing an explicit language is useful for emails, PDFs, exports, and jobs
+  rendered outside the original frontend request.
 - The hook form degrades safely when String Translation is absent.
 - Legacy `icl_register_string()` / `icl_t()` must be guarded with
   `function_exists()`.
@@ -147,6 +164,11 @@ $url     = $page_id > 0 ? get_permalink( $page_id ) : '';
 Check whether the plugin ships `wpml-config.xml` in the plugin root. If absent,
 decide whether it needs one.
 
+String Translation parses config through `wpml_parse_config_file` /
+`wpml_parse_custom_config`. `<admin-texts>` entries are imported by ST and can
+attach `option_{$option}` filters for translated option values and nested ID
+translation. Without ST, `<admin-texts>` does not provide translated output.
+
 Usually declare:
 
 - CPTs/taxonomies the plugin owns: `<custom-types>` / `<taxonomies>`.
@@ -171,6 +193,8 @@ Validate config values strictly: `translate`, `display-as-translated`, and
 - **High**: e-mail/PDF generation ignores the language used when the case/order
   was submitted.
 - **Medium**: no `wpml-config.xml` for plugin options/meta/shortcodes.
+- **Medium**: `<admin-texts>` exists, but the audit/test environment has WPML
+  core without String Translation, so option-string behavior is not testable.
 - **Medium**: custom table has no language column even though rows are
   language-sensitive.
 - **Medium**: JS editor strings use `@wordpress/i18n` but the script never calls
@@ -182,8 +206,8 @@ Validate config values strictly: `translate`, `display-as-translated`, and
 Return:
 
 - **Verdict**: Compatible / Partially compatible / Not compatible / Not testable.
-- **Environment**: WPML core version, String Translation presence, WCML presence,
-  plugin version, active competing multilingual plugins if relevant.
+- **Environment**: WPML core version, String Translation version/presence, WCML
+  presence, plugin version, active competing multilingual plugins if relevant.
 - **Findings**: severity, file/line, what breaks, and why.
 - **Fix plan**: minimal code/config changes, grouped by string, ID/URL, query,
   shortcode/block, Woo, and async rendering.
@@ -200,7 +224,8 @@ Return:
 
 ## References
 
-Validated against WPML Multilingual CMS 4.9.5 local source:
+Validated against WPML Multilingual CMS 4.9.5 and WPML String Translation 3.5.3
+local source:
 
 - API hook registration: `sitepress.class.php`
 - Runtime callbacks: `inc/template-functions.php`
@@ -210,3 +235,9 @@ Validated against WPML Multilingual CMS 4.9.5 local source:
 - Explicit-language string translate example:
   `classes/url-handling/class-wpml-endpoints-support.php`
 - Config schema: `res/xsd/wpml-config.xsd`
+- String Translation bootstrap/version: `wpml-string-translation/plugin.php`
+- `wpml_register_single_string` / `wpml_translate_single_string` handlers:
+  `wpml-string-translation/inc/functions.php`
+- Admin text config parsing and option filters:
+  `wpml-string-translation/inc/private-actions.php` and
+  `wpml-string-translation/inc/admin-texts/wpml-admin-texts.class.php`

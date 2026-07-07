@@ -48,6 +48,14 @@ Repo / docs:
 - `skills-index.json` regenerated (`skill_count` 172 → 173; `woocommerce` domain 30 → 31; `domain_count` unchanged at 19).
 - `woocommerce` is an existing domain, so no allowlist changes were needed.
 
+### Updated skill — `wpml/wpml-compatibility-audit` (WPML String Translation 3.5.3 grounding)
+
+Same-day refinement of the audit skill added above: grounded the dynamic-string guidance in the **WPML String Translation add-on** source (ST 3.5.3), since the base plugin only fires the string hooks while ST owns the handlers.
+
+- Frontmatter: added `wpml-string-translation-version-tested: "3.5.3"`, the ST getting-started docs URL, and five `wpml-string-translation/` source-refs (`plugin.php`, `inc/functions.php`, `inc/private-actions.php`, and the two `inc/admin-texts/` files).
+- Body: noted that dynamic option/admin strings are not runtime-testable when ST is absent (the hook form still degrades to original text); documented the optional fifth `$language_code` argument to `wpml_translate_single_string` for output rendered outside the original frontend request (emails, PDFs, exports, jobs); explained that `<admin-texts>` is imported by ST via `wpml_parse_config_file` / `wpml_parse_custom_config` and attaches `option_{$option}` filters (and provides no translated output without ST); added a Medium finding for "`<admin-texts>` present but the test environment has WPML core without String Translation"; and expanded the Environment report line to include the ST version.
+- `skills-index.json` regenerated (content sha256 / line-count refresh for this skill; no count change — still 173 skills, `wpml` domain 5, `domain_count` 19).
+
 ## 2026-07-06
 
 ### New skills
