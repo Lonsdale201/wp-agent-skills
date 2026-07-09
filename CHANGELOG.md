@@ -4,6 +4,22 @@ This collection is continuously evolving — entries are date-based, not version
 
 ## 2026-07-10
 
+### New skill — `elementor/elementor-experiments-and-markup` (Elementor 4.1.4 / Pro 4.1.2)
+
+- **`elementor/elementor-experiments-and-markup`** — Design addons / widgets / dynamic tags to survive Elementor's two STABLE, default-ON "Performance" experiments that change rendered HTML. Covers runtime detection (`Plugin::$instance->experiments->is_feature_active()` — the effective default differs between fresh and upgraded installs, so never assume), **Optimized Markup** (`e_optimized_markup`, drops the `.elementor-widget-container` inner wrapper — your own widget keeps it because `Element_Base::has_widget_inner_wrapper()` defaults to `true`, but CSS/JS targeting core/Pro widgets' wrapper breaks; override the method with the core one-liner to opt in), **Inline Font Icons** (`e_font_icon_svg`, renders inline SVG and does not load Font Awesome CSS on the frontend — always emit icons via `Icons_Manager::render_icon()`, and note the editor still loads fonts so a hardcoded `<i>` looks fine there but breaks live), and registering your own experiment via `elementor/experiments/default-features-registered`. Grounded in verified 4.1.4 / 4.1.2 line refs. `plugin: elementor`, `plugin-version-tested: "4.1.4 (free) / 4.1.2 (pro)"`, `php-min: "7.4"`.
+
+### Updated — Elementor & Szamlazz.hu skills re-grounded
+
+- **`elementor/elementor-deprecations`** — re-verified against Elementor 4.1.4 / Pro 4.1.2 (from 4.0.7 / 4.0.4): the addon-facing deprecation surface is unchanged, the reference snapshot notes that explicitly, adds the Pro Forms `elementor_pro/forms/register_action` → `elementor_pro/forms/actions/register` rename, and corrects the call-site counting methodology (~77 real invocations once method definitions / comments are filtered out, vs the naive ~82) with `deprecated_hook` clarified as having no direct addon-facing call site.
+- **`szamlazzhu/szamlazzhu-document-xml-compatibility`** — re-checked against WooCommerce 10.9.4: documents 6.2.2's built-in custom-order-number IPN mapping (Custom Order Numbers for WooCommerce, Sequential Order Numbers) via HPOS-safe `wc_get_orders()` and the `wc_szamlazz_ipn_request_parameters` hook, adds the `void_receipt` document type and more IPN hooks, the `si` (Slovenian) auto-detection-allowlist gap, and the gotcha that `WC_Szamlazz::$version` is still `6.2.1` (an asset version — don't use it for feature detection).
+- **`szamlazzhu/szamlazzhu-vat-checkout-compatibility`** — re-checked against WooCommerce 10.9.4: adds the cart `vat_number` vs checkout `billing_vat_number` payload split (two different Store API surfaces), corrects the `wc_szamlazz_should_fail_eu_vat_validation` semantics (it defaults to failing invalid VIES results; VIES *outages* are converted to `valid => true` separately, so failing closed on outages needs `wc_szamlazz_vat_number_validation_results`), the validation-filter arg counts (2 for NAV, 3 for VIES), and the subscription-renewal meta nuance (document meta is excluded from renewals, VAT meta is not).
+
+### Repo / docs (this batch)
+
+- `elementor/README.md`: intro now mentions the markup experiments; new `elementor-experiments-and-markup` row.
+- `szamlazzhu/README.md`: intro "Verified … on WooCommerce 10.8.1" → 10.9.4.
+- `skills-index.json` regenerated (`skill_count` 181 → 182; `elementor` 4 → 5; `szamlazzhu` unchanged at 2; `domain_count` unchanged at 19).
+
 ### New skills
 
 - **`fluentcrm/fluentcrm-companies-model`** — Work with FluentCRM 3.x Companies / B2B account records from a companion plugin. Covers guarding the experimental `company_module` flag (`Helper::isCompanyEnabled()`), `FluentCrmApi('companies')->createOrUpdate()` (lookup by id or exact name; `owner_id` is a Subscriber ID, not a WP user ID; `custom_values` formatted by `CustomCompanyField`), the `Company` / `fc_companies` model, the primary `company_id` vs the many-to-many pivot (`Company::subscribers()` / `Subscriber::companies()`), `attachContactsByIds` / `detachContactsByIds` with owner/primary reassignment on detach, the company hooks, and company-aware contact filters/segments. Corrects the `getCompany()` name-vs-email lookup trap. `plugin: fluent-crm`, `plugin-version-tested: "FluentCRM 3.1.8"`, `php-min: "7.4"`.

@@ -18,9 +18,9 @@ description: Audit Elementor addon code for deprecated Elementor APIs,
 author: Soczó Kristóf
 contact: mailto:lonsdale201@hotmail.com
 plugin: elementor
-plugin-version-tested: "4.0.7 (free) / 4.0.4 (pro)"
+plugin-version-tested: "4.1.4 (free) / 4.1.2 (pro)"
 php-min: "7.4"
-last-updated: "2026-06-17"
+last-updated: "2026-07-09"
 docs:
   - https://developers.elementor.com/docs/deprecations/
 source-refs:

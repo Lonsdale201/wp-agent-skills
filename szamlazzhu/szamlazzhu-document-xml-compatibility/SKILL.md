@@ -1,13 +1,13 @@
 ---
 name: szamlazzhu-document-xml-compatibility
-description: Integrate another WooCommerce plugin with Integration for Szamlazz.hu & WooCommerce document generation. Covers `WC_Szamlazz()->generate_invoice()`, `wc_szamlazz_xml`, `wc_szamlazz_invoice_line_item`, `wc_szamlazz_before_generate_invoice_check`, document meta, Action Scheduler deferral, Pro webhooks/IPN, PDF links, HUF rounding, VAT labels, multilingual line text, and HPOS-safe order access. Use when a plugin must add invoice notes/lines/accounting data, block or trigger invoices, react after document creation, expose Szamlazz.hu documents, or avoid breaking invoices from custom products, fees, discounts, subscriptions, bundles, shipping, order numbers, or payment workflows.
+description: Integrate another WooCommerce plugin with Integration for Szamlazz.hu & WooCommerce document generation. Covers `WC_Szamlazz()->generate_invoice()`, `wc_szamlazz_xml`, `wc_szamlazz_invoice_line_item`, `wc_szamlazz_before_generate_invoice_check`, document meta, Action Scheduler deferral, Pro webhooks/IPN including HPOS-safe custom order-number mapping, PDF links, HUF rounding, VAT labels, multilingual line text, and HPOS-safe order access. Use when a plugin must add invoice notes/lines/accounting data, block or trigger invoices, react after document creation, expose Szamlazz.hu documents, or avoid breaking invoices from custom products, fees, discounts, subscriptions, bundles, shipping, order numbers, or payment workflows.
 author: Soczó Kristóf
 contact: mailto:lonsdale201@hotmail.com
 plugin: integration-for-szamlazzhu-woocommerce
-plugin-version-tested: "6.2.2 on WooCommerce 10.8.1"
+plugin-version-tested: "6.2.2 on WooCommerce 10.9.4"
 wp-version-tested: "7.0"
 php-min: "7.4"
-last-updated: "2026-06-17"
+last-updated: "2026-07-09"
 docs:
   - https://wordpress.org/plugins/integration-for-szamlazzhu-woocommerce/
   - https://docs.szamlazz.hu/hu/agent/generating_invoice/xml
@@ -21,6 +21,7 @@ source-refs:
   - wp-content/plugins/integration-for-szamlazzhu-woocommerce/includes/class-ipn.php
   - wp-content/plugins/integration-for-szamlazzhu-woocommerce/includes/class-webhooks.php
   - wp-content/plugins/integration-for-szamlazzhu-woocommerce/includes/compatibility/class-compatibility.php
+  - wp-content/plugins/integration-for-szamlazzhu-woocommerce/includes/compatibility/modules/class-wc-szamlazz-custom-order-numbers.php
   - wp-content/plugins/integration-for-szamlazzhu-woocommerce/includes/compatibility/modules/class-wc-szamlazz-translatepress.php
 license: GPLv3
 ---
@@ -29,7 +30,7 @@ license: GPLv3
 
 Use this skill when a WooCommerce extension must cooperate with **Integration for Szamlazz.hu & WooCommerce** instead of sending its own invoice to Számlázz.hu. The plugin already owns the Számlázz.hu Agent request, PDF storage, order meta, admin actions, automations, IPN, and Woo webhooks. A crossover plugin should hook that contract, not duplicate it.
 
-The validated plugin version is 6.2.2. The installed source declares HPOS, Cart/Checkout Blocks, and product block editor compatibility, while the plugin header says WC tested up to 10.7.0; this skill was checked locally against WooCommerce 10.8.1.
+The validated plugin version is 6.2.2. The installed source declares HPOS, Cart/Checkout Blocks, and product block editor compatibility, while the plugin header says WC tested up to 10.7.0; this skill was checked locally against WooCommerce 10.9.4. The plugin header/readme are 6.2.2, but `WC_Szamlazz::$version` is still `6.2.1` in the main class and is used as an asset version; do not use that static property for feature detection.
 
 ## When to use this skill
 
@@ -56,6 +57,7 @@ Common document types:
 | `corrected` | `_wc_szamlazz_corrected` | `_wc_szamlazz_corrected_pdf` |
 | `void` | `_wc_szamlazz_void` | `_wc_szamlazz_void_pdf` |
 | `receipt` | `_wc_szamlazz_receipt` | `_wc_szamlazz_receipt_pdf` |
+| `void_receipt` | `_wc_szamlazz_void_receipt` | `_wc_szamlazz_void_receipt_pdf` |
 
 Read these through `WC_Order::get_meta()` or plugin helpers. Do not query `wp_postmeta` directly; HPOS can store orders outside post tables.
 
@@ -239,7 +241,9 @@ The Pro webhook resource `wc_szamlazz.created` is built from this same action an
 
 ## IPN and order-number compatibility
 
-The Pro IPN endpoint is a secret-token query URL (`?wc_szamlazz_ipn_url=...`) and expects POST fields such as `szlahu_fizetesmod`, `szlahu_szamlaszam`, and `szlahu_rendelesszam`. If your plugin changes order numbers, map IPN request parameters before the order lookup:
+The Pro IPN endpoint is a secret-token query URL (`?wc_szamlazz_ipn_url=...`) and expects POST fields such as `szlahu_fizetesmod`, `szlahu_szamlaszam`, and `szlahu_rendelesszam`. The plugin applies `wc_szamlazz_ipn_request_parameters` before `wc_get_order( $order_number )`, so this is the safe place to map public order numbers back to internal order IDs.
+
+Version 6.2.2 ships built-in compatibility for **Custom Order Numbers for WooCommerce** (`_alg_wc_full_custom_order_number`) and **Sequential Order Numbers** (`WT_SEQUENCIAL_ORDNUMBER_VERSION`, `_order_number`) through HPOS-safe `wc_get_orders()`. If your plugin has a different public order-number meta key or custom table, add your own mapping here:
 
 ```php
 add_filter(
@@ -259,9 +263,19 @@ add_filter(
 
 Never log or expose the IPN token. If you add logging around IPN, redact the full request URL and Szamlazz.hu Agent key.
 
+Other IPN hooks:
+
+- `wc_szamlazz_before_ipn_process` / `wc_szamlazz_after_ipn_process` wrap the resolved order update.
+- `wc_szamlazz_ipn_document_type` changes the stored document type when IPN downloads a PDF.
+- `wc_szamlazz_ipn_should_change_order_status` and `wc_szamlazz_ipn_target_order_status` control status changes after payment detection.
+
+Keep all lookups HPOS-safe. Use `wc_get_orders()` or your plugin's own order-number API; do not query `wp_postmeta` directly.
+
 ## Multilingual invoices
 
-The plugin supports invoice languages `hu`, `de`, `en`, `it`, `fr`, `hr`, `ro`, `sk`, `si`, `es`, `pl`, and `cz`. It also has built-in TranslatePress and Polylang compatibility that filters invoice language and line names.
+The plugin's language option supports `hu`, `de`, `en`, `it`, `fr`, `hr`, `ro`, `sk`, `si`, `es`, `pl`, and `cz`. Built-in order-language detection and the TranslatePress/Polylang compatibility modules currently allow only `hu`, `de`, `en`, `it`, `fr`, `hr`, `ro`, `sk`, `es`, `pl`, and `cz`; `si` is present in the option list but omitted from those auto-detection allowlists. If Slovenian invoice language must be derived from order language, set it explicitly through `wc_szamlazz_get_order_language`, `wc_szamlazz_xml`, or `generate_invoice()` options.
+
+The plugin has built-in TranslatePress and Polylang compatibility that filters invoice language and line names. WPML is handled more lightly through the `wpml_language` order meta lookup in `WC_Szamlazz_Helpers::get_order_language()`.
 
 For another language plugin, use:
 

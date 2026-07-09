@@ -1,13 +1,13 @@
 ---
 name: szamlazzhu-vat-checkout-compatibility
-description: Make WooCommerce checkout, B2B, VAT/tax-number, address, and headless checkout code compatible with Integration for Szamlazz.hu & WooCommerce. Covers the classic checkout field `wc_szamlazz_adoszam`, order meta `_billing_wc_szamlazz_adoszam` and `_wc_szamlazz_adoszam_data`, user meta `wc_szamlazz_adoszam`, Checkout Block/Store API extension namespace `wc-szamlazz-vat-number`, NAV/VIES validation filters, EU VAT exemption, company billing rules, admin/customer address display, and how another plugin should map its own VAT fields into Szamlazz.hu invoice XML without creating duplicate checkout state.
+description: Make WooCommerce checkout, B2B, VAT/tax-number, address, and headless checkout code compatible with Integration for Szamlazz.hu & WooCommerce. Covers the classic checkout field `wc_szamlazz_adoszam`, order meta `_billing_wc_szamlazz_adoszam` and `_wc_szamlazz_adoszam_data`, user meta `wc_szamlazz_adoszam`, Checkout Block/Store API extension namespace `wc-szamlazz-vat-number`, the cart `vat_number` vs checkout `billing_vat_number` payload split, NAV/VIES validation filters, EU VAT exemption, company billing rules, admin/customer address display, and how another plugin should map its own VAT fields into Szamlazz.hu invoice XML without creating duplicate checkout state.
 author: Soczó Kristóf
 contact: mailto:lonsdale201@hotmail.com
 plugin: integration-for-szamlazzhu-woocommerce
-plugin-version-tested: "6.2.2 on WooCommerce 10.8.1"
+plugin-version-tested: "6.2.2 on WooCommerce 10.9.4"
 wp-version-tested: "7.0"
 php-min: "7.4"
-last-updated: "2026-06-17"
+last-updated: "2026-07-09"
 docs:
   - https://wordpress.org/plugins/integration-for-szamlazzhu-woocommerce/
   - https://docs.szamlazz.hu/hu/agent/querying_taxpayer/xml
@@ -27,6 +27,8 @@ license: GPLv3
 Use this skill when a plugin/theme must cooperate with the Szamlazz.hu WooCommerce VAT/tax-number workflow. The goal is one source of truth for company billing and VAT data, so invoices, checkout validation, customer addresses, subscription renewals, admin orders, and Store API checkout all agree.
 
 The plugin's VAT feature loads only when its `vat_number_type` option is not `no`. Guard your integration for sites where the Szamlazz.hu VAT UI is disabled.
+
+Version 6.2 added the "VAT number for all countries" path and made `wc_szamlazz_vat_number_validation_results` run for invalid VAT results too. Version 6.2.2 further adjusts EU VAT validation behavior. This skill was rechecked against the local 6.2.2 source and WooCommerce 10.9.4.
 
 ## When to use this skill
 
@@ -50,6 +52,8 @@ Trigger when ANY of these are true:
 | Order meta | `_wc_szamlazz_adoszam_data` | Validation payload from NAV/VIES. |
 | User meta | `wc_szamlazz_adoszam` | Saved billing VAT number for logged-in customers. |
 | Store API namespace | `wc-szamlazz-vat-number` | Checkout Blocks/cart extension state. |
+| Cart extensions update data | `vat_number` | `POST /wc/store/v1/cart/extensions` update callback input. |
+| Checkout extension data | `customer_type`, `billing_vat_number`, `billing_vat_number_info` | Final checkout payload saved to order meta. |
 | WC session | `vat-number-data` | Current Store API/classic AJAX validation state. |
 
 Do not create a second permanent VAT meta key and expect Szamlazz.hu invoices to see it. Either populate the canonical meta at checkout/order creation, or map your custom field through invoice filters.
@@ -164,7 +168,7 @@ Useful validation/message filters:
 
 ## Validation result filters
 
-The plugin exposes all NAV/VIES validation results through `wc_szamlazz_vat_number_validation_results`. Return the same array shape.
+The plugin exposes NAV/VIES validation results through `wc_szamlazz_vat_number_validation_results`. Return the same array shape. Hungarian NAV validation passes two accepted arguments (`$result`, `$vat_number`); EU VIES validation passes a third `$raw_response` argument for cache hits, service failures, invalid responses, and successful VIES payloads.
 
 ```php
 add_filter(
@@ -182,15 +186,24 @@ add_filter(
 );
 ```
 
-For EU VIES outages, the plugin can treat the number as valid to avoid blocking checkout. If your B2B workflow must fail closed, use:
+Classic checkout blocks false EU validation results by default through `wc_szamlazz_should_fail_eu_vat_validation`. Return `false` only when you intentionally want to fail open for invalid VIES results:
 
 ```php
-add_filter( 'wc_szamlazz_should_fail_eu_vat_validation', '__return_true' );
+add_filter( 'wc_szamlazz_should_fail_eu_vat_validation', '__return_false' );
 ```
+
+That filter does not make VIES outages fail closed by itself. Transport errors, non-2xx responses, empty bodies, invalid JSON, and VIES `MS_MAX_CONCURRENT_REQ` are converted to `valid => true` before checkout validation so the checkout does not stall on an upstream outage. If your B2B workflow must fail closed on those service-error branches, use `wc_szamlazz_vat_number_validation_results` and turn responses with an outage `note` or empty raw response back to `valid => false`.
 
 ## Store API / Checkout Blocks contract
 
-The plugin registers Store API data after `woocommerce_blocks_loaded` under namespace `wc-szamlazz-vat-number` for cart and checkout. Its schema includes:
+The plugin registers Store API data after `woocommerce_blocks_loaded` under namespace `wc-szamlazz-vat-number` for cart and checkout. There are two related but different payload surfaces:
+
+- Cart extension update: `POST /wp-json/wc/store/v1/cart/extensions` calls the plugin's update callback with `data.vat_number` and stores validation output in `WC()->session['vat-number-data']`.
+- Final checkout: `POST /wp-json/wc/store/v1/checkout` sends extension data created by `setExtensionData()`: `customer_type`, `billing_vat_number`, and optional `billing_vat_number_info`.
+
+Do not send only `billing_vat_number` to `/cart/extensions`; the update callback checks `vat_number`. Do not send only `vat_number` to `/checkout`; the save callback reads `billing_vat_number`.
+
+Its registered schema includes:
 
 | Field | Values |
 |---|---|
@@ -200,7 +213,18 @@ The plugin registers Store API data after `woocommerce_blocks_loaded` under name
 
 Its update callback writes `vat-number-data` into the WooCommerce session and may set `WC()->customer->set_is_vat_exempt( true )` for valid non-HU EU VAT numbers.
 
-Headless/block checkout must submit the extension data with the checkout request:
+Headless/block checkout should first validate/update the cart extension:
+
+```json
+{
+  "namespace": "wc-szamlazz-vat-number",
+  "data": {
+    "vat_number": "12345678-1-12"
+  }
+}
+```
+
+Then submit the final extension data with the checkout request:
 
 ```json
 {
@@ -217,7 +241,7 @@ Headless/block checkout must submit the extension data with the checkout request
 }
 ```
 
-If your own Store API extension collects VAT, either write the same extension namespace before checkout, or copy your data to `_billing_wc_szamlazz_adoszam` in `woocommerce_store_api_checkout_update_order_from_request` before any invoice automation can run.
+If your own Store API extension collects VAT, prefer writing the same `wc-szamlazz-vat-number` extension namespace before checkout. If you cannot do that, copy your data to `_billing_wc_szamlazz_adoszam` in `woocommerce_store_api_checkout_update_order_from_request` before any invoice automation can run.
 
 ```php
 add_action(
@@ -237,7 +261,7 @@ add_action(
 );
 ```
 
-Use an earlier priority than the Szamlazz.hu save callback if your data must be available to its validation. Test both `POST /wp-json/wc/store/v1/cart/extensions` and `POST /wp-json/wc/store/v1/checkout`.
+The Szamlazz.hu checkout-save callback runs on `woocommerce_store_api_checkout_update_order_from_request` at priority 10 and assumes the `wc-szamlazz-vat-number` namespace is present when its block is active. Use an earlier priority than 10 if your data must be available to its validation. Test both `POST /wp-json/wc/store/v1/cart/extensions` and `POST /wp-json/wc/store/v1/checkout`.
 
 ## EU VAT exemption
 
@@ -253,13 +277,13 @@ Do not set VAT exemption permanently on the user for a single cart decision. Thi
 
 ## Admin orders and renewals
 
-The plugin adds the VAT number to admin billing fields and migrates legacy order meta when an admin order screen renders. Subscriptions compatibility copies VAT-related billing meta to renewal orders and updates subscription addresses.
+The plugin adds the VAT number to admin billing fields and migrates legacy order meta when an admin order screen renders. In Subscriptions flows, the compatibility module excludes generated Szamlazz.hu document meta from renewal copies, but it does not exclude `_billing_wc_szamlazz_adoszam`; it also updates active/on-hold subscription VAT meta when the customer saves billing address changes with "update all subscriptions".
 
 For custom admin order creation:
 
 - Save `_billing_wc_szamlazz_adoszam` on the order object before saving.
 - Save `_wc_szamlazz_adoszam_data` if you already validated the number.
-- For renewal/subscription flows, copy the same meta from parent subscription/order using WooCommerce CRUD APIs.
+- For renewal/subscription flows, keep `_billing_wc_szamlazz_adoszam` on the subscription or parent order so WooCommerce Subscriptions renewal meta copying can carry it forward. The Szamlazz.hu compatibility module explicitly excludes generated document meta from renewals, not VAT meta.
 
 Copy with `$renewal->update_meta_data( '_billing_wc_szamlazz_adoszam', $source_order->get_meta( '_billing_wc_szamlazz_adoszam' ) )` and save the order object.
 

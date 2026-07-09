@@ -1,6 +1,8 @@
 # elementor-deprecations — reference
 
-The durable part of this skill is the **extraction recipe**: Elementor's deprecation calls all carry `(name, version, replacement)`, so the complete, accurate list for *any* installed version is greppable. The table below is a **point-in-time snapshot** (Elementor 4.0.7 / Pro 4.0.4) — regenerate it when the installed version changes.
+The durable part of this skill is the **extraction recipe**: Elementor's deprecation calls all carry `(name, version, replacement)`, so the complete, accurate list for *any* installed version is greppable. The table below is a **point-in-time snapshot** (Elementor 4.1.4 / Pro 4.1.2) — regenerate it when the installed version changes.
+
+> Re-verified against 4.1.4 / 4.1.2 (2026-07-09): the addon-facing deprecation surface is **unchanged** from the 4.0.x snapshot — same call-site counts, same names/versions/replacements. The only addition below is the Pro Forms action hook (`elementor_pro/forms/register_action`), which existed at 4.0.4 but was previously uncurated.
 
 ## Extraction recipe
 
@@ -31,19 +33,21 @@ grep -rn -A3 "deprecated_function(" wp-content/plugins/elementor wp-content/plug
 
 Reading the output: the **first string** after the `(` is the deprecated entity (or `__METHOD__` / `__FUNCTION__` / `__CLASS__ . '...'` — resolve against the enclosing class), the **next string** is the version it was deprecated in, the **third** is the replacement. Many `deprecated_function` calls use `__METHOD__`, so the "name" is the method of the class where the call sits — open that file to resolve it.
 
-### Approximate counts (4.0.7 / 4.0.4)
+### Call-site counts (4.1.4 / 4.1.2)
+
+Counted as real invocations (`->method(`), excluding the method definitions and commented-out lines — i.e. `grep -rn "\->deprecated_function(" … | grep -v "function deprecated_function"`:
 
 | Method | elementor | elementor-pro |
 |---|---|---|
-| `deprecated_function` | ~64 | ~7 |
-| `deprecated_hook` | 2 | 0 |
+| `deprecated_function` | 64 | 7 |
 | `deprecated_argument` | 3 | 0 |
 | `do_deprecated_action` | 4 | 1 |
 | `apply_deprecated_filter` | 1 | 0 |
+| `deprecated_hook` (direct) | 0 | 0 |
 
-(~82 total. The `deprecated_function` count includes many internal `__METHOD__` BC shims that addon code never calls; the curated set below is what matters for addon developers.)
+(~77 real call sites. `deprecated_hook` has no direct addon-facing call site — `do_deprecated_action` / `apply_deprecated_filter` call it internally. The `deprecated_function` count is dominated by internal `__METHOD__` BC shims that addon code never calls; the curated set below is what matters for addon developers. A naive `grep -c` without the `function`/comment filter over-counts to ~82/~10 by including the class definitions and doc lines.)
 
-## Snapshot — addon-relevant deprecations (Elementor 4.0.7 / Pro 4.0.4)
+## Snapshot — addon-relevant deprecations (Elementor 4.1.4 / Pro 4.1.2)
 
 ### Widget / Element method renames (define the no-underscore form)
 
@@ -67,8 +71,9 @@ Verified replacements are `__CLASS__ . '::<name>()'` in the source; resolved at 
 | `elementor/dynamic_tags/register_tags` | `elementor/dynamic_tags/register` |
 | `elementor/finder/categories/init` | `elementor/finder/register` |
 | `elementor/controls/controls_registered` | `elementor/controls/register` *(commented in source — register on `elementor/controls/register` directly)* |
+| `elementor_pro/forms/register_action` (Pro) | `elementor_pro/forms/actions/register` |
 
-Sources: `includes/managers/widgets.php:143-147`, `core/dynamic-tags/manager.php:284-289`, `core/common/modules/finder/categories-manager.php:147-151`, `includes/managers/controls.php:498-502`.
+Sources: `includes/managers/widgets.php:143-147`, `core/dynamic-tags/manager.php:284-289`, `core/common/modules/finder/categories-manager.php:147-151`, `includes/managers/controls.php:498-502`, `elementor-pro/modules/forms/registrars/form-actions-registrar.php:66-70`.
 
 ### Manager method renames (3.5.0)
 
