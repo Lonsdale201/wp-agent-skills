@@ -15,10 +15,10 @@ description: Register a custom AJAX option list for FluentCRM trigger / action /
 author: Soczó Kristóf
 contact: mailto:lonsdale201@hotmail.com
 plugin: fluent-crm
-plugin-version-tested: "2.9.87"
+plugin-version-tested: "FluentCRM 3.1.8"
 api-stable-since: "2.5.9"
 php-min: "7.4"
-last-updated: "2026-05-09"
+last-updated: "2026-07-09"
 docs:
   - https://developers.fluentcrm.com/funnel-builder/custom-trigger/
 source-refs:
@@ -32,7 +32,9 @@ For developers building a custom FluentCRM trigger, action, or benchmark that ne
 
 ## API stability note
 
-The `fluentcrm_ajax_options_*` filter family has been in place since FluentCRM 2.5.9 (per the docblock at [OptionsController.php:717](OptionsController.php)). The 3-argument signature `($options, $search, $includedIds)` and the `[{id, title}, ...]` return shape have not changed.
+The `fluentcrm_ajax_options_*` filter family has been in place since FluentCRM 2.5.9. The 3-argument signature `($options, $search, $includedIds)` and the `[{id, title}, ...]` return shape have not changed.
+
+In FluentCRM 3.1.8, `OptionsController::index()` guards the comma-separated `fields` dispatcher with reflection: only public, non-static, zero-required-argument methods declared on `OptionsController` itself are invoked. Custom dynamic pickers still go through `getAjaxOptions()` and the `fluentcrm_ajax_options_{option_key}` fallback filter.
 
 ## Misconception this skill corrects
 
@@ -76,7 +78,7 @@ public function get_my_things($options, $search, $includedIds)
 Other AI-prone misconceptions:
 
 - **"The filter callback returns a `WP_Query` / array of `WP_Post` objects."** No — it must return `array<int, array{id: scalar, title: string}>`. The picker JSON-serialises the result; objects with private fields throw. Use `array_map` if you have model objects.
-- **"`option_key` can be anything; the picker just calls my filter."** The filter is dispatched at [OptionsController.php:723](OptionsController.php) only as the fallback case. The controller has built-in handlers for ~30 known option keys (`woo_products`, `woo_categories`, `available_lists`, `tags`, `editable_statuses`, etc.). Pick a key prefixed with your plugin's slug to avoid collisions — e.g. `myplugin_things`, NOT just `things`.
+- **"`option_key` can be anything; the picker just calls my filter."** The filter is dispatched only as the `getAjaxOptions()` fallback case. The controller has built-in handlers for many known option keys (`woo_products`, `woo_categories`, `available_lists`, `tags`, `editable_statuses`, `companies`, etc.). Pick a key prefixed with your plugin's slug to avoid collisions — e.g. `myplugin_things`, NOT just `things`.
 - **"`$includedIds` is the search field's current value."** No — it's the CURRENTLY SAVED value of the field for the loaded sequence/funnel. The editor sends it on the FIRST options request so the picker can render labels for what's already in the form. As the admin types, subsequent requests use `$search` with empty / re-supplied `$includedIds`.
 - **"The filter signature is 1 arg."** No — use `add_filter('fluentcrm_ajax_options_<key>', $cb, 10, 3)`. Default `add_filter` accepts only 1 arg; you MUST pass `3` as the 4th argument or `$search` and `$includedIds` will be silently null in your callback.
 - **"Adding `'is_multiple' => true` to the field config is enough for multi-select."** Required for multi but not sufficient — the field type `'rest_selector'` is what triggers the picker UI. `'multi-select'` (a different type) preloads all options at once and doesn't hit your filter at all. For multi-select with AJAX search, use `'rest_selector'` + `'is_multiple' => true`.
@@ -199,4 +201,4 @@ Instantiate `new CustomControllers()` from your plugin bootstrap on `plugins_loa
 
 - Filter dispatch site — `app/Http/Controllers/OptionsController.php:723`
 - Reference callback (FluentCart product picker) — `app/Services/ExternalIntegrations/FluentCart/FluentCart.php:70-75`
-- Built-in handlers for canonical keys (`woo_products`, `woo_categories`, etc.) — `app/Http/Controllers/OptionsController.php:289-720`
+- Built-in handlers for canonical keys (`woo_products`, `woo_categories`, `companies`, etc.) — `app/Http/Controllers/OptionsController.php`

@@ -4,10 +4,10 @@ description: Work with FluentCRM 3.x automation subscriber state and FluentCampa
 author: Soczó Kristóf
 contact: mailto:lonsdale201@hotmail.com
 plugin: fluent-crm
-plugin-version-tested: "FluentCRM 3.1.5 + FluentCRM Pro 3.1.0"
+plugin-version-tested: "FluentCRM 3.1.8 + FluentCRM Pro 3.1.8"
 wp-version-tested: "7.0"
 php-min: "7.4"
-last-updated: "2026-06-17"
+last-updated: "2026-07-09"
 docs:
   - https://developers.fluentcrm.com/database/models/funnelSubscriber
   - https://developers.fluentcrm.com/database/models/funnelSequence
@@ -30,7 +30,7 @@ source-refs:
 
 Use this skill when code needs to start or inspect FluentCRM automations, or enroll contacts into FluentCampaign Pro email sequences. Keep these two systems separate: `FunnelSequence` is an automation step; `FluentCampaign\App\Models\Sequence` is a Pro email sequence stored in `fc_campaigns`.
 
-Verification note: local source was FluentCRM core 3.1.5 and FluentCampaign Pro 3.1.0. Core 3.1.5 declares `FLUENTCRM_MIN_PRO_VERSION` as 3.1.5, so re-check the Pro `Sequence`, `SequenceMail`, and `SequenceTracker` classes after Pro is upgraded beyond 3.1.0.
+Verification note: local source was FluentCRM core 3.1.8 and FluentCampaign Pro 3.1.8. Core 3.1.8 declares `FLUENTCRM_MIN_PRO_VERSION` as 3.1.8.
 
 ## When to use this skill
 
@@ -65,7 +65,7 @@ Core fillable fields:
 ]
 ```
 
-Common main statuses are `draft`, `pending`, `active`, `waiting`, `completed`, `cancelled`, and `skipped`. `active()` only scopes to `status = active`. Do not confuse the main `status` with `last_sequence_status`; core writes `last_sequence_status = complete` when a step is processed.
+Common main statuses are `draft`, `pending`, `active`, `waiting`, `completed`, `cancelled`, and `skipped`. `active()` only scopes to `status = active`. Do not confuse the main `status` with `last_sequence_status`; `FunnelHelper::changeFunnelSubSequenceStatus()` writes `last_sequence_status = complete` when a normal step is processed. The benchmark direct-entry path can seed `last_sequence_status = completed` while creating a synthetic starting row; don't treat that as a value to write from action handlers.
 
 Relations:
 
@@ -130,7 +130,7 @@ The follow-up processor selects published funnels, due `next_execution_time`, an
 apply_filters('fluent_crm/funnel_subscriber_statuses', ['active']);
 ```
 
-In 3.1.5 it also has batch controls:
+In 3.1.8 it also has batch controls:
 
 - `fluent_crm/funnel_processor_batch_limit`, default `200`
 - `fluent_crm/funnel_processor_max_processing_seconds`, default `55`
@@ -206,7 +206,7 @@ This marks the tracker `cancelled` and cancels scheduled sequence emails. Do not
 
 - Do not confuse `FunnelSequence` with `FluentCampaign\App\Models\Sequence`.
 - Do not insert into `fc_funnel_subscribers` for normal integrations; call `FunnelProcessor`.
-- Do not use `completed` for `last_sequence_status`; core uses `complete`.
+- Do not write `completed` through `changeFunnelSubSequenceStatus()` for normal action progress; that helper's default/canon is `complete`. Reserve `completed` for full automation run status and Pro email sequence tracker status.
 - Do not enroll a contact into an email sequence twice. Check `SequenceTracker` first.
 - Do not process unsubscribed contacts unless the funnel explicitly uses `__force_run_actions`.
 

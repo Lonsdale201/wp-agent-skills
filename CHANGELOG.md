@@ -2,6 +2,32 @@
 
 This collection is continuously evolving — entries are date-based, not version-tagged. New skills land when they're ready; updates go in when they cover real ground (a new release of an upstream plugin, a verified misconception, a corrected example).
 
+## 2026-07-10
+
+### New skills
+
+- **`fluentcrm/fluentcrm-companies-model`** — Work with FluentCRM 3.x Companies / B2B account records from a companion plugin. Covers guarding the experimental `company_module` flag (`Helper::isCompanyEnabled()`), `FluentCrmApi('companies')->createOrUpdate()` (lookup by id or exact name; `owner_id` is a Subscriber ID, not a WP user ID; `custom_values` formatted by `CustomCompanyField`), the `Company` / `fc_companies` model, the primary `company_id` vs the many-to-many pivot (`Company::subscribers()` / `Subscriber::companies()`), `attachContactsByIds` / `detachContactsByIds` with owner/primary reassignment on detach, the company hooks, and company-aware contact filters/segments. Corrects the `getCompany()` name-vs-email lookup trap. `plugin: fluent-crm`, `plugin-version-tested: "FluentCRM 3.1.8"`, `php-min: "7.4"`.
+- **`fluentcrm/fluentcrm-event-tracking`** — Track and consume FluentCRM 3.x contact events. Covers guarding the experimental `event_tracking` flag (`track()` returns `WP_Error('not_enabled')` when off), `FluentCrmApi('event_tracker')->track()` and its subscriber-resolution order + required `event_key` / `title`, repeatable (counter-increment) vs append-only rows and why the counter is app-level not atomic, the `fluent_crm/track_event_activity` action bridge, the `fluent_crm/event_tracked` hook, the `event_tracking_*` advanced contact filters and `event_tracking_keys` option source, and FluentCampaign Pro's Tracking Event Recorded trigger / Add Event Tracking action. `plugin: fluent-crm`, `plugin-version-tested: "FluentCRM 3.1.8 + FluentCRM Pro 3.1.8"`, `php-min: "7.4"`.
+- **`wp-rocket/wp-rocket-mcp-and-abilities`** — Expose, scope, or lock down WP Rocket settings for AI / MCP clients — new in WP Rocket 3.23. Frames the surface as two independent layers with opposite defaults: the WP Abilities API entries (`wp-rocket/get-options` readonly, `wp-rocket/set-option` destructive, cap `rocket_manage_options`) default ON (`rocket_enable_abilities`), while the MCP OAuth 2.1 server (`/wp-json/mcp/mcp-oauth-server`, `/oauth/*`, `/.well-known/*`, trusted publisher Claude) defaults OFF (`rocket_mcp_oauth_server_enabled`) — so turning the server off does not stop AI settings access; only `rocket_enable_abilities => false` does. Covers the additive `rocket_mcp_options_allowlist` (adding exposes, removing restricts), `rocket_mcp_trusted_publishers` (exact client_id + host SSRF gate), the typed `wpm_apply_filters_typed` filters, `set-option` update-vs-replace merge semantics, three-part feature detection (WP Rocket 3.23+, `wp_register_ability`, `McpAdapter`), and a security checklist. `plugin: wp-rocket`, `plugin-version-tested: "3.23"`, `php-min: "7.4"`.
+
+### Updated — FluentCRM skills re-grounded against FluentCRM 3.1.8 (+ Pro 3.1.8)
+
+The eight existing FluentCRM skills were re-verified against FluentCRM 3.1.8 / Pro 3.1.8 (from 2.9.87 / 3.1.5 / Pro 3.1.0 baselines) with corrected internals and refreshed `plugin-version-tested`. Notable:
+
+- **`fluentcrm-funnel-trigger`** — trigger-registration timing model corrected for 3.1.8: active trigger listeners register on `init:2` when `fluentcrm_funnel_arg_num_{name}` is already present, else fall back on `init:20`; late registration can miss `init:10` events or multi-arg hooks (replacing the earlier `FunnelHandler::handle` on `fluentcrm_addons_loaded` framing).
+- **`fluentcrm-overview`**, **`-funnel-action`**, **`-funnel-benchmark`**, **`-contact-models`**, **`-automation-sequence-models`**, **`-smartcodes-segments`**, **`-rest-options`** — refreshed model/hook details and examples for 3.1.8.
+- Formatting cleanups applied during intake: removed the `↔` glyph from two tables (→ `<->`), and trimmed the `fluentcrm-funnel-action` description back under the 1024-char router budget (the edit had pushed it to 1115).
+
+### Updated — WP Rocket cache skills
+
+- **`wp-rocket-cache-invalidation`** and **`wp-rocket-cache-rejection-and-filters`** — refreshed, and cross-linked to the new `wp-rocket-mcp-and-abilities` skill. Formatting cleanup: replaced the `🔴` marker in WRONG-example code comments with a plain `WRONG:` text marker, and wrote the ability reference as `wp-rocket/set-option` (consistent with `wp-rocket/get-options`).
+
+### Repo / docs
+
+- `fluentcrm/README.md`: intro now lists companies + event tracking; two new skill rows; stale "Tested 3.1.5 / Pro 3.1.0" mentions bumped to 3.1.8.
+- `wp-rocket/README.md`: new `wp-rocket-mcp-and-abilities` row.
+- `skills-index.json` regenerated (`skill_count` 178 → 181; `fluentcrm` 8 → 10; `wp-rocket` 2 → 3; `domain_count` unchanged at 19 — both existing domains).
+
 ## 2026-07-09
 
 ### Updated — plugin-scaffold skills default to `src/` + Composer PSR-4 (WP 7.0)
