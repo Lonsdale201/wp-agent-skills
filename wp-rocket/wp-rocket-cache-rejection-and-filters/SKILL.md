@@ -16,9 +16,9 @@ description: Customize WP Rocket behavior from a third-party plugin /
 author: Soczó Kristóf
 contact: mailto:lonsdale201@hotmail.com
 plugin: wp-rocket
-plugin-version-tested: "3.21.1"
-php-min: "7.3"
-last-updated: "2026-04-29"
+plugin-version-tested: "3.23"
+php-min: "7.4"
+last-updated: "2026-07-09"
 docs:
   - https://docs.wp-rocket.me/article/92-plugin-compatibility-with-wp-rocket
   - https://docs.wp-rocket.me/article/2-getting-started
@@ -237,7 +237,7 @@ Use for delegating cache management to non-admin roles (agency setups, multi-aut
 
 ### 5. The `rocket_buffer` filter — power and danger
 
-The single most powerful WP Rocket filter. Verified at [inc/Engine/Optimization/Buffer/Optimization.php:100](Optimization.php) — fires AFTER all WP Rocket optimizations (minify, lazy load, defer JS, critical CSS injection) and BEFORE WP Rocket writes the HTML to disk for caching:
+The single most powerful WP Rocket filter. Verified at [inc/Engine/Optimization/Buffer/Optimization.php:87](Optimization.php) — fires AFTER all WP Rocket optimizations (minify, lazy load, defer JS, critical CSS injection) and BEFORE WP Rocket writes the HTML to disk for caching:
 
 ```php
 add_filter( 'rocket_buffer', function ( string $buffer ): string {
@@ -249,7 +249,7 @@ add_filter( 'rocket_buffer', function ( string $buffer ): string {
 **Critical warnings:**
 
 1. **A fatal error in the callback** kills the page render entirely — the visitor sees a white screen, AND WP Rocket caches the broken page (HTTP 500 with cached output is a user-experience nightmare).
-2. **Returning malformed HTML** breaks the rendered page — and gets cached.
+2. **Returning malformed (but non-empty) HTML** breaks the rendered page — and gets cached. Note: as of 3.23, returning an *empty* string is guarded — WP Rocket falls back to the original buffer and logs an error (Optimization.php:89) — but malformed non-empty output still passes straight through to disk.
 3. **Breaking the structure** (removing `</body>` etc.) breaks every page that hits the cache.
 4. **Performance**: the callback runs on EVERY page render before the cache hit.
 
@@ -402,7 +402,7 @@ add_filter( 'rocket_cache_reject_wp_rest_api', '__return_false' );
 
 // WRONG — assumed cookie meaning
 add_filter( 'rocket_cache_reject_cookies', function ( $cookies ) {
-    $cookies[] = 'php_session_id';   // 🔴 this means "if cookie is present, bypass cache"
+    $cookies[] = 'php_session_id';   // WRONG: this means "if cookie is present, bypass cache"
     return $cookies;
 } );
 // You probably wanted: "browser sends cookie X = bypass cache". That IS the right behavior here.
@@ -478,6 +478,7 @@ register_activation_hook( __FILE__, function () {
 ## Cross-references
 
 - Run **`wp-rocket-cache-invalidation`** when the question is "how do I CLEAR cache after change", not "customize WP Rocket behavior".
+- Run **`wp-rocket-mcp-and-abilities`** when the customization is AI/MCP-facing — exposing settings via the `wp-rocket/get-options` & `wp-rocket/set-option` abilities, tuning the `rocket_mcp_options_allowlist`, or enabling the `/oauth/*` MCP server (`rocket_mcp_oauth_server_enabled`). New in 3.23.
 - Run **`wp-plugin-cron`** if you're tuning Action Scheduler integration via `rocket_action_scheduler_*` filters.
 - Run **`wp-plugin-architecture`** for the companion-plugin scaffold pattern (`plugins_loaded:11` priority, feature-detection, namespace).
 - Run **`wp-rest-api`** if the customization is around REST API endpoints (`rocket_cache_reject_wp_rest_api`).
@@ -493,7 +494,7 @@ register_activation_hook( __FILE__, function () {
 
 - Plugin entry: [wp-content/plugins/wp-rocket/wp-rocket.php](wp-rocket.php) — version constants.
 - Cache rejection filters (URI, cookies, UA): [inc/functions/options.php:243, 303, 377](options.php) — `rocket_cache_reject_uri`, `rocket_cache_reject_cookies`, `rocket_cache_reject_ua`.
-- `rocket_buffer` filter: [inc/Engine/Optimization/Buffer/Optimization.php:100](Optimization.php) — fires after all optimizations, before disk write. `(string) apply_filters( 'rocket_buffer', $buffer )`.
+- `rocket_buffer` filter: [inc/Engine/Optimization/Buffer/Optimization.php:87](Optimization.php) — fires after all optimizations, before disk write. `(string) apply_filters( 'rocket_buffer', $buffer )`; an empty return is guarded (falls back to the original buffer + logs) as of 3.23.
 - CDN engine: [inc/Engine/CDN/](CDN/) — `rocket_cdn_cnames`, `rocket_cdn_hosts`, `rocket_cdn_reject_files`, `rocket_cdn_relative_paths`, `rocket_asset_url`.
 - Lazy load: [inc/Engine/Media/Lazyload/](Lazyload/) and [inc/Engine/Media/AboveTheFold/](AboveTheFold/) — `do_rocket_lazyload`, `do_rocket_lazyload_iframes`, `rocket_atf_*`.
 - Capability filter: current code uses `rocket_capacity`; `rocket_capability` appears only in legacy/deprecated code as the old typo.

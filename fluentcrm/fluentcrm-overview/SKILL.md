@@ -4,8 +4,9 @@ description: Orient skill for FluentCRM extension development. Covers the
   Free / Pro split (FluentCRM = funnel chassis; FluentCampaign Pro =
   integrations + advanced actions / benchmarks), plugin paths and
   constants, the bootstrap order (fluentcrm_loaded →
-  fluentcrm_addons_loaded → fluent_crm/after_init), the model layer
-  (Subscriber, Funnel, FunnelSequence, FunnelSubscriber, FunnelMetric),
+  fluentcrm_addons_loaded → init funnel listener passes →
+  fluent_crm/after_init), the model layer (Subscriber, Company,
+  EventTracker, Funnel, FunnelSequence, FunnelSubscriber, FunnelMetric),
   the global helpers (FluentCrmApi, fluentCrmDb, FunnelHelper), the
   contact lifecycle hooks (fluent_crm/contact_created, _updated,
   _email_changed, _custom_data_updated), the smart-code extension filter
@@ -18,19 +19,26 @@ description: Orient skill for FluentCRM extension development. Covers the
 author: Soczó Kristóf
 contact: mailto:lonsdale201@hotmail.com
 plugin: fluent-crm
-plugin-version-tested: "2.9.87"
+plugin-version-tested: "FluentCRM 3.1.8 + FluentCRM Pro 3.1.8"
 api-stable-since: "2.7"
 php-min: "7.4"
-last-updated: "2026-05-10"
+last-updated: "2026-07-09"
 docs:
   - https://developers.fluentcrm.com/
 source-refs:
-  - fluent-crm.php
-  - boot/app.php
-  - app/Functions/helpers.php
-  - app/Models/Subscriber.php
-  - app/Services/Helper.php
-  - app/Api/Classes/Extender.php
+  - wp-content/plugins/fluent-crm/fluent-crm.php
+  - wp-content/plugins/fluent-crm/boot/app.php
+  - wp-content/plugins/fluent-crm/app/Hooks/actions.php
+  - wp-content/plugins/fluent-crm/app/Hooks/Handlers/FunnelHandler.php
+  - wp-content/plugins/fluent-crm/app/Functions/helpers.php
+  - wp-content/plugins/fluent-crm/app/Models/Subscriber.php
+  - wp-content/plugins/fluent-crm/app/Models/Company.php
+  - wp-content/plugins/fluent-crm/app/Models/EventTracker.php
+  - wp-content/plugins/fluent-crm/app/Services/Helper.php
+  - wp-content/plugins/fluent-crm/app/Api/config.php
+  - wp-content/plugins/fluent-crm/app/Api/Classes/Extender.php
+  - wp-content/plugins/fluentcampaign-pro/fluentcampaign-pro.php
+  - wp-content/plugins/fluentcampaign-pro/app/Hooks/Handlers/IntegrationHandler.php
 ---
 
 # FluentCRM: developer overview
@@ -42,9 +50,9 @@ Pick this skill first when starting a new FluentCRM extension or when you don't 
 | Field | Value | Source |
 |--|--|--|
 | Slug | `fluent-crm` | header |
-| Version | `2.9.87` | [fluent-crm.php:6](fluent-crm.php) |
+| Version | `3.1.8` | [fluent-crm.php](../../../../wp-content/plugins/fluent-crm/fluent-crm.php) |
 | Pro slug | `fluentcampaign-pro` | header |
-| Pro version | `2.9.86` | [fluentcampaign-pro.php](fluentcampaign-pro.php) |
+| Pro version | `3.1.8` | [fluentcampaign-pro.php](../../../../wp-content/plugins/fluentcampaign-pro/fluentcampaign-pro.php) |
 | Boot constant | `FLUENTCRM` ('fluentcrm') | [fluent-crm.php:20](fluent-crm.php) |
 | Pro constant | `FLUENTCAMPAIGN_PLUGIN_VERSION` | [fluentcampaign-pro.php](fluentcampaign-pro.php) |
 | Path constant (Free) | `FLUENTCRM_PLUGIN_PATH` | [fluent-crm.php:22](fluent-crm.php) |
@@ -60,11 +68,11 @@ public static function isFluentCRMActive(): bool {
 
 public static function isFluentCRMProActive(): bool {
     return defined('FLUENTCAMPAIGN_PLUGIN_VERSION')
-        && version_compare(FLUENTCAMPAIGN_PLUGIN_VERSION, '2.8.0', '>=');
+        && version_compare(FLUENTCAMPAIGN_PLUGIN_VERSION, '3.1.8', '>=');
 }
 ```
 
-(The `2.8.0` floor is the BaseTrigger / BaseAction lifecycle stability point. Drop it if your code only uses model APIs.)
+Use a lower Pro floor only when you have verified the exact Pro API you call. Core 3.1.8 declares `FLUENTCRM_MIN_PRO_VERSION` as `3.1.8`, so extension code that depends on current Pro internals should not silently accept older Pro builds.
 
 ### Active-detection canon for OTHER plugins (load-order trap)
 
@@ -75,7 +83,7 @@ Triggers / actions / benchmarks register on `fluentcrm_loaded:5`, which fires fr
 | Plugin | Use | Why |
 |--|--|--|
 | WooCommerce | `class_exists('WooCommerce')` | `woocommerce.php` includes `class-woocommerce.php` at file scope |
-| FluentCampaign Pro | `defined('FLUENTCAMPAIGN_PLUGIN_VERSION')` | `fluentcampaign-pro.php` requires `fluentcampaign_boot.php` at file scope, which `define()`s the constant |
+| FluentCampaign Pro | `defined('FLUENTCAMPAIGN_PLUGIN_VERSION')` | `fluentcampaign-pro.php` defines the constant before bootstrapping |
 | WC Memberships | `class_exists('WC_Memberships_Loader')` | top-level loader class, `WC_Memberships` itself is loaded inside `init_plugin()` and is racy |
 | LW LMS | `class_exists('LightweightPlugins\\LMS\\Plugin')` | autoloader registered at file scope |
 | Jet Engine | `class_exists('Jet_Engine')` | top-level class declaration |
@@ -106,7 +114,9 @@ If the dep's main object only exists post-init, find a top-level loader/registra
 | Funnel **actions** (BaseAction) | Yes — register from any plugin | Yes — many built-in (advanced Woo, sequence add/remove, custom field updates) |
 | Funnel **benchmarks** (BaseBenchMark) | Yes — register from any plugin | Yes — additional built-ins |
 | Conditional / A-B branching node | No | Yes |
-| Companies module | Yes | Yes |
+| Companies module | Yes, experimental flag `company_module` | Yes |
+| Event tracking | Yes, experimental flag `event_tracking` | Adds trigger/action/conditions |
+| MCP / Abilities API surface | Yes, guarded by `wp_register_ability` + `mcp_enabled` | Adds Pro abilities |
 | Webhook receiver / sender | Yes | Yes |
 | SMTP / mail driver layer | Free uses WP mail / Fluent SMTP | Pro adds advanced reporting |
 
@@ -122,19 +132,33 @@ fluentcrm_loaded            ← do_action('fluentcrm_loaded') from boot/app.php:
                               FluentCampaign Pro's IntegrationHandler runs here too
         ↓
 fluentcrm_addons_loaded     ← do_action('fluentcrm_addons_loaded') from boot/app.php:42
-                              FunnelHandler::handle runs (actions.php:76)
-                                 → reads fluentcrm_funnel_settings option
-                                 → for each saved trigger name:
-                                     $argNum = apply_filters('fluentcrm_funnel_arg_num_'.$name, 1)
-                                     add_action($name, ..., 10, $argNum)   ← LOCKED IN
+                              addon boot point; Pro Application loads here
+        ↓
+init:1                      ← FunnelHandler::registerFunnelItems()
+                              Core actions/benchmarks/triggers are instantiated.
+                              Pro IntegrationHandler also registers extra funnel
+                              items on init:1.
+        ↓
+init:2                      ← FunnelHandler::registerEarlyActiveTriggers()
+                              Registers saved trigger listeners only when the
+                              fluentcrm_funnel_arg_num_{name} filter already
+                              exists. This catches events fired by other init:10
+                              callbacks.
+        ↓
+init:10                     ← FunnelHandler::handle()
+                              Registers the automation runner callback.
+        ↓
+init:20                     ← FunnelHandler::registerActiveTriggers()
+                              Fallback listener pass for triggers whose arg-num
+                              filter was not ready at init:2.
         ↓
 init:1000                   ← do_action('fluent_crm/after_init') from boot/app.php:44-46
-                              TOO LATE for argNum filters
+                              TOO LATE for trigger/action/benchmark registration
         ↓
 ... runtime events fire ...
 ```
 
-**The single timing rule** — register every trigger / action / benchmark on `fluentcrm_loaded` priority < 10. Hooking on `fluent_crm/after_init` or `init` causes silent multi-arg drops. See `fluentcrm-funnel-trigger` for the explanation.
+**The single timing rule** — instantiate every trigger / action / benchmark on `fluentcrm_loaded` priority < 10, or at the latest from an `init:1` callback added before FluentCRM's `init:2` early listener pass. `fluent_crm/after_init` is too late; `init:10` can miss events fired by other `init:10` callbacks.
 
 ## File map
 
@@ -146,15 +170,19 @@ fluent-crm/
 │   └── …
 ├── app/
 │   ├── Api/
-│   │   ├── Classes/Extender.php     ← public API surface (smart code extender, contact API)
-│   │   └── Classes/Contact.php      ← fluentCrmApi('contacts') backend
+│   │   ├── config.php               ← FluentCrmApi keys: contacts, tags, lists, extender, companies, event_tracker
+│   │   ├── Classes/Contacts.php     ← FluentCrmApi('contacts') backend
+│   │   ├── Classes/Companies.php    ← FluentCrmApi('companies') backend
+│   │   ├── Classes/Tracker.php      ← FluentCrmApi('event_tracker') backend
+│   │   └── Classes/Extender.php     ← smart-code extender API
 │   ├── Functions/helpers.php        ← FluentCrmApi(), fluentCrmDb(), fluentCrmTimestamp(), …
 │   ├── Hooks/
 │   │   ├── actions.php              ← built-in `add_action` registrations
 │   │   ├── filters.php
 │   │   └── Handlers/                ← Funnel, Subscriber, Campaign, etc. handlers
 │   ├── Http/Controllers/            ← REST endpoints (FunnelController, OptionsController, …)
-│   ├── Models/                      ← Subscriber, Funnel, FunnelSequence, …
+│   ├── Models/                      ← Subscriber, Company, EventTracker, Funnel, FunnelSequence, …
+│   ├── Modules/MCP/                 ← WP Abilities/MCP tools, guarded by wp_register_ability
 │   ├── Services/
 │   │   ├── Funnel/
 │   │   │   ├── BaseTrigger.php
@@ -170,7 +198,10 @@ fluent-crm/
 fluentcampaign-pro/
 ├── fluentcampaign-pro.php
 └── app/
-    ├── Hooks/Handlers/IntegrationHandler.php   ← initFunnelActions / initBenchmarks / initTriggers
+    ├── Hooks/Handlers/IntegrationHandler.php   ← initFunnelActions / initBenchmarks / initTriggers at init:1
+    ├── Models/Sequence*.php                    ← Pro email sequences
+    ├── Modules/SMS/                            ← Pro SMS module
+    ├── Modules/MCP/                            ← Pro Abilities/MCP registration
     └── Services/Integrations/
         ├── TutorLms/CourseEnrollTrigger.php    ← canonical trigger reference
         ├── TutorLms/AddToCourseAction.php      ← canonical action reference
@@ -184,15 +215,17 @@ fluentcampaign-pro/
 | Model | Class | Notes |
 |--|--|--|
 | Subscriber | `FluentCrm\App\Models\Subscriber` | Core contact. `getWpUserId()`, `tags`, `lists`, `email`, `status` |
+| Company | `FluentCrm\App\Models\Company` | Experimental CRM account/company model. Relation through `fc_subscriber_pivot`, plus `Subscriber.company_id` primary company |
+| EventTracker | `FluentCrm\App\Models\EventTracker` | Experimental event timeline table `fc_event_tracking`; API key is `event_tracker` |
 | Funnel | `FluentCrm\App\Models\Funnel` | An automation. `status` ∈ `{published, draft, archived}` |
 | FunnelSequence | `FluentCrm\App\Models\FunnelSequence` | A step inside a funnel. `action_name` keys into your block. `type` ∈ `{action, benchmark, conditional}` |
-| FunnelSubscriber | `FluentCrm\App\Models\FunnelSubscriber` | Join: contact <-> funnel. Tracks current sequence position |
-| FunnelMetric | `FluentCrm\App\Models\FunnelMetric` | Per-step audit row. `status` ∈ `{pending, complete, skipped, failed}` |
+| FunnelSubscriber | `FluentCrm\App\Models\FunnelSubscriber` | Join: contact <-> funnel. Tracks current sequence position. Main `status` uses values such as `draft`, `pending`, `active`, `waiting`, `completed`, `cancelled`, `skipped` |
+| FunnelMetric | `FluentCrm\App\Models\FunnelMetric` | Per-step audit row. DB default / successful status is `completed`; handlers usually write only `skipped` or `failed` |
 | Tag | `FluentCrm\App\Models\Tag` | Many-to-many with Subscriber via SubscriberPivot |
 | Lists | `FluentCrm\App\Models\Lists` | Same |
 | Webhook | `FluentCrm\App\Models\Webhook` | Inbound webhook receivers |
 
-The status string canon is **`'complete'`, NOT `'completed'`** — see `fluentcrm-funnel-action` for the gotcha.
+Status strings are column-specific: `FunnelHelper::changeFunnelSubSequenceStatus()` writes `FunnelSubscriber.last_sequence_status` and uses **`complete`** by default, while the main funnel-subscriber status and successful funnel metrics use **`completed`**. Do not normalize these into one word.
 
 ## Global helpers
 
@@ -200,6 +233,8 @@ The status string canon is **`'complete'`, NOT `'completed'`** — see `fluentcr
 // API surface — preferred over direct Model writes
 FluentCrmApi('contacts')->createOrUpdate($data);
 FluentCrmApi('contacts')->getContact($emailOrId);
+FluentCrmApi('companies')->createOrUpdate($companyData);
+FluentCrmApi('event_tracker')->track($eventData);
 
 // Database query builder — bypasses Eloquent for raw queries
 fluentCrmDb()->table('fc_subscribers')->where('email', $email)->first();
@@ -314,7 +349,7 @@ Smart codes are evaluated at email render time AND inside dynamic field tokens f
 
 - **Always hook `fluentcrm_loaded` priority < 10 for trigger / action / benchmark registration.** The single most-bitten timing trap.
 - **Always seed `'settings'` in `getBlock()` for actions and benchmarks.** One key per `getBlockFields()['fields']` key. Without it the editor renders an empty panel and the JS console throws `TypeError: Cannot read properties of undefined`. Triggers don't have this trap (defaults come from the abstract `getFunnelSettingsDefaults()` / `getFunnelConditionDefaults()` methods).
-- **Status string canon is `'complete'`** (not `'completed'`). Applies to every `changeFunnelSubSequenceStatus` and `$funnelMetric->status`.
+- **Do not collapse `complete` and `completed`.** `changeFunnelSubSequenceStatus()` writes `last_sequence_status = complete`; the main automation run and `FunnelMetric` success state use `completed`.
 - **Use `getWpUserId()` not `->user_id`** when reading the WP user from a `Subscriber` instance.
 - **Use `FluentCrmApi('contacts')->createOrUpdate()`** rather than directly instantiating `Subscriber` model in companion code. The API encapsulates list/tag attachment, double-optin handling, and lifecycle hook firing.
 - **Pin Pro version detection on `2.8.0`** if you depend on the modern lifecycle. Older Pro releases predate stable BaseAction semantics.
@@ -336,12 +371,15 @@ Smart codes are evaluated at email render time AND inside dynamic field tokens f
 - Run **`fluentcrm-funnel-action`** for the action contract + status-string canon.
 - Run **`fluentcrm-funnel-benchmark`** for benchmark / goal-point contract.
 - Run **`fluentcrm-rest-options`** for the `rest_selector` option filter pattern.
+- Run **`fluentcrm-companies-model`** for company/account relations, custom company fields, and company hooks.
+- Run **`fluentcrm-event-tracking`** for `FluentCrmApi('event_tracker')`, event timeline filters, and the Pro tracking-event automation trigger/action.
 
 ## What this skill does NOT cover
 
 - Email-campaign rendering / templates.
 - The block-editor email designer.
 - Webhook receiver / sender configuration.
+- Detailed Companies or Event Tracking usage.
 - Pro-only branching (conditional / A-B test) — separate contract.
 - SMTP / mail driver integration.
 - The CRM admin UI / Vue app.
@@ -350,7 +388,7 @@ Smart codes are evaluated at email render time AND inside dynamic field tokens f
 
 - [FluentCRM developer docs root](https://developers.fluentcrm.com/)
 - Plugin entry — `fluent-crm.php`
-- Bootstrap order — `boot/app.php:41-46`
+- Bootstrap order — `boot/app.php:31-44`, `app/Hooks/actions.php`, `app/Hooks/Handlers/FunnelHandler.php`
 - Model layer index — `app/Models/`
 - Funnel services — `app/Services/Funnel/`
 - Global helpers — `app/Functions/helpers.php`

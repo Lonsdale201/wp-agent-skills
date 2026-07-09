@@ -4,10 +4,10 @@ description: Work with FluentCRM 3.x contact data through the public PHP API and
 author: Soczó Kristóf
 contact: mailto:lonsdale201@hotmail.com
 plugin: fluent-crm
-plugin-version-tested: "FluentCRM 3.1.5"
+plugin-version-tested: "FluentCRM 3.1.8"
 wp-version-tested: "7.0"
 php-min: "7.4"
-last-updated: "2026-06-17"
+last-updated: "2026-07-09"
 docs:
   - https://developers.fluentcrm.com/database/models/subscriber
   - https://developers.fluentcrm.com/database/models/lists
@@ -31,7 +31,7 @@ source-refs:
 
 Use this skill for companion plugins that need to write or query FluentCRM contacts. Prefer `FluentCrmApi()` wrappers for writes, and use the ORM models for reads, reports, migrations, and carefully scoped queries.
 
-Verification note: this skill is based on FluentCRM core 3.1.5 source. The contact/list/tag/user APIs covered here are core APIs and do not require FluentCampaign Pro.
+Verification note: this skill is based on FluentCRM core 3.1.8 source. The contact/list/tag/user APIs covered here are core APIs and do not require FluentCampaign Pro.
 
 ## When to use this skill
 
@@ -91,7 +91,7 @@ $contact = FluentCrmApi('contacts')->getCurrentContact();
 
 ## Status rules
 
-Use `fluentcrm_subscriber_statuses()` for the current status list. In FluentCRM 3.1.5 the local source returns:
+Use `fluentcrm_subscriber_statuses()` for the current status list. In FluentCRM 3.1.8 the local source returns:
 
 ```php
 [
@@ -166,7 +166,7 @@ $contact->detachLists([4]);
 $contact->detachTags([12]);
 ```
 
-In 3.1.5 `attachLists()` and `attachTags()` return early for unsaved subscribers, sanitize IDs, use per-row `INSERT IGNORE`, refresh the relation, and only fire added hooks for IDs that were actually new. `detachLists()` and `detachTags()` read fresh pivot state and only fire removed hooks for rows actually deleted.
+In 3.1.8 `attachLists()` and `attachTags()` return early for unsaved subscribers, sanitize IDs, use per-row `INSERT IGNORE`, refresh the relation, and only fire added hooks for IDs that were actually new. `detachLists()` and `detachTags()` read fresh pivot state and only fire removed hooks for rows actually deleted. `attachCompanies()` / `detachCompanies()` follow the same pivot-table pattern for the experimental Companies module, but their current hooks are legacy helper functions only; use `fluentcrm-companies-model` for company-specific APIs and hooks.
 
 Current attach/detach hooks:
 
@@ -203,6 +203,7 @@ For advanced filters, pass `filter_type => 'advanced'` and `filters_groups_raw`;
 ## Model notes
 
 - `Subscriber` table: `fc_subscribers`; primary contact model; appended `full_name` and `photo`.
+- `Subscriber.company_id` is the primary company pointer when the Companies module is enabled. Many-to-many company membership still lives in `fc_subscriber_pivot` with `object_type = FluentCrm\App\Models\Company`.
 - `Lists` table: `fc_lists`; relation `subscribers()`, helpers `totalCount()` and `countByStatus()`.
 - `Tag` table: `fc_tags`; relation `subscribers()`, helpers `totalCount()` and `countByStatus()`.
 - `User` model maps the WordPress `users` table with primary key `ID`, hides `user_pass` and `user_activation_key`, and appends a contact-aware `photo`.
@@ -222,6 +223,8 @@ When replacing direct writes, ensure these still fire where relevant:
 - Automation trigger/action/benchmark registration. Use `fluentcrm-funnel-trigger`, `fluentcrm-funnel-action`, or `fluentcrm-funnel-benchmark`.
 - Email sequence enrollment and funnel subscriber state. Use `fluentcrm-automation-sequence-models`.
 - Smart codes and dynamic segments. Use `fluentcrm-smartcodes-segments`.
+- Companies / account records. Use `fluentcrm-companies-model`.
+- Event tracking. Use `fluentcrm-event-tracking`.
 
 ## References
 

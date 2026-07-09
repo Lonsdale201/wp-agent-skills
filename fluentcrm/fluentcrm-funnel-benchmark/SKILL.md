@@ -8,20 +8,21 @@ description: Build a custom FluentCRM funnel benchmark — a goal/wait point
   direct-entry toggle, the assertCurrentGoalState filter, and
   FunnelProcessor::startFunnelFromSequencePoint as the canonical resume
   entry — NOT startFunnelSequence (that starts a new run). Important —
-  same lifecycle rule as triggers (register on fluentcrm_loaded priority
-  below 10); benchmarks share the action listener with triggers via
-  FunnelHandler::mapTriggers, so fluentcrm_funnel_arg_num_{name} timing
-  applies. Use when a funnel needs to wait for a contact-state change.
+  same lifecycle rule as triggers (instantiate on fluentcrm_loaded
+  priority below 10); benchmarks share the action listener with triggers
+  via FunnelHandler::mapTriggers, so the init:2
+  fluentcrm_funnel_arg_num_{name} timing applies. Use when a funnel
+  needs to wait for a contact-state change.
   Triggers on BaseBenchMark, fluentcrm_funnel_benchmark_start_,
   assertCurrentGoalState, startFunnelFromSequencePoint, benchmarkTypeField,
   canEnterField.
 author: Soczó Kristóf
 contact: mailto:lonsdale201@hotmail.com
 plugin: fluent-crm
-plugin-version-tested: "2.9.87"
+plugin-version-tested: "FluentCRM 3.1.8 + FluentCRM Pro 3.1.8"
 api-stable-since: "2.6"
 php-min: "7.4"
-last-updated: "2026-05-09"
+last-updated: "2026-07-09"
 docs:
   - https://developers.fluentcrm.com/funnel-builder/custom-benchmark/
 source-refs:
@@ -33,7 +34,7 @@ source-refs:
 
 # FluentCRM: register a custom funnel benchmark
 
-For developers building a funnel **wait point** — a node placed inside an automation that pauses the contact until a specific event matches the configured criteria (tag applied, course completed, payment received, custom event from your plugin). Unlike a trigger (which STARTS a funnel) or an action (which DOES something), a benchmark *gates* progress mid-flow. Extends `FluentCrm\App\Services\Funnel\BaseBenchMark`. Verified against FluentCRM 2.9.87.
+For developers building a funnel **wait point** — a node placed inside an automation that pauses the contact until a specific event matches the configured criteria (tag applied, course completed, payment received, custom event from your plugin). Unlike a trigger (which STARTS a funnel) or an action (which DOES something), a benchmark *gates* progress mid-flow. Extends `FluentCrm\App\Services\Funnel\BaseBenchMark`. Verified against FluentCRM 3.1.8.
 
 ## API stability note
 
@@ -43,19 +44,19 @@ For developers building a funnel **wait point** — a node placed inside an auto
 
 > "Benchmarks are special wait nodes — they have their own action listener separate from triggers."
 
-Wrong. Benchmarks listen on the **same** WP action as triggers — `FunnelHandler::mapTriggers()` ([FunnelHandler.php:105-141](FunnelHandler.php)) handles both in one pass. After dispatching `fluentcrm_funnel_start_{triggerName}` for matching trigger funnels, it queries `FunnelSequence` for benchmark sequences with `action_name === $triggerName` whose funnel is published, and dispatches `fluentcrm_funnel_benchmark_start_{triggerName}` ([FunnelHandler.php:139](FunnelHandler.php)) for each.
+Wrong. Benchmarks listen on the **same** WP action as triggers — `FunnelHandler::mapTriggers()` handles both in one pass. After dispatching `fluentcrm_funnel_start_{triggerName}` for matching trigger funnels, it queries `FunnelSequence` for benchmark sequences with `action_name === $triggerName` whose funnel is published, and dispatches `fluentcrm_funnel_benchmark_start_{triggerName}` for each.
 
 Practical consequences:
 
-1. **The same `fluentcrm_funnel_arg_num_{name}` filter timing rule applies.** Register on `fluentcrm_loaded` priority below 10. Hook on `fluent_crm/after_init` and your benchmark only receives `$originalArgs[0]` — same actionArgNum=1 lock-in bug as triggers.
+1. **The same `fluentcrm_funnel_arg_num_{name}` filter timing rule applies.** Instantiate on `fluentcrm_loaded` priority below 10. Hook on `fluent_crm/after_init` and your benchmark misses both active-trigger listener passes; hook too late in `init` and events fired by other `init` callbacks can be missed or reduced to the default one accepted arg.
 2. **`triggerName` collision is fine** between a trigger and a benchmark — they coexist on the same action. `TagAppliedBenchmark::triggerName = 'fluentcrm_contact_added_to_tags'` is used by both the trigger flow ("Tag Applied" trigger that starts a funnel) and the benchmark flow ("Tag Applied" wait point).
-3. **`fluentcrm_funnel_settings` option lifecycle includes benchmarks.** `resetFunnelIndexes()` queries published-funnel benchmark sequences ([FunnelHandler.php:156-167](FunnelHandler.php)) — saving a funnel that uses your benchmark adds the trigger name to the listener registry.
+3. **`fluentcrm_funnel_settings` option lifecycle includes benchmarks.** `resetFunnelIndexes()` queries published-funnel benchmark sequences — saving a funnel that uses your benchmark adds the trigger name to the listener registry.
 
 Other AI-prone misconceptions:
 
 - **"`triggerName` on a benchmark is the benchmark's identifier."** Wrong. `triggerName` is the WP action name the benchmark listens for — same semantics as `BaseTrigger::triggerName`. Pick a hook your plugin already fires (or an existing FluentCRM contact-state hook like `fluentcrm_contact_added_to_tags`); don't invent a name unique to the benchmark unless you're also firing `do_action('your_name', ...)` from a dispatcher.
 - **"`getBlock()` doesn't need a `'settings'` key."** Same trap as BaseAction. The `'settings'` hash on the `getBlock()` return is the seed for new instances dragged into the funnel; the editor's Vue components bind directly to `settings.<field_key>`. Omit it and dragging the block in throws **`TypeError: Cannot read properties of undefined (reading '<your_first_field>')`** in `start.js`, leaving the panel empty. `BaseBenchMark::addBenchmark` at [BaseBenchMark.php:53-62](BaseBenchMark.php) does NOT inject defaults. Seed every field key, including the auto-rendered `type` (Optional/Essential) and `can_enter` (direct-entry) when you reference them via `$this->benchmarkTypeField()` / `$this->canEnterField()`.
-- **"`handle()` on a benchmark is identical to a trigger's `handle()`."** Different signature — `handle($benchMark, $originalArgs)` where `$benchMark` is the FunnelSequence row of the benchmark step (not a Funnel). Inside the handler, after matching, call `(new FunnelProcessor())->startFunnelFromSequencePoint($benchMark, $subscriber)` ([FunnelProcessor.php:301](FunnelProcessor.php)) — NOT `startFunnelSequence`. The latter starts a NEW funnel run; the former resumes the existing run from the matched benchmark.
+- **"`handle()` on a benchmark is identical to a trigger's `handle()`."** Different signature — `handle($benchMark, $originalArgs)` where `$benchMark` is the FunnelSequence row of the benchmark step (not a Funnel). Inside the handler, after matching, call `(new FunnelProcessor())->startFunnelFromSequencePoint($benchMark, $subscriber)` — NOT `startFunnelSequence`. The latter starts a NEW funnel run; the former resumes the existing run from the matched benchmark.
 - **"`assertCurrentGoalState` is optional."** Functionally yes (returns `$asserted` unchanged by default), but skipping it breaks the FluentCRM admin's "is the goal already met" UI for contacts already on the funnel — that filter is what reports back "yes, this contact has the tag" so the goal point appears completed.
 - **"`Optional` vs `Essential` is just a label."** It changes funnel flow. **Optional**: contacts can pass through without hitting the goal — useful for analytics ("did they convert?"). **Essential**: contacts wait at the goal indefinitely until matched — used to gate downstream actions on a real event. The split is administered via the `type` field in settings (`'optional'` / `'required'`) and consumed by `FunnelProcessor` when deciding whether to advance past an unmet goal.
 - **"`can_enter` is a UI cosmetic."** It's a real control flow toggle. With `'can_enter' => 'yes'`, contacts NOT on the funnel who match the trigger's criteria are inserted directly at the benchmark and continue from there. With `'no'`, the benchmark only matters for contacts already on the funnel. Default 'yes' for canonical behaviours like Tag Applied.
@@ -84,7 +85,7 @@ If you find yourself wanting "an action that conditionally pauses", you want a b
 add_action('fluentcrm_loaded', [$this, 'registerBenchmarks'], 5);
 ```
 
-Same lifecycle constraint as triggers and actions. The `fluentcrm_funnel_arg_num_{name}` filter must be in place before `fluentcrm_addons_loaded` fires. See `fluentcrm-funnel-trigger` for the lifecycle diagram.
+Same lifecycle constraint as triggers and actions. The `fluentcrm_funnel_arg_num_{name}` filter must be in place before FluentCRM's `init:2` early active-trigger listener pass. See `fluentcrm-funnel-trigger` for the lifecycle diagram.
 
 ## Step 2 — Extend BaseBenchMark
 
@@ -221,14 +222,14 @@ add_action('my_real_plugin_event', function ($subscriberId, $thingId) {
 }, 20, 2);
 ```
 
-Note the existence check uses `FunnelSequence` (not `Funnel`) and matches `action_name` — that's how `resetFunnelIndexes()` discovers benchmarks ([FunnelHandler.php:156-167](FunnelHandler.php)).
+Note the existence check uses `FunnelSequence` (not `Funnel`) and matches `action_name` — that's how `resetFunnelIndexes()` discovers benchmarks.
 
 ## Step 4 — How the registration plumbs through
 
 1. `getBlock()` return is added to `fluentcrm_funnel_blocks` with `type === 'benchmark'` (set by `BaseBenchMark::addBenchmark` at [BaseBenchMark.php:53-62](BaseBenchMark.php)) — that's how the editor's "Goal" section sees your block.
 2. `getBlockFields($funnel)` shapes the editor settings panel (returned via `fluentcrm_funnel_block_fields`).
 3. Admin saves the funnel with your benchmark inside → `FunnelController` calls `resetFunnelIndexes()` which writes your `triggerName` into the `fluentcrm_funnel_settings` option.
-4. When `do_action($triggerName, ...)` fires at runtime, `FunnelHandler::mapTriggers()` looks up benchmark `FunnelSequence` rows with `action_name === $triggerName` (published funnels only) and dispatches `do_action('fluentcrm_funnel_benchmark_start_'.$triggerName, $benchMark, $originalArgs)` ([FunnelHandler.php:139](FunnelHandler.php)) for each.
+4. When `do_action($triggerName, ...)` fires at runtime, `FunnelHandler::mapTriggers()` looks up benchmark `FunnelSequence` rows with `action_name === $triggerName` (published funnels only) and dispatches `do_action('fluentcrm_funnel_benchmark_start_'.$triggerName, $benchMark, $originalArgs)` for each.
 5. `BaseBenchMark::register()` listens on that hook ([BaseBenchMark.php:24](BaseBenchMark.php)) → invokes your `handle($benchMark, $originalArgs)`.
 6. Your handler matches criteria → `startFunnelFromSequencePoint($benchMark, $subscriber)` resumes the funnel.
 
@@ -236,7 +237,7 @@ The `assertCurrentGoalState` filter is dispatched separately when the admin load
 
 ## Critical rules
 
-- **Register on `fluentcrm_loaded` priority < 10.** Same rule as triggers and actions. The `fluentcrm_funnel_arg_num_{name}` filter must land before `fluentcrm_addons_loaded` fires.
+- **Register on `fluentcrm_loaded` priority < 10.** Same rule as triggers and actions. The `fluentcrm_funnel_arg_num_{name}` filter must land before the `init:2` early active-trigger listener pass.
 - **`triggerName` is the WP action hook name**, identical semantics to BaseTrigger.
 - **`actionArgNum` matches the hook's argument count.** Wrong value = silently dropped args inside `handle()` — same trap that bit triggers.
 - **`handle()` calls `startFunnelFromSequencePoint`, not `startFunnelSequence`.** The former resumes the EXISTING run; the latter starts a NEW run.
@@ -249,7 +250,7 @@ The `assertCurrentGoalState` filter is dispatched separately when the admin load
 ## Common mistakes
 
 - **Calling `startFunnelSequence` instead of `startFunnelFromSequencePoint`.** Most common semantic bug — the contact gets re-enrolled in the funnel from the start instead of resuming past the goal. UI shows the same contact in the funnel twice with two different progress positions.
-- **Hooking `init` priority N for benchmark registration.** The block filters fire when the editor is opened (later than init); the action listener is locked in earlier (during `fluentcrm_addons_loaded`). Late registration means the picker shows your benchmark BUT the runtime listener was added with `argNum=1`. Subtler than the trigger version because the visible bug is "no contact ever passes the goal" rather than "trigger doesn't fire".
+- **Hooking ordinary `init` priority for benchmark registration.** The block filters may still work when the editor opens, but the runtime listener can miss the `init:2` early pass. Subtler than the trigger version because the visible bug is "no contact ever passes the goal" rather than "trigger doesn't fire".
 - **Returning `true` / `false` from `handle()` thinking it gates the funnel.** `handle()`'s return value is ignored. Match → call `startFunnelFromSequencePoint`. No match → return early; the funnel stays paused.
 - **Forgetting `assertCurrentGoalState`.** Falls back to the BaseBenchMark default (returns `$asserted` unchanged) which means "no, the goal is never asserted from prior state". For tag-applied / list-applied / role-changed style benchmarks you almost certainly need a real implementation.
 - **Treating `can_enter === 'yes'` as the default for all benchmarks.** It's the right default for "Tag Applied", "List Applied", "Course Completed" — anything where the goal CAUSES enrollment. For benchmarks like "Email Opened" inside a sequence that already started, you may want `'no'` so contacts who randomly open ANY email don't get inserted at the wait point.
@@ -270,7 +271,7 @@ The `assertCurrentGoalState` filter is dispatched separately when the admin load
 ## References
 
 - BaseBenchMark contract — `app/Services/Funnel/BaseBenchMark.php`
-- Resume entry point — `app/Services/Funnel/FunnelProcessor.php:301`
+- Resume entry point — `app/Services/Funnel/FunnelProcessor.php`
 - Reference benchmark (Tag Applied) — `app/Services/Funnel/Benchmarks/TagAppliedBenchmark.php`
-- Listener bootstrap + benchmark dispatch — `app/Hooks/Handlers/FunnelHandler.php:105-141`
-- ResetFunnelIndexes (benchmark sequence discovery) — `app/Hooks/Handlers/FunnelHandler.php:156-167`
+- Listener bootstrap + benchmark dispatch — `app/Hooks/Handlers/FunnelHandler.php`
+- ResetFunnelIndexes (benchmark sequence discovery) — `app/Hooks/Handlers/FunnelHandler.php`

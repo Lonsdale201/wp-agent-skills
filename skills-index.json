@@ -12,7 +12,7 @@
     "skill_file": "SKILL.md"
   },
   "domain_count": 19,
-  "skill_count": 178,
+  "skill_count": 181,
   "domains": [
     {
       "slug": "better-data",
@@ -42,7 +42,7 @@
       "slug": "fluentcrm",
       "path": "fluentcrm",
       "readme_path": "fluentcrm/README.md",
-      "skill_count": 8
+      "skill_count": 10
     },
     {
       "slug": "jet-engine",
@@ -120,7 +120,7 @@
       "slug": "wp-rocket",
       "path": "wp-rocket",
       "readme_path": "wp-rocket/README.md",
-      "skill_count": 2
+      "skill_count": 3
     },
     {
       "slug": "wpml",
@@ -1892,10 +1892,10 @@
         "author": "Soczó Kristóf",
         "contact": "mailto:lonsdale201@hotmail.com",
         "plugin": "fluent-crm",
-        "plugin-version-tested": "FluentCRM 3.1.5 + FluentCRM Pro 3.1.0",
+        "plugin-version-tested": "FluentCRM 3.1.8 + FluentCRM Pro 3.1.8",
         "wp-version-tested": "7.0",
         "php-min": "7.4",
-        "last-updated": "2026-06-17",
+        "last-updated": "2026-07-09",
         "docs": [
           "https://developers.fluentcrm.com/database/models/funnelSubscriber",
           "https://developers.fluentcrm.com/database/models/funnelSequence",
@@ -1920,9 +1920,56 @@
       "has_examples": false,
       "has_scripts": false,
       "skill_md": {
-        "bytes": 10407,
+        "bytes": 10674,
         "lines": 224,
-        "sha256": "95f46d3cb989c856931176de3d4f46af262ed2cddad8d4c8a8f8b3ebf4c5eeb5"
+        "sha256": "37dc735991bf7649ab6dfae28e59045c212a3a701dd740c394bbf4a971cbc040"
+      }
+    },
+    {
+      "slug": "fluentcrm-companies-model",
+      "name": "fluentcrm-companies-model",
+      "domain": "fluentcrm",
+      "description": "Work with FluentCRM 3.x Companies / account records from companion plugins. Covers the experimental company_module flag, FluentCrmApi('companies'), Company model fields, createOrUpdate, owner_id as Subscriber ID, custom company fields in meta.custom_values, primary company vs many-to-many company membership, attachContactsByIds / detachContactsByIds, company hooks, and company-aware contact filters. Use when a plugin must sync organizations/accounts, attach contacts to companies, read company segments, add automation company actions, or audit code touching fc_companies, company_id, attachCompanies, or fluent_crm/company_ hooks.",
+      "path": "fluentcrm/fluentcrm-companies-model",
+      "skill_path": "fluentcrm/fluentcrm-companies-model/SKILL.md",
+      "url": "https://raw.githubusercontent.com/Lonsdale201/wp-agent-skills/main/fluentcrm/fluentcrm-companies-model/SKILL.md",
+      "raw_url": "https://raw.githubusercontent.com/Lonsdale201/wp-agent-skills/main/fluentcrm/fluentcrm-companies-model/SKILL.md",
+      "html_url": "https://github.com/Lonsdale201/wp-agent-skills/blob/main/fluentcrm/fluentcrm-companies-model/SKILL.md",
+      "directory_url": "https://github.com/Lonsdale201/wp-agent-skills/tree/main/fluentcrm/fluentcrm-companies-model",
+      "metadata": {
+        "author": "Soczó Kristóf",
+        "contact": "mailto:lonsdale201@hotmail.com",
+        "plugin": "fluent-crm",
+        "plugin-version-tested": "FluentCRM 3.1.8",
+        "wp-version-tested": "7.0",
+        "php-min": "7.4",
+        "last-updated": "2026-07-09",
+        "docs": [
+          "https://developers.fluentcrm.com/database/orm/"
+        ],
+        "source-refs": [
+          "wp-content/plugins/fluent-crm/app/Api/config.php",
+          "wp-content/plugins/fluent-crm/app/Api/Classes/Companies.php",
+          "wp-content/plugins/fluent-crm/app/Models/Company.php",
+          "wp-content/plugins/fluent-crm/app/Models/CompanyNote.php",
+          "wp-content/plugins/fluent-crm/app/Models/CustomCompanyField.php",
+          "wp-content/plugins/fluent-crm/app/Models/Subscriber.php",
+          "wp-content/plugins/fluent-crm/app/Services/Helper.php",
+          "wp-content/plugins/fluent-crm/app/Http/Controllers/CompanyController.php",
+          "wp-content/plugins/fluent-crm/app/Services/Funnel/Actions/ApplyCompanyAction.php",
+          "wp-content/plugins/fluent-crm/app/Services/Funnel/Actions/DetachCompanyAction.php",
+          "wp-content/plugins/fluent-crm/database/migrations/CompaniesMigrator.php",
+          "wp-content/plugins/fluent-crm/database/migrations/Subscribers.php"
+        ]
+      },
+      "resources": [],
+      "has_reference": false,
+      "has_examples": false,
+      "has_scripts": false,
+      "skill_md": {
+        "bytes": 8590,
+        "lines": 207,
+        "sha256": "5b434da7d10a6206c6dd9e9ebd1d993c146c5a4b03af49627c84fbc623dbbe2b"
       }
     },
     {
@@ -1940,10 +1987,10 @@
         "author": "Soczó Kristóf",
         "contact": "mailto:lonsdale201@hotmail.com",
         "plugin": "fluent-crm",
-        "plugin-version-tested": "FluentCRM 3.1.5",
+        "plugin-version-tested": "FluentCRM 3.1.8",
         "wp-version-tested": "7.0",
         "php-min": "7.4",
-        "last-updated": "2026-06-17",
+        "last-updated": "2026-07-09",
         "docs": [
           "https://developers.fluentcrm.com/database/models/subscriber",
           "https://developers.fluentcrm.com/database/models/lists",
@@ -1969,16 +2016,62 @@
       "has_examples": false,
       "has_scripts": false,
       "skill_md": {
-        "bytes": 9673,
-        "lines": 230,
-        "sha256": "768f6512fa95fa1788d14a3a3a63ae7f48d4d1c1053898fe32170b9e64253f56"
+        "bytes": 10246,
+        "lines": 233,
+        "sha256": "06703a11cd1a73e771e767c6da15d42f25625c166e2df37ca344824afa3b0515"
+      }
+    },
+    {
+      "slug": "fluentcrm-event-tracking",
+      "name": "fluentcrm-event-tracking",
+      "domain": "fluentcrm",
+      "description": "Track and consume FluentCRM 3.x contact events from companion plugins. Covers the experimental event_tracking flag, FluentCrmApi('event_tracker')->track(), fc_event_tracking, repeatable counter semantics, subscriber resolution by subscriber/email/user/current contact, fluent_crm/event_tracked, the fluent_crm/track_event_activity action bridge, event_tracking advanced contact filters, event_tracking_keys option source, and FluentCampaign Pro's Tracking Event Recorded trigger / Add Event Tracking action. Use when a plugin records user activity, builds event-based automations, filters contacts by tracked events, or audits code touching EventTracker, Tracker, fluent_crm/event_tracked, or fc_event_tracking.",
+      "path": "fluentcrm/fluentcrm-event-tracking",
+      "skill_path": "fluentcrm/fluentcrm-event-tracking/SKILL.md",
+      "url": "https://raw.githubusercontent.com/Lonsdale201/wp-agent-skills/main/fluentcrm/fluentcrm-event-tracking/SKILL.md",
+      "raw_url": "https://raw.githubusercontent.com/Lonsdale201/wp-agent-skills/main/fluentcrm/fluentcrm-event-tracking/SKILL.md",
+      "html_url": "https://github.com/Lonsdale201/wp-agent-skills/blob/main/fluentcrm/fluentcrm-event-tracking/SKILL.md",
+      "directory_url": "https://github.com/Lonsdale201/wp-agent-skills/tree/main/fluentcrm/fluentcrm-event-tracking",
+      "metadata": {
+        "author": "Soczó Kristóf",
+        "contact": "mailto:lonsdale201@hotmail.com",
+        "plugin": "fluent-crm",
+        "plugin-version-tested": "FluentCRM 3.1.8 + FluentCRM Pro 3.1.8",
+        "wp-version-tested": "7.0",
+        "php-min": "7.4",
+        "last-updated": "2026-07-09",
+        "docs": [
+          "https://developers.fluentcrm.com/database/orm/"
+        ],
+        "source-refs": [
+          "wp-content/plugins/fluent-crm/app/Api/config.php",
+          "wp-content/plugins/fluent-crm/app/Api/Classes/Tracker.php",
+          "wp-content/plugins/fluent-crm/app/Models/EventTracker.php",
+          "wp-content/plugins/fluent-crm/app/Models/Subscriber.php",
+          "wp-content/plugins/fluent-crm/app/Hooks/Handlers/EventTrackingHandler.php",
+          "wp-content/plugins/fluent-crm/app/Hooks/Handlers/Integrations.php",
+          "wp-content/plugins/fluent-crm/app/Services/Helper.php",
+          "wp-content/plugins/fluent-crm/database/migrations/SubscriberEventTracking.php",
+          "wp-content/plugins/fluentcampaign-pro/app/Services/Funnel/Triggers/TrackingEventRecordedTrigger.php",
+          "wp-content/plugins/fluentcampaign-pro/app/Services/Funnel/Actions/AddEventTrackerAction.php",
+          "wp-content/plugins/fluentcampaign-pro/app/Services/Funnel/Conditions/FunnelConditionHelper.php"
+        ]
+      },
+      "resources": [],
+      "has_reference": false,
+      "has_examples": false,
+      "has_scripts": false,
+      "skill_md": {
+        "bytes": 7899,
+        "lines": 188,
+        "sha256": "5b2ca0d797ea8dc90694b1f28ee2402fa8f40cccbe5a7ad7d81bed36ca7637e3"
       }
     },
     {
       "slug": "fluentcrm-funnel-action",
       "name": "fluentcrm-funnel-action",
       "domain": "fluentcrm",
-      "description": "Build a custom FluentCRM funnel action — a sequence step that runs per-contact when an automation reaches it — by extending BaseAction. Covers the three abstract methods (getBlock, getBlockFields, handle), the per-step handle($subscriber, $sequence, $funnelSubscriberId, $funnelMetric) signature, and the canonical skip / failure semantics — handle ONLY overrides status on early-return, because FunnelProcessor::processSequence already marks the sequence 'complete' BEFORE dispatch. Important — the status string canon is 'complete' (NOT 'completed'); both the sequence-subscriber row (via FunnelHelper::changeFunnelSubSequenceStatus) AND the FunnelMetric ($funnelMetric->status + ->save()) need updating on skip. Same lifecycle rule as triggers — register on fluentcrm_loaded priority below 10. Use when building integration actions. Triggers on BaseAction, fluentcrm_funnel_blocks, fluentcrm_funnel_block_fields, fluentcrm_funnel_sequence_handle_, changeFunnelSubSequenceStatus, funnelMetric, getBlockFields.",
+      "description": "Build a custom FluentCRM funnel action — a per-contact sequence step run when an automation reaches it — by extending BaseAction. Covers the three abstract methods (getBlock, getBlockFields, handle), the per-step handle($subscriber, $sequence, $funnelSubscriberId, $funnelMetric) signature, and the skip / failure semantics — handle ONLY overrides status on early-return, because FunnelProcessor::processSequence already marks the sequence 'complete' BEFORE dispatch. last_sequence_status uses 'complete' but successful FunnelMetric rows use the model default 'completed' — do not normalize the two. On skip/failure update both the sequence-subscriber row (via FunnelHelper::changeFunnelSubSequenceStatus) and the FunnelMetric status. Register on fluentcrm_loaded priority below 10. Use for integration actions. Triggers on BaseAction, fluentcrm_funnel_blocks, fluentcrm_funnel_block_fields, fluentcrm_funnel_sequence_handle_, changeFunnelSubSequenceStatus, funnelMetric, getBlockFields.",
       "path": "fluentcrm/fluentcrm-funnel-action",
       "skill_path": "fluentcrm/fluentcrm-funnel-action/SKILL.md",
       "url": "https://raw.githubusercontent.com/Lonsdale201/wp-agent-skills/main/fluentcrm/fluentcrm-funnel-action/SKILL.md",
@@ -1989,10 +2082,10 @@
         "author": "Soczó Kristóf",
         "contact": "mailto:lonsdale201@hotmail.com",
         "plugin": "fluent-crm",
-        "plugin-version-tested": "2.9.87",
+        "plugin-version-tested": "FluentCRM 3.1.8 + FluentCRM Pro 3.1.8",
         "api-stable-since": "2.7",
         "php-min": "7.4",
-        "last-updated": "2026-05-10",
+        "last-updated": "2026-07-09",
         "docs": [
           "https://developers.fluentcrm.com/funnel-builder/custom-action/"
         ],
@@ -2000,7 +2093,8 @@
           "app/Services/Funnel/BaseAction.php",
           "app/Services/Funnel/FunnelProcessor.php",
           "app/Services/Funnel/FunnelHelper.php",
-          "app/Models/FunnelMetric.php"
+          "app/Models/FunnelMetric.php",
+          "database/migrations/FunnelMetrics.php"
         ]
       },
       "resources": [],
@@ -2008,16 +2102,16 @@
       "has_examples": false,
       "has_scripts": false,
       "skill_md": {
-        "bytes": 23616,
-        "lines": 298,
-        "sha256": "d4eb281a0f39f009d6d7cea64f204f8467dee31385b419c4ef35143b08b377ba"
+        "bytes": 23659,
+        "lines": 299,
+        "sha256": "7bcc7cfa3888da6425e755ae98e072775bfcd499148bbb9b6b4fde791fb756a6"
       }
     },
     {
       "slug": "fluentcrm-funnel-benchmark",
       "name": "fluentcrm-funnel-benchmark",
       "domain": "fluentcrm",
-      "description": "Build a custom FluentCRM funnel benchmark — a goal/wait point inside a sequence that pauses execution until a matching event occurs (tag applied, list joined, course completed, custom event). Extends BaseBenchMark. Covers the three abstract methods (getBlock, getBlockFields, handle), Optional vs Essential semantics, the can_enter direct-entry toggle, the assertCurrentGoalState filter, and FunnelProcessor::startFunnelFromSequencePoint as the canonical resume entry — NOT startFunnelSequence (that starts a new run). Important — same lifecycle rule as triggers (register on fluentcrm_loaded priority below 10); benchmarks share the action listener with triggers via FunnelHandler::mapTriggers, so fluentcrm_funnel_arg_num_{name} timing applies. Use when a funnel needs to wait for a contact-state change. Triggers on BaseBenchMark, fluentcrm_funnel_benchmark_start_, assertCurrentGoalState, startFunnelFromSequencePoint, benchmarkTypeField, canEnterField.",
+      "description": "Build a custom FluentCRM funnel benchmark — a goal/wait point inside a sequence that pauses execution until a matching event occurs (tag applied, list joined, course completed, custom event). Extends BaseBenchMark. Covers the three abstract methods (getBlock, getBlockFields, handle), Optional vs Essential semantics, the can_enter direct-entry toggle, the assertCurrentGoalState filter, and FunnelProcessor::startFunnelFromSequencePoint as the canonical resume entry — NOT startFunnelSequence (that starts a new run). Important — same lifecycle rule as triggers (instantiate on fluentcrm_loaded priority below 10); benchmarks share the action listener with triggers via FunnelHandler::mapTriggers, so the init:2 fluentcrm_funnel_arg_num_{name} timing applies. Use when a funnel needs to wait for a contact-state change. Triggers on BaseBenchMark, fluentcrm_funnel_benchmark_start_, assertCurrentGoalState, startFunnelFromSequencePoint, benchmarkTypeField, canEnterField.",
       "path": "fluentcrm/fluentcrm-funnel-benchmark",
       "skill_path": "fluentcrm/fluentcrm-funnel-benchmark/SKILL.md",
       "url": "https://raw.githubusercontent.com/Lonsdale201/wp-agent-skills/main/fluentcrm/fluentcrm-funnel-benchmark/SKILL.md",
@@ -2028,10 +2122,10 @@
         "author": "Soczó Kristóf",
         "contact": "mailto:lonsdale201@hotmail.com",
         "plugin": "fluent-crm",
-        "plugin-version-tested": "2.9.87",
+        "plugin-version-tested": "FluentCRM 3.1.8 + FluentCRM Pro 3.1.8",
         "api-stable-since": "2.6",
         "php-min": "7.4",
-        "last-updated": "2026-05-09",
+        "last-updated": "2026-07-09",
         "docs": [
           "https://developers.fluentcrm.com/funnel-builder/custom-benchmark/"
         ],
@@ -2047,16 +2141,16 @@
       "has_examples": false,
       "has_scripts": false,
       "skill_md": {
-        "bytes": 20023,
-        "lines": 277,
-        "sha256": "8ad916112598740a080163ad835d104e13b1245fcce32f25b006de395cae473e"
+        "bytes": 19762,
+        "lines": 278,
+        "sha256": "fc344704dda89692e075e7fc402398068c50e2782577b69d3b2db1e802084914"
       }
     },
     {
       "slug": "fluentcrm-funnel-trigger",
       "name": "fluentcrm-funnel-trigger",
       "domain": "fluentcrm",
-      "description": "Build a custom FluentCRM funnel trigger by extending BaseTrigger. Covers the four abstract methods (getTrigger, getFunnelSettingsDefaults, getSettingsFields, handle), the auto-injected __force_run_actions field, the canonical isProcessable / run_multiple / ifAlreadyInFunnel guard, the fluentcrm_funnel_will_process_{name} filter parity, source_trigger_name / source_ref_id metadata for FunnelProcessor::startFunnelSequence. Important — register on fluentcrm_loaded priority below 10, NEVER on fluent_crm/after_init. FunnelHandler::handle runs on fluentcrm_addons_loaded and locks in actionArgNum=1 if fluentcrm_funnel_arg_num_{name} is absent — multi-arg hooks like lw_lms_after_grant silently drop args past the first. Use when scaffolding a CRM integration. Triggers on BaseTrigger, fluentcrm_funnel_triggers, fluentcrm_funnel_start_, fluentcrm_funnel_arg_num_, FunnelProcessor, FunnelHelper, fluentcrm_funnel_settings, source_trigger_name.",
+      "description": "Build a custom FluentCRM funnel trigger by extending BaseTrigger. Covers the four abstract methods (getTrigger, getFunnelSettingsDefaults, getSettingsFields, handle), the auto-injected __force_run_actions field, the canonical isProcessable / run_multiple / ifAlreadyInFunnel guard, the fluentcrm_funnel_will_process_{name} filter parity, source_trigger_name / source_ref_id metadata for FunnelProcessor::startFunnelSequence. Important — instantiate on fluentcrm_loaded priority below 10, NEVER on fluent_crm/after_init. FluentCRM 3.1.8 registers active trigger listeners on init:2 when the fluentcrm_funnel_arg_num_{name} filter is already present, then falls back on init:20; late registration can miss init:10 events or multi-arg hooks. Use when scaffolding a CRM integration. Triggers on BaseTrigger, fluentcrm_funnel_triggers, fluentcrm_funnel_start_, fluentcrm_funnel_arg_num_, FunnelProcessor, FunnelHelper, fluentcrm_funnel_settings, source_trigger_name.",
       "path": "fluentcrm/fluentcrm-funnel-trigger",
       "skill_path": "fluentcrm/fluentcrm-funnel-trigger/SKILL.md",
       "url": "https://raw.githubusercontent.com/Lonsdale201/wp-agent-skills/main/fluentcrm/fluentcrm-funnel-trigger/SKILL.md",
@@ -2067,10 +2161,10 @@
         "author": "Soczó Kristóf",
         "contact": "mailto:lonsdale201@hotmail.com",
         "plugin": "fluent-crm",
-        "plugin-version-tested": "2.9.87",
+        "plugin-version-tested": "FluentCRM 3.1.8 + FluentCRM Pro 3.1.8",
         "api-stable-since": "2.7",
         "php-min": "7.4",
-        "last-updated": "2026-05-10",
+        "last-updated": "2026-07-09",
         "docs": [
           "https://developers.fluentcrm.com/funnel-builder/custom-trigger/"
         ],
@@ -2088,16 +2182,16 @@
       "has_examples": false,
       "has_scripts": false,
       "skill_md": {
-        "bytes": 26440,
-        "lines": 403,
-        "sha256": "4a46dc3ce77eb5541ef62f2ae297812ee93f2625026a7af137410225ce2fd049"
+        "bytes": 26720,
+        "lines": 411,
+        "sha256": "13ee4e059a7e3ac144b2dd0916d1b040927ba2d677454661fdb8fdf0f5947aa5"
       }
     },
     {
       "slug": "fluentcrm-overview",
       "name": "fluentcrm-overview",
       "domain": "fluentcrm",
-      "description": "Orient skill for FluentCRM extension development. Covers the Free / Pro split (FluentCRM = funnel chassis; FluentCampaign Pro = integrations + advanced actions / benchmarks), plugin paths and constants, the bootstrap order (fluentcrm_loaded → fluentcrm_addons_loaded → fluent_crm/after_init), the model layer (Subscriber, Funnel, FunnelSequence, FunnelSubscriber, FunnelMetric), the global helpers (FluentCrmApi, fluentCrmDb, FunnelHelper), the contact lifecycle hooks (fluent_crm/contact_created, _updated, _email_changed, _custom_data_updated), the smart-code extension filter (fluent_crm/extended_smart_codes), and a decision matrix for picking the right extension contract. Use when scaffolding a new FluentCRM integration, choosing which contract to extend, or asking where things live. Triggers on FluentCrmApi, fluentCrmDb, FunnelHelper, fluent_crm/contact_, fluent_crm/extended_smart_codes, FLUENTCRM, FLUENTCAMPAIGN.",
+      "description": "Orient skill for FluentCRM extension development. Covers the Free / Pro split (FluentCRM = funnel chassis; FluentCampaign Pro = integrations + advanced actions / benchmarks), plugin paths and constants, the bootstrap order (fluentcrm_loaded → fluentcrm_addons_loaded → init funnel listener passes → fluent_crm/after_init), the model layer (Subscriber, Company, EventTracker, Funnel, FunnelSequence, FunnelSubscriber, FunnelMetric), the global helpers (FluentCrmApi, fluentCrmDb, FunnelHelper), the contact lifecycle hooks (fluent_crm/contact_created, _updated, _email_changed, _custom_data_updated), the smart-code extension filter (fluent_crm/extended_smart_codes), and a decision matrix for picking the right extension contract. Use when scaffolding a new FluentCRM integration, choosing which contract to extend, or asking where things live. Triggers on FluentCrmApi, fluentCrmDb, FunnelHelper, fluent_crm/contact_, fluent_crm/extended_smart_codes, FLUENTCRM, FLUENTCAMPAIGN.",
       "path": "fluentcrm/fluentcrm-overview",
       "skill_path": "fluentcrm/fluentcrm-overview/SKILL.md",
       "url": "https://raw.githubusercontent.com/Lonsdale201/wp-agent-skills/main/fluentcrm/fluentcrm-overview/SKILL.md",
@@ -2108,20 +2202,27 @@
         "author": "Soczó Kristóf",
         "contact": "mailto:lonsdale201@hotmail.com",
         "plugin": "fluent-crm",
-        "plugin-version-tested": "2.9.87",
+        "plugin-version-tested": "FluentCRM 3.1.8 + FluentCRM Pro 3.1.8",
         "api-stable-since": "2.7",
         "php-min": "7.4",
-        "last-updated": "2026-05-10",
+        "last-updated": "2026-07-09",
         "docs": [
           "https://developers.fluentcrm.com/"
         ],
         "source-refs": [
-          "fluent-crm.php",
-          "boot/app.php",
-          "app/Functions/helpers.php",
-          "app/Models/Subscriber.php",
-          "app/Services/Helper.php",
-          "app/Api/Classes/Extender.php"
+          "wp-content/plugins/fluent-crm/fluent-crm.php",
+          "wp-content/plugins/fluent-crm/boot/app.php",
+          "wp-content/plugins/fluent-crm/app/Hooks/actions.php",
+          "wp-content/plugins/fluent-crm/app/Hooks/Handlers/FunnelHandler.php",
+          "wp-content/plugins/fluent-crm/app/Functions/helpers.php",
+          "wp-content/plugins/fluent-crm/app/Models/Subscriber.php",
+          "wp-content/plugins/fluent-crm/app/Models/Company.php",
+          "wp-content/plugins/fluent-crm/app/Models/EventTracker.php",
+          "wp-content/plugins/fluent-crm/app/Services/Helper.php",
+          "wp-content/plugins/fluent-crm/app/Api/config.php",
+          "wp-content/plugins/fluent-crm/app/Api/Classes/Extender.php",
+          "wp-content/plugins/fluentcampaign-pro/fluentcampaign-pro.php",
+          "wp-content/plugins/fluentcampaign-pro/app/Hooks/Handlers/IntegrationHandler.php"
         ]
       },
       "resources": [],
@@ -2129,9 +2230,9 @@
       "has_examples": false,
       "has_scripts": false,
       "skill_md": {
-        "bytes": 22114,
-        "lines": 360,
-        "sha256": "a3788aee4e4bcc89a115ddf5eca01969e114b7c657a48c997a3a3d50082315d9"
+        "bytes": 25863,
+        "lines": 398,
+        "sha256": "9133a27b1ea7cd071f4684fa292785452b9102ab815d43345f892ba1a0f54757"
       }
     },
     {
@@ -2149,10 +2250,10 @@
         "author": "Soczó Kristóf",
         "contact": "mailto:lonsdale201@hotmail.com",
         "plugin": "fluent-crm",
-        "plugin-version-tested": "2.9.87",
+        "plugin-version-tested": "FluentCRM 3.1.8",
         "api-stable-since": "2.5.9",
         "php-min": "7.4",
-        "last-updated": "2026-05-09",
+        "last-updated": "2026-07-09",
         "docs": [
           "https://developers.fluentcrm.com/funnel-builder/custom-trigger/"
         ],
@@ -2166,9 +2267,9 @@
       "has_examples": false,
       "has_scripts": false,
       "skill_md": {
-        "bytes": 12549,
-        "lines": 203,
-        "sha256": "b1bc3e1763a82bfdd0920bb0f1b0f4d7850c4d3401af2b0f13914f8694a8d7fe"
+        "bytes": 12813,
+        "lines": 205,
+        "sha256": "037e34a97cb1037102bf531c2873eb43777b6c043f100f7e71cb4d63df5a3215"
       }
     },
     {
@@ -2186,10 +2287,10 @@
         "author": "Soczó Kristóf",
         "contact": "mailto:lonsdale201@hotmail.com",
         "plugin": "fluent-crm",
-        "plugin-version-tested": "FluentCRM 3.1.5 + FluentCRM Pro 3.1.0",
+        "plugin-version-tested": "FluentCRM 3.1.8 + FluentCRM Pro 3.1.8",
         "wp-version-tested": "7.0",
         "php-min": "7.4",
-        "last-updated": "2026-06-17",
+        "last-updated": "2026-07-09",
         "docs": [
           "https://developers.fluentcrm.com/modules/smart-code",
           "https://developers.fluentcrm.com/helpers/parser",
@@ -2214,9 +2315,9 @@
       "has_examples": false,
       "has_scripts": false,
       "skill_md": {
-        "bytes": 10524,
+        "bytes": 10395,
         "lines": 256,
-        "sha256": "2c88c6b5e6c8f433cd764e2d691aafa145e1475619aa3ac187790d2ab0f23ccf"
+        "sha256": "d94b92cea73fdf1423b85bb5c2ad21f817936c44e56b4c963351746596edaaca"
       }
     },
     {
@@ -7598,9 +7699,9 @@
         "author": "Soczó Kristóf",
         "contact": "mailto:lonsdale201@hotmail.com",
         "plugin": "wp-rocket",
-        "plugin-version-tested": "3.21.1",
-        "php-min": "7.3",
-        "last-updated": "2026-04-29",
+        "plugin-version-tested": "3.23",
+        "php-min": "7.4",
+        "last-updated": "2026-07-09",
         "docs": [
           "https://docs.wp-rocket.me/article/92-plugin-compatibility-with-wp-rocket",
           "https://docs.wp-rocket.me/article/2-getting-started"
@@ -7616,9 +7717,9 @@
       "has_examples": false,
       "has_scripts": false,
       "skill_md": {
-        "bytes": 20706,
-        "lines": 403,
-        "sha256": "b7d80364f300b27632f0ccbfc3c430d9f5b919ea8b0d2e96738bec0ae3003a57"
+        "bytes": 20983,
+        "lines": 404,
+        "sha256": "bc519f648297c4ae2bcc3397e0125d3a78da2ff10810b45821e8b38e34b9505f"
       }
     },
     {
@@ -7636,9 +7737,9 @@
         "author": "Soczó Kristóf",
         "contact": "mailto:lonsdale201@hotmail.com",
         "plugin": "wp-rocket",
-        "plugin-version-tested": "3.21.1",
-        "php-min": "7.3",
-        "last-updated": "2026-04-29",
+        "plugin-version-tested": "3.23",
+        "php-min": "7.4",
+        "last-updated": "2026-07-09",
         "docs": [
           "https://docs.wp-rocket.me/article/92-plugin-compatibility-with-wp-rocket",
           "https://docs.wp-rocket.me/article/2-getting-started"
@@ -7656,9 +7757,53 @@
       "has_examples": false,
       "has_scripts": false,
       "skill_md": {
-        "bytes": 22280,
-        "lines": 501,
-        "sha256": "6e766d5022c2691f791dc688a855d68191d78acab146ccf2a99e8386b6acf68b"
+        "bytes": 22896,
+        "lines": 502,
+        "sha256": "b938284155dd32a23adc63780e2f22668acba994f7e9b2152f0d21086f4dcd0a"
+      }
+    },
+    {
+      "slug": "wp-rocket-mcp-and-abilities",
+      "name": "wp-rocket-mcp-and-abilities",
+      "domain": "wp-rocket",
+      "description": "Expose, scope, or secure WP Rocket settings for AI / MCP clients — new in 3.23. Two layers — WP Abilities API abilities (wp-rocket/get-options readonly, wp-rocket/set-option destructive, category wp-rocket-options, cap rocket_manage_options) and a built-in MCP OAuth 2.1 server at /wp-json/mcp/mcp-oauth-server (/oauth/*, /.well-known) with trusted publisher Claude (claude.ai). Critical — abilities default ON (rocket_enable_abilities), the OAuth server defaults OFF (rocket_mcp_oauth_server_enabled), and both need the WP Abilities API + wordpress/mcp-adapter or nothing registers. Scope what AI may read / write via rocket_mcp_options_allowlist (an additive allowlist); add clients via rocket_mcp_trusted_publishers. Filters are typed (wpm_apply_filters_typed) — return exact bool / array. Use when exposing WP Rocket settings to an MCP client, scoping the allowlist, or reviewing AI-facing code. Triggers on rocket_mcp_, rocket_enable_abilities, wp-rocket/get-options, wp-rocket/set-option, \"/oauth/\" MCP server.",
+      "path": "wp-rocket/wp-rocket-mcp-and-abilities",
+      "skill_path": "wp-rocket/wp-rocket-mcp-and-abilities/SKILL.md",
+      "url": "https://raw.githubusercontent.com/Lonsdale201/wp-agent-skills/main/wp-rocket/wp-rocket-mcp-and-abilities/SKILL.md",
+      "raw_url": "https://raw.githubusercontent.com/Lonsdale201/wp-agent-skills/main/wp-rocket/wp-rocket-mcp-and-abilities/SKILL.md",
+      "html_url": "https://github.com/Lonsdale201/wp-agent-skills/blob/main/wp-rocket/wp-rocket-mcp-and-abilities/SKILL.md",
+      "directory_url": "https://github.com/Lonsdale201/wp-agent-skills/tree/main/wp-rocket/wp-rocket-mcp-and-abilities",
+      "metadata": {
+        "author": "Soczó Kristóf",
+        "contact": "mailto:lonsdale201@hotmail.com",
+        "plugin": "wp-rocket",
+        "plugin-version-tested": "3.23",
+        "php-min": "7.4",
+        "last-updated": "2026-07-09",
+        "docs": [
+          "https://docs.wp-rocket.me/article/92-plugin-compatibility-with-wp-rocket",
+          "https://docs.wp-rocket.me/article/2-getting-started"
+        ],
+        "source-refs": [
+          "wp-content/plugins/wp-rocket/inc/Engine/Abilities/Context.php",
+          "wp-content/plugins/wp-rocket/inc/Engine/Abilities/Options/AllowedOptions.php",
+          "wp-content/plugins/wp-rocket/inc/Engine/Abilities/Options/GetOptions.php",
+          "wp-content/plugins/wp-rocket/inc/Engine/Abilities/Options/SetOption.php",
+          "wp-content/plugins/wp-rocket/inc/Engine/MCP/Context.php",
+          "wp-content/plugins/wp-rocket/inc/Engine/MCP/Transport/Server.php",
+          "wp-content/plugins/wp-rocket/inc/Engine/MCP/Auth/ClaudeClientVerifier.php",
+          "wp-content/plugins/wp-rocket/inc/Engine/MCP/Auth/Rewrite.php",
+          "wp-content/plugins/wp-rocket/inc/Engine/MCP/Auth/Discovery/Endpoints.php"
+        ]
+      },
+      "resources": [],
+      "has_reference": false,
+      "has_examples": false,
+      "has_scripts": false,
+      "skill_md": {
+        "bytes": 20575,
+        "lines": 286,
+        "sha256": "fc8b449851544e371a711141685c7c77c1fbfa9ccd317fe776aeabaf48f9f0bf"
       }
     },
     {

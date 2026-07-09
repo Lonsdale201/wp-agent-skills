@@ -4,10 +4,10 @@ description: Add and parse FluentCRM 3.x SmartCodes and build Pro dynamic contac
 author: Soczó Kristóf
 contact: mailto:lonsdale201@hotmail.com
 plugin: fluent-crm
-plugin-version-tested: "FluentCRM 3.1.5 + FluentCRM Pro 3.1.0"
+plugin-version-tested: "FluentCRM 3.1.8 + FluentCRM Pro 3.1.8"
 wp-version-tested: "7.0"
 php-min: "7.4"
-last-updated: "2026-06-17"
+last-updated: "2026-07-09"
 docs:
   - https://developers.fluentcrm.com/modules/smart-code
   - https://developers.fluentcrm.com/helpers/parser
@@ -30,7 +30,7 @@ source-refs:
 
 Use this skill when a plugin needs to expose custom values inside FluentCRM emails, automation fields, templates, or Pro dynamic segments. Keep SmartCode parsing read-only and privacy-aware; these values can appear in outgoing emails.
 
-Verification note: SmartCode registration and parsing are core FluentCRM 3.1.5 behavior. Dynamic segments are Pro behavior verified against local FluentCampaign Pro 3.1.0; core 3.1.5 declares `FLUENTCRM_MIN_PRO_VERSION` as 3.1.5, so re-check dynamic-segment source after Pro is upgraded beyond 3.1.0.
+Verification note: SmartCode registration and parsing are core FluentCRM 3.1.8 behavior. Dynamic segments are Pro behavior verified against local FluentCampaign Pro 3.1.8.
 
 ## When to use this skill
 
@@ -112,7 +112,7 @@ Transformers use double pipe:
 {{contact.email||strtolower}}
 ```
 
-Supported local transformers in 3.1.5 include `trim`, `ucfirst`, `strtolower`, `strtoupper`, `ucwords`, `concat_first`, `concat_last`, and `show_if`.
+Supported local transformers in 3.1.8 include `trim`, `ucfirst`, `strtolower`, `strtoupper`, `ucwords`, `concat_first`, `concat_last`, and `show_if`.
 
 When rendering custom text yourself, use the same filter FluentCRM uses:
 
