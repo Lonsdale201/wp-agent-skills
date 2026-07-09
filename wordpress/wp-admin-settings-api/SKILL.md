@@ -6,21 +6,29 @@ description: Build plugin admin settings pages with the WordPress Settings
   `do_settings_sections()`, `add_settings_error()`, `settings_errors()`,
   `admin_init` registration, `<form method="post" action="options.php">`,
   `sanitize_callback`, `$option_group` vs `$page`, single-array option
-  storage, tabbed pages, `show_in_rest` schemas, custom option capabilities
-  via `option_page_capability_{$option_group}`, and the mistake of POSTing
-  to your own handler. Use for plugin settings screens, integration config,
-  feature toggles, or any options page that saves to `wp_options`.
+  storage, keyed field names, tabbed pages, `show_in_rest` schemas including
+  object/array schemas, custom option capabilities via
+  `option_page_capability_{$option_group}`, deprecated settings groups, and
+  the mistake of POSTing to your own handler. Use for plugin settings screens,
+  integration config, feature toggles, or any options page that saves to
+  `wp_options`.
 author: Soczó Kristóf
 contact: mailto:lonsdale201@hotmail.com
 plugin: wordpress
 plugin-version-tested: "6.0 - 7.0"
 php-min: "7.4"
-last-updated: "2026-05-24"
+last-updated: "2026-07-09"
 docs:
   - https://developer.wordpress.org/reference/functions/register_setting/
   - https://developer.wordpress.org/reference/functions/add_settings_section/
   - https://developer.wordpress.org/reference/functions/add_settings_field/
   - https://developer.wordpress.org/plugins/settings/settings-api/
+source-refs:
+  - wp-includes/option.php
+  - wp-admin/options.php
+  - wp-admin/includes/template.php
+  - wp-admin/includes/plugin.php
+  - wp-includes/rest-api/endpoints/class-wp-rest-settings-controller.php
 ---
 
 # WordPress Settings API
@@ -121,6 +129,8 @@ add_action( 'admin_init', static function (): void {
 
 Render callbacks echo normal form controls. The `name` attribute ties the input to the `$option_name` array: `myplugin_options[api_key]` lands in `$_POST['myplugin_options']['api_key']` and arrives at `sanitize_callback` as `$input['api_key']`. See `reference.md` for checkbox and text-field callbacks.
 
+Treat the option array as a schema, not a loose bucket: every subkey must have a default, one type, one meaning, and a sanitizer. Drop unknown keys unless forward compatibility is deliberate.
+
 ### 4. The single sanitize callback
 
 ```php
@@ -208,6 +218,8 @@ REST writes go through the same `sanitize_callback`. Important: REST permissions
 
 For object settings, pass a schema with `properties`; see `reference.md`.
 
+For array settings, core requires `show_in_rest.schema.items` when `show_in_rest` is not false. Without it, `register_setting()` triggers `_doing_it_wrong()`. For object settings, define `properties` and keep `additionalProperties` false unless arbitrary keys are intentional.
+
 ## Flash messages — `add_settings_error` + `settings_errors`
 
 `add_settings_error( $setting, $code, $message, $type )` — `$type` is `'error' | 'warning' | 'info' | 'success' | 'updated'`. Errors are queued during sanitize and flashed on the next render.
@@ -230,6 +242,8 @@ The bootstrap above uses ONE option (`myplugin_options`) holding an array. This 
 - **`settings_fields( $option_group )` MUST match a `register_setting()`'s first arg**. Mismatch = `options.php` (verified line 249) calls `wp_die()` with the message *"Error: The `<group>` options page is not in the allowed options list."* — the form post is dropped before any sanitize callback runs.
 - **`add_settings_section()` / `add_settings_field()` `$page` MUST match `do_settings_sections( $page )`**. Mismatch = nothing renders (no error — silent failure).
 - **Call `register_setting()` on `admin_init`, NOT in your menu-page render callback**. The menu page only renders when the user views it; `options.php` validates against the `$option_group` registry, which is built on `admin_init` for every admin request.
+- **Do not rely on unregistered option posts to `options.php`**. Core treats unregistered settings as deprecated. Register every option that the form saves.
+- **Do not use `misc` or `privacy` as settings groups/pages**. Core maps them to `general` / `reading` with deprecated-argument notices.
 - **`sanitize_callback` runs on every save, including REST writes**. Don't put side effects (sending emails, calling external APIs) directly in it — return the cleaned value. Side effects belong in a separate `update_option_myplugin_options` hook.
 - **`sanitize_callback` is called with the full submitted array for array options**. For tabs to coexist, start from the existing saved value and only overwrite keys present in `$input`.
 - **`current_user_can()` defaults to `manage_options` for `options.php`**. Override by using `add_menu_page()` with a custom cap AND filtering `option_page_capability_{$option_group}` to require the same.
@@ -242,6 +256,7 @@ See `reference.md` for before/after snippets: posting to your own handler, regis
 ## Cross-references
 
 - See **`wp-plugin-options-storage`** for choosing between options vs custom tables vs user meta — the storage layer beneath the Settings API.
+- See **`wp-settings-storage-audit`** when reviewing the whole settings persistence contract: array shape, defaults, autoload, REST schema, Customizer boundary, update hooks, and deprecations.
 - See **`wp-admin-form-controls`** for color picker / date picker / pointer / autocomplete widgets to drop into field render callbacks.
 - See **`wp-admin-codemirror`** when a settings field is a CSS/JSON/code textarea.
 - See **`wp-admin-media-frame`** when a settings field picks an image or file.

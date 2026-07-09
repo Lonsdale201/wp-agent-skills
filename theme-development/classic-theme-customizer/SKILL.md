@@ -1,12 +1,12 @@
 ---
 name: classic-theme-customizer
-description: Add or audit WordPress Customizer options for classic PHP themes on WP 7.0. Covers `customize_register`, `WP_Customize_Manager`, settings, sections, controls, `theme_mod` vs `option`, `sanitize_callback`, `validate_callback`, `WP_Customize_Color_Control`, allowlisted select values, `postMessage`, `customize_preview_init`, selective refresh partials, escaping `get_theme_mod()` output in templates, and common bugs such as raw Customizer values, missing sanitization, or `postMessage` without preview JavaScript.
+description: Add or audit WordPress Customizer options for classic PHP themes on WP 7.0. Covers `customize_register`, `WP_Customize_Manager`, settings, sections, controls, `theme_mod` vs `option`, option-backed Customizer autoload, multidimensional setting IDs, `sanitize_callback`, `validate_callback`, `WP_Customize_Color_Control`, allowlisted select values, `postMessage`, `customize_preview_init`, selective refresh partials, escaping `get_theme_mod()` output in templates, and common bugs such as raw Customizer values, missing sanitization, or `postMessage` without preview JavaScript.
 author: Soczó Kristóf
 contact: mailto:lonsdale201@hotmail.com
 plugin: wordpress
 plugin-version-tested: "7.0"
 php-min: "7.4"
-last-updated: "2026-06-04"
+last-updated: "2026-07-09"
 docs:
   - https://developer.wordpress.org/themes/customize-api/
   - https://developer.wordpress.org/themes/customize-api/customizer-objects/
@@ -15,7 +15,8 @@ source-refs:
   - wp-includes/class-wp-customize-manager.php
   - wp-includes/class-wp-customize-setting.php
   - wp-includes/class-wp-customize-control.php
-  - wp-includes/class-wp-customize-selective-refresh.php
+  - wp-includes/customize/class-wp-customize-selective-refresh.php
+  - wp-includes/theme.php
   - wp-content/themes/storefront/inc/customizer/
   - wp-content/themes/generatepress/inc/customizer.php
 ---
@@ -80,6 +81,7 @@ Rules:
 
 - Prefer `type => 'theme_mod'` for theme design settings.
 - Use `type => 'option'` only when the value is intentionally shared beyond the active theme.
+- When using `type => 'option'`, set `autoload => false` for values that are not needed on most requests; core's multidimensional option save defaults to autoloading unless an autoload arg is supplied.
 - The default capability is `edit_theme_options`; set it explicitly when clarity helps.
 - Use `transport => 'refresh'` unless live preview is actually implemented.
 - Add `validate_callback` when a value can be syntactically valid but semantically unacceptable.
@@ -172,6 +174,7 @@ Rules:
 - Escape by output context: `esc_html()`, `esc_attr()`, `esc_url()`, or controlled KSES.
 - Do not echo raw Customizer values into HTML, attributes, CSS, or JavaScript.
 - For CSS variables or inline CSS, validate allowed formats tightly before output.
+- Multidimensional setting IDs such as `mytheme_options[color]` are one root value plus subkeys. Keep the root option array small and typed; do not use it as a dumping ground for unrelated data.
 
 ## Live Preview with postMessage
 
@@ -271,6 +274,7 @@ Bad Customizer settings:
 - Controls JS/CSS uses `customize_controls_enqueue_scripts`.
 - Selective refresh partials use stable selectors and safe render callbacks.
 - Theme does not store plugin-like data in Customizer settings.
+- Option-backed settings have an intentional autoload value.
 
 ## Common Mistakes
 
@@ -280,3 +284,8 @@ Bad Customizer settings:
 - Registering Customizer objects on `init`.
 - Using `option` storage for values that should be theme-specific.
 - Letting a Customizer control write arbitrary CSS without validation.
+
+## Cross-References
+
+- Use `wp-settings-storage-audit` to review the broader persistence contract: theme_mod vs option, array shape, defaults, autoload, REST exposure, and migration.
+- Use `wp-plugin-options-storage` when the value is plugin-owned or should survive theme switching.

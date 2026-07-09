@@ -1,0 +1,4 @@
+interface:
+  display_name: "WP Settings Storage Audit"
+  short_description: "Audit WP options and Customizer storage"
+  default_prompt: "Use $wp-settings-storage-audit to review how this plugin or theme stores, sanitizes, autoloads, and exposes settings."
