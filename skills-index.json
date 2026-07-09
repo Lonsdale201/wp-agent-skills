@@ -3437,7 +3437,7 @@
       "slug": "wp-plugin-architecture",
       "name": "wp-plugin-architecture",
       "domain": "plugin-scaffold",
-      "description": "Designs and reviews the internal architecture of a WordPress plugin — folder layout, PSR-4 one-class-per-file discipline, Schema/Constants placement, composition-root vs singleton decisions, conditional asset enqueueing, script config via wp_add_inline_script, and prefixed custom-hook naming. Use when scaffolding includes/src, reviewing class organization, asset enqueue code, repeated strings, or \"should I make this a singleton\" decisions.",
+      "description": "Designs and reviews the internal architecture of a WordPress plugin — `src/` folder layout, Composer PSR-4 one-class-per-file discipline, PascalCase filenames matching class names, no `class-*.php` legacy layout, Schema/Constants placement, composition-root vs singleton decisions, conditional asset enqueueing, script config via wp_add_inline_script, and prefixed custom-hook naming. Use when scaffolding `src/`, reviewing class organization, migrating from `includes/class-*.php`, checking composer.json namespace mappings, asset enqueue code, repeated strings, or \"should I make this a singleton\" decisions.",
       "path": "plugin-scaffold/wp-plugin-architecture",
       "skill_path": "plugin-scaffold/wp-plugin-architecture/SKILL.md",
       "url": "https://raw.githubusercontent.com/Lonsdale201/wp-agent-skills/main/plugin-scaffold/wp-plugin-architecture/SKILL.md",
@@ -3448,9 +3448,9 @@
         "author": "Soczó Kristóf",
         "contact": "mailto:lonsdale201@hotmail.com",
         "plugin": "wordpress",
-        "plugin-version-tested": "6.3 - 6.9",
+        "plugin-version-tested": "6.3 - 7.0",
         "php-min": "7.4",
-        "last-updated": "2026-04-28",
+        "last-updated": "2026-07-09",
         "docs": [
           "https://developer.wordpress.org/reference/functions/wp_enqueue_script/",
           "https://developer.wordpress.org/reference/functions/wp_add_inline_script/",
@@ -3462,9 +3462,9 @@
       "has_examples": false,
       "has_scripts": false,
       "skill_md": {
-        "bytes": 15864,
-        "lines": 331,
-        "sha256": "924ff4ecdd833ba014a4676e2bbfc2ee516cfe2033fb54b59ef42b32423ab240"
+        "bytes": 16929,
+        "lines": 361,
+        "sha256": "24268cd2dde8f1a5a9a40c289d3c114fddc5add82b1b67892fd52e21be0e4fb9"
       }
     },
     {
@@ -3505,7 +3505,7 @@
       "slug": "wp-plugin-bootstrap",
       "name": "wp-plugin-bootstrap",
       "domain": "plugin-scaffold",
-      "description": "Scaffolds and reviews the main entry-point PHP file of a WordPress plugin — header (with Requires Plugins for WP 6.5+), ABSPATH guard, file/path/url/version constants, Composer + PSR-4 with manual spl_autoload_register fallback, register_activation_hook requirements check, Plugin class instantiation on plugins_loaded, and the WP 6.7+ rule that translation functions must not trigger before after_setup_theme. Use when scaffolding a new plugin or reviewing its main file. Triggers on Plugin Name headers, register_activation_hook, Requires Plugins, spl_autoload_register, plugins_loaded, or composer.json at the plugin root.",
+      "description": "Scaffolds and reviews the main entry-point PHP file of a WordPress plugin — header (with Requires Plugins for WP 6.5+), ABSPATH guard, file/path/url/version constants, Composer PSR-4 autoload with `src/` as the default class root, optional scoped fallback for release ZIP safety, PascalCase class filenames that match class names, no `class-*.php` legacy layout, register_activation_hook requirements check, Plugin class bootstrapping on plugins_loaded, and the WP 6.7+ rule that translation functions must not trigger before after_setup_theme. Use when scaffolding a new plugin or reviewing its main file. Triggers on Plugin Name headers, register_activation_hook, Requires Plugins, spl_autoload_register, plugins_loaded, composer.json at the plugin root, `src/Plugin.php`, or legacy `includes/class-*.php` files.",
       "path": "plugin-scaffold/wp-plugin-bootstrap",
       "skill_path": "plugin-scaffold/wp-plugin-bootstrap/SKILL.md",
       "url": "https://raw.githubusercontent.com/Lonsdale201/wp-agent-skills/main/plugin-scaffold/wp-plugin-bootstrap/SKILL.md",
@@ -3516,9 +3516,9 @@
         "author": "Soczó Kristóf",
         "contact": "mailto:lonsdale201@hotmail.com",
         "plugin": "wordpress",
-        "plugin-version-tested": "6.5 - 6.9",
+        "plugin-version-tested": "6.5 - 7.0",
         "php-min": "7.4",
-        "last-updated": "2026-04-28",
+        "last-updated": "2026-07-09",
         "docs": [
           "https://developer.wordpress.org/plugins/plugin-basics/header-requirements/",
           "https://developer.wordpress.org/plugins/plugin-basics/best-practices/",
@@ -3531,9 +3531,9 @@
       "has_examples": false,
       "has_scripts": false,
       "skill_md": {
-        "bytes": 18659,
-        "lines": 337,
-        "sha256": "72a994c298b01eb6478f2b4543968c7e3f5d66b677b283ac3c8b5c91fe2a7a67"
+        "bytes": 20105,
+        "lines": 366,
+        "sha256": "b56361381aeaf539bdc13bd1ab336f626ed211a14eab553d81767b1b7577baa7"
       }
     },
     {

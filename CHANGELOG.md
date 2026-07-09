@@ -4,6 +4,15 @@ This collection is continuously evolving — entries are date-based, not version
 
 ## 2026-07-09
 
+### Updated — plugin-scaffold skills default to `src/` + Composer PSR-4 (WP 7.0)
+
+Both plugin-structure skills were modernized to make **`src/` + Composer PSR-4 with PascalCase filenames** the default scaffold, and to treat legacy `includes/class-*.php` (WPCS-era procedural) as a migration target rather than a starting point. The two skills stay consistent with each other and cross-reference one another.
+
+- **`plugin-scaffold/wp-plugin-bootstrap`** — `plugin-version-tested` `6.5 - 6.9` → `6.5 - 7.0`; autoloader example and `composer.json` now map `MyPlugin\` to `src/` (was `includes/`); the manual `spl_autoload_register` fallback reframed as an *optional scoped* release-ZIP safety net (not a second filename convention); added a baseline `src/` tree, a `composer dump-autoload -o` release step, a legacy-migration trigger, and WRONG/RIGHT examples contrasting `class-*.php` with PSR-4. Fixed a malformed inline-code span in the header-fields section (`` `get_plugin_data()` (`wp-admin/includes/plugin.php`) ``).
+- **`plugin-scaffold/wp-plugin-architecture`** — `plugin-version-tested` `6.3 - 6.9` → `6.3 - 7.0`; folder-layout examples and rules moved from `includes/` to `src/`; added the Composer `psr-4` mapping snippet, an `includes/class-*.php` → `src/Domain/ClassName.php` migration rule, and matching WRONG/RIGHT examples.
+
+Both `plugin-scaffold/README.md` rows updated to describe the `src/` default; `skills-index.json` regenerated (counts unchanged — existing-skill content updates only).
+
 ### New skill — `wordpress/wp-settings-storage-audit` (WP 7.0)
 
 An audit / verdict skill for the settings-persistence contract, sitting above the three "how-to" settings skills (`wp-admin-settings-api`, `wp-plugin-options-storage`, `classic-theme-customizer`) the way `wp-i18n-audit` sits above the i18n implementation skills. The core question it answers: can another developer predict where each setting is stored, what shape it has, when it loads, how it is sanitized, and what reacts after it changes?
