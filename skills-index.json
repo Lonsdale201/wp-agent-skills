@@ -12,7 +12,7 @@
     "skill_file": "SKILL.md"
   },
   "domain_count": 19,
-  "skill_count": 181,
+  "skill_count": 182,
   "domains": [
     {
       "slug": "better-data",
@@ -36,7 +36,7 @@
       "slug": "elementor",
       "path": "elementor",
       "readme_path": "elementor/README.md",
-      "skill_count": 4
+      "skill_count": 5
     },
     {
       "slug": "fluentcrm",
@@ -1718,9 +1718,9 @@
         "author": "Soczó Kristóf",
         "contact": "mailto:lonsdale201@hotmail.com",
         "plugin": "elementor",
-        "plugin-version-tested": "4.0.7 (free) / 4.0.4 (pro)",
+        "plugin-version-tested": "4.1.4 (free) / 4.1.2 (pro)",
         "php-min": "7.4",
-        "last-updated": "2026-06-17",
+        "last-updated": "2026-07-09",
         "docs": [
           "https://developers.elementor.com/docs/deprecations/"
         ],
@@ -1736,8 +1736,8 @@
           "path": "reference.md",
           "repo_path": "elementor/elementor-deprecations/reference.md",
           "type": "reference",
-          "bytes": 5312,
-          "sha256": "d390cff1d60b3c8d73a940dca00a0e27187b298ae13fa707ac078d4044ffc0b5"
+          "bytes": 6282,
+          "sha256": "375deb00a941d105e5c58e8b09afb1777ea1391b122b89cae0de7f2b9d12f252"
         }
       ],
       "has_reference": true,
@@ -1746,7 +1746,7 @@
       "skill_md": {
         "bytes": 12032,
         "lines": 201,
-        "sha256": "b1007ad73466ec204e36f3a6bc5372c273ffedb1eda374273884cf43e31bddf1"
+        "sha256": "ccb905a51c143ceef370a29a71912e71cd8240e373a45e2509702feae3949c86"
       }
     },
     {
@@ -1875,6 +1875,48 @@
         "bytes": 13887,
         "lines": 231,
         "sha256": "089c9703a9f505b224beb16ad0ce790ebafeb4463049e6e84bd47bd7eae4037f"
+      }
+    },
+    {
+      "slug": "elementor-experiments-and-markup",
+      "name": "elementor-experiments-and-markup",
+      "domain": "elementor",
+      "description": "Design Elementor addons / widgets / dynamic tags to survive Elementor's two markup-changing STABLE \"Performance\" experiments — both default-ON on new installs, so never assume they are off; detect at runtime with Plugin::$instance->experiments->is_feature_active('name'). Optimized Markup (e_optimized_markup) drops the .elementor-widget-container inner wrapper — the contract is Element_Base::has_widget_inner_wrapper() (default true); your widget keeps its wrapper unless you override it, but CSS / JS targeting CORE widgets' wrapper breaks when it is on. Inline Font Icons (e_font_icon_svg) renders icons as inline SVG and does NOT load Font Awesome CSS — always render icons via Icons_Manager::render_icon(), never hardcode an i-tag; it looks fine in the editor but breaks on the frontend. Use when building / reviewing a widget or addon that renders icons or reads the DOM. Triggers on is_feature_active, e_optimized_markup, e_font_icon_svg, has_widget_inner_wrapper, Icons_Manager render_icon, Optimized Markup.",
+      "path": "elementor/elementor-experiments-and-markup",
+      "skill_path": "elementor/elementor-experiments-and-markup/SKILL.md",
+      "url": "https://raw.githubusercontent.com/Lonsdale201/wp-agent-skills/main/elementor/elementor-experiments-and-markup/SKILL.md",
+      "raw_url": "https://raw.githubusercontent.com/Lonsdale201/wp-agent-skills/main/elementor/elementor-experiments-and-markup/SKILL.md",
+      "html_url": "https://github.com/Lonsdale201/wp-agent-skills/blob/main/elementor/elementor-experiments-and-markup/SKILL.md",
+      "directory_url": "https://github.com/Lonsdale201/wp-agent-skills/tree/main/elementor/elementor-experiments-and-markup",
+      "metadata": {
+        "author": "Soczó Kristóf",
+        "contact": "mailto:lonsdale201@hotmail.com",
+        "plugin": "elementor",
+        "plugin-version-tested": "4.1.4 (free) / 4.1.2 (pro)",
+        "php-min": "7.4",
+        "last-updated": "2026-07-09",
+        "docs": [
+          "https://developers.elementor.com/docs/",
+          "https://go.elementor.com/wp-dash-inline-font-awesome/",
+          "https://go.elementor.com/wp-dash-flex-container/"
+        ],
+        "source-refs": [
+          "wp-content/plugins/elementor/core/experiments/manager.php",
+          "wp-content/plugins/elementor/includes/base/element-base.php",
+          "wp-content/plugins/elementor/includes/base/widget-base.php",
+          "wp-content/plugins/elementor/includes/managers/icons.php",
+          "wp-content/plugins/elementor/includes/widgets/button.php",
+          "wp-content/plugins/elementor-pro/modules/forms/widgets/form.php"
+        ]
+      },
+      "resources": [],
+      "has_reference": false,
+      "has_examples": false,
+      "has_scripts": false,
+      "skill_md": {
+        "bytes": 14229,
+        "lines": 190,
+        "sha256": "bf14acc3323a3414f7c96def3ac0ed2db68d209023674119a6a4cb84f7b9c4fd"
       }
     },
     {
@@ -4404,7 +4446,7 @@
       "slug": "szamlazzhu-document-xml-compatibility",
       "name": "szamlazzhu-document-xml-compatibility",
       "domain": "szamlazzhu",
-      "description": "Integrate another WooCommerce plugin with Integration for Szamlazz.hu & WooCommerce document generation. Covers `WC_Szamlazz()->generate_invoice()`, `wc_szamlazz_xml`, `wc_szamlazz_invoice_line_item`, `wc_szamlazz_before_generate_invoice_check`, document meta, Action Scheduler deferral, Pro webhooks/IPN, PDF links, HUF rounding, VAT labels, multilingual line text, and HPOS-safe order access. Use when a plugin must add invoice notes/lines/accounting data, block or trigger invoices, react after document creation, expose Szamlazz.hu documents, or avoid breaking invoices from custom products, fees, discounts, subscriptions, bundles, shipping, order numbers, or payment workflows.",
+      "description": "Integrate another WooCommerce plugin with Integration for Szamlazz.hu & WooCommerce document generation. Covers `WC_Szamlazz()->generate_invoice()`, `wc_szamlazz_xml`, `wc_szamlazz_invoice_line_item`, `wc_szamlazz_before_generate_invoice_check`, document meta, Action Scheduler deferral, Pro webhooks/IPN including HPOS-safe custom order-number mapping, PDF links, HUF rounding, VAT labels, multilingual line text, and HPOS-safe order access. Use when a plugin must add invoice notes/lines/accounting data, block or trigger invoices, react after document creation, expose Szamlazz.hu documents, or avoid breaking invoices from custom products, fees, discounts, subscriptions, bundles, shipping, order numbers, or payment workflows.",
       "path": "szamlazzhu/szamlazzhu-document-xml-compatibility",
       "skill_path": "szamlazzhu/szamlazzhu-document-xml-compatibility/SKILL.md",
       "url": "https://raw.githubusercontent.com/Lonsdale201/wp-agent-skills/main/szamlazzhu/szamlazzhu-document-xml-compatibility/SKILL.md",
@@ -4415,10 +4457,10 @@
         "author": "Soczó Kristóf",
         "contact": "mailto:lonsdale201@hotmail.com",
         "plugin": "integration-for-szamlazzhu-woocommerce",
-        "plugin-version-tested": "6.2.2 on WooCommerce 10.8.1",
+        "plugin-version-tested": "6.2.2 on WooCommerce 10.9.4",
         "wp-version-tested": "7.0",
         "php-min": "7.4",
-        "last-updated": "2026-06-17",
+        "last-updated": "2026-07-09",
         "docs": [
           "https://wordpress.org/plugins/integration-for-szamlazzhu-woocommerce/",
           "https://docs.szamlazz.hu/hu/agent/generating_invoice/xml",
@@ -4433,6 +4475,7 @@
           "wp-content/plugins/integration-for-szamlazzhu-woocommerce/includes/class-ipn.php",
           "wp-content/plugins/integration-for-szamlazzhu-woocommerce/includes/class-webhooks.php",
           "wp-content/plugins/integration-for-szamlazzhu-woocommerce/includes/compatibility/class-compatibility.php",
+          "wp-content/plugins/integration-for-szamlazzhu-woocommerce/includes/compatibility/modules/class-wc-szamlazz-custom-order-numbers.php",
           "wp-content/plugins/integration-for-szamlazzhu-woocommerce/includes/compatibility/modules/class-wc-szamlazz-translatepress.php"
         ],
         "license": "GPLv3"
@@ -4442,16 +4485,16 @@
       "has_examples": false,
       "has_scripts": false,
       "skill_md": {
-        "bytes": 15276,
-        "lines": 301,
-        "sha256": "16b1b69688d77f5f681d6367239721a407e05993e7e6a59cfa7e18d29214098c"
+        "bytes": 17218,
+        "lines": 315,
+        "sha256": "c300238c9039891f2d8670e1e9e176314b1990615fbbf64d2858fc163c3292af"
       }
     },
     {
       "slug": "szamlazzhu-vat-checkout-compatibility",
       "name": "szamlazzhu-vat-checkout-compatibility",
       "domain": "szamlazzhu",
-      "description": "Make WooCommerce checkout, B2B, VAT/tax-number, address, and headless checkout code compatible with Integration for Szamlazz.hu & WooCommerce. Covers the classic checkout field `wc_szamlazz_adoszam`, order meta `_billing_wc_szamlazz_adoszam` and `_wc_szamlazz_adoszam_data`, user meta `wc_szamlazz_adoszam`, Checkout Block/Store API extension namespace `wc-szamlazz-vat-number`, NAV/VIES validation filters, EU VAT exemption, company billing rules, admin/customer address display, and how another plugin should map its own VAT fields into Szamlazz.hu invoice XML without creating duplicate checkout state.",
+      "description": "Make WooCommerce checkout, B2B, VAT/tax-number, address, and headless checkout code compatible with Integration for Szamlazz.hu & WooCommerce. Covers the classic checkout field `wc_szamlazz_adoszam`, order meta `_billing_wc_szamlazz_adoszam` and `_wc_szamlazz_adoszam_data`, user meta `wc_szamlazz_adoszam`, Checkout Block/Store API extension namespace `wc-szamlazz-vat-number`, the cart `vat_number` vs checkout `billing_vat_number` payload split, NAV/VIES validation filters, EU VAT exemption, company billing rules, admin/customer address display, and how another plugin should map its own VAT fields into Szamlazz.hu invoice XML without creating duplicate checkout state.",
       "path": "szamlazzhu/szamlazzhu-vat-checkout-compatibility",
       "skill_path": "szamlazzhu/szamlazzhu-vat-checkout-compatibility/SKILL.md",
       "url": "https://raw.githubusercontent.com/Lonsdale201/wp-agent-skills/main/szamlazzhu/szamlazzhu-vat-checkout-compatibility/SKILL.md",
@@ -4462,10 +4505,10 @@
         "author": "Soczó Kristóf",
         "contact": "mailto:lonsdale201@hotmail.com",
         "plugin": "integration-for-szamlazzhu-woocommerce",
-        "plugin-version-tested": "6.2.2 on WooCommerce 10.8.1",
+        "plugin-version-tested": "6.2.2 on WooCommerce 10.9.4",
         "wp-version-tested": "7.0",
         "php-min": "7.4",
-        "last-updated": "2026-06-17",
+        "last-updated": "2026-07-09",
         "docs": [
           "https://wordpress.org/plugins/integration-for-szamlazzhu-woocommerce/",
           "https://docs.szamlazz.hu/hu/agent/querying_taxpayer/xml",
@@ -4486,9 +4529,9 @@
       "has_examples": false,
       "has_scripts": false,
       "skill_md": {
-        "bytes": 14165,
-        "lines": 301,
-        "sha256": "6695910ad2291f6205db8d64ce343102f94720cf0d7734df3c936193b99eca33"
+        "bytes": 16945,
+        "lines": 325,
+        "sha256": "0c09cf90bde99c0bed15d83d4e37a4de7e90578f9fb1c21e7c6c9ae8443d156d"
       }
     },
     {
