@@ -12,7 +12,7 @@
     "skill_file": "SKILL.md"
   },
   "domain_count": 19,
-  "skill_count": 173,
+  "skill_count": 177,
   "domains": [
     {
       "slug": "better-data",
@@ -66,7 +66,7 @@
       "slug": "lw-plugins",
       "path": "lw-plugins",
       "readme_path": "lw-plugins/README.md",
-      "skill_count": 8
+      "skill_count": 11
     },
     {
       "slug": "plugin-scaffold",
@@ -78,7 +78,7 @@
       "slug": "polylang",
       "path": "polylang",
       "readme_path": "polylang/README.md",
-      "skill_count": 6
+      "skill_count": 7
     },
     {
       "slug": "redis-object-cache",
@@ -2816,7 +2816,7 @@
       "slug": "lw-elallas-integration",
       "name": "lw-elallas-integration",
       "domain": "lw-plugins",
-      "description": "Integrate with or extend \"Elállás for WooCommerce\" (elallas-for-woo) — the EU/HU right-of-withdrawal (elállás) case-management plugin for WooCommerce. An LW-family plugin (namespace LightweightPlugins\\Elallas, wp_lw_elallas_* tables) — integrate by CONSUMING its hooks, never editing it. Covers the eligibility/deadline /B2B filters (elallas_is_order_eligible, elallas_deadline_days, elallas_is_order_b2b, elallas_delivery_date), the case lifecycle actions (elallas_case_created, elallas_case_confirmed, elallas_case_status_changed, elallas_invoicing_case_created), the elallas_pdf_html and elallas_boot hooks, the CaseStatus lifecycle (received → auto_confirmed/manual_review → admin states), the 4 custom tables + order meta, and the LW Site Manager abilities it exposes (elallas/get-case, list-cases, update-case-status). Detect with defined('ELALLAS_FOR_WOO_VERSION'). Use when building withdrawal-case compatibility, syncing cases to a CRM or invoicing, or customizing its PDF.",
+      "description": "Integrate with or extend \"Elállás for WooCommerce\" (elallas-for-woo), the LW-family EU/HU withdrawal case-management plugin for WooCommerce. Covers its elallas_* hooks, eligibility/deadline/B2B /delivery/order-number filters (including elallas_resolve_order_number), the 4-arg elallas_case_status_changed lifecycle action, PDF/email hooks, multilingual WPML/Polylang output, custom tables/order meta, WooCommerce logging, and LW Site Manager abilities. Use when building withdrawal-case compatibility, syncing cases to CRM/invoicing, supporting custom order numbers, or customizing its PDF/emails without editing the plugin.",
       "path": "lw-plugins/lw-elallas-integration",
       "skill_path": "lw-plugins/lw-elallas-integration/SKILL.md",
       "url": "https://raw.githubusercontent.com/Lonsdale201/wp-agent-skills/main/lw-plugins/lw-elallas-integration/SKILL.md",
@@ -2827,18 +2827,35 @@
         "author": "Soczó Kristóf",
         "contact": "mailto:lonsdale201@hotmail.com",
         "plugin": "elallas-for-woo",
-        "plugin-version-tested": "1.0.11",
+        "plugin-version-tested": "1.0.12",
         "php-min": "8.0",
-        "last-updated": "2026-07-03",
+        "last-updated": "2026-07-09",
         "docs": [
           "https://developer.woocommerce.com/docs/features/high-performance-order-storage/"
         ],
         "source-refs": [
+          "wp-content/plugins/elallas-for-woo/elallas-for-woo.php",
           "wp-content/plugins/elallas-for-woo/includes/Domain/EligibilityChecker.php",
           "wp-content/plugins/elallas-for-woo/includes/Domain/CaseService.php",
           "wp-content/plugins/elallas-for-woo/includes/Domain/B2BDetector.php",
+          "wp-content/plugins/elallas-for-woo/includes/Domain/ProductExclusion.php",
+          "wp-content/plugins/elallas-for-woo/includes/Domain/OrderSnapshotBuilder.php",
+          "wp-content/plugins/elallas-for-woo/includes/Woo/OrderAdapter.php",
+          "wp-content/plugins/elallas-for-woo/includes/Woo/Hooks.php",
+          "wp-content/plugins/elallas-for-woo/includes/Admin/ProductFields.php",
+          "wp-content/plugins/elallas-for-woo/includes/Admin/TermFields.php",
+          "wp-content/plugins/elallas-for-woo/includes/Frontend/Shortcodes.php",
+          "wp-content/plugins/elallas-for-woo/includes/Frontend/SubmissionContext.php",
+          "wp-content/plugins/elallas-for-woo/includes/Integrations/Multilingual.php",
+          "wp-content/plugins/elallas-for-woo/includes/Integrations/Invoicing.php",
+          "wp-content/plugins/elallas-for-woo/includes/Pdf/PdfRenderer.php",
+          "wp-content/plugins/elallas-for-woo/includes/Emails/EmailManager.php",
+          "wp-content/plugins/elallas-for-woo/includes/Support/Logger.php",
+          "wp-content/plugins/elallas-for-woo/includes/Plugin.php",
+          "wp-content/plugins/elallas-for-woo/includes/Database/Schema.php",
           "wp-content/plugins/elallas-for-woo/includes/Models/CaseStatus.php",
-          "wp-content/plugins/elallas-for-woo/includes/SiteManager/Integration.php"
+          "wp-content/plugins/elallas-for-woo/includes/SiteManager/Integration.php",
+          "wp-content/plugins/elallas-for-woo/wpml-config.xml"
         ]
       },
       "resources": [
@@ -2846,17 +2863,177 @@
           "path": "reference.md",
           "repo_path": "lw-plugins/lw-elallas-integration/reference.md",
           "type": "reference",
-          "bytes": 6908,
-          "sha256": "c3e05e9a2448d84390aa06884c4bf0ad47b3579ca6636139e6144e7fb93df9d1"
+          "bytes": 10987,
+          "sha256": "d688803ab1d823ac6fee32f231a6a57d25954860ccf34ab3da85666588e1e10c"
         }
       ],
       "has_reference": true,
       "has_examples": false,
       "has_scripts": false,
       "skill_md": {
-        "bytes": 12685,
-        "lines": 186,
-        "sha256": "4fd57d4432d71bc6cc1d0f70bcd787a328701ba7c568fd3c245fd9398ec7a67c"
+        "bytes": 19794,
+        "lines": 248,
+        "sha256": "d908d9af84b3be9622d938ede4381647734f1f7106f1c9bcbb2417889a019b39"
+      }
+    },
+    {
+      "slug": "lw-firewall-management-abilities",
+      "name": "lw-firewall-management-abilities",
+      "domain": "lw-plugins",
+      "description": "Automate or audit LW Firewall management through WP-CLI, Site Manager abilities, config import/export, options, logs, worker status, IP blacklist changes, and wp-config overrides. Use when code or operational runbooks mention `wp lw-firewall`, `lw-firewall/get-options`, `lw-firewall/get-log`, `lw-firewall/block-ip`, `lw-firewall/unblock-ip`, `Options::save`, `LW_FIREWALL_*` constants, `log_enabled`, worker install/reinstall, config-items, or firewall settings migration.",
+      "path": "lw-plugins/lw-firewall-management-abilities",
+      "skill_path": "lw-plugins/lw-firewall-management-abilities/SKILL.md",
+      "url": "https://raw.githubusercontent.com/Lonsdale201/wp-agent-skills/main/lw-plugins/lw-firewall-management-abilities/SKILL.md",
+      "raw_url": "https://raw.githubusercontent.com/Lonsdale201/wp-agent-skills/main/lw-plugins/lw-firewall-management-abilities/SKILL.md",
+      "html_url": "https://github.com/Lonsdale201/wp-agent-skills/blob/main/lw-plugins/lw-firewall-management-abilities/SKILL.md",
+      "directory_url": "https://github.com/Lonsdale201/wp-agent-skills/tree/main/lw-plugins/lw-firewall-management-abilities",
+      "metadata": {
+        "author": "Soczó Kristóf",
+        "contact": "mailto:lonsdale201@hotmail.com",
+        "plugin": "lw-firewall",
+        "plugin-version-tested": "1.3.2",
+        "php-min": "8.1",
+        "last-updated": "2026-07-09",
+        "docs": [
+          "https://github.com/lwplugins/lw-firewall"
+        ],
+        "source-refs": [
+          "wp-content/plugins/lw-firewall/lw-firewall.php",
+          "wp-content/plugins/lw-firewall/includes/Options.php",
+          "wp-content/plugins/lw-firewall/includes/Admin/SettingsSaver.php",
+          "wp-content/plugins/lw-firewall/includes/Admin/ImportExportHandler.php",
+          "wp-content/plugins/lw-firewall/includes/CLI/FirewallCommand.php",
+          "wp-content/plugins/lw-firewall/includes/CLI/ConfigCommand.php",
+          "wp-content/plugins/lw-firewall/includes/CLI/ConfigItemsCommand.php",
+          "wp-content/plugins/lw-firewall/includes/CLI/IpCommand.php",
+          "wp-content/plugins/lw-firewall/includes/SiteManager/Integration.php",
+          "wp-content/plugins/lw-firewall/includes/SiteManager/FirewallAbilities.php",
+          "wp-content/plugins/lw-firewall/includes/SiteManager/FirewallService.php",
+          "wp-content/plugins/lw-firewall/docs/management.md",
+          "wp-content/plugins/lw-firewall/docs/site-manager-abilities.md"
+        ]
+      },
+      "resources": [
+        {
+          "path": "agents/openai.yaml",
+          "repo_path": "lw-plugins/lw-firewall-management-abilities/agents/openai.yaml",
+          "type": "resource",
+          "bytes": 250,
+          "sha256": "e522a1f04c5733b6ae309b49ad3eeb1f953307d679031278f26d8a449be8563b"
+        }
+      ],
+      "has_reference": false,
+      "has_examples": false,
+      "has_scripts": false,
+      "skill_md": {
+        "bytes": 7239,
+        "lines": 215,
+        "sha256": "dd39891f001387156216ae4cb8142f57125fa0dbf5832e973afd20dff9adee6e"
+      }
+    },
+    {
+      "slug": "lw-firewall-rate-limit-worker",
+      "name": "lw-firewall-rate-limit-worker",
+      "domain": "lw-plugins",
+      "description": "Make plugins compatible with LW Firewall's MU-plugin worker, endpoint detection, rate limiting, IP rules, auto-ban, bot blocking, REST protection, and storage backends. Use when code touches custom REST/AJAX endpoints, query-string filters, Woo filters, `wp-login.php`, `wp-cron.php`, `xmlrpc.php`, `filter_params`, `ip_whitelist`, `ip_blacklist`, `LW_FIREWALL_*` constants, `RateLimiter`, `AutoBanner`, `IpDetector`, or worker install/outdated/fail-open behavior.",
+      "path": "lw-plugins/lw-firewall-rate-limit-worker",
+      "skill_path": "lw-plugins/lw-firewall-rate-limit-worker/SKILL.md",
+      "url": "https://raw.githubusercontent.com/Lonsdale201/wp-agent-skills/main/lw-plugins/lw-firewall-rate-limit-worker/SKILL.md",
+      "raw_url": "https://raw.githubusercontent.com/Lonsdale201/wp-agent-skills/main/lw-plugins/lw-firewall-rate-limit-worker/SKILL.md",
+      "html_url": "https://github.com/Lonsdale201/wp-agent-skills/blob/main/lw-plugins/lw-firewall-rate-limit-worker/SKILL.md",
+      "directory_url": "https://github.com/Lonsdale201/wp-agent-skills/tree/main/lw-plugins/lw-firewall-rate-limit-worker",
+      "metadata": {
+        "author": "Soczó Kristóf",
+        "contact": "mailto:lonsdale201@hotmail.com",
+        "plugin": "lw-firewall",
+        "plugin-version-tested": "1.3.2",
+        "php-min": "8.1",
+        "last-updated": "2026-07-09",
+        "docs": [
+          "https://github.com/lwplugins/lw-firewall"
+        ],
+        "source-refs": [
+          "wp-content/plugins/lw-firewall/worker/lw-firewall-worker.php",
+          "wp-content/plugins/lw-firewall/includes/Plugin.php",
+          "wp-content/plugins/lw-firewall/includes/Activator.php",
+          "wp-content/plugins/lw-firewall/includes/Options.php",
+          "wp-content/plugins/lw-firewall/includes/IpDetector.php",
+          "wp-content/plugins/lw-firewall/includes/Rules/RateLimiter.php",
+          "wp-content/plugins/lw-firewall/includes/Rules/AutoBanner.php",
+          "wp-content/plugins/lw-firewall/includes/Rules/IpMatcher.php",
+          "wp-content/plugins/lw-firewall/includes/Storage/StorageInterface.php",
+          "wp-content/plugins/lw-firewall/includes/Storage/FileStorage.php",
+          "wp-content/plugins/lw-firewall/includes/helpers.php",
+          "wp-content/plugins/lw-firewall/README.md"
+        ]
+      },
+      "resources": [
+        {
+          "path": "agents/openai.yaml",
+          "repo_path": "lw-plugins/lw-firewall-rate-limit-worker/agents/openai.yaml",
+          "type": "resource",
+          "bytes": 254,
+          "sha256": "185767f2125cc7d901b8f4c9fe09fa1e2b3b1c36d08d848d85be79f1139b90ad"
+        }
+      ],
+      "has_reference": false,
+      "has_examples": false,
+      "has_scripts": false,
+      "skill_md": {
+        "bytes": 6827,
+        "lines": 176,
+        "sha256": "bc2e88de8f49e14663f3f6f63a623a9ef36bd741e5281ae7b02064af4633878f"
+      }
+    },
+    {
+      "slug": "lw-firewall-registration-guard",
+      "name": "lw-firewall-registration-guard",
+      "domain": "lw-plugins",
+      "description": "Integrate custom WordPress registration forms with LW Firewall's registration spam protection. Use when code renders or validates custom signup forms, AJAX/REST registration endpoints, Woo/CRM/LMS registration flows, or files referencing `RegisterGuard::render_fields`, `RegisterGuard::validate`, `RegisterToken::issue`, `RegisterToken::verify`, `lw_fw_reg_token`, `lw_fw_url`, `registration_errors`, honeypot fields, proof-of-render tokens, single-use tokens, or spam auto-ban behavior.",
+      "path": "lw-plugins/lw-firewall-registration-guard",
+      "skill_path": "lw-plugins/lw-firewall-registration-guard/SKILL.md",
+      "url": "https://raw.githubusercontent.com/Lonsdale201/wp-agent-skills/main/lw-plugins/lw-firewall-registration-guard/SKILL.md",
+      "raw_url": "https://raw.githubusercontent.com/Lonsdale201/wp-agent-skills/main/lw-plugins/lw-firewall-registration-guard/SKILL.md",
+      "html_url": "https://github.com/Lonsdale201/wp-agent-skills/blob/main/lw-plugins/lw-firewall-registration-guard/SKILL.md",
+      "directory_url": "https://github.com/Lonsdale201/wp-agent-skills/tree/main/lw-plugins/lw-firewall-registration-guard",
+      "metadata": {
+        "author": "Soczó Kristóf",
+        "contact": "mailto:lonsdale201@hotmail.com",
+        "plugin": "lw-firewall",
+        "plugin-version-tested": "1.3.2",
+        "php-min": "8.1",
+        "last-updated": "2026-07-09",
+        "docs": [
+          "https://github.com/lwplugins/lw-firewall"
+        ],
+        "source-refs": [
+          "wp-content/plugins/lw-firewall/includes/Plugin.php",
+          "wp-content/plugins/lw-firewall/includes/Rules/RegisterGuard.php",
+          "wp-content/plugins/lw-firewall/includes/Rules/RegisterToken.php",
+          "wp-content/plugins/lw-firewall/includes/Rules/RegisterTracker.php",
+          "wp-content/plugins/lw-firewall/includes/Rules/AutoBanner.php",
+          "wp-content/plugins/lw-firewall/includes/Options.php",
+          "wp-content/plugins/lw-firewall/includes/helpers.php",
+          "wp-content/plugins/lw-firewall/tests/register-token-test.php",
+          "wp-content/plugins/lw-firewall/CHANGELOG.md"
+        ]
+      },
+      "resources": [
+        {
+          "path": "agents/openai.yaml",
+          "repo_path": "lw-plugins/lw-firewall-registration-guard/agents/openai.yaml",
+          "type": "resource",
+          "bytes": 255,
+          "sha256": "2bd0565428bf73b3ff1e96d899681a86f8547cae510acbb459ed2eaaac67009c"
+        }
+      ],
+      "has_reference": false,
+      "has_examples": false,
+      "has_scripts": false,
+      "skill_md": {
+        "bytes": 7073,
+        "lines": 189,
+        "sha256": "410147ae2a99d8b7bf4dd78d440a93862b758fbd4364ace506a03feef17c92a6"
       }
     },
     {
@@ -3678,6 +3855,71 @@
         "bytes": 10248,
         "lines": 237,
         "sha256": "bea40613054e5609794ff20ea80a40827e42eefdb886cd3a33dab8024cb36f1a"
+      }
+    },
+    {
+      "slug": "polylang-compatibility-audit",
+      "name": "polylang-compatibility-audit",
+      "domain": "polylang",
+      "description": "Audit whether a WordPress plugin or classic theme is compatible with Polylang, Polylang Pro, and Polylang for WooCommerce. Use when asked whether code is Polylang-compatible, why a shortcode/option/page/product does not translate, or when code contains stored post/page/product/term IDs, get_permalink/home_url calls, pll_* calls, pll_register_string, PLL_Translate_Option, custom post types/taxonomies, custom tables, REST lang parameters, shortcode/block output, translated slugs, ACF/sync logic, WooCommerce products/orders/cart/Store API, emails, PDFs, cron jobs, exports, or webhooks.",
+      "path": "polylang/polylang-compatibility-audit",
+      "skill_path": "polylang/polylang-compatibility-audit/SKILL.md",
+      "url": "https://raw.githubusercontent.com/Lonsdale201/wp-agent-skills/main/polylang/polylang-compatibility-audit/SKILL.md",
+      "raw_url": "https://raw.githubusercontent.com/Lonsdale201/wp-agent-skills/main/polylang/polylang-compatibility-audit/SKILL.md",
+      "html_url": "https://github.com/Lonsdale201/wp-agent-skills/blob/main/polylang/polylang-compatibility-audit/SKILL.md",
+      "directory_url": "https://github.com/Lonsdale201/wp-agent-skills/tree/main/polylang/polylang-compatibility-audit",
+      "metadata": {
+        "author": "Soczo Kristof",
+        "contact": "mailto:lonsdale201@hotmail.com",
+        "plugin": "polylang + polylang-pro + polylang-wc",
+        "plugin-version-tested": "Polylang 3.8.5 + Polylang Pro 3.8.5 + Polylang for WooCommerce 2.2.2",
+        "wp-version-tested": "7.0",
+        "php-min": "7.4",
+        "last-updated": "2026-07-09",
+        "docs": [
+          "https://polylang.pro/doc/function-reference/",
+          "https://polylang.pro/doc/developpers-how-to/",
+          "https://polylang.pro/doc/rest-api/",
+          "https://polylang.pro/doc/polylang-for-woocommerce/"
+        ],
+        "source-refs": [
+          "wp-content/plugins/polylang/polylang.php",
+          "wp-content/plugins/polylang/src/api.php",
+          "wp-content/plugins/polylang/src/translate-option.php",
+          "wp-content/plugins/polylang/src/query.php",
+          "wp-content/plugins/polylang/src/translated-post.php",
+          "wp-content/plugins/polylang/src/translated-term.php",
+          "wp-content/plugins/polylang/src/filter-rest-routes.php",
+          "wp-content/plugins/polylang/src/modules/REST/Request.php",
+          "wp-content/plugins/polylang-pro/polylang.php",
+          "wp-content/plugins/polylang-pro/src/modules/rest/rest-api.php",
+          "wp-content/plugins/polylang-pro/src/modules/sync-post/sync-post-model.php",
+          "wp-content/plugins/polylang-pro/src/modules/translate-slugs/translate-slugs-model.php",
+          "wp-content/plugins/polylang-pro/src/integrations/ACF/Main.php",
+          "wp-content/plugins/polylang-wc/polylang-wc.php",
+          "wp-content/plugins/polylang-wc/src/data-store.php",
+          "wp-content/plugins/polylang-wc/src/products.php",
+          "wp-content/plugins/polylang-wc/src/store-blocks.php",
+          "wp-content/plugins/polylang-wc/src/hpos-orders-query.php",
+          "wp-content/plugins/polylang-wc/src/modules/REST/Module.php"
+        ]
+      },
+      "resources": [
+        {
+          "path": "agents/openai.yaml",
+          "repo_path": "polylang/polylang-compatibility-audit/agents/openai.yaml",
+          "type": "resource",
+          "bytes": 244,
+          "sha256": "b58323121173374cd12966a0e5ce12d2da4b1616c47be1573a5b3826b8b88707"
+        }
+      ],
+      "has_reference": false,
+      "has_examples": false,
+      "has_scripts": false,
+      "skill_md": {
+        "bytes": 16669,
+        "lines": 277,
+        "sha256": "2892ec08df3cfefb3e7d0b8486ae834c2c94dba1a2e721c075a2f71ec4f494bc"
       }
     },
     {

@@ -25,7 +25,7 @@ Skills are grouped by domain. Each domain has its own README listing the skills 
 | [`jet-engine/`](jet-engine) | Extending JetEngine — Dynamic Visibility conditions, Listings callbacks, Query Builder custom query types. |
 | [`better-data/`](better-data) | **Contributor** skills for the [better-data](https://github.com/lonsdale201/better-data) PHP library. |
 | [`better-route/`](better-route) | **Consumer** skills for the [better-route](https://github.com/Lonsdale201/better-route) PHP library. |
-| [`lw-plugins/`](lw-plugins) | LW Plugins family — LW LMS, LW Site Manager. |
+| [`lw-plugins/`](lw-plugins) | LW Plugins family — LW LMS, LW Site Manager, Elállás for WooCommerce, and LW Firewall (worker/rate-limit compatibility, registration spam guard, and management/CLI/abilities). |
 | [`wp-rocket/`](wp-rocket) | WP Rocket integration skills — cache invalidation and filter hooks for third-party plugins / themes. |
 | [`redis-object-cache/`](redis-object-cache) | Redis Object Cache (`redis-cache`) integration — drop-in lifecycle, `WP_REDIS_*` config, `wp redis` CLI, and correct `wp_cache_*` usage with persistent object caching. |
 | [`fluentcrm/`](fluentcrm) | Extending FluentCRM — funnel triggers / actions / benchmarks, `rest_selector` option lists, and the Free / Pro extension contract. |
