@@ -2,20 +2,22 @@
 name: wp-plugin-bootstrap
 description: Scaffolds and reviews the main entry-point PHP file of a
   WordPress plugin — header (with Requires Plugins for WP 6.5+),
-  ABSPATH guard, file/path/url/version constants, Composer + PSR-4 with
-  manual spl_autoload_register fallback, register_activation_hook
-  requirements check, Plugin class instantiation on plugins_loaded,
-  and the WP 6.7+ rule that translation functions must not trigger
-  before after_setup_theme. Use when scaffolding a new plugin or
-  reviewing its main file. Triggers on Plugin Name headers,
-  register_activation_hook, Requires Plugins, spl_autoload_register,
-  plugins_loaded, or composer.json at the plugin root.
+  ABSPATH guard, file/path/url/version constants, Composer PSR-4 autoload
+  with `src/` as the default class root, optional scoped fallback for release
+  ZIP safety, PascalCase class filenames that match class names, no
+  `class-*.php` legacy layout, register_activation_hook requirements check,
+  Plugin class bootstrapping on plugins_loaded, and the WP 6.7+ rule that
+  translation functions must not trigger before after_setup_theme. Use when
+  scaffolding a new plugin or reviewing its main file. Triggers on Plugin Name
+  headers, register_activation_hook, Requires Plugins, spl_autoload_register,
+  plugins_loaded, composer.json at the plugin root, `src/Plugin.php`, or legacy
+  `includes/class-*.php` files.
 author: Soczó Kristóf
 contact: mailto:lonsdale201@hotmail.com
 plugin: wordpress
-plugin-version-tested: "6.5 - 6.9"
+plugin-version-tested: "6.5 - 7.0"
 php-min: "7.4"
-last-updated: "2026-04-28"
+last-updated: "2026-07-09"
 docs:
   - https://developer.wordpress.org/plugins/plugin-basics/header-requirements/
   - https://developer.wordpress.org/plugins/plugin-basics/best-practices/
@@ -39,6 +41,7 @@ Trigger when ANY of the following is true:
 - Debugging activation errors: "Plugin could not be activated", "_doing_it_wrong" notices on `__()` / `_e()`, "Class not found" on first load.
 - The plugin is shipping outside wp.org and needs a self-hosted updater.
 - Adopting Composer / PSR-4 autoload in a plugin that previously didn't have it (or vice versa, removing the dependency).
+- Migrating away from legacy `includes/class-my-plugin-foo.php` files toward `src/Foo.php` / `src/Domain/FooService.php`.
 
 The diff or file most likely contains: a `Plugin Name:` header, `register_activation_hook`, `register_deactivation_hook`, `spl_autoload_register`, `defined('ABSPATH')`, `plugins_loaded`, `Requires Plugins`, or a `composer.json` at the plugin root.
 
@@ -88,7 +91,7 @@ define( 'MYPLUGIN_PLUGIN_URL',  plugins_url( '/', __FILE__ ) );
 const MYPLUGIN_MIN_PHP = '8.0';
 const MYPLUGIN_MIN_WP  = '6.5';
 
-// Autoloader — Composer first, manual fallback for ZIP installs.
+// Autoloader — Composer first, optional scoped PSR-4 fallback for ZIP installs.
 $autoload = MYPLUGIN_PLUGIN_PATH . 'vendor/autoload.php';
 if ( file_exists( $autoload ) ) {
     require $autoload;
@@ -100,7 +103,7 @@ spl_autoload_register( static function ( string $class ): void {
         return;
     }
     $relative = substr( $class, strlen( $prefix ) );
-    $file     = MYPLUGIN_PLUGIN_PATH . 'includes/'
+    $file     = MYPLUGIN_PLUGIN_PATH . 'src/'
         . str_replace( '\\', '/', $relative ) . '.php';
     if ( file_exists( $file ) ) {
         require $file;
@@ -143,7 +146,7 @@ add_action( 'plugins_loaded', static function (): void {
 } );
 ```
 
-That single file is the **entire** entry-point. Everything else lives in `includes/` under the `MyPlugin\` namespace, autoloaded.
+That single file is the **entire** entry-point. Everything else lives in `src/` under the `MyPlugin\` namespace, autoloaded. A class named `MyPlugin\Folders\FolderService` lives in `src/Folders/FolderService.php`, not `includes/class-folder-service.php`.
 
 ## Critical rules
 
@@ -169,14 +172,32 @@ The authoritative list is in `get_plugin_data()` (`wp-admin/includes/plugin.php`
 
 For wp.org submission the bar is higher (wp.org review checks for `Description`, `Version`, `License`), but core-runtime-wise the only blocker is `Plugin Name`.
 
-### 2. Composer is the modern default — but pair it with a manual fallback
+### 2. Composer + `src/` PSR-4 is the modern default
 
 Composer + PSR-4 autoload is the right choice for any non-trivial plugin in 2026: predictable namespaces, dependency management, dev-only tooling separation (PHPStan, php-cs-fixer), updater libraries vendored cleanly. Treat it as the **strongly recommended baseline**.
 
-But: users who install your plugin from GitHub directly (no `composer install`) or from a ZIP without `vendor/` baked in will get fatal errors. Two responses, both shown in the bootstrap example:
+Use `src/` as the default class root and PascalCase filenames that match class names. This is the baseline shape:
+
+```
+my-plugin/
+├── composer.json
+├── my-plugin.php
+├── src/
+│   ├── Plugin.php
+│   ├── Schema.php
+│   ├── Setup/Activator.php
+│   ├── Setup/Deactivator.php
+│   ├── Folders/FolderService.php
+│   └── Rest/FoldersController.php
+└── assets/
+```
+
+Do not scaffold `includes/class-my-plugin.php`, `includes/class-folder-service.php`, or WPCS-era class filenames for a new Composer plugin. Those are legacy migration targets, not the default architecture.
+
+Users who install from GitHub directly without `composer install`, or from a ZIP without `vendor/`, will get fatal errors unless the release artifact is built correctly. Prefer:
 
 - **Ship `vendor/` inside the release ZIP.** Gitignore it locally, bake it into the artifact you publish.
-- **Manual `spl_autoload_register` fallback** for the plugin's OWN classes. ~15 lines, runs only if `vendor/autoload.php` is missing or didn't include your namespace. Insurance against any composer mishap.
+- **Optional scoped fallback** for the plugin's own namespace only, mapped to `src/`. This is release insurance, not permission to invent a second filename convention.
 
 A `composer.json` minimum:
 
@@ -191,13 +212,13 @@ A `composer.json` minimum:
     },
     "autoload": {
         "psr-4": {
-            "MyPlugin\\": "includes/"
+            "MyPlugin\\": "src/"
         }
     }
 }
 ```
 
-Plus `composer install`, commit `composer.lock`, gitignore `vendor/`, ship `vendor/` inside release ZIPs.
+Plus `composer install`, commit `composer.lock`, gitignore `vendor/`, ship `vendor/` inside release ZIPs, and use `composer dump-autoload -o` in the release/build step.
 
 ### 3. `Requires Plugins` since 6.5 — use it, but understand the limits
 
@@ -271,13 +292,13 @@ Practical rule: **don't translate strings during the bootstrap-phase** (top-leve
 
 It contains: header, ABSPATH guard, constants, autoload, activation/deactivation hook registrations, the `plugins_loaded` instantiation. Maybe 100-200 lines.
 
-It does NOT contain: classes, business logic, hook callbacks beyond bootstrap, custom helper functions used elsewhere, asset enqueueing. All of those belong in dedicated class files under `includes/`.
+It does NOT contain: classes, business logic, hook callbacks beyond bootstrap, custom helper functions used elsewhere, asset enqueueing. All of those belong in dedicated class files under `src/`.
 
 If you find a bootstrap file pushing 400+ lines, move logic out. The bootstrap is a launcher, not the engine.
 
-## Composer-free path (the minority case)
+## Composer-free path (legacy/minority)
 
-If Composer is off the table — solo dev, very small plugin, hosting without a build step — the manual `spl_autoload_register` from the bootstrap example carries the plugin alone. Keep PSR-4-style folder layout anyway (`includes/Settings/SettingsTab.php` for `MyPlugin\Settings\SettingsTab`); future-you will Composer-ize without a refactor. Third-party libs you depend on get vendored manually into `vendor/`. You lose the dev tooling (PHPStan, php-cs-fixer) and dependency resolution. Workable for a one-shot plugin, painful by the second.
+If Composer is truly off the table, keep the same PSR-4-style layout anyway: `src/Settings/SettingsTab.php` for `MyPlugin\Settings\SettingsTab`. A tiny scoped `spl_autoload_register()` can map your namespace to `src/`. Do not fall back to `class-settings-tab.php`; future Composer adoption should be a `composer.json` change, not a file rename campaign. Third-party libs you depend on get vendored manually into `vendor/`. Workable for a one-shot plugin, painful by the second.
 
 ## Common mistakes
 
@@ -302,13 +323,21 @@ register_activation_hook( __FILE__, function () {
 // WRONG — class inside bootstrap file
 class MyPlugin_Singleton { /* 200 lines of logic */ }
 
+// WRONG — old WPCS-style filenames in a new Composer plugin
+includes/class-folder-service.php       // contains class Folder_Service
+includes/class-my-plugin-controller.php // contains class My_Plugin_Controller
+
+// RIGHT — PSR-4, filename matches class name
+src/Folders/FolderService.php           // contains MyPlugin\Folders\FolderService
+src/Rest/FoldersController.php          // contains MyPlugin\Rest\FoldersController
+
 // WRONG — Plugin URI / Author URI typo'd as singular
 * Plugin URL:  https://...    // should be Plugin URI
 * Author URL:  https://...    // should be Author URI
 
 // WRONG — unbounded autoload (matches every class in the codebase)
 spl_autoload_register( function ( $class ) {
-    require_once 'includes/' . $class . '.php';  // namespace pollution
+    require_once 'includes/' . $class . '.php';  // namespace pollution + wrong path convention
 } );
 ```
 
