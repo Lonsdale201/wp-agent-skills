@@ -4,6 +4,26 @@ This collection is continuously evolving — entries are date-based, not version
 
 ## 2026-07-09
 
+### New skill — `wordpress/wp-settings-storage-audit` (WP 7.0)
+
+An audit / verdict skill for the settings-persistence contract, sitting above the three "how-to" settings skills (`wp-admin-settings-api`, `wp-plugin-options-storage`, `classic-theme-customizer`) the way `wp-i18n-audit` sits above the i18n implementation skills. The core question it answers: can another developer predict where each setting is stored, what shape it has, when it loads, how it is sanitized, and what reacts after it changes?
+
+- **`wordpress/wp-settings-storage-audit`** — Audit how a WordPress plugin or classic theme stores settings and configuration, returning a Correct / Risky / Incorrect verdict plus a storage map, severity-tagged findings, fix plan, and migration notes. Walks the workflow: classify the setting to the right primitive (option / user·post·term meta / transient / site option / custom table / `theme_mod`), require a stable prefixed key and a documented array shape (option-as-schema, no anonymous JSON blobs), verify the Settings API save path (`register_setting` on `admin_init`, matching `settings_fields`/`do_settings_sections`, `myplugin_settings[key]` field names, tab-merge so missing tab keys aren't blanked), sanitize-as-schema (full clean shape, no side effects in `sanitize_callback` — use `update_option_{$option}`), decide autoload deliberately (WP 6.6+ `auto`/`auto-on`/`auto-off`/`on`/`off` internal model, `'yes'`/`'no'` deprecated since 6.7, `wp_set_option_autoload()` / `wp_set_option_autoload_values()`), expose REST settings only with a matching `show_in_rest` schema (array `items`, object `properties`, `manage_options`), audit Customizer `theme_mod` vs `option` and multidimensional IDs, and flag deprecated groups/handlers (`misc`/`privacy`, `add_option_update_handler()`, `$new_whitelist_options`, `blacklist_keys`). `plugin: wordpress`, `plugin-version-tested: "7.0"`, `php-min: "7.4"`.
+
+### Updated — settings-storage skills refreshed against WP 7.0 and cross-linked to the new audit
+
+Three existing settings skills got small, verified fixes and a cross-reference to `wp-settings-storage-audit`:
+
+- **`wordpress/wp-admin-settings-api`** — description now names keyed field names, object/array `show_in_rest` schemas, and deprecated settings groups; added `source-refs`; added the "option array is a schema, not a bucket" note; documented that an array setting shown in REST requires `show_in_rest.schema.items` or `register_setting()` triggers `_doing_it_wrong()`; flagged unregistered-option posts and the `misc`/`privacy` deprecated groups.
+- **`plugin-scaffold/wp-plugin-options-storage`** — `plugin-version-tested` `6.5 - 6.9` → `6.5 - 7.0`; added `source-refs`; **corrected `wp_set_option_autoload()` availability from "WP 6.7+" to "WP 6.4+"** (verified `since 6.4.0` via the hook/symbol index) and added the batch `wp_set_option_autoload_values()`.
+- **`theme-development/classic-theme-customizer`** — added autoload guidance for `type => 'option'` Customizer settings (core defaults multidimensional option writes to autoload), a multidimensional-setting-ID note, and a new Cross-References section; fixed the selective-refresh `source-ref` path (`wp-includes/customize/…`).
+
+### Repo / docs
+
+- `wordpress/README.md`: new `wp-settings-storage-audit` row, grouped with the other audit skills.
+- `skills-index.json` regenerated (`skill_count` 177 → 178; `wordpress` 24 → 25; `domain_count` unchanged at 19 — `wordpress` is an existing domain).
+- The new skill ships an `agents/openai.yaml` interface descriptor.
+
 ### New plugin in `lw-plugins/` — LW Firewall (`lw-firewall` 1.3.2)
 
 Three skills for the newest LW-family plugin, **LW Firewall** — an MU-plugin-worker firewall (rate limiting, IP allow/deny lists, geo/bot blocking, auto-ban, registration spam protection). As with every LW-family skill, these are for making **your own** plugin/endpoint/form/automation cooperate with LW Firewall — consuming its public API, never editing the plugin or the installed worker. The anchoring facts across the batch: the real protection runs from `wp-content/mu-plugins/lw-firewall-worker.php` on `muplugins_loaded` priority 1 (before normal plugins), the worker only detects a fixed set of request types (so arbitrary pretty URLs are not rate-limited unless they match), the honeypot + proof-of-render token are bound to the default WP registration form only (custom forms must opt in via the public `RegisterGuard` / `RegisterToken` API), and `LW_FIREWALL_*` `wp-config.php` constants win over saved options for single-value reads.

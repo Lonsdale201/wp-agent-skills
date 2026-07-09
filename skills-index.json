@@ -12,7 +12,7 @@
     "skill_file": "SKILL.md"
   },
   "domain_count": 19,
-  "skill_count": 177,
+  "skill_count": 178,
   "domains": [
     {
       "slug": "better-data",
@@ -114,7 +114,7 @@
       "slug": "wordpress",
       "path": "wordpress",
       "readme_path": "wordpress/README.md",
-      "skill_count": 24
+      "skill_count": 25
     },
     {
       "slug": "wp-rocket",
@@ -3698,7 +3698,7 @@
       "slug": "wp-plugin-options-storage",
       "name": "wp-plugin-options-storage",
       "domain": "plugin-scaffold",
-      "description": "Picks the right WordPress storage primitive for plugin data: options, user/post/term/comment meta, transients, site options, site transients, or custom tables. Covers grouped settings, autoload management, transient TTL rules, serialized/JSON blob trade-offs, multisite storage caveats, and naming conventions. Use when scaffolding settings, choosing persistence for plugin-owned data, or auditing update_option/get_option/get_post_meta/set_transient/autoload usage.",
+      "description": "Picks the right WordPress storage primitive for plugin data: options, user/post/term/comment meta, transients, site options, site transients, or custom tables. Covers grouped settings, autoload management, transient TTL rules, serialized/JSON blob trade-offs, multisite storage caveats, and naming conventions. Use when scaffolding settings, choosing persistence for plugin-owned data, or auditing update_option/get_option/get_post_meta/ set_transient/autoload usage.",
       "path": "plugin-scaffold/wp-plugin-options-storage",
       "skill_path": "plugin-scaffold/wp-plugin-options-storage/SKILL.md",
       "url": "https://raw.githubusercontent.com/Lonsdale201/wp-agent-skills/main/plugin-scaffold/wp-plugin-options-storage/SKILL.md",
@@ -3709,14 +3709,20 @@
         "author": "Soczó Kristóf",
         "contact": "mailto:lonsdale201@hotmail.com",
         "plugin": "wordpress",
-        "plugin-version-tested": "6.5 - 6.9",
+        "plugin-version-tested": "6.5 - 7.0",
         "php-min": "7.4",
-        "last-updated": "2026-04-28",
+        "last-updated": "2026-07-09",
         "docs": [
           "https://developer.wordpress.org/reference/functions/add_option/",
           "https://developer.wordpress.org/reference/functions/get_option/",
           "https://developer.wordpress.org/reference/functions/get_post_meta/",
           "https://developer.wordpress.org/reference/functions/set_transient/"
+        ],
+        "source-refs": [
+          "wp-includes/option.php",
+          "wp-includes/functions.php",
+          "wp-includes/meta.php",
+          "wp-admin/includes/schema.php"
         ]
       },
       "resources": [],
@@ -3724,9 +3730,9 @@
       "has_examples": false,
       "has_scripts": false,
       "skill_md": {
-        "bytes": 16752,
-        "lines": 257,
-        "sha256": "c30c8c5a25e874912a5bbc51285548be66500a08d8c16672d5e9bf34ce3dd5eb"
+        "bytes": 17143,
+        "lines": 263,
+        "sha256": "aef14e208f8fb67447be2f83484f28037a86d3f70c542299f064e31efe05496e"
       }
     },
     {
@@ -4557,7 +4563,7 @@
       "slug": "classic-theme-customizer",
       "name": "classic-theme-customizer",
       "domain": "theme-development",
-      "description": "Add or audit WordPress Customizer options for classic PHP themes on WP 7.0. Covers `customize_register`, `WP_Customize_Manager`, settings, sections, controls, `theme_mod` vs `option`, `sanitize_callback`, `validate_callback`, `WP_Customize_Color_Control`, allowlisted select values, `postMessage`, `customize_preview_init`, selective refresh partials, escaping `get_theme_mod()` output in templates, and common bugs such as raw Customizer values, missing sanitization, or `postMessage` without preview JavaScript.",
+      "description": "Add or audit WordPress Customizer options for classic PHP themes on WP 7.0. Covers `customize_register`, `WP_Customize_Manager`, settings, sections, controls, `theme_mod` vs `option`, option-backed Customizer autoload, multidimensional setting IDs, `sanitize_callback`, `validate_callback`, `WP_Customize_Color_Control`, allowlisted select values, `postMessage`, `customize_preview_init`, selective refresh partials, escaping `get_theme_mod()` output in templates, and common bugs such as raw Customizer values, missing sanitization, or `postMessage` without preview JavaScript.",
       "path": "theme-development/classic-theme-customizer",
       "skill_path": "theme-development/classic-theme-customizer/SKILL.md",
       "url": "https://raw.githubusercontent.com/Lonsdale201/wp-agent-skills/main/theme-development/classic-theme-customizer/SKILL.md",
@@ -4570,7 +4576,7 @@
         "plugin": "wordpress",
         "plugin-version-tested": "7.0",
         "php-min": "7.4",
-        "last-updated": "2026-06-04",
+        "last-updated": "2026-07-09",
         "docs": [
           "https://developer.wordpress.org/themes/customize-api/",
           "https://developer.wordpress.org/themes/customize-api/customizer-objects/",
@@ -4580,7 +4586,8 @@
           "wp-includes/class-wp-customize-manager.php",
           "wp-includes/class-wp-customize-setting.php",
           "wp-includes/class-wp-customize-control.php",
-          "wp-includes/class-wp-customize-selective-refresh.php",
+          "wp-includes/customize/class-wp-customize-selective-refresh.php",
+          "wp-includes/theme.php",
           "wp-content/themes/storefront/inc/customizer/",
           "wp-content/themes/generatepress/inc/customizer.php"
         ]
@@ -4590,9 +4597,9 @@
       "has_examples": false,
       "has_scripts": false,
       "skill_md": {
-        "bytes": 8546,
-        "lines": 283,
-        "sha256": "4cc189b26b032035de89cad539a28916bd8df289f078cd0122deb2bb3803bb97"
+        "bytes": 9389,
+        "lines": 292,
+        "sha256": "a0fe66f7540fbed6746919f56c838680dfa1711270e825399a524efd603f9032"
       }
     },
     {
@@ -6980,7 +6987,7 @@
       "slug": "wp-admin-settings-api",
       "name": "wp-admin-settings-api",
       "domain": "wordpress",
-      "description": "Build plugin admin settings pages with the WordPress Settings API instead of custom form handlers. Covers `register_setting()`, `add_settings_section()`, `add_settings_field()`, `settings_fields()`, `do_settings_sections()`, `add_settings_error()`, `settings_errors()`, `admin_init` registration, `<form method=\"post\" action=\"options.php\">`, `sanitize_callback`, `$option_group` vs `$page`, single-array option storage, tabbed pages, `show_in_rest` schemas, custom option capabilities via `option_page_capability_{$option_group}`, and the mistake of POSTing to your own handler. Use for plugin settings screens, integration config, feature toggles, or any options page that saves to `wp_options`.",
+      "description": "Build plugin admin settings pages with the WordPress Settings API instead of custom form handlers. Covers `register_setting()`, `add_settings_section()`, `add_settings_field()`, `settings_fields()`, `do_settings_sections()`, `add_settings_error()`, `settings_errors()`, `admin_init` registration, `<form method=\"post\" action=\"options.php\">`, `sanitize_callback`, `$option_group` vs `$page`, single-array option storage, keyed field names, tabbed pages, `show_in_rest` schemas including object/array schemas, custom option capabilities via `option_page_capability_{$option_group}`, deprecated settings groups, and the mistake of POSTing to your own handler. Use for plugin settings screens, integration config, feature toggles, or any options page that saves to `wp_options`.",
       "path": "wordpress/wp-admin-settings-api",
       "skill_path": "wordpress/wp-admin-settings-api/SKILL.md",
       "url": "https://raw.githubusercontent.com/Lonsdale201/wp-agent-skills/main/wordpress/wp-admin-settings-api/SKILL.md",
@@ -6993,12 +7000,19 @@
         "plugin": "wordpress",
         "plugin-version-tested": "6.0 - 7.0",
         "php-min": "7.4",
-        "last-updated": "2026-05-24",
+        "last-updated": "2026-07-09",
         "docs": [
           "https://developer.wordpress.org/reference/functions/register_setting/",
           "https://developer.wordpress.org/reference/functions/add_settings_section/",
           "https://developer.wordpress.org/reference/functions/add_settings_field/",
           "https://developer.wordpress.org/plugins/settings/settings-api/"
+        ],
+        "source-refs": [
+          "wp-includes/option.php",
+          "wp-admin/options.php",
+          "wp-admin/includes/template.php",
+          "wp-admin/includes/plugin.php",
+          "wp-includes/rest-api/endpoints/class-wp-rest-settings-controller.php"
         ]
       },
       "resources": [
@@ -7014,9 +7028,9 @@
       "has_examples": false,
       "has_scripts": false,
       "skill_md": {
-        "bytes": 15602,
-        "lines": 268,
-        "sha256": "7078770be094e4462135ca118e740101a2982bf4f1c6acabd919a7bbf6f93ea4"
+        "bytes": 16848,
+        "lines": 283,
+        "sha256": "4860dc14a8e6ff4bcc344abfa03eb26cea2d1b972b58a9b48269a54002e6cd7a"
       }
     },
     {
@@ -7482,6 +7496,59 @@
         "bytes": 10073,
         "lines": 279,
         "sha256": "69ce6b0d7406193c822e28bd4c0f27f747660b2d5f96ddd4cd86f7e7fe3baf84"
+      }
+    },
+    {
+      "slug": "wp-settings-storage-audit",
+      "name": "wp-settings-storage-audit",
+      "domain": "wordpress",
+      "description": "Audit how WordPress plugins and classic themes store settings and configuration. Use when reviewing get_option/update_option/add_option/register_setting/settings_fields/options.php, Customizer add_setting/get_theme_mod/set_theme_mod, theme_mod vs option decisions, associative-array option schemas, keyed settings forms, sanitize_callback/validate_callback/defaults, show_in_rest schemas, autoload choices, update_option hooks, multisite site options, deprecated settings groups, or code that saves plugin settings, theme settings, feature flags, secrets, API config, Customizer values, or admin form data.",
+      "path": "wordpress/wp-settings-storage-audit",
+      "skill_path": "wordpress/wp-settings-storage-audit/SKILL.md",
+      "url": "https://raw.githubusercontent.com/Lonsdale201/wp-agent-skills/main/wordpress/wp-settings-storage-audit/SKILL.md",
+      "raw_url": "https://raw.githubusercontent.com/Lonsdale201/wp-agent-skills/main/wordpress/wp-settings-storage-audit/SKILL.md",
+      "html_url": "https://github.com/Lonsdale201/wp-agent-skills/blob/main/wordpress/wp-settings-storage-audit/SKILL.md",
+      "directory_url": "https://github.com/Lonsdale201/wp-agent-skills/tree/main/wordpress/wp-settings-storage-audit",
+      "metadata": {
+        "author": "Soczo Kristof",
+        "contact": "mailto:lonsdale201@hotmail.com",
+        "plugin": "wordpress",
+        "plugin-version-tested": "7.0",
+        "php-min": "7.4",
+        "last-updated": "2026-07-09",
+        "docs": [
+          "https://developer.wordpress.org/plugins/settings/settings-api/",
+          "https://developer.wordpress.org/reference/functions/register_setting/",
+          "https://developer.wordpress.org/reference/functions/add_option/",
+          "https://developer.wordpress.org/reference/functions/update_option/",
+          "https://developer.wordpress.org/themes/customize-api/"
+        ],
+        "source-refs": [
+          "wp-includes/option.php",
+          "wp-admin/options.php",
+          "wp-admin/includes/template.php",
+          "wp-includes/rest-api/endpoints/class-wp-rest-settings-controller.php",
+          "wp-includes/class-wp-customize-setting.php",
+          "wp-includes/class-wp-customize-manager.php",
+          "wp-includes/theme.php"
+        ]
+      },
+      "resources": [
+        {
+          "path": "agents/openai.yaml",
+          "repo_path": "wordpress/wp-settings-storage-audit/agents/openai.yaml",
+          "type": "resource",
+          "bytes": 256,
+          "sha256": "b8734c749ffb7e99941e1725ba20b56b99837c96feb43d03cc59216fad86c121"
+        }
+      ],
+      "has_reference": false,
+      "has_examples": false,
+      "has_scripts": false,
+      "skill_md": {
+        "bytes": 11845,
+        "lines": 260,
+        "sha256": "6d5e015d47a47a57adae32cdbc1bc15d2e98509f86dc7a69686b520e580a127e"
       }
     },
     {

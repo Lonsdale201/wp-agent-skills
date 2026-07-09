@@ -1,24 +1,29 @@
 ---
 name: wp-plugin-options-storage
 description: >-
-  Picks the right WordPress storage primitive for plugin data:
-  options, user/post/term/comment meta, transients, site options, site
-  transients, or custom tables. Covers grouped settings, autoload
-  management, transient TTL rules, serialized/JSON blob trade-offs,
-  multisite storage caveats, and naming conventions. Use when scaffolding
-  settings, choosing persistence for plugin-owned data, or auditing
-  update_option/get_option/get_post_meta/set_transient/autoload usage.
+  Picks the right WordPress storage primitive for plugin data: options,
+  user/post/term/comment meta, transients, site options, site transients, or
+  custom tables. Covers grouped settings, autoload management, transient TTL
+  rules, serialized/JSON blob trade-offs, multisite storage caveats, and naming
+  conventions. Use when scaffolding settings, choosing persistence for
+  plugin-owned data, or auditing update_option/get_option/get_post_meta/
+  set_transient/autoload usage.
 author: Soczó Kristóf
 contact: mailto:lonsdale201@hotmail.com
 plugin: wordpress
-plugin-version-tested: "6.5 - 6.9"
+plugin-version-tested: "6.5 - 7.0"
 php-min: "7.4"
-last-updated: "2026-04-28"
+last-updated: "2026-07-09"
 docs:
   - https://developer.wordpress.org/reference/functions/add_option/
   - https://developer.wordpress.org/reference/functions/get_option/
   - https://developer.wordpress.org/reference/functions/get_post_meta/
   - https://developer.wordpress.org/reference/functions/set_transient/
+source-refs:
+  - wp-includes/option.php
+  - wp-includes/functions.php
+  - wp-includes/meta.php
+  - wp-admin/includes/schema.php
 ---
 
 # WordPress plugin: options & storage
@@ -118,7 +123,7 @@ Rules:
 - **Default to `null` (auto-decide)** for small settings read in normal runtime paths. In WP 6.6+, the default path stores an internal value such as `auto`, `auto-on`, or `auto-off`; by default `auto` and `auto-on` are treated as autoloaded values.
 - **Force `false`** for options that are only read on specific admin pages, REST endpoints, or background jobs. A 500KB serialized config that's only read on the settings page should NOT be in autoload.
 - **Force `true`** only when the option is genuinely needed on most page loads (rare for plugin settings). The site's autoload payload is shared across all plugins; bloating it slows everything down.
-- **Changing autoload on an existing option is a separate operation.** `update_option( $name, $same_value, false )` returns early and will not change autoload. On WP 6.7+, use `wp_set_option_autoload( $name, false )`; for older supported WP versions, change autoload when the value changes or recreate the option deliberately during a migration.
+- **Changing autoload on an existing option is a separate operation.** `update_option( $name, $same_value, false )` returns early and will not change autoload. On WP 6.4+, use `wp_set_option_autoload( $name, false )` or batch with `wp_set_option_autoload_values()`. For older supported WP versions, change autoload when the value changes or recreate the option deliberately during a migration.
 
 Audit your plugin's autoload footprint with:
 ```sql
@@ -236,6 +241,7 @@ wp_set_option_autoload( 'myplugin_large_report', false );
 ## Cross-references
 
 - Run **`wp-plugin-lifecycle`** for default option seeding via `add_option` on activation, and `delete_option` / `delete_site_option` on uninstall.
+- Run **`wp-settings-storage-audit`** when reviewing a full settings contract: option array shape, Settings API registration, defaults, autoload, REST exposure, Customizer boundary, update hooks, and deprecations.
 - Run **`wp-security-secrets`** when the option holds API keys, tokens, OAuth secrets — autoload + plaintext storage warrants additional thought.
 - Run **`wp-plugin-architecture`** for the `Schema` / Constants centralization pattern that names every option key in one place.
 
