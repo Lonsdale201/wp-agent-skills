@@ -4,6 +4,24 @@ This collection is continuously evolving — entries are date-based, not version
 
 ## 2026-07-10
 
+### New skills — WooCommerce Subscriptions REST + Stripe subscriptions/webhooks
+
+- **`woocommerce/wcs-rest-api`** — Integrate with the WooCommerce Subscriptions REST API v3: subscription CRUD, `status` vs `transition_status`, GMT schedule fields, `payment_details` validation, related-order / order-to-subscriptions routes, notes, batch operations, creating subscriptions from an order, HPOS-safe behavior, APFS plan-route boundaries, authentication, idempotency, and the Store API separation. `plugin: woocommerce-subscriptions`, `plugin-version-tested: "9.0.0"`, `php-min: "7.4"`.
+- **`woocommerce/wc-stripe-subscriptions`** — Integrate the WooCommerce Stripe Gateway (10.8+) with WooCommerce Subscriptions (9.0): gateway feature support, automatic renewal charges, Stripe customer/payment-method metadata, failed-renewal recovery, SCA, change-payment `SetupIntent`s, update-all behavior, Express Checkout on the change-payment page, detached tokens, and safe test cases. `plugin: woocommerce-gateway-stripe + woocommerce-subscriptions`, `plugin-version-tested: "woocommerce-gateway-stripe 10.8.3; woocommerce-subscriptions 9.0.0"`, `php-min: "7.4"`.
+- **`woocommerce/wc-stripe-webhooks`** — Build or audit integrations around WooCommerce Stripe Gateway webhooks and asynchronous payment settlement: the canonical `wc-api` endpoint, `Stripe-Signature` validation, order resolution, PaymentIntent / Checkout Session deferral, Action Scheduler, order locks, idempotency, safe extension hooks, Adaptive Pricing dependence, unexpected-charge detection, logging, and deprecated Stripe hooks/classes. `plugin: woocommerce-gateway-stripe`, `plugin-version-tested: "10.8.3"`, `php-min: "7.4"`.
+
+### Updated — WooCommerce Subscriptions & Stripe skills
+
+- **`woocommerce/wc-stripe-add-payment-method`** — re-grounded to WooCommerce Stripe Gateway **10.8.3** (from 10.6.1) and split into `SKILL.md` + a new `reference.md`.
+- 6 `wcs-*` Subscriptions skills refreshed against **WooCommerce Subscriptions 9.0.0**: `wcs-data-model-switching-gifting` (+ new `switching-reference.md`), `wcs-health-check-processing`, `wcs-renewal-scheduler` (+ new `programmatic-renewal.md`), `wcs-subscription-downloads`, `wcs-subscription-hooks`, and `wcs-subscription-plans-apfs` (+ new `headless-admin-reference.md`).
+- `wc-product-search-select` was intentionally NOT re-synced this round — the incoming drop only re-introduced the literal `✕` glyph, which the repo already carries as ASCII ("clear (x)"); the repo version was kept.
+
+### Repo / docs (Subscriptions + Stripe batch)
+
+- `woocommerce/README.md`: added a `wcs-rest-api` row (Subscriptions) and `wc-stripe-subscriptions` + `wc-stripe-webhooks` rows (extensions).
+- Root `README.md` coverage line: **186 → 189 skills** (plugins unchanged at 28 — all three new skills reuse the existing `woocommerce-gateway-stripe` / `woocommerce-subscriptions` plugin values).
+- `skills-index.json` regenerated (`skill_count` 186 → 189; `woocommerce` 32 → 35; `domain_count` unchanged at 19).
+
 ### New skill — WooCommerce core logging (`wc-logging`, WC 10.9.4)
 
 - **`woocommerce/wc-logging`** — Add production-safe WooCommerce logging with `wc_get_logger()`. Covers stable log sources, severity levels and thresholds, structured `context`, correlation IDs, sensitive-data redaction, the DB vs file handler + retention model, volume control, custom handlers, and why logs are diagnostics not durable business state — for adding diagnostics to gateways, webhooks, background jobs, imports, REST endpoints, or order integrations. `plugin: woocommerce`, `plugin-version-tested: "10.9.4"`, `php-min: "7.4"`.
