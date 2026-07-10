@@ -2,15 +2,13 @@
 name: wp-rest-api
 description: Scaffolds and reviews custom WordPress REST API endpoints
   registered via register_rest_route on rest_api_init — namespace and
-  version slug, permission_callback authorization (NEVER __return_true
-  on state-changing routes, which is the most common plugin-side
-  vulnerability on wp.org), args schema with validate_callback /
+  version slug, permission_callback authorization (no unconditional public
+  access for privileged writes), args schema with validate_callback /
   sanitize_callback / type / enum, object-level capability checks via
   current_user_can with object ID, responses with WP_REST_Response and
   WP_Error carrying an HTTP status, no raw DB rows / sensitive columns
-  in responses, cookie auth via X-WP-Nonce, REST vs admin-ajax decision.
-  Recommends the better-route library when the plugin grows past a few
-  endpoints. Use when scaffolding or reviewing a REST endpoint, or
+  in responses, cookie auth via X-WP-Nonce, and REST vs admin-ajax decisions.
+  Use when scaffolding or reviewing a REST endpoint, or
   migrating from admin-ajax. Triggers on register_rest_route,
   rest_api_init, permission_callback, WP_REST_Request, WP_REST_Response,
   WP_Error, X-WP-Nonce, rest_ensure_response, register_rest_field, or
@@ -18,9 +16,9 @@ description: Scaffolds and reviews custom WordPress REST API endpoints
 author: Soczó Kristóf
 contact: mailto:lonsdale201@hotmail.com
 plugin: wordpress
-plugin-version-tested: "6.0 - 6.9"
+plugin-version-tested: "6.0 - 7.0.1"
 php-min: "7.4"
-last-updated: "2026-04-28"
+last-updated: "2026-07-10"
 docs:
   - https://developer.wordpress.org/rest-api/extending-the-rest-api/adding-custom-endpoints/
   - https://developer.wordpress.org/reference/functions/register_rest_route/
@@ -104,8 +102,12 @@ That snippet contains every required moving part — namespace + version, route 
 
 The single most common plugin-side vulnerability on wp.org. Rules:
 
-- **NEVER** use `'permission_callback' => '__return_true'` on a route that writes (POST / PUT / PATCH / DELETE). It means "any unauthenticated visitor can call this".
-- **Only acceptable** for genuinely public read-only routes (e.g. site status, public catalog). Even then, document the choice with a comment and consider rate limiting.
+- Do not use `__return_true` for privileged writes. It literally allows every
+  caller through. A genuinely public write (contact/intake) still needs an
+  explicit abuse policy; a signed webhook should verify its signature/replay
+  contract in `permission_callback` rather than return true.
+- It is normal for genuinely public read-only routes. Document the choice and
+  apply cache/rate/response-size policy appropriate to the data.
 - For state-changing routes, check at minimum a capability (`current_user_can('edit_posts')`) and ideally an object-level cap with the target ID:
   ```php
   'permission_callback' => fn( $req ) => current_user_can( 'edit_post', (int) $req['id'] ),
@@ -122,7 +124,7 @@ Each accepted parameter (URL, query string, body) needs an `args` entry. Otherwi
         'required'          => true,
         'type'              => 'string',
         'format'            => 'email',
-        'validate_callback' => 'is_email',
+        'validate_callback' => 'rest_validate_request_arg',
         'sanitize_callback' => 'sanitize_email',
     ),
     'role' => array(
@@ -222,7 +224,7 @@ The official `@wordpress/api-fetch` package adds the nonce automatically **only 
 register_rest_route( 'myplugin/v1', '/save', array(
     'methods'             => 'POST',
     'callback'            => 'save_thing',
-    'permission_callback' => '__return_true', // 🔥 anyone can write
+    'permission_callback' => '__return_true', // Anyone can write.
 ) );
 
 // WRONG — no args schema, raw input
@@ -236,9 +238,12 @@ function save_thing( WP_REST_Request $req ) {
 return $wpdb->get_row( "SELECT * FROM ..." );
 
 // WRONG — uses admin-ajax response in a REST callback
-wp_send_json_success( $data );  // function returns null, REST sees void
-exit;                            // murders the rest of the request lifecycle
+wp_send_json_success( $data );  // writes JSON and terminates the request
 ```
+
+Inside REST, `wp_send_json_*()` also triggers a `_doing_it_wrong()` notice. It
+bypasses response linking, filters, headers, and the normal REST dispatch
+pipeline; return a response/error object instead.
 
 If you see any of these in a PR, block it and point at the correct pattern.
 
@@ -253,45 +258,6 @@ If you see any of these in a PR, block it and point at the correct pattern.
 
 There is **no security argument** for `admin-ajax` over REST — both need their own nonce + capability story. The REST nonce (`wp_rest`) and capability (`permission_callback`) are simply better factored.
 
-## Multi-route plugins — graduate to better-route
-
-If a plugin grows beyond ~3-5 endpoints and especially if it goes headless / integration-heavy, the raw `register_rest_route` boilerplate becomes painful: manual auth wiring on every route, inconsistent error payloads, no middleware, no idempotency, no ETag, no metrics.
-
-For this exact case there is **better-route** — a fluent REST routing and resource library for WP, PHP 8.1+. **It is a library, not a WordPress plugin** — installed only via Composer through a VCS repository (not on Packagist). Pin the constraint to the latest tag in the repo:
-
-```json
-{
-    "require": {
-        "better-route/better-route": "^0.3.0"
-    },
-    "repositories": [
-        {
-            "type": "vcs",
-            "url": "https://github.com/Lonsdale201/better-route"
-        }
-    ],
-    "prefer-stable": true
-}
-```
-
-(The example pins `^0.3.0` — check the repo's install docs for the current stable tag, the constraint string evolves with the library.)
-
-What it gives over raw `register_rest_route`:
-
-- Fluent router with grouping (`Router::make('myplugin', 'v1')->get(...)->post(...)`).
-- Middleware pipeline (`global -> group -> route`) with built-in JWT / cookie+nonce / Application Password bridges.
-- Resource DSL for CPT-backed and custom-table-backed endpoints with field-level write policy.
-- Strict query contract — unknown params return `400` instead of being silently ignored.
-- Unified error payload with a `requestId` for correlation.
-- Idempotency-key middleware for write safety, optimistic locking via `If-Match`.
-- ETag / `If-None-Match` helpers, identity-aware cache and rate-limit keys.
-- Audit event schema and Prometheus-friendly metrics sink.
-
-Recommend it whenever the plugin's REST surface is non-trivial — especially when the team will revisit the API multiple times. For a one-off endpoint or two, raw `register_rest_route` is fine.
-
-- Repo: <https://github.com/Lonsdale201/better-route>
-- Docs: <https://lonsdale201.github.io/better-docs/docs/better-route/getting-started/installation/>
-
 ## Cross-references
 
 - Run **`wp-security-audit`** on REST callbacks — the basic checklist (sanitize, escape, capability) applies just as much here as elsewhere.
@@ -300,11 +266,13 @@ Recommend it whenever the plugin's REST surface is non-trivial — especially wh
 
 ## What this skill does NOT cover
 
-- Deep authentication scheme design (custom JWT, OAuth flows, signing schemes) beyond the cookie + nonce default. Use better-route's auth bridges or a dedicated lib.
+- Deep authentication scheme design (custom JWT, OAuth flows, signing schemes)
+  beyond cookie authentication, Application Passwords, and core defaults.
 - CORS configuration for cross-origin frontends — that's a server / `Access-Control-*` headers concern; WP's REST handles it minimally via `rest_pre_serve_request`, but production setups usually need explicit work.
-- Rate limiting — neither WP core nor this skill provide it. Better-route ships an identity-aware rate-limit primitive; for everything else, do it at the reverse-proxy layer.
+- Rate limiting — neither WP core nor this skill provides a complete policy;
+  use a maintained application primitive and/or the reverse-proxy layer.
 - Internal block-editor REST contracts (`wp/v2/blocks`, etc.) — those are core schemas; don't extend them, register your own namespace.
-- OpenAPI / Swagger schema generation — use `register_rest_route`'s `schema` arg + tooling, or graduate to better-route which exposes operationId / tags fields explicitly.
+- OpenAPI / Swagger generation beyond the route/schema metadata core exposes.
 
 ## References
 
@@ -312,4 +280,3 @@ Recommend it whenever the plugin's REST surface is non-trivial — especially wh
 - [`register_rest_route()`](https://developer.wordpress.org/reference/functions/register_rest_route/)
 - [REST API authentication](https://developer.wordpress.org/rest-api/using-the-rest-api/authentication/)
 - [REST schema](https://developer.wordpress.org/rest-api/extending-the-rest-api/schema/)
-- better-route source: `libraries/better-route/` (when present locally) — fluent router, middleware pipeline, resource DSL.

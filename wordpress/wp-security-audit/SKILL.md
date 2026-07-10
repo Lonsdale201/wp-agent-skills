@@ -11,9 +11,9 @@ description: Audits WordPress plugin or theme PHP code for the most common
 author: Soczó Kristóf
 contact: mailto:lonsdale201@hotmail.com
 plugin: wordpress
-plugin-version-tested: "6.0 - 6.9"
+plugin-version-tested: "6.0 - 7.0.1"
 php-min: "7.4"
-last-updated: "2026-04-28"
+last-updated: "2026-07-10"
 docs:
   - https://developer.wordpress.org/apis/security/
   - https://developer.wordpress.org/plugins/security/
@@ -61,14 +61,22 @@ user asks you to apply fixes.
 
 ### 1. Nonce verification on state-changing requests
 
-Any handler that *writes* (saves option, updates meta, deletes a post,
-sends an email, mutates anything) must verify a nonce.
+Any cookie-authenticated browser handler that *writes* (saves an option,
+updates meta, deletes a post, sends an email, or mutates anything) must
+verify request intent with a nonce.
 
 - Forms: `wp_nonce_field( 'action_name', '_wpnonce' )` →
   `check_admin_referer( 'action_name' )` in handler.
 - AJAX: `wp_create_nonce( 'action_name' )` → `check_ajax_referer( 'action_name', 'nonce' )`.
 - REST: rely on cookie auth + the built-in `_wpnonce` (`wp-api` nonce) for
   logged-in routes; for `permission_callback` use a real capability check.
+
+A nonce is not authentication or authorization. Signed webhooks,
+Application Password/OAuth clients, cron, and WP-CLI use their own trust
+boundary instead of a WordPress nonce. Guest nonces do not identify a guest;
+public writes also need abuse controls such as throttling, replay protection,
+or CAPTCHA where appropriate. A cacheable, read-only public endpoint does not
+automatically need a nonce.
 
 **Common mistake:** verifying the nonce inside an `if` whose `else` branch
 still does the write. The nonce check must short-circuit.
@@ -82,9 +90,10 @@ Authentication ≠ authorization. A logged-in subscriber is still a user.
   `manage_woocommerce` etc.).
 - Object-level actions MUST pass the object ID:
   `current_user_can( 'edit_post', $post_id )` — the ID-less form is wrong.
-- REST `permission_callback` must NEVER be `__return_true` for
-  state-changing routes. Returning `true` unconditionally is the #1 plugin
-  vulnerability pattern on wp.org.
+- REST `permission_callback` must enforce the route's actual access policy.
+  `__return_true` is dangerous on privileged writes, but can be intentional
+  for genuinely public endpoints. Signed webhook routes should verify the
+  signature before mutation, preferably in `permission_callback`.
 
 ### 3. Input: unslash → sanitize → validate
 
@@ -137,8 +146,10 @@ $wpdb->get_results( "SELECT * FROM x WHERE id = $id" );
 $wpdb->get_results( $wpdb->prepare( "SELECT * FROM x WHERE id = %d", $id ) );
 ```
 
-- `%d` integers, `%f` floats, `%s` strings. Table/column names CANNOT be
-  parameterized — validate against an allowlist before interpolating.
+- `%d` integers, `%f` floats, `%s` strings, `%i` table/column identifiers
+  (WordPress 6.2+). Still use a semantic allowlist for user-selected columns,
+  tables, and sort directions: `%i` quotes an identifier but does not decide
+  whether that identifier is allowed by the feature.
 - `LIKE` needs `$wpdb->esc_like()` BEFORE `prepare()`:
   `$like = '%' . $wpdb->esc_like( $term ) . '%';`
 - Prefer WP_Query / get_posts / get_users over raw SQL where possible.
@@ -154,7 +165,9 @@ Rules:
 - Register `nopriv` ONLY if the feature is genuinely meant for guests
   (e.g. public search, login form). Never copy-paste both registrations
   "to be safe".
-- Both handlers still need `check_ajax_referer()`.
+- Cookie-authenticated writes need `check_ajax_referer()`. Public read-only
+  handlers do not automatically need a nonce; use one only when it protects
+  a browser action, and never treat a guest nonce as authorization.
 - The `nopriv` handler must NOT perform actions that only logged-in users
   should do (saving prefs, accessing other users' data, etc.).
 - End with `wp_send_json_success` / `wp_send_json_error`, not `echo` + `die`.
@@ -178,7 +191,9 @@ register_rest_route( 'myplugin/v1', '/save', [
     'args' => [
         'id' => [
             'required'          => true,
-            'validate_callback' => 'is_numeric',
+            'type'              => 'integer',
+            'minimum'           => 1,
+            'validate_callback' => 'rest_validate_request_arg',
             'sanitize_callback' => 'absint',
         ],
     ],
@@ -187,7 +202,9 @@ register_rest_route( 'myplugin/v1', '/save', [
 
 Findings to flag:
 - `permission_callback` missing, or `__return_true` on a non-public route.
-- No `args` schema — input is unsanitized.
+- No `args` schema and no equivalent validation in the callback. A route may
+  validate manually, but a schema is preferred because it is discoverable
+  and runs consistently before permission and endpoint callbacks.
 - Returning raw DB rows including sensitive columns (`user_pass`,
   `user_activation_key`, private meta).
 

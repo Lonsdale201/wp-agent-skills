@@ -12,9 +12,9 @@ description: Use WordPress admin form-control widgets that ship in core,
 author: Soczó Kristóf
 contact: mailto:lonsdale201@hotmail.com
 plugin: wordpress
-plugin-version-tested: "6.0 - 7.0"
+plugin-version-tested: "6.0 - 7.0.1"
 php-min: "7.4"
-last-updated: "2026-05-24"
+last-updated: "2026-07-10"
 docs:
   - https://developer.wordpress.org/reference/functions/wp_enqueue_script/
   - https://api.jqueryui.com/datepicker/
@@ -94,7 +94,10 @@ jQuery( function ( $ ) {
 
 ```php
 'sanitize_callback' => static function ( $value ): string {
-    return sanitize_hex_color( (string) $value ) ?: '';
+    if ( ! is_string( $value ) ) {
+        return '';
+    }
+    return sanitize_hex_color( $value ) ?: '';
 },
 ```
 
@@ -102,7 +105,11 @@ jQuery( function ( $ ) {
 
 ## Date picker — `jquery-ui-datepicker`
 
-The bundled jQuery UI datepicker. The non-obvious bit: **core does NOT enqueue a default stylesheet for it**. You either ship your own or pull a CDN one. Plugins frequently render an unstyled datepicker and blame "WordPress weirdness".
+The bundled jQuery UI datepicker. The non-obvious bit: **core does NOT enqueue
+a default stylesheet for it**. Ship a small plugin-owned stylesheet; avoid
+making wp-admin depend on a third-party CDN. For a simple date-only value,
+prefer native `<input type="date">` and use jQuery UI only when you need a
+consistent calendar UI or constraints native controls cannot provide.
 
 ### Enqueue
 
@@ -127,6 +134,14 @@ add_action( 'admin_enqueue_scripts', static function ( string $hook_suffix ): vo
         array( 'jquery-ui-datepicker', 'wp-i18n' ),
         MYPLUGIN_VERSION,
         array( 'in_footer' => true )
+    );
+
+    wp_add_inline_script(
+        'myplugin-date-init',
+        'window.MyPluginDates = ' . wp_json_encode( array(
+            'firstDay' => (int) get_option( 'start_of_week', 0 ),
+        ) ) . ';',
+        'before'
     );
 } );
 ```
@@ -159,7 +174,7 @@ If you don't want to bundle your own CSS, the jQuery UI "smoothness" theme CSS w
 jQuery( function ( $ ) {
     $( '.myplugin-date-field' ).datepicker( {
         dateFormat:      'yy-mm-dd',           // ISO format for storage. NOT PHP's date() format — jQuery UI's.
-        firstDay:        1,                    // Monday — or 0 for Sunday
+        firstDay:        MyPluginDates.firstDay,
         changeMonth:     true,
         changeYear:      true,
         yearRange:       '-5:+5',

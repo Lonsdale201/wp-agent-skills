@@ -3,7 +3,8 @@ name: wp-query-cache
 description: Review and implement WordPress query-cache usage on WP 6.9+,
   especially direct interaction with query cache groups now using salted
   cache helpers. Covers wp_cache_get_salted, wp_cache_set_salted,
-  wp_cache_get_multiple_salted, wp_cache_get_last_changed, affected query
+  wp_cache_get_multiple_salted, wp_cache_set_multiple_salted,
+  wp_cache_get_last_changed, affected query
   groups like post-queries, term-queries, user-queries, comment-queries,
   site-queries, and why plugins should usually use WP_Query APIs instead
   of writing query cache entries directly. Use when optimizing expensive
@@ -11,9 +12,9 @@ description: Review and implement WordPress query-cache usage on WP 6.9+,
 author: Soczó Kristóf
 contact: mailto:lonsdale201@hotmail.com
 plugin: wordpress
-plugin-version-tested: "6.9 - 6.9.4"
+plugin-version-tested: "6.9 - 7.0.1"
 php-min: "7.4"
-last-updated: "2026-04-29"
+last-updated: "2026-07-10"
 docs:
   - https://make.wordpress.org/core/2025/11/17/consistent-cache-keys-for-query-groups-in-wordpress-6-9/
 ---
@@ -72,6 +73,15 @@ $result = wp_cache_get_salted( $cache_key, 'post-queries', $salt );
 ```
 
 The helper stores an array containing `data` and `salt`. Do not assume the raw cached value is your data when reading entries written by `wp_cache_set_salted()`.
+
+For batches, pair `wp_cache_get_multiple_salted()` with
+`wp_cache_set_multiple_salted()`. Their per-key values use the same salt/data
+envelope.
+
+Do not cache literal `false` when your code uses `false` as the miss/stale
+sentinel: a valid cached `false` is indistinguishable from a miss. `null` is
+also unsuitable because the compatibility helper checks the data key with
+`isset()`. Wrap such domain values in a non-null array/object.
 
 ## Affected groups
 

@@ -13,9 +13,9 @@ description: Build WordPress admin tables by extending `WP_List_Table`.
 author: Soczó Kristóf
 contact: mailto:lonsdale201@hotmail.com
 plugin: wordpress
-plugin-version-tested: "6.0 - 7.0"
+plugin-version-tested: "6.0 - 7.0.1"
 php-min: "7.4"
-last-updated: "2026-05-24"
+last-updated: "2026-07-10"
 docs:
   - https://developer.wordpress.org/reference/classes/wp_list_table/
   - https://developer.wordpress.org/reference/functions/add_screen_option/
@@ -93,7 +93,10 @@ protected function process_bulk_action(): void {
 
 ### 3. The page render
 
-Wrap the table in a `<form method="get">` so the bulk-action `_wpnonce` and the search input post back to the same page. The `page` query var gets the table to the right callback.
+Wrap a table with state-changing bulk actions in a `<form method="post">` so
+the generated `_wpnonce`, selected IDs, and action post back to the same page.
+Keep the `page` field so admin routing reaches the right callback. A separate
+GET search/filter form is also valid when bookmarkable filter URLs matter.
 
 ```php
 function myplugin_render_licenses_page(): void {
@@ -110,7 +113,7 @@ function myplugin_render_licenses_page(): void {
             <?php esc_html_e( 'Add new', 'myplugin' ); ?>
         </a>
 
-        <form method="get">
+        <form method="post">
             <?php
             // Keep the page query var so the form action stays on this screen.
             // The bulk-action nonce field is emitted automatically inside ->display().
@@ -139,11 +142,15 @@ add_action( 'load-toplevel_page_myplugin-licenses', static function (): void {
     ) );
 } );
 
-// And persist it — WP doesn't do this automatically; you must return the value from
-// the set-screen-option filter.
-add_filter( 'set-screen-option', static function ( $status, string $option, $value ) {
-    return 'myplugin_licenses_per_page' === $option ? (int) $value : $status;
-}, 10, 3 );
+// Persist only this option through its scoped dynamic filter.
+add_filter(
+    'set_screen_option_myplugin_licenses_per_page',
+    static function ( $status, string $option, $value ): int {
+        return max( 1, min( 200, (int) $value ) );
+    },
+    10,
+    3
+);
 ```
 
 `get_items_per_page( $option, $default )` (inherited from `WP_List_Table`) reads the per-user value back. Match the slug exactly.
@@ -177,7 +184,10 @@ protected function process_bulk_action(): void {
 
 The nonce action string is constructed from your `plural` constructor arg. If you set `'plural' => 'licenses'`, the nonce action is `'bulk-licenses'`. If you set it inconsistently (one place `licenses`, another `license`), nonce verification silently fails. Pick one and use it.
 
-**Row actions are the same vulnerability surface**. The hover-menu "Edit | Revoke | Delete" links go through GET requests. Always `wp_nonce_url()` them with a per-record action and verify with `check_admin_referer()` before acting:
+**Row actions are the same vulnerability surface**. Core has legacy nonced
+GET action links; if you use that pattern, `wp_nonce_url()` each record and
+verify it before acting. For new destructive UI, prefer a small POST form or
+an authenticated REST request so GET remains safe/idempotent:
 
 ```php
 $revoke_url = wp_nonce_url(
@@ -210,7 +220,9 @@ Use `get_views()` for `All | Active | Archived` links above the table and `extra
 
 - **`require_once ABSPATH . 'wp-admin/includes/class-wp-list-table.php'`** before extending. The class is NOT autoloaded everywhere.
 - **`check_admin_referer( 'bulk-' . $this->_args['plural'] )`** before acting on any bulk action. This is the #1 plugin CSRF surface.
-- **Per-row action URLs MUST be nonced** with a per-record nonce action — `wp_nonce_url( $url, "{$action}-{$singular}-{$id}" )` — and the receiving handler must `check_admin_referer()` with the same action.
+- **Every per-row mutation needs request-intent verification**. Prefer POST;
+  when maintaining a legacy GET link, nonce it with a per-record action and
+  verify the identical action before the mutation.
 - **`current_user_can()` is NOT a substitute for a nonce**. The nonce catches CSRF; the cap check catches privilege escalation. You need both.
 - **Sanitize `orderby` against a whitelist**, never pass directly to SQL `ORDER BY`. Either compare against `get_sortable_columns()` or use a hardcoded `in_array()`.
 - **Set `_column_headers` to a 4-element array** when you want hidden columns / primary column to work — `[ columns, hidden, sortable, primary ]`. The 3-element shorthand still works but you lose the row-actions hover anchor.

@@ -40,9 +40,18 @@ final class MyPlugin_License_Table extends WP_List_Table {
     public function prepare_items(): void {
         $per_page     = $this->get_items_per_page( 'myplugin_licenses_per_page', 20 );
         $current_page = $this->get_pagenum();
-        $orderby      = sanitize_key( $_GET['orderby'] ?? 'expires' );
-        $order        = in_array( strtolower( $_GET['order'] ?? '' ), array( 'asc', 'desc' ), true )
-            ? strtoupper( $_GET['order'] )
+        $orderby_raw  = isset( $_GET['orderby'] )
+            ? sanitize_key( wp_unslash( $_GET['orderby'] ) )
+            : 'expires';
+        $allowed_sort = array( 'product', 'expires' );
+        $orderby      = in_array( $orderby_raw, $allowed_sort, true )
+            ? $orderby_raw
+            : 'expires';
+        $order_raw    = isset( $_GET['order'] )
+            ? strtolower( sanitize_key( wp_unslash( $_GET['order'] ) ) )
+            : '';
+        $order        = in_array( $order_raw, array( 'asc', 'desc' ), true )
+            ? strtoupper( $order_raw )
             : 'DESC';
         $search       = isset( $_REQUEST['s'] ) ? sanitize_text_field( wp_unslash( $_REQUEST['s'] ) ) : '';
 

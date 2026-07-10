@@ -12,7 +12,7 @@
     "skill_file": "SKILL.md"
   },
   "domain_count": 19,
-  "skill_count": 182,
+  "skill_count": 185,
   "domains": [
     {
       "slug": "better-data",
@@ -114,7 +114,7 @@
       "slug": "wordpress",
       "path": "wordpress",
       "readme_path": "wordpress/README.md",
-      "skill_count": 25
+      "skill_count": 28
     },
     {
       "slug": "wp-rocket",
@@ -6788,9 +6788,9 @@
         "author": "Soczó Kristóf",
         "contact": "mailto:lonsdale201@hotmail.com",
         "plugin": "wordpress",
-        "plugin-version-tested": "6.9 - 7.0",
+        "plugin-version-tested": "6.9 - 7.0.1",
         "php-min": "7.4",
-        "last-updated": "2026-05-21",
+        "last-updated": "2026-07-10",
         "docs": [
           "https://developer.wordpress.org/apis/abilities-api/",
           "https://developer.wordpress.org/news/2025/11/introducing-the-wordpress-abilities-api/",
@@ -6799,14 +6799,22 @@
           "https://github.com/WordPress/abilities-api"
         ]
       },
-      "resources": [],
-      "has_reference": false,
+      "resources": [
+        {
+          "path": "reference.md",
+          "repo_path": "wordpress/wp-abilities-api/reference.md",
+          "type": "reference",
+          "bytes": 3750,
+          "sha256": "e87fb78eb4778e784f2946844ff9cc9e4c043fbe2b1bd6a5a1882b6a0f3b2c7f"
+        }
+      ],
+      "has_reference": true,
       "has_examples": false,
       "has_scripts": false,
       "skill_md": {
-        "bytes": 22260,
-        "lines": 417,
-        "sha256": "08d8152f50dd90a9293c684858f6143f878bf3e819155b430fc4283d5c6530c1"
+        "bytes": 17911,
+        "lines": 292,
+        "sha256": "71bedbedec5064dc80f466ca95bcc5c683abded6d3a12fdd6cefe861d0c6882c"
       }
     },
     {
@@ -6824,9 +6832,9 @@
         "author": "Soczó Kristóf",
         "contact": "mailto:lonsdale201@hotmail.com",
         "plugin": "wordpress",
-        "plugin-version-tested": "7.0",
+        "plugin-version-tested": "7.0.1",
         "php-min": "7.4",
-        "last-updated": "2026-06-11",
+        "last-updated": "2026-07-10",
         "docs": [
           "https://developer.wordpress.org/coding-standards/wordpress-coding-standards/accessibility/",
           "https://www.w3.org/TR/WCAG22/",
@@ -6849,9 +6857,9 @@
       "has_examples": false,
       "has_scripts": false,
       "skill_md": {
-        "bytes": 12160,
-        "lines": 295,
-        "sha256": "b98c3efbb7d98c5c49b2f1a50424112dca87fddc964e3fb1764b6a5b8911ad42"
+        "bytes": 12570,
+        "lines": 300,
+        "sha256": "29c8f1dc351c435c292ecf0685d24f82d6b7bec667db5ea6048467f422000402"
       }
     },
     {
@@ -6869,9 +6877,9 @@
         "author": "Soczó Kristóf",
         "contact": "mailto:lonsdale201@hotmail.com",
         "plugin": "wordpress",
-        "plugin-version-tested": "6.0 - 7.0",
+        "plugin-version-tested": "6.0 - 7.0.1",
         "php-min": "7.4",
-        "last-updated": "2026-05-24",
+        "last-updated": "2026-07-10",
         "docs": [
           "https://developer.wordpress.org/reference/functions/wp_enqueue_code_editor/",
           "https://developer.wordpress.org/reference/functions/wp_get_code_editor_settings/",
@@ -6884,9 +6892,9 @@
       "has_examples": false,
       "has_scripts": false,
       "skill_md": {
-        "bytes": 13634,
-        "lines": 293,
-        "sha256": "600aaf1e84414b03b6ba93a7ed5f6d3019d6f3a4a630a1f978f72a63fd8f7d13"
+        "bytes": 13721,
+        "lines": 299,
+        "sha256": "09dab23969e4b1e3f1945913690436cfad651e21ad629f04a82d45b2ec069d3c"
       }
     },
     {
@@ -6904,9 +6912,9 @@
         "author": "Soczó Kristóf",
         "contact": "mailto:lonsdale201@hotmail.com",
         "plugin": "wordpress",
-        "plugin-version-tested": "6.0 - 7.0",
+        "plugin-version-tested": "6.0 - 7.0.1",
         "php-min": "7.4",
-        "last-updated": "2026-05-24",
+        "last-updated": "2026-07-10",
         "docs": [
           "https://api.jqueryui.com/sortable/",
           "https://api.jqueryui.com/draggable/",
@@ -6918,17 +6926,17 @@
           "path": "reference.md",
           "repo_path": "wordpress/wp-admin-drag-and-drop/reference.md",
           "type": "reference",
-          "bytes": 5210,
-          "sha256": "828722fb087a64c1807320ae6d812ab21ce9247ae43a784622ff839e53265e5c"
+          "bytes": 7996,
+          "sha256": "7b51d80703f392a3fd1e914a4afe3d7bd8c6dd4820af026e989d33bc6940833b"
         }
       ],
       "has_reference": true,
       "has_examples": false,
       "has_scripts": false,
       "skill_md": {
-        "bytes": 16477,
-        "lines": 291,
-        "sha256": "239c15b8192876d0cfd41d51980893f250755c9d55f03a671900fa3cab7f2336"
+        "bytes": 16534,
+        "lines": 290,
+        "sha256": "2c1ccaad553310fef8442ef04ce2c8305314bcd6baebdc287cad81314e67e3d1"
       }
     },
     {
@@ -6946,9 +6954,9 @@
         "author": "Soczó Kristóf",
         "contact": "mailto:lonsdale201@hotmail.com",
         "plugin": "wordpress",
-        "plugin-version-tested": "6.0 - 7.0",
+        "plugin-version-tested": "6.0 - 7.0.1",
         "php-min": "7.4",
-        "last-updated": "2026-05-24",
+        "last-updated": "2026-07-10",
         "docs": [
           "https://developer.wordpress.org/reference/functions/wp_enqueue_script/",
           "https://api.jqueryui.com/datepicker/",
@@ -6969,9 +6977,9 @@
       "has_examples": false,
       "has_scripts": false,
       "skill_md": {
-        "bytes": 12974,
-        "lines": 278,
-        "sha256": "8d8979c3d9e40d2c43000615441531435526b3541e31748ea8242b747a019d77"
+        "bytes": 13362,
+        "lines": 293,
+        "sha256": "515156e94f58575fcf928cb587791fad7a87533f42b790f3a3b3167aa1e1abdb"
       }
     },
     {
@@ -6989,9 +6997,9 @@
         "author": "Soczó Kristóf",
         "contact": "mailto:lonsdale201@hotmail.com",
         "plugin": "wordpress",
-        "plugin-version-tested": "6.0 - 7.0",
+        "plugin-version-tested": "6.0 - 7.0.1",
         "php-min": "7.4",
-        "last-updated": "2026-05-24",
+        "last-updated": "2026-07-10",
         "docs": [
           "https://developer.wordpress.org/reference/classes/wp_list_table/",
           "https://developer.wordpress.org/reference/functions/add_screen_option/",
@@ -7003,17 +7011,17 @@
           "path": "reference.md",
           "repo_path": "wordpress/wp-admin-list-table/reference.md",
           "type": "reference",
-          "bytes": 7336,
-          "sha256": "47ddb255b64a630022e8a1a118500c7de874161709e8aa31be14472c47cad3d4"
+          "bytes": 7689,
+          "sha256": "fddfdb4b9d19d3b036a0d7c75d5f4620c6505f5bd1f34f30c9380943d657046c"
         }
       ],
       "has_reference": true,
       "has_examples": false,
       "has_scripts": false,
       "skill_md": {
-        "bytes": 14270,
-        "lines": 250,
-        "sha256": "9db4d93d71520daf45e788c50670f6a16946057ec58b3324eca15a95d4b10fed"
+        "bytes": 14421,
+        "lines": 262,
+        "sha256": "048793ea4a58e2ddd930c7f8065bccfcd5f38bedd2742c5406366022701d5270"
       }
     },
     {
@@ -7031,9 +7039,9 @@
         "author": "Soczó Kristóf",
         "contact": "mailto:lonsdale201@hotmail.com",
         "plugin": "wordpress",
-        "plugin-version-tested": "6.0 - 7.0",
+        "plugin-version-tested": "6.0 - 7.0.1",
         "php-min": "7.4",
-        "last-updated": "2026-05-24",
+        "last-updated": "2026-07-10",
         "docs": [
           "https://developer.wordpress.org/reference/functions/wp_enqueue_media/",
           "https://developer.wordpress.org/reference/functions/wp_prepare_attachment_for_js/",
@@ -7045,17 +7053,17 @@
           "path": "reference.md",
           "repo_path": "wordpress/wp-admin-media-frame/reference.md",
           "type": "reference",
-          "bytes": 4397,
-          "sha256": "81c3a0dcbbd554fb032893deed21d0bb7f786aa7843ca8479c93691b80229395"
+          "bytes": 4587,
+          "sha256": "9af3d229d624ac43ee952fdbc4123a479274ece821285a462e9d3423267b0fb5"
         }
       ],
       "has_reference": true,
       "has_examples": false,
       "has_scripts": false,
       "skill_md": {
-        "bytes": 13936,
-        "lines": 282,
-        "sha256": "3d4d43ff105d81e221478e1518bcce893953b15b16e7901bb8769d8c69832558"
+        "bytes": 14253,
+        "lines": 292,
+        "sha256": "91a5a70c3086c00fd3ae719c51f7f98fc66d428eab0c314975cf8e1001846ff2"
       }
     },
     {
@@ -7073,9 +7081,9 @@
         "author": "Soczó Kristóf",
         "contact": "mailto:lonsdale201@hotmail.com",
         "plugin": "wordpress",
-        "plugin-version-tested": "6.4 - 7.0",
+        "plugin-version-tested": "6.4 - 7.0.1",
         "php-min": "7.4",
-        "last-updated": "2026-05-24",
+        "last-updated": "2026-07-10",
         "docs": [
           "https://developer.wordpress.org/reference/functions/wp_admin_notice/",
           "https://developer.wordpress.org/reference/functions/wp_get_admin_notice/",
@@ -7087,9 +7095,9 @@
       "has_examples": false,
       "has_scripts": false,
       "skill_md": {
-        "bytes": 13602,
-        "lines": 266,
-        "sha256": "f95e9ee9bdc72ba3bc67ecb5eaa16ff48c937d8d5306e351271a356ee42fd949"
+        "bytes": 14093,
+        "lines": 281,
+        "sha256": "9088416203423e2f45234a6d131a5981d6a779dc34aceebf2a193f7e4f02cbc3"
       }
     },
     {
@@ -7107,9 +7115,9 @@
         "author": "Soczó Kristóf",
         "contact": "mailto:lonsdale201@hotmail.com",
         "plugin": "wordpress",
-        "plugin-version-tested": "6.0 - 7.0",
+        "plugin-version-tested": "6.0 - 7.0.1",
         "php-min": "7.4",
-        "last-updated": "2026-05-24",
+        "last-updated": "2026-07-10",
         "docs": [
           "https://developer.wordpress.org/reference/functions/add_meta_box/",
           "https://developer.wordpress.org/reference/functions/do_meta_boxes/",
@@ -7122,9 +7130,9 @@
       "has_examples": false,
       "has_scripts": false,
       "skill_md": {
-        "bytes": 14415,
-        "lines": 273,
-        "sha256": "44c9008f091c119b5df2495198b1f677bed744400e460634b7568a03631218bd"
+        "bytes": 14833,
+        "lines": 288,
+        "sha256": "ab96f3fa5de7f04347bc2eb0e641d5761f91c2afaf7a75b1ed007af50348dd69"
       }
     },
     {
@@ -7142,9 +7150,9 @@
         "author": "Soczó Kristóf",
         "contact": "mailto:lonsdale201@hotmail.com",
         "plugin": "wordpress",
-        "plugin-version-tested": "6.0 - 7.0",
+        "plugin-version-tested": "6.0 - 7.0.1",
         "php-min": "7.4",
-        "last-updated": "2026-07-09",
+        "last-updated": "2026-07-10",
         "docs": [
           "https://developer.wordpress.org/reference/functions/register_setting/",
           "https://developer.wordpress.org/reference/functions/add_settings_section/",
@@ -7164,17 +7172,17 @@
           "path": "reference.md",
           "repo_path": "wordpress/wp-admin-settings-api/reference.md",
           "type": "reference",
-          "bytes": 7250,
-          "sha256": "ff578ba7af3cda1a61a01b33e5479bc816d2f444080218cb557bad1f02dfe2b4"
+          "bytes": 7842,
+          "sha256": "1f7b47306e67dd35a48993e7c09ad82438f09c7f6f49325d32938319cff43ed0"
         }
       ],
       "has_reference": true,
       "has_examples": false,
       "has_scripts": false,
       "skill_md": {
-        "bytes": 16848,
-        "lines": 283,
-        "sha256": "4860dc14a8e6ff4bcc344abfa03eb26cea2d1b972b58a9b48269a54002e6cd7a"
+        "bytes": 17321,
+        "lines": 300,
+        "sha256": "2067a45ee0095317a5d11693f285a60937ec62d344f379d737e03a24120c4faa"
       }
     },
     {
@@ -7192,9 +7200,9 @@
         "author": "Soczó Kristóf",
         "contact": "mailto:lonsdale201@hotmail.com",
         "plugin": "wordpress",
-        "plugin-version-tested": "7.0",
+        "plugin-version-tested": "7.0.1",
         "php-min": "7.4",
-        "last-updated": "2026-05-21",
+        "last-updated": "2026-07-10",
         "docs": [
           "https://make.wordpress.org/core/2026/03/24/introducing-the-ai-client-in-wordpress-7-0/",
           "https://make.wordpress.org/core/2026/05/14/wordpress-7-0-field-guide/"
@@ -7205,9 +7213,9 @@
       "has_examples": false,
       "has_scripts": false,
       "skill_md": {
-        "bytes": 9247,
+        "bytes": 9249,
         "lines": 230,
-        "sha256": "35b80320111c7e26cc309aac019ad5362acac8d34e2a4227b450f0e3ff75d1e0"
+        "sha256": "f568e821dd22c6f57fdec48ef0e6267e1e6c9b8f23996f457d0b83b284536853"
       }
     },
     {
@@ -7225,9 +7233,9 @@
         "author": "Soczó Kristóf",
         "contact": "mailto:lonsdale201@hotmail.com",
         "plugin": "wordpress",
-        "plugin-version-tested": "WP-CLI 2.10 - 2.11; WP 6.0 - 7.0",
+        "plugin-version-tested": "WP-CLI 2.10 - 2.11; WP 6.0 - 7.0.1",
         "php-min": "7.4",
-        "last-updated": "2026-05-24",
+        "last-updated": "2026-07-10",
         "docs": [
           "https://make.wordpress.org/cli/handbook/references/internal-api/wp-cli-add-command/",
           "https://make.wordpress.org/cli/handbook/references/internal-api/",
@@ -7248,9 +7256,9 @@
       "has_examples": false,
       "has_scripts": false,
       "skill_md": {
-        "bytes": 12663,
-        "lines": 248,
-        "sha256": "1393bbbcd47e2aed60d07bac9c9920300be304a232dac0e5b6b0f8172c5df4a6"
+        "bytes": 12919,
+        "lines": 254,
+        "sha256": "d7bdf7becdbb927a2668ae0adfa1f9024d3c3bd07b186eb6c3ca738b97b6f20d"
       }
     },
     {
@@ -7268,9 +7276,9 @@
         "author": "Soczó Kristóf",
         "contact": "mailto:lonsdale201@hotmail.com",
         "plugin": "wordpress",
-        "plugin-version-tested": "7.0",
+        "plugin-version-tested": "7.0.1",
         "php-min": "7.4",
-        "last-updated": "2026-05-21",
+        "last-updated": "2026-07-10",
         "docs": [
           "https://make.wordpress.org/core/2026/03/18/introducing-the-connectors-api-in-wordpress-7-0/",
           "https://make.wordpress.org/core/2026/05/14/wordpress-7-0-field-guide/"
@@ -7281,9 +7289,51 @@
       "has_examples": false,
       "has_scripts": false,
       "skill_md": {
-        "bytes": 8851,
-        "lines": 196,
-        "sha256": "7df0f05f16643f21bc8828bdc0da23a0d8aa3cefd45af2e4195fb8a620ec0cd8"
+        "bytes": 9136,
+        "lines": 200,
+        "sha256": "5af485b6ffe74aa4c06d5d878fa070962307d8318bab2e3f0115c6f0d447a70c"
+      }
+    },
+    {
+      "slug": "wp-file-upload-security",
+      "name": "wp-file-upload-security",
+      "domain": "wordpress",
+      "description": "Implement or audit secure WordPress file uploads and sideloads with media_handle_upload, wp_handle_upload, wp_check_filetype_and_ext, strict MIME/extension allowlists, capability and nonce checks, size limits, attachment cleanup, SVG/archive policy, remote download cleanup, and private file storage. Use when code handles $_FILES, multipart forms, REST uploads, Media Library attachments, imported remote files, ZIP extraction, or custom download endpoints.",
+      "path": "wordpress/wp-file-upload-security",
+      "skill_path": "wordpress/wp-file-upload-security/SKILL.md",
+      "url": "https://raw.githubusercontent.com/Lonsdale201/wp-agent-skills/main/wordpress/wp-file-upload-security/SKILL.md",
+      "raw_url": "https://raw.githubusercontent.com/Lonsdale201/wp-agent-skills/main/wordpress/wp-file-upload-security/SKILL.md",
+      "html_url": "https://github.com/Lonsdale201/wp-agent-skills/blob/main/wordpress/wp-file-upload-security/SKILL.md",
+      "directory_url": "https://github.com/Lonsdale201/wp-agent-skills/tree/main/wordpress/wp-file-upload-security",
+      "metadata": {
+        "author": "Soczó Kristóf",
+        "contact": "mailto:lonsdale201@hotmail.com",
+        "plugin": "wordpress",
+        "plugin-version-tested": "6.0 - 7.0.1",
+        "php-min": "7.4",
+        "last-updated": "2026-07-10",
+        "docs": [
+          "https://developer.wordpress.org/reference/functions/media_handle_upload/",
+          "https://developer.wordpress.org/reference/functions/wp_handle_upload/",
+          "https://developer.wordpress.org/reference/functions/wp_check_filetype_and_ext/"
+        ]
+      },
+      "resources": [
+        {
+          "path": "agents/openai.yaml",
+          "repo_path": "wordpress/wp-file-upload-security/agents/openai.yaml",
+          "type": "resource",
+          "bytes": 223,
+          "sha256": "eff0637a1438fbf6b1f8576003bfeb7f22eab24ff53e4d9ac7fc30aa3b0294ae"
+        }
+      ],
+      "has_reference": false,
+      "has_examples": false,
+      "has_scripts": false,
+      "skill_md": {
+        "bytes": 10216,
+        "lines": 252,
+        "sha256": "c468cfbc54095667b5ab593fd85fe336bd44c82fc7413141c9bf0a40fadc4c90"
       }
     },
     {
@@ -7301,9 +7351,9 @@
         "author": "Soczó Kristóf",
         "contact": "mailto:lonsdale201@hotmail.com",
         "plugin": "wordpress",
-        "plugin-version-tested": "6.0 - 7.0",
+        "plugin-version-tested": "6.0 - 7.0.1",
         "php-min": "7.4",
-        "last-updated": "2026-05-24",
+        "last-updated": "2026-07-10",
         "docs": [
           "https://developer.wordpress.org/reference/classes/wp_filesystem_base/",
           "https://developer.wordpress.org/reference/functions/wp_filesystem/",
@@ -7316,16 +7366,16 @@
       "has_examples": false,
       "has_scripts": false,
       "skill_md": {
-        "bytes": 14265,
-        "lines": 284,
-        "sha256": "7539e6563acb428fdf0ca8041bd787462ae5574a52752b8679408c267eb86a10"
+        "bytes": 14692,
+        "lines": 296,
+        "sha256": "00c94c043bd716808b29b97d7139b139ef32840aad3b5d0947790011e5ed0f4e"
       }
     },
     {
       "slug": "wp-html-api",
       "name": "wp-html-api",
       "domain": "wordpress",
-      "description": "Use WordPress' HTML API for safe server-side HTML inspection and mutation instead of regex, fragile string replacement, or DOMDocument. Covers WP_HTML_Tag_Processor, WP_HTML_Processor, set_attribute, remove_attribute, add_class, remove_class, set_modifiable_text, serialize_token, custom data attribute name mapping, and WP 6.9 behavior where attribute/text setters escape character references. Use when plugin code modifies rendered HTML, block output, shortcodes, content filters, widget markup, email fragments, or user-provided HTML.",
+      "description": "Use WordPress' HTML API for structured server-side HTML inspection and mutation instead of regex, fragile string replacement, or DOMDocument. Covers WP_HTML_Tag_Processor, WP_HTML_Processor, set_attribute, remove_attribute, add_class, remove_class, set_modifiable_text, serialize_token, custom data attribute name mapping, and WP 6.9 behavior where attribute/text setters escape character references. Use when plugin code modifies rendered HTML, block output, shortcodes, content filters, widget markup, email fragments, or user-provided HTML.",
       "path": "wordpress/wp-html-api",
       "skill_path": "wordpress/wp-html-api/SKILL.md",
       "url": "https://raw.githubusercontent.com/Lonsdale201/wp-agent-skills/main/wordpress/wp-html-api/SKILL.md",
@@ -7336,9 +7386,9 @@
         "author": "Soczó Kristóf",
         "contact": "mailto:lonsdale201@hotmail.com",
         "plugin": "wordpress",
-        "plugin-version-tested": "6.2 - 6.9.4",
+        "plugin-version-tested": "6.2 - 7.0.1",
         "php-min": "7.4",
-        "last-updated": "2026-04-29",
+        "last-updated": "2026-07-10",
         "docs": [
           "https://make.wordpress.org/core/2025/11/21/updates-to-the-html-api-in-6-9/",
           "https://developer.wordpress.org/reference/classes/wp_html_tag_processor/",
@@ -7350,16 +7400,58 @@
       "has_examples": false,
       "has_scripts": false,
       "skill_md": {
-        "bytes": 7447,
-        "lines": 181,
-        "sha256": "f1f2fef48bb349b25d107b9e4078aac455195c67682b4c9bf628d3c286b1e234"
+        "bytes": 8147,
+        "lines": 191,
+        "sha256": "88124ad8d0887f2909f2ffd6432d0f1c9c8d449c64f7cdbd26e5252a92010da1"
+      }
+    },
+    {
+      "slug": "wp-http-api-client",
+      "name": "wp-http-api-client",
+      "domain": "wordpress",
+      "description": "Implement or audit outbound HTTP integrations in WordPress with wp_remote_request, wp_safe_remote_get/post/request, bounded timeouts, redirects and response sizes, host allowlists, JSON handling, authentication redaction, retries, idempotency, streaming downloads, and test hooks. Use when a plugin calls an external API, webhook destination, feed, license server, OAuth endpoint, remote file, or accepts a URL that WordPress fetches.",
+      "path": "wordpress/wp-http-api-client",
+      "skill_path": "wordpress/wp-http-api-client/SKILL.md",
+      "url": "https://raw.githubusercontent.com/Lonsdale201/wp-agent-skills/main/wordpress/wp-http-api-client/SKILL.md",
+      "raw_url": "https://raw.githubusercontent.com/Lonsdale201/wp-agent-skills/main/wordpress/wp-http-api-client/SKILL.md",
+      "html_url": "https://github.com/Lonsdale201/wp-agent-skills/blob/main/wordpress/wp-http-api-client/SKILL.md",
+      "directory_url": "https://github.com/Lonsdale201/wp-agent-skills/tree/main/wordpress/wp-http-api-client",
+      "metadata": {
+        "author": "Soczó Kristóf",
+        "contact": "mailto:lonsdale201@hotmail.com",
+        "plugin": "wordpress",
+        "plugin-version-tested": "6.0 - 7.0.1",
+        "php-min": "7.4",
+        "last-updated": "2026-07-10",
+        "docs": [
+          "https://developer.wordpress.org/plugins/http-api/",
+          "https://developer.wordpress.org/reference/functions/wp_safe_remote_request/",
+          "https://developer.wordpress.org/reference/classes/wp_http/request/"
+        ]
+      },
+      "resources": [
+        {
+          "path": "agents/openai.yaml",
+          "repo_path": "wordpress/wp-http-api-client/agents/openai.yaml",
+          "type": "resource",
+          "bytes": 224,
+          "sha256": "bdc594ad05f7f9e6cdfcfca1cbd308547a2122e12f5d2b728100dac26bda2ad5"
+        }
+      ],
+      "has_reference": false,
+      "has_examples": false,
+      "has_scripts": false,
+      "skill_md": {
+        "bytes": 8907,
+        "lines": 221,
+        "sha256": "878bbfa2ef7743de553c029066f02518d317ddc2fd26a1b4c5b9f9dd79ed06af"
       }
     },
     {
       "slug": "wp-i18n-audit",
       "name": "wp-i18n-audit",
       "domain": "wordpress",
-      "description": "Audits WordPress plugin or theme PHP code for internationalization (i18n) correctness — text-domain consistency, use of escaped translation helpers (esc_html__, esc_attr__, esc_html_e), correct placeholder helpers (sprintf with translator comments, _n for plurals, _x for context), no variable text-domains, no concatenation inside __() calls, presence of load_plugin_textdomain or load_theme_textdomain, and matching declared Text Domain in the plugin/theme header. Use before plugin/theme release, when reviewing contributor PRs, when adding new strings, when migrating to a new text domain, or when a translator reports issues with the .pot file.",
+      "description": "Audits WordPress plugin or theme PHP code for internationalization (i18n) correctness — text-domain consistency, use of escaped translation helpers (esc_html__, esc_attr__, esc_html_e), correct placeholder helpers (sprintf with translator comments, _n for plurals, _x for context), no variable text-domains, no concatenation inside __() calls, correct custom translation-path loading when needed, and matching declared Text Domain in the plugin/theme header. Use before plugin/theme release, when reviewing contributor PRs, when adding new strings, when migrating to a new text domain, or when a translator reports issues with the .pot file.",
       "path": "wordpress/wp-i18n-audit",
       "skill_path": "wordpress/wp-i18n-audit/SKILL.md",
       "url": "https://raw.githubusercontent.com/Lonsdale201/wp-agent-skills/main/wordpress/wp-i18n-audit/SKILL.md",
@@ -7370,9 +7462,9 @@
         "author": "Soczó Kristóf",
         "contact": "mailto:lonsdale201@hotmail.com",
         "plugin": "wordpress",
-        "plugin-version-tested": "6.0 - 6.9",
+        "plugin-version-tested": "6.0 - 7.0.1",
         "php-min": "7.4",
-        "last-updated": "2026-04-28",
+        "last-updated": "2026-07-10",
         "docs": [
           "https://developer.wordpress.org/plugins/internationalization/",
           "https://developer.wordpress.org/plugins/internationalization/how-to-internationalize-your-plugin/",
@@ -7384,16 +7476,16 @@
       "has_examples": false,
       "has_scripts": false,
       "skill_md": {
-        "bytes": 10931,
-        "lines": 297,
-        "sha256": "ade7e94b88b0850e68cc8da5c977f9178392e8a1f5561f914827c164dba93ca7"
+        "bytes": 11041,
+        "lines": 298,
+        "sha256": "b6c0a64604282e008cd1b81bb0c70b7056f21a993bb4a4f08299c2947e47df89"
       }
     },
     {
       "slug": "wp-locale-and-dates",
       "name": "wp-locale-and-dates",
       "domain": "wordpress",
-      "description": "Handle dates, times, and numbers in WordPress plugins with the modern (5.3+) locale-aware helpers — `wp_date()`, `current_datetime()`, `wp_timezone()`, `get_gmt_from_date()` / `get_date_from_gmt()`, `mysql_to_rfc3339()`, `number_format_i18n()` — and avoid the legacy foot-guns (`current_time('timestamp')` returning offset-summed not-quite-Unix, `date_i18n` quirks, `mysql_to_rfc3339` not actually being RFC3339). Covers `timezone_string` vs `gmt_offset` fallback, storing site-local + UTC MySQL columns, REST date emission, and locale-aware number formatting. Use for any plugin that stores, queries, or displays dates / numbers in multi-locale, multi-timezone installs.",
+      "description": "Handle dates, times, and numbers in WordPress plugins with the modern (5.3+) locale-aware helpers — `wp_date()`, `current_datetime()`, `wp_timezone()`, `get_gmt_from_date()` / `get_date_from_gmt()`, `mysql_to_rfc3339()`, `number_format_i18n()` — and avoid the legacy foot-guns (`current_time('timestamp')` returning offset-summed not-quite-Unix, `date_i18n` quirks, `mysql_to_rfc3339` not actually being RFC3339). Covers `timezone_string` vs `gmt_offset` fallback, choosing canonical UTC or paired core-style columns, REST dates, and locale-aware number formatting. Use for any plugin that stores, queries, or displays dates / numbers in multi-locale, multi-timezone installs.",
       "path": "wordpress/wp-locale-and-dates",
       "skill_path": "wordpress/wp-locale-and-dates/SKILL.md",
       "url": "https://raw.githubusercontent.com/Lonsdale201/wp-agent-skills/main/wordpress/wp-locale-and-dates/SKILL.md",
@@ -7404,9 +7496,9 @@
         "author": "Soczó Kristóf",
         "contact": "mailto:lonsdale201@hotmail.com",
         "plugin": "wordpress",
-        "plugin-version-tested": "5.3 - 7.0",
+        "plugin-version-tested": "5.3 - 7.0.1",
         "php-min": "7.4",
-        "last-updated": "2026-05-24",
+        "last-updated": "2026-07-10",
         "docs": [
           "https://developer.wordpress.org/reference/functions/wp_date/",
           "https://developer.wordpress.org/reference/functions/current_datetime/",
@@ -7419,16 +7511,16 @@
       "has_examples": false,
       "has_scripts": false,
       "skill_md": {
-        "bytes": 13908,
-        "lines": 229,
-        "sha256": "630250e4da757ebd66bc55855a709cdc22156a09718fc3c0f9bc4c1dafa5a46e"
+        "bytes": 14268,
+        "lines": 245,
+        "sha256": "7593f433528399774f7848bfd7d566a789568bce038665da9e9996def7c9597b"
       }
     },
     {
       "slug": "wp-presence-api",
       "name": "wp-presence-api",
       "domain": "wordpress",
-      "description": "Awareness-only reference for the WordPress Presence API — an EXPERIMENTAL feature plugin (v0.1.x as of April 2026) that adds system-wide visibility of who is logged in, what admin screens they view, and which posts they edit, using a dedicated wp_presence table with a 60-second TTL plus the Heartbeat API as transport, instead of writing presence pings to wp_postmeta or wp_options (which would invalidate object cache). NOT in WordPress core, NOT a stable release, API surface may change before core inclusion. Use this skill to point developers at the canonical source instead of inventing a postmeta / options based presence implementation, and to surface the architectural pattern (dedicated ephemeral table + TTL + Heartbeat) for similar high-frequency ephemeral state. Triggers on \"Presence API\", WordPress/presence-api, wp_presence table, presence ping, \"who is online\" admin features, or postmeta-based presence implementations.",
+      "description": "Awareness-only reference for the WordPress Presence API — an EXPERIMENTAL feature plugin (v0.1.4 as of July 2026) that adds system-wide visibility of who is logged in, what admin screens they view, and which posts they edit, using a dedicated wp_presence table with a 60-second TTL plus the Heartbeat API as transport, instead of writing presence pings to wp_postmeta or wp_options (which would invalidate object cache). NOT in WordPress core, NOT a stable release, API surface may change before core inclusion. Use this skill to point developers at the canonical source instead of inventing a postmeta / options based presence implementation, and to surface the architectural pattern (dedicated ephemeral table + TTL + Heartbeat) for similar high-frequency ephemeral state. Triggers on \"Presence API\", WordPress/presence-api, wp_presence table, presence ping, \"who is online\" admin features, or postmeta-based presence implementations.",
       "path": "wordpress/wp-presence-api",
       "skill_path": "wordpress/wp-presence-api/SKILL.md",
       "url": "https://raw.githubusercontent.com/Lonsdale201/wp-agent-skills/main/wordpress/wp-presence-api/SKILL.md",
@@ -7439,9 +7531,9 @@
         "author": "Soczó Kristóf",
         "contact": "mailto:lonsdale201@hotmail.com",
         "plugin": "wordpress",
-        "plugin-version-tested": "presence-api-v0.1.2",
+        "plugin-version-tested": "presence-api-v0.1.4",
         "php-min": "7.4",
-        "last-updated": "2026-04-28",
+        "last-updated": "2026-07-10",
         "docs": [
           "https://github.com/WordPress/presence-api",
           "https://make.wordpress.org/core/2026/04/27/presence-api-feature-plugin/",
@@ -7453,16 +7545,58 @@
       "has_examples": false,
       "has_scripts": false,
       "skill_md": {
-        "bytes": 9840,
-        "lines": 134,
-        "sha256": "3019590a5a300fcd5ea6e36980c70c4ef33c1b02083bc43676ca0d02fa8b35c7"
+        "bytes": 9791,
+        "lines": 143,
+        "sha256": "b93b8c4a3f0aae58fff0a1ba86dfbdfad94c4fa945f19c9b4a7a265e359409a3"
+      }
+    },
+    {
+      "slug": "wp-privacy-personal-data",
+      "name": "wp-privacy-personal-data",
+      "domain": "wordpress",
+      "description": "Implement or audit WordPress plugin privacy integration with privacy-policy suggestions, personal-data exporters, and personal-data erasers. Covers wp_add_privacy_policy_content, wp_privacy_personal_data_exporters, wp_privacy_personal_data_erasers, paged callback contracts, retained-data messages, idempotent erasure, custom tables/meta/remote systems, retention, and multisite scope. Use when a plugin stores email addresses, IPs, user identifiers, profiles, form submissions, logs, analytics, orders, messages, or other personal data.",
+      "path": "wordpress/wp-privacy-personal-data",
+      "skill_path": "wordpress/wp-privacy-personal-data/SKILL.md",
+      "url": "https://raw.githubusercontent.com/Lonsdale201/wp-agent-skills/main/wordpress/wp-privacy-personal-data/SKILL.md",
+      "raw_url": "https://raw.githubusercontent.com/Lonsdale201/wp-agent-skills/main/wordpress/wp-privacy-personal-data/SKILL.md",
+      "html_url": "https://github.com/Lonsdale201/wp-agent-skills/blob/main/wordpress/wp-privacy-personal-data/SKILL.md",
+      "directory_url": "https://github.com/Lonsdale201/wp-agent-skills/tree/main/wordpress/wp-privacy-personal-data",
+      "metadata": {
+        "author": "Soczó Kristóf",
+        "contact": "mailto:lonsdale201@hotmail.com",
+        "plugin": "wordpress",
+        "plugin-version-tested": "4.9.6 - 7.0.1",
+        "php-min": "7.4",
+        "last-updated": "2026-07-10",
+        "docs": [
+          "https://developer.wordpress.org/plugins/privacy/adding-the-personal-data-exporter-to-your-plugin/",
+          "https://developer.wordpress.org/plugins/privacy/adding-the-personal-data-eraser-to-your-plugin/",
+          "https://developer.wordpress.org/plugins/privacy/suggesting-text-for-the-site-privacy-policy/"
+        ]
+      },
+      "resources": [
+        {
+          "path": "agents/openai.yaml",
+          "repo_path": "wordpress/wp-privacy-personal-data/agents/openai.yaml",
+          "type": "resource",
+          "bytes": 252,
+          "sha256": "e5345eeeabfb89eff24585cc2e79463bc8d1009a6f8eedea7823403132859ebc"
+        }
+      ],
+      "has_reference": false,
+      "has_examples": false,
+      "has_scripts": false,
+      "skill_md": {
+        "bytes": 9046,
+        "lines": 216,
+        "sha256": "f0f5552d9554aa76fafde09f2111e00cd7e336a080c055b789199c6a44d2dacd"
       }
     },
     {
       "slug": "wp-query-cache",
       "name": "wp-query-cache",
       "domain": "wordpress",
-      "description": "Review and implement WordPress query-cache usage on WP 6.9+, especially direct interaction with query cache groups now using salted cache helpers. Covers wp_cache_get_salted, wp_cache_set_salted, wp_cache_get_multiple_salted, wp_cache_get_last_changed, affected query groups like post-queries, term-queries, user-queries, comment-queries, site-queries, and why plugins should usually use WP_Query APIs instead of writing query cache entries directly. Use when optimizing expensive reads, persistent object cache behavior, or cache invalidation bugs.",
+      "description": "Review and implement WordPress query-cache usage on WP 6.9+, especially direct interaction with query cache groups now using salted cache helpers. Covers wp_cache_get_salted, wp_cache_set_salted, wp_cache_get_multiple_salted, wp_cache_set_multiple_salted, wp_cache_get_last_changed, affected query groups like post-queries, term-queries, user-queries, comment-queries, site-queries, and why plugins should usually use WP_Query APIs instead of writing query cache entries directly. Use when optimizing expensive reads, persistent object cache behavior, or cache invalidation bugs.",
       "path": "wordpress/wp-query-cache",
       "skill_path": "wordpress/wp-query-cache/SKILL.md",
       "url": "https://raw.githubusercontent.com/Lonsdale201/wp-agent-skills/main/wordpress/wp-query-cache/SKILL.md",
@@ -7473,9 +7607,9 @@
         "author": "Soczó Kristóf",
         "contact": "mailto:lonsdale201@hotmail.com",
         "plugin": "wordpress",
-        "plugin-version-tested": "6.9 - 6.9.4",
+        "plugin-version-tested": "6.9 - 7.0.1",
         "php-min": "7.4",
-        "last-updated": "2026-04-29",
+        "last-updated": "2026-07-10",
         "docs": [
           "https://make.wordpress.org/core/2025/11/17/consistent-cache-keys-for-query-groups-in-wordpress-6-9/"
         ]
@@ -7485,16 +7619,16 @@
       "has_examples": false,
       "has_scripts": false,
       "skill_md": {
-        "bytes": 6533,
-        "lines": 154,
-        "sha256": "594ddd84593a7175651b85ee48cca325007ddf4172af1eb2ccacda220190d2ea"
+        "bytes": 7000,
+        "lines": 164,
+        "sha256": "b91e60cb39bba60b9b4579895432be5c8ad9855277c75426a844e5ae84991308"
       }
     },
     {
       "slug": "wp-rest-api",
       "name": "wp-rest-api",
       "domain": "wordpress",
-      "description": "Scaffolds and reviews custom WordPress REST API endpoints registered via register_rest_route on rest_api_init — namespace and version slug, permission_callback authorization (NEVER __return_true on state-changing routes, which is the most common plugin-side vulnerability on wp.org), args schema with validate_callback / sanitize_callback / type / enum, object-level capability checks via current_user_can with object ID, responses with WP_REST_Response and WP_Error carrying an HTTP status, no raw DB rows / sensitive columns in responses, cookie auth via X-WP-Nonce, REST vs admin-ajax decision. Recommends the better-route library when the plugin grows past a few endpoints. Use when scaffolding or reviewing a REST endpoint, or migrating from admin-ajax. Triggers on register_rest_route, rest_api_init, permission_callback, WP_REST_Request, WP_REST_Response, WP_Error, X-WP-Nonce, rest_ensure_response, register_rest_field, or any file path containing /rest/ or /api/ in a WP plugin or theme.",
+      "description": "Scaffolds and reviews custom WordPress REST API endpoints registered via register_rest_route on rest_api_init — namespace and version slug, permission_callback authorization (no unconditional public access for privileged writes), args schema with validate_callback / sanitize_callback / type / enum, object-level capability checks via current_user_can with object ID, responses with WP_REST_Response and WP_Error carrying an HTTP status, no raw DB rows / sensitive columns in responses, cookie auth via X-WP-Nonce, and REST vs admin-ajax decisions. Use when scaffolding or reviewing a REST endpoint, or migrating from admin-ajax. Triggers on register_rest_route, rest_api_init, permission_callback, WP_REST_Request, WP_REST_Response, WP_Error, X-WP-Nonce, rest_ensure_response, register_rest_field, or any file path containing /rest/ or /api/ in a WP plugin or theme.",
       "path": "wordpress/wp-rest-api",
       "skill_path": "wordpress/wp-rest-api/SKILL.md",
       "url": "https://raw.githubusercontent.com/Lonsdale201/wp-agent-skills/main/wordpress/wp-rest-api/SKILL.md",
@@ -7505,9 +7639,9 @@
         "author": "Soczó Kristóf",
         "contact": "mailto:lonsdale201@hotmail.com",
         "plugin": "wordpress",
-        "plugin-version-tested": "6.0 - 6.9",
+        "plugin-version-tested": "6.0 - 7.0.1",
         "php-min": "7.4",
-        "last-updated": "2026-04-28",
+        "last-updated": "2026-07-10",
         "docs": [
           "https://developer.wordpress.org/rest-api/extending-the-rest-api/adding-custom-endpoints/",
           "https://developer.wordpress.org/reference/functions/register_rest_route/",
@@ -7519,9 +7653,9 @@
       "has_examples": false,
       "has_scripts": false,
       "skill_md": {
-        "bytes": 17587,
-        "lines": 316,
-        "sha256": "0c17f8d516e943cfa79ebefdd46b7aef1d9e114847812f15e5c4287554eb798a"
+        "bytes": 15367,
+        "lines": 283,
+        "sha256": "3ddce66fde98c55ff6aef2cd668473844d70d378228b43c7b9f4f2096fc388fd"
       }
     },
     {
@@ -7539,9 +7673,9 @@
         "author": "Soczó Kristóf",
         "contact": "mailto:lonsdale201@hotmail.com",
         "plugin": "wordpress",
-        "plugin-version-tested": "6.0 - 6.9",
+        "plugin-version-tested": "6.0 - 7.0.1",
         "php-min": "7.4",
-        "last-updated": "2026-04-28",
+        "last-updated": "2026-07-10",
         "docs": [
           "https://developer.wordpress.org/apis/security/",
           "https://developer.wordpress.org/plugins/security/",
@@ -7561,17 +7695,17 @@
           "path": "reference.md",
           "repo_path": "wordpress/wp-security-audit/reference.md",
           "type": "reference",
-          "bytes": 10629,
-          "sha256": "5540a2b8c3b4f35b7d2fab2fdaf95bf9cdd47e6418c37e40bd482e69e95933b1"
+          "bytes": 11449,
+          "sha256": "8ae3ce263ec06d44b3f06c04bd5ad9494862d135487f00807ac3c89d1cddd347"
         }
       ],
       "has_reference": true,
       "has_examples": true,
       "has_scripts": false,
       "skill_md": {
-        "bytes": 10346,
-        "lines": 269,
-        "sha256": "ad19077971e864e05222ded64d24d7d58bfe55eb2f0a6da1e88423b92375e2a5"
+        "bytes": 11499,
+        "lines": 286,
+        "sha256": "b25fb96ff5c834e7ba83a4bf0b6c0c9d114e1a2e4054ccad10ac08a572da35d2"
       }
     },
     {
@@ -7589,9 +7723,9 @@
         "author": "Soczó Kristóf",
         "contact": "mailto:lonsdale201@hotmail.com",
         "plugin": "wordpress",
-        "plugin-version-tested": "6.0 - 6.9",
+        "plugin-version-tested": "6.0 - 7.0.1",
         "php-min": "7.4",
-        "last-updated": "2026-04-28",
+        "last-updated": "2026-07-10",
         "docs": [
           "https://developer.wordpress.org/plugins/security/",
           "https://www.php.net/manual/en/function.unserialize.php",
@@ -7603,9 +7737,9 @@
       "has_examples": false,
       "has_scripts": false,
       "skill_md": {
-        "bytes": 13405,
-        "lines": 382,
-        "sha256": "5d669c195869bd1b1469efef971dcb2556fbf302f73ca5510f7908da33d35ddb"
+        "bytes": 10533,
+        "lines": 291,
+        "sha256": "aeab0d3f2cfea0d16795ccabb6d12c20637f3e5d65d3c843a9b1db2f3e5ad5fc"
       }
     },
     {
@@ -7623,9 +7757,9 @@
         "author": "Soczó Kristóf",
         "contact": "mailto:lonsdale201@hotmail.com",
         "plugin": "wordpress",
-        "plugin-version-tested": "6.0 - 6.9",
+        "plugin-version-tested": "6.0 - 7.0.1",
         "php-min": "7.4",
-        "last-updated": "2026-04-28",
+        "last-updated": "2026-07-10",
         "docs": [
           "https://www.php.net/manual/en/function.password-hash.php",
           "https://www.php.net/manual/en/function.random-bytes.php",
@@ -7637,9 +7771,9 @@
       "has_examples": false,
       "has_scripts": false,
       "skill_md": {
-        "bytes": 10073,
-        "lines": 279,
-        "sha256": "69ce6b0d7406193c822e28bd4c0f27f747660b2d5f96ddd4cd86f7e7fe3baf84"
+        "bytes": 11169,
+        "lines": 296,
+        "sha256": "da68afb478f19ab8244c697522a4aada8d54f7debdb2af3211325a12b6ca99fa"
       }
     },
     {
@@ -7657,9 +7791,9 @@
         "author": "Soczo Kristof",
         "contact": "mailto:lonsdale201@hotmail.com",
         "plugin": "wordpress",
-        "plugin-version-tested": "7.0",
+        "plugin-version-tested": "7.0.1",
         "php-min": "7.4",
-        "last-updated": "2026-07-09",
+        "last-updated": "2026-07-10",
         "docs": [
           "https://developer.wordpress.org/plugins/settings/settings-api/",
           "https://developer.wordpress.org/reference/functions/register_setting/",
@@ -7690,9 +7824,9 @@
       "has_examples": false,
       "has_scripts": false,
       "skill_md": {
-        "bytes": 11845,
+        "bytes": 11847,
         "lines": 260,
-        "sha256": "6d5e015d47a47a57adae32cdbc1bc15d2e98509f86dc7a69686b520e580a127e"
+        "sha256": "9e2a25416acaeeaf4fff9a11475c920a3a33e419b2ca13eda08f29fd96085d60"
       }
     },
     {
@@ -7710,9 +7844,9 @@
         "author": "Soczó Kristóf",
         "contact": "mailto:lonsdale201@hotmail.com",
         "plugin": "wordpress",
-        "plugin-version-tested": "6.9 - 6.9.4",
+        "plugin-version-tested": "6.9 - 7.0.1",
         "php-min": "7.4",
-        "last-updated": "2026-04-29",
+        "last-updated": "2026-07-10",
         "docs": [
           "https://make.wordpress.org/core/2025/11/18/modernizing-utf-8-support-in-wordpress-6-9/"
         ]
@@ -7722,9 +7856,9 @@
       "has_examples": false,
       "has_scripts": false,
       "skill_md": {
-        "bytes": 6229,
-        "lines": 159,
-        "sha256": "dd5372c6d736324fccdc6f46b43f19e95eac4bff782b493550a66ab0d26a6696"
+        "bytes": 6931,
+        "lines": 175,
+        "sha256": "3feed0a4b8fdd4b3d44e2a8a9bd1fa820b56bd7ff29d5471c1e61e238d80abf4"
       }
     },
     {

@@ -7,6 +7,7 @@ function myplugin_render_field_enabled(): void {
     $options = get_option( 'myplugin_options', array() );
     $value   = ! empty( $options['enabled'] );
     ?>
+    <input type="hidden" name="myplugin_options[enabled]" value="0" />
     <input
         type="checkbox"
         id="myplugin_enabled"
@@ -20,15 +21,22 @@ function myplugin_render_field_enabled(): void {
 
 function myplugin_render_field_api_key(): void {
     $options = get_option( 'myplugin_options', array() );
-    $value   = $options['api_key'] ?? '';
+    $configured = ! empty( $options['api_key'] );
     ?>
     <input
-        type="text"
+        type="password"
         id="myplugin_api_key"
         name="myplugin_options[api_key]"
         class="regular-text"
-        value="<?php echo esc_attr( $value ); ?>"
+        value=""
+        autocomplete="new-password"
     />
+    <?php if ( $configured ) : ?>
+        <label>
+            <input type="checkbox" name="myplugin_options[clear_api_key]" value="1" />
+            <?php esc_html_e( 'Remove the configured API key', 'myplugin' ); ?>
+        </label>
+    <?php endif; ?>
     <?php
 }
 ```
@@ -78,26 +86,36 @@ function myplugin_render_settings_page(): void {
 ```
 
 ```php
-register_setting( 'myplugin_general',      'myplugin_options', array( 'sanitize_callback' => 'myplugin_sanitize_options' ) );
-register_setting( 'myplugin_integrations', 'myplugin_options', array( 'sanitize_callback' => 'myplugin_sanitize_options' ) );
-register_setting( 'myplugin_advanced',     'myplugin_options', array( 'sanitize_callback' => 'myplugin_sanitize_options' ) );
+$setting_args = array(
+    'type'              => 'object',
+    'default'           => array( 'enabled' => false, 'api_key' => '', 'log_level' => 'info' ),
+    'show_in_rest'      => false,
+    'sanitize_callback' => 'myplugin_sanitize_options',
+);
+register_setting( 'myplugin_general',      'myplugin_options', $setting_args );
+register_setting( 'myplugin_integrations', 'myplugin_options', $setting_args );
+register_setting( 'myplugin_advanced',     'myplugin_options', $setting_args );
 
 add_settings_section( 'myplugin_section_general',      /* ... */ 'myplugin_general' );
 add_settings_section( 'myplugin_section_integrations', /* ... */ 'myplugin_integrations' );
 ```
 
+Use the same complete args in all three registrations. Re-registering the same
+option name replaces its global metadata.
+
 ## REST Schema for Object Settings
 
 ```php
-register_setting( 'myplugin', 'myplugin_options', array(
+// Expose only non-secret settings. Keep API keys in a separate non-REST option.
+register_setting( 'myplugin', 'myplugin_public_options', array(
     'type'         => 'object',
-    'default'      => array( 'enabled' => false, 'api_key' => '', 'log_level' => 'info' ),
+    'default'      => array( 'enabled' => false, 'log_level' => 'info' ),
     'show_in_rest' => array(
         'schema' => array(
             'type'       => 'object',
+            'additionalProperties' => false,
             'properties' => array(
                 'enabled'   => array( 'type' => 'boolean' ),
-                'api_key'   => array( 'type' => 'string', 'pattern' => '^[A-Za-z0-9_-]{20,}$' ),
                 'log_level' => array( 'type' => 'string', 'enum' => array( 'debug', 'info', 'warn', 'error' ) ),
             ),
         ),

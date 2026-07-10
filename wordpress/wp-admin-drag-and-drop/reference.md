@@ -7,7 +7,7 @@ Use a flat sibling list with depth classes. Persist by walking rows in order; ea
 ```js
 const STEP_PX = 30;
 const MAX_DEPTH = 5;
-let originalDepth = 0, currentDepth = 0, transport;
+let originalDepth = 0, currentDepth = 0, subtreeDepthSpan = 0, transport;
 
 const depthOf = ( $item ) => Math.floor(
     ( parseInt( $item.css( 'margin-left' ), 10 ) || 0 ) / STEP_PX
@@ -33,13 +33,29 @@ jQuery( '#tree' ).sortable( {
     forcePlaceholderSize: true,
     start: function ( event, ui ) {
         originalDepth = currentDepth = depthOf( ui.item );
+        const $children = childrenOf( ui.item );
+        subtreeDepthSpan = 0;
+        $children.each( function () {
+            subtreeDepthSpan = Math.max(
+                subtreeDepthSpan,
+                depthOf( jQuery( this ) ) - originalDepth
+            );
+        } );
         transport = jQuery( '<div class="transport"></div>' ).appendTo( ui.item );
-        transport.append( childrenOf( ui.item ) );
+        transport.append( $children );
     },
     sort: function ( event, ui ) {
         const rootLeft = jQuery( '#tree' ).offset().left;
+        const $previous = ui.placeholder
+            .prevAll( '.tree-item' )
+            .not( ui.item )
+            .first();
+        const parentLimit = $previous.length ? depthOf( $previous ) + 1 : 0;
+        const subtreeLimit = MAX_DEPTH - subtreeDepthSpan;
         const wanted = Math.max( 0, Math.min(
             MAX_DEPTH,
+            parentLimit,
+            subtreeLimit,
             Math.floor( ( ui.helper.offset().left - rootLeft ) / STEP_PX )
         ) );
 
@@ -82,6 +98,43 @@ jQuery( '#tree' ).sortable( {
 .tree-item-depth-5 { margin-left: 150px; }
 ```
 
+## Palette to Sortable
+
+```js
+$( '#myplugin-palette' ).children( '.palette-item' ).draggable( {
+    connectToSortable: '.dropzone',
+    helper: 'clone',
+    containment: '#wpwrap',
+    refreshPositions: true,
+} );
+
+$( '.dropzone' ).sortable( {
+    items: '> .placed-item, > .palette-item',
+    receive: function ( event, ui ) {
+        const paletteId = ui.item.data( 'palette-id' );
+        ui.item.addClass( 'is-loading' );
+        wp.apiFetch( {
+            path: '/myplugin/v1/items',
+            method: 'POST',
+            data: { palette_id: paletteId, zone_id: this.id },
+        } ).then( ( placed ) => {
+            const $item = $( '<div>', {
+                class: 'placed-item',
+                'data-item-id': placed.id,
+            } ).append( $( '<span>', {
+                class: 'placed-item-title',
+                text: placed.title,
+            } ) );
+            ui.item.replaceWith( $item );
+            wp.a11y.speak( wp.i18n.__( 'Item added.', 'myplugin' ) );
+        } ).catch( () => {
+            ui.item.remove();
+            wp.a11y.speak( wp.i18n.__( 'Item could not be added.', 'myplugin' ) );
+        } );
+    },
+} );
+```
+
 ## Keyboard Reorder
 
 ```html
@@ -95,9 +148,17 @@ jQuery( '#tree' ).sortable( {
 ```js
 $( '#myplugin-rules' ).on( 'click', '.move-up', function () {
     const $row = $( this ).closest( '.rule-row' );
-    $row.prev( '.rule-row' ).before( $row );
-    wp.a11y.speak( wp.i18n.__( 'Moved up.', 'myplugin' ) );
-    persistOrder();
+    const $previous = $row.prev( '.rule-row' );
+    if ( ! $previous.length ) {
+        return;
+    }
+    $previous.before( $row );
+    persistOrder().then( () => {
+        wp.a11y.speak( wp.i18n.__( 'Moved up.', 'myplugin' ) );
+    } ).catch( () => {
+        $previous.after( $row );
+        wp.a11y.speak( wp.i18n.__( 'Move was not saved.', 'myplugin' ) );
+    } );
 } );
 ```
 
@@ -112,11 +173,29 @@ register_rest_route( 'myplugin/v1', '/rules/order', array(
             'type'              => 'array',
             'required'          => true,
             'items'             => array( 'type' => 'integer' ),
+            'validate_callback' => 'rest_validate_request_arg',
             'sanitize_callback' => 'wp_parse_id_list',
         ),
     ),
     'callback'            => static function ( WP_REST_Request $request ) {
-        update_option( 'myplugin_rule_order', $request->get_param( 'order' ) );
+        $order    = $request->get_param( 'order' );
+        $expected = myplugin_get_manageable_rule_ids();
+
+        $submitted_set = $order;
+        $expected_set  = array_map( 'absint', $expected );
+        sort( $submitted_set );
+        sort( $expected_set );
+
+        if ( count( $order ) !== count( array_unique( $order ) )
+             || $submitted_set !== $expected_set ) {
+            return new WP_Error(
+                'invalid_rule_order',
+                'Order must contain every manageable rule exactly once.',
+                array( 'status' => 400 )
+            );
+        }
+
+        update_option( 'myplugin_rule_order', $order );
         return rest_ensure_response( array( 'ok' => true ) );
     },
 ) );
@@ -151,11 +230,14 @@ $( '.list' ).sortable( { update: persistOrder } );
 // WRONG: screen-reader users get no feedback.
 $( '.list' ).sortable( { update: persistOrder } );
 
-// RIGHT: speak after persistence.
+// RIGHT: speak only after persistence succeeds.
 $( '.list' ).sortable( {
     update: function () {
-        wp.a11y.speak( wp.i18n.__( 'Order updated.', 'myplugin' ) );
-        persistOrder();
+        persistOrder().then( () => {
+            wp.a11y.speak( wp.i18n.__( 'Order updated.', 'myplugin' ) );
+        } ).catch( () => {
+            wp.a11y.speak( wp.i18n.__( 'Order was not saved.', 'myplugin' ) );
+        } );
     },
 } );
 ```

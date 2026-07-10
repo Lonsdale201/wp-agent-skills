@@ -110,7 +110,10 @@ follow the same rule when an ID is meaningful.
 | Filename | `sanitize_file_name( $x )` | `esc_html( $x )` |
 | JSON for `<script>` | structured array | `wp_json_encode( $x )` |
 
-When in doubt, escape twice (once on save, once on output) — defense in depth.
+Do not HTML-escape before storage. Validate and sanitize input into a
+canonical value, store that value, then escape once for the exact output
+context. Pre-escaping creates corrupted/double-escaped data and still does not
+protect a later, different output context.
 
 ## 4. Why `wp_unslash` matters
 
@@ -135,7 +138,7 @@ $wpdb->prepare(
 );
 ```
 
-### Table/column names — allowlist, never interpolate
+### Table/column names — `%i` plus a semantic allowlist
 
 ```php
 $allowed_orderby = [ 'id', 'name', 'created_at' ];
@@ -144,10 +147,17 @@ $orderby = in_array( $orderby_input, $allowed_orderby, true )
 $order   = strtoupper( $order_input ) === 'DESC' ? 'DESC' : 'ASC';
 
 $sql = $wpdb->prepare(
-    "SELECT * FROM {$wpdb->prefix}items ORDER BY {$orderby} {$order} LIMIT %d",
+    "SELECT * FROM %i ORDER BY %i {$order} LIMIT %d",
+    $wpdb->prefix . 'items',
+    $orderby,
     $limit
 );
 ```
+
+`%i` is available since WordPress 6.2 and safely quotes identifiers. It does
+not replace the allowlist: the allowlist is the authorization/business rule
+for which identifiers the request may select. SQL keywords such as `ASC` and
+`DESC` are not identifiers and must be selected from a fixed allowlist.
 
 ### LIKE
 
@@ -160,6 +170,10 @@ $wpdb->prepare( "SELECT * FROM x WHERE name LIKE %s", $like );
 
 ```php
 $ids          = array_map( 'absint', (array) $ids );
+$ids          = array_values( array_filter( $ids ) );
+if ( [] === $ids ) {
+    return [];
+}
 $placeholders = implode( ',', array_fill( 0, count( $ids ), '%d' ) );
 $sql          = $wpdb->prepare(
     "SELECT * FROM x WHERE id IN ($placeholders)", $ids
@@ -205,19 +219,22 @@ add_action( 'rest_api_init', function () {
 ```
 
 Findings to flag in REST audits:
-- `permission_callback => '__return_true'` on writes.
+- `permission_callback => '__return_true'` on privileged writes, or a public
+  write that lacks its required signature, token, or abuse controls.
 - Missing `validate_callback` AND missing manual validation in handler.
 - Returning `WP_User` objects directly — leaks `user_pass` hash, email,
   capabilities of other users.
-- `register_rest_route` inside a hook that fires before `rest_api_init`
-  (route never registered, fails open if also wired elsewhere).
+- `register_rest_route` before `rest_api_init`. Core emits `_doing_it_wrong()`
+  but still registers the route; treat this as lifecycle misuse, not a route
+  that silently disappears.
 
 ## 7. AJAX nopriv: when is it actually correct?
 
 Legitimate uses:
 - Public search / filter endpoints that read public data only.
 - Login / registration / password reset forms.
-- Public contact forms (still need nonce + spam protection).
+- Public contact forms (nonce for browser intent when useful, plus spam and
+  rate-limit controls; a guest nonce is not guest authentication).
 
 Illegitimate ("just in case") uses:
 - Saving any user-specific preference.

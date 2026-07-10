@@ -1,0 +1,4 @@
+interface:
+  display_name: "WordPress Privacy Personal Data"
+  short_description: "Build privacy exporters and erasers"
+  default_prompt: "Use $wp-privacy-personal-data to implement or audit this plugin's personal-data export and erasure integration."

@@ -1,6 +1,6 @@
 ---
 name: wp-html-api
-description: Use WordPress' HTML API for safe server-side HTML inspection
+description: Use WordPress' HTML API for structured server-side HTML inspection
   and mutation instead of regex, fragile string replacement, or DOMDocument.
   Covers WP_HTML_Tag_Processor, WP_HTML_Processor, set_attribute,
   remove_attribute, add_class, remove_class, set_modifiable_text,
@@ -11,9 +11,9 @@ description: Use WordPress' HTML API for safe server-side HTML inspection
 author: Soczó Kristóf
 contact: mailto:lonsdale201@hotmail.com
 plugin: wordpress
-plugin-version-tested: "6.2 - 6.9.4"
+plugin-version-tested: "6.2 - 7.0.1"
 php-min: "7.4"
-last-updated: "2026-04-29"
+last-updated: "2026-07-10"
 docs:
   - https://make.wordpress.org/core/2025/11/21/updates-to-the-html-api-in-6-9/
   - https://developer.wordpress.org/reference/classes/wp_html_tag_processor/
@@ -25,6 +25,12 @@ docs:
 Use this skill when plugin code needs to read or modify HTML. The goal is to avoid regex-based HTML parsing and unsafe manual escaping. WordPress' HTML API understands malformed real-world HTML better than ad hoc string code and keeps escaping rules in one place.
 
 This skill is not about React, Gutenberg editor internals, or client-side DOM work.
+
+The HTML API is a parser and mutation API, **not an HTML sanitizer**. It
+preserves existing scripts, event-handler attributes, and unsafe URL schemes,
+and setter escaping only prevents broken markup. Sanitize untrusted HTML with
+`wp_kses()`/`wp_kses_post()` at the trust boundary, then mutate the accepted
+HTML. Validate values such as `href` by semantic type before setting them.
 
 ## When to use this skill
 
@@ -95,7 +101,9 @@ while ( $processor->next_token() ) {
         continue;
     }
 
-    $processor->set_modifiable_text( str_replace( ':)', '🙂', $text ) );
+    // "\u{1F642}" is the slightly-smiling-face code point, written as a PHP
+    // escape so the source stays plain-ASCII (7.0+ double-quoted syntax).
+    $processor->set_modifiable_text( str_replace( ':)', "\u{1F642}", $text ) );
 }
 
 $html = $processor->get_updated_html();
@@ -134,6 +142,8 @@ $dataset_name = wp_js_dataset_name( 'data-my-plugin-source' );
 ## Critical rules
 
 - **Do not parse HTML with regex** when the task is tag, attribute, class, or text-node aware.
+- **Do not treat either processor as XSS filtering.** Apply a deliberate KSES
+  policy to untrusted HTML and validate URL/attribute semantics separately.
 - **Do not pre-escape values passed to HTML API setters.** Pass the intended raw string; the API encodes it.
 - **Use `WP_HTML_Tag_Processor` first** for simple mutations; it is cheaper and simpler than structural processing.
 - **Use `WP_HTML_Processor` for structure**, nested traversal, normalization, and `serialize_token()`.
@@ -170,7 +180,7 @@ $p->set_attribute( 'title', $title );
 
 - Client-side DOM manipulation.
 - Gutenberg editor component development.
-- KSES policy design beyond choosing safe output mutation primitives.
+- KSES allowlist design beyond identifying where sanitization belongs.
 
 ## References
 

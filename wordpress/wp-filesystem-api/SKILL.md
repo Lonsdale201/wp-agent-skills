@@ -15,9 +15,9 @@ description: Read, write, copy, delete, chmod files from a WordPress
 author: Soczó Kristóf
 contact: mailto:lonsdale201@hotmail.com
 plugin: wordpress
-plugin-version-tested: "6.0 - 7.0"
+plugin-version-tested: "6.0 - 7.0.1"
 php-min: "7.4"
-last-updated: "2026-05-24"
+last-updated: "2026-07-10"
 docs:
   - https://developer.wordpress.org/reference/classes/wp_filesystem_base/
   - https://developer.wordpress.org/reference/functions/wp_filesystem/
@@ -59,10 +59,27 @@ if ( ! WP_Filesystem( $creds, $context ) ) {
 
 // 4. Use the global instance.
 global $wp_filesystem;
-$wp_filesystem->put_contents( $context . '/generated.css', $css, FS_CHMOD_FILE );
+$remote_context = $wp_filesystem->find_folder( $context );
+if ( false === $remote_context ) {
+    return;
+}
+
+if ( ! $wp_filesystem->put_contents(
+    trailingslashit( $remote_context ) . 'generated.css',
+    $css,
+    FS_CHMOD_FILE
+) ) {
+    return;
+}
 ```
 
 The `$context` arg is "a directory you're about to write to" — `wp-admin/includes/file.php:2364`. It controls writability detection (`get_filesystem_method` writes a temp file there to confirm permissions) and determines whether `direct` is safe.
+
+`$context` is a local WordPress path used for method detection. Filesystem
+methods need paths in the selected transport's namespace. With `direct` they
+look identical; with FTP/SSH they may not. Convert with `find_folder()` or use
+base mappings such as `$wp_filesystem->wp_content_dir()`,
+`wp_plugins_dir()`, or `abspath()` before appending a relative path.
 
 ## What `request_filesystem_credentials()` returns
 
@@ -87,10 +104,11 @@ The function ALSO ECHOES the form when no creds are present and `$_POST` is empt
 | 3 | `ftpext` | PHP `ftp` extension loaded |
 | 4 | `ftpsockets` | PHP `sockets` extension OR `fsockopen()` available |
 
-Force a specific method in `wp-config.php`:
+Only the host operator should force a specific method in `wp-config.php`,
+after checking ownership and write permissions:
 
 ```php
-define( 'FS_METHOD', 'direct' );      // skip the credentials prompt
+define( 'FS_METHOD', 'direct' ); // Operator-controlled; never set by a plugin.
 ```
 
 Defaults set on first successful `WP_Filesystem()` call (`file.php:2208-2228`):
@@ -142,7 +160,7 @@ $wp_filesystem->rmdir( $path, $recursive = false );
 |---|---|
 | Writing a user-uploaded file to `wp-content/uploads/` | `wp_handle_upload()` or `media_handle_upload()` (`wp-admin/includes/file.php:1097`) |
 | Reading any existing file (where you don't need write capability) | Plain PHP `file_get_contents()` is fine — read access doesn't need FS abstraction |
-| Touching a file in `wp-content/uploads/` that you JUST got back from `wp_handle_upload` | Plain PHP — uploads dir is by definition writable as web user (otherwise `wp_handle_upload` would have failed) |
+| Touching a local file that you just got back from `wp_handle_upload` | Plain PHP, after checking every return value; storage-offload plugins may change the lifecycle |
 | Anything in PHP `tempnam()` / `sys_get_temp_dir()` | Plain PHP |
 
 `WP_Filesystem` is overkill for `wp-content/uploads`. It's the right tool for `wp-content/`, `wp-content/plugins/<self>/cache/`, `wp-content/mu-plugins/`, or anywhere ELSE that needs the credentials dance on restricted hosts.
@@ -174,7 +192,11 @@ add_action( 'update_option_myplugin_options', static function ( $old, $new ): vo
 }, 10, 2 );
 ```
 
-This is intentionally plain PHP: `wp-content/uploads` is web-user-writable or `wp_upload_dir()` / `wp_mkdir_p()` fails. Use `WP_Filesystem` when writing outside uploads, where an admin page can show the credentials form.
+This is intentionally plain PHP for the normal local uploads filesystem; every
+directory/write result is checked. Object-storage or stream-wrapper plugins
+can alter the upload lifecycle, so do not assume a permanent local file after
+third-party offload hooks run. Use `WP_Filesystem` when writing outside
+uploads, where an admin page can show the credentials form.
 
 ## Pattern: read a JSON config the plugin ships
 
@@ -192,10 +214,10 @@ $config = json_decode( file_get_contents( MYPLUGIN_DIR . '/config/defaults.json'
 - **Always pass `FS_CHMOD_FILE` / `FS_CHMOD_DIR`** to `put_contents` / `mkdir` / `copy`. Skipping them means permissions are left to whatever the transport's defaults are — often too-open on direct, too-locked on FTP.
 - **Pass the same `$context` to `request_filesystem_credentials()` and `WP_Filesystem()`**. Calling `WP_Filesystem()` with no context defaults detection to `WP_CONTENT_DIR`, which can be wrong when you're targeting a deeper plugin/cache directory.
 - **`request_filesystem_credentials()` ECHOES a form when no creds are stored**. Don't call it from a page that's already streamed HTML, and don't call it from REST / AJAX — it's not designed for those contexts.
-- **`WP_Filesystem` is admin-only by design**. The credentials prompt makes no sense in cron or REST. If a cron task needs FS writes, gate writes on `direct` being available (`'direct' === get_filesystem_method()`).
+- **The credentials prompt is admin-interactive, not the filesystem object itself**. Cron, REST, and CLI cannot render that form. They may initialize `WP_Filesystem()` when `direct` is available or credentials were supplied through trusted host configuration; otherwise fail cleanly and require an admin setup step.
 - **Don't reach for `WP_Filesystem` to write inside `wp-content/uploads`** — `wp_handle_upload` or plain PHP suffices. Reserve it for paths that might NOT be web-user-writable.
 - **`$wp_filesystem->delete( $path )` does NOT recurse by default**. Pass `$recursive = true` when deleting non-empty directories, and pass `$type` (`'f'` or `'d'`) when the type is known — saves a stat call.
-- **`FS_METHOD = 'direct'` in `wp-config.php` is the standard "this host is fine, skip the form" override**. Recommend it in your docs for users who report seeing FTP prompts. Don't define it from your plugin — that's the host operator's call.
+- **Never prescribe `FS_METHOD = 'direct'` as a generic plugin fix**. It is a host-operator override after ownership and permissions are verified. Forcing it on a mismatched host can fail or create files with ownership that later blocks core updates. Never define it from a plugin.
 - **Don't store FTP credentials**. WP intentionally does NOT persist the password — the user re-enters it each session. Don't add your own "save FTP password" UI.
 
 ## Common AI mistakes
@@ -220,7 +242,15 @@ if ( ! WP_Filesystem( $creds, $context ) ) {
 }
 
 global $wp_filesystem;
-$wp_filesystem->put_contents( WP_CONTENT_DIR . '/myplugin-cache.json', $data, FS_CHMOD_FILE );
+$remote_content = $wp_filesystem->wp_content_dir();
+if ( ! $remote_content
+     || ! $wp_filesystem->put_contents(
+        trailingslashit( $remote_content ) . 'myplugin-cache.json',
+        $data,
+        FS_CHMOD_FILE
+     ) ) {
+    return;
+}
 ```
 
 ```php
@@ -242,24 +272,6 @@ if ( 'direct' !== get_filesystem_method() ) {
 if ( ! WP_Filesystem() ) {
     return new WP_Error( 'fs_unavailable', 'Filesystem initialization failed.' );
 }
-```
-
-```php
-// WRONG — overkill for an upload coming out of wp_handle_upload (it's already in writable uploads/)
-require_once ABSPATH . 'wp-admin/includes/file.php';
-WP_Filesystem();
-$wp_filesystem->put_contents( $uploaded['file'], $modified );
-
-// RIGHT — uploads/ is web-user-writable by definition
-file_put_contents( $uploaded['file'], $modified );
-```
-
-```php
-// WRONG — no chmod; permission set by transport defaults
-$wp_filesystem->put_contents( $path, $data );
-
-// RIGHT — match WP's own permission convention
-$wp_filesystem->put_contents( $path, $data, FS_CHMOD_FILE );
 ```
 
 ## Cross-references

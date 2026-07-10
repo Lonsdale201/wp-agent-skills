@@ -11,9 +11,9 @@ description: Register and review WordPress 7.0 Connectors API integrations
 author: Soczó Kristóf
 contact: mailto:lonsdale201@hotmail.com
 plugin: wordpress
-plugin-version-tested: "7.0"
+plugin-version-tested: "7.0.1"
 php-min: "7.4"
-last-updated: "2026-05-21"
+last-updated: "2026-07-10"
 docs:
   - https://make.wordpress.org/core/2026/03/18/introducing-the-connectors-api-in-wordpress-7-0/
   - https://make.wordpress.org/core/2026/05/14/wordpress-7-0-field-guide/
@@ -155,6 +155,10 @@ For public plugin integrations, register connector metadata in PHP and use ordin
 - **Do not duplicate WP AI Client provider connectors.** Let auto-discovery create them.
 - **Prefer env vars or constants for production API keys.**
 - **Do not expose raw keys through REST, logs, inline JS, or admin notices.**
+- **A configured connector is site-wide infrastructure, not automatic consent
+  for every plugin feature.** Require explicit feature/admin intent before
+  spending provider quota or sending site/user content, and disclose the data
+  boundary in the feature UI/privacy documentation.
 - **Do not rely on private `@wordpress/connectors` APIs for public plugin contracts.**
 
 ## Common mistakes

@@ -12,9 +12,9 @@ description: >-
 author: Soczó Kristóf
 contact: mailto:lonsdale201@hotmail.com
 plugin: wordpress
-plugin-version-tested: "6.9 - 7.0"
+plugin-version-tested: "6.9 - 7.0.1"
 php-min: "7.4"
-last-updated: "2026-05-21"
+last-updated: "2026-07-10"
 docs:
   - https://developer.wordpress.org/apis/abilities-api/
   - https://developer.wordpress.org/news/2025/11/introducing-the-wordpress-abilities-api/
@@ -176,9 +176,12 @@ Keep permission callbacks cheap and side-effect-free. In the REST run flow, Word
 ```php
 $ability = wp_get_ability( 'myplugin/site-info' );
 if ( $ability instanceof WP_Ability ) {
-    $result = $ability->execute( $input ); // $input is the args array matching input_schema
+    $result = $ability->execute(); // This ability has no input_schema.
 }
 ```
+
+For an ability with a non-empty `input_schema`, pass the matching normalized
+input array to `execute( $input )`.
 
 Helpers documented in the announcement:
 
@@ -196,99 +199,18 @@ wp> wp_get_ability( 'myplugin/site-info' );
 => object(WP_Ability) ...
 ```
 
-## REST exposure
+## REST and JavaScript exposure
 
-When `meta.show_in_rest = true`, the Ability is automatically exposed under:
+Set `meta.show_in_rest = true` for server abilities that external tools may
+discover/run. Core exposes list/get/run routes, enforces the ability permission
+callback, selects GET/POST/DELETE from annotations, and strips internal schema
+callbacks from REST responses. Public constraints belong in JSON Schema.
 
-- `GET /wp-json/wp-abilities/v1/abilities` — list all
-- `GET /wp-json/wp-abilities/v1/abilities/{namespace}/{ability}` — get one, where the captured `name` is `namespace/ability`
-- `GET|POST|DELETE /wp-json/wp-abilities/v1/abilities/{namespace}/{ability}/run` — execute
-- `GET /wp-json/wp-abilities/v1/categories` — list categories
-- `GET /wp-json/wp-abilities/v1/categories/{slug}` — get one category
-
-This path shape is verified against the WP 7.0 core REST controllers. If a handbook page, feature plugin, or bundled Composer package shows a different path shape, inspect `WP_REST_Abilities_V1_*_Controller::register_routes()` on the target site.
-
-The method is selected from annotations in the WP 7.0 run controller: `readonly: true` expects `GET`; `destructive: true` plus `idempotent: true` expects `DELETE`; everything else expects `POST`. The route is registered as `ALLMETHODS`, but incorrect methods return a 405 error.
-
-The `permission_callback` is enforced on the REST endpoints automatically; you don't need to write a separate `register_rest_route` permission check. REST list/get endpoints also require an authenticated user with `read`.
-
-In WP 7.0, REST ability responses strip WordPress-internal schema keys such as `sanitize_callback`, `validate_callback`, and `arg_options` before exposing schemas to clients. Do not rely on those keys being available in JS; put public constraints in JSON Schema keywords.
-
-This is the **primary reason to prefer Abilities over custom REST routes** for new code: one registration, one permission contract, one schema, and the registry is discoverable.
-
-## JavaScript client in WP 7.0
-
-Use `@wordpress/core-abilities` when client code needs server-registered abilities. It fetches categories and abilities from REST and registers callbacks that call the REST run endpoint:
-
-```php
-add_action( 'admin_enqueue_scripts', static function ( string $hook_suffix ): void {
-    if ( 'settings_page_myplugin' !== $hook_suffix ) {
-        return;
-    }
-
-    wp_enqueue_script_module( '@wordpress/core-abilities' );
-} );
-```
-
-Client code that immediately executes server abilities should await the bridge initialization:
-
-```js
-const { ready } = await import( '@wordpress/core-abilities' );
-const { executeAbility } = await import( '@wordpress/abilities' );
-
-await ready;
-
-const result = await executeAbility( 'myplugin/site-info', {
-    /* input matching input_schema */
-} );
-```
-
-Use only `@wordpress/abilities` for client-only abilities:
-
-```php
-wp_enqueue_script_module( '@wordpress/abilities' );
-```
-
-Import from the module, not from a global:
-
-```js
-const {
-    registerAbility,
-    registerAbilityCategory,
-    getAbilities,
-    executeAbility,
-} = await import( '@wordpress/abilities' );
-```
-
-Client-side categories must exist before client-side abilities:
-
-```js
-registerAbilityCategory( 'myplugin-actions', {
-    label: 'My Plugin Actions',
-    description: 'Actions provided by My Plugin.',
-} );
-
-registerAbility( {
-    name: 'myplugin/navigate-to-settings',
-    label: 'Navigate to Settings',
-    description: 'Navigates to the plugin settings screen.',
-    category: 'myplugin-actions',
-    permissionCallback: () => true,
-    callback: async () => {
-        window.location.href = '/wp-admin/options-general.php?page=myplugin';
-        return { success: true };
-    },
-    output_schema: {
-        type: 'object',
-        properties: {
-            success: { type: 'boolean' },
-        },
-        required: [ 'success' ],
-    },
-} );
-```
-
-`executeAbility()` validates input before calling `callback` and validates output after callback. A client `permissionCallback` can block local execution, but it is not a replacement for PHP permissions on server-side abilities.
+Use `@wordpress/core-abilities` to bridge server abilities into JavaScript and
+await its exported `ready` promise before immediate execution. Use
+`@wordpress/abilities` alone for client-only categories/abilities. Client-side
+permission callbacks never replace PHP authorization. Read `reference.md` for
+the verified route shapes, module bootstrap, and complete client examples.
 
 ## WP AI Client integration
 
@@ -313,12 +235,15 @@ Architectural details of the MCP adapter were not included in the Nov 2025 annou
 | Situation | Use |
 |---|---|
 | Operation that AI agents / external tools should discover and invoke | **Ability** |
-| Operation called only from your own JS / blocks, with rich validation | Either Ability (preferred) or custom REST route |
+| Typed operation called from your own JS and potentially reusable by tools | Ability |
+| Resource CRUD/public headless API with stable HTTP semantics | Custom REST route/controller |
 | Internal extension point (other plugins / themes can wire callbacks) | Custom action / filter hook (see `wp-plugin-hooks`) |
 | Pure UI rendering with no logic to expose externally | Block / shortcode, NOT an Ability |
 | Webhook receiver from a third-party service | Custom REST route — webhooks usually need a fixed URL contract that doesn't fit the Abilities namespace shape |
 
-The default in 2026 for new "operation surface" code in a WP plugin is: try as an Ability first.
+Choose by contract, not novelty: Ability for a discoverable typed operation,
+REST for an HTTP resource/integration contract, and an action/filter for an
+in-process extension point.
 
 ## Critical rules
 
@@ -336,60 +261,10 @@ The default in 2026 for new "operation surface" code in a WP plugin is: try as a
 
 ## Common mistakes
 
-```php
-// WRONG — registering on 'init' instead of 'wp_abilities_api_init'
-add_action( 'init', function () {
-    wp_register_ability( 'myplugin/foo', /* ... */ );
-} );
-
-// WRONG — no category registered, ability registration returns null
-wp_register_ability( 'myplugin/foo', array(
-    'category' => 'never-registered',
-    /* ... */
-) );
-
-// WRONG — permission_callback always returns true on a write action
-'permission_callback' => '__return_true', // anyone with REST access can invoke
-
-// WRONG — empty description; AI agents have nothing to choose against
-'description' => '',
-
-// WRONG — ability expects input but has no schema; provided input is rejected
-'input_schema'    => array(),
-'execute_callback' => function ( array $input ) {
-    if ( ! isset( $input['post_id'] ) || ! is_numeric( $input['post_id'] ) ) { /* ... */ }
-}
-// Should be: declare 'post_id' as a required integer in input_schema. With a
-// non-empty input_schema, the callback receives the normalized input.
-
-// WRONG — namespace collision with another plugin
-wp_register_ability( 'tools/cancel', /* ... */ ); // generic; collide-prone
-
-// RIGHT — plugin-prefixed namespace
-wp_register_ability( 'myplugin/cancel-subscription', /* ... */ );
-```
-
-```js
-// WRONG - category was not registered first.
-registerAbility( {
-    name: 'myplugin/do-thing',
-    category: 'myplugin-actions',
-    callback: async () => ( { ok: true } ),
-} );
-
-// RIGHT
-registerAbilityCategory( 'myplugin-actions', {
-    label: 'My Plugin Actions',
-    description: 'Actions provided by My Plugin.',
-} );
-registerAbility( {
-    name: 'myplugin/do-thing',
-    label: 'Do Thing',
-    description: 'Runs the thing.',
-    category: 'myplugin-actions',
-    callback: async () => ( { ok: true } ),
-} );
-```
+Audit wrong lifecycle hooks, missing categories/schemas/permissions,
+unconditional permission on privileged writes, empty descriptions, generic
+namespaces, client categories registered after their abilities, and blanket AI
+tool allowlists. Corrected examples are in `reference.md`.
 
 ## Cross-references
 

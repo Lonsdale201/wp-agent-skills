@@ -27,7 +27,13 @@ The toolbar Select button dispatches `select`. Do not listen to `close` for "use
 ```php
 $sanitize_logo_id = static function ( $value ): int {
     $id = absint( $value );
-    return ( $id && 'attachment' === get_post_type( $id ) ) ? $id : 0;
+    if ( ! current_user_can( 'upload_files' )
+         || ! $id
+         || 'attachment' !== get_post_type( $id )
+         || ! wp_attachment_is_image( $id ) ) {
+        return 0;
+    }
+    return $id;
 };
 ```
 
@@ -140,4 +146,5 @@ $preview.html( `<img src="${ attachment.sizes.thumbnail.url }">` );
 const src = ( attachment.sizes && attachment.sizes.thumbnail && attachment.sizes.thumbnail.url )
     || ( attachment.sizes && attachment.sizes.medium && attachment.sizes.medium.url )
     || attachment.url;
+$preview.empty().append( $( '<img>', { src, alt: '' } ) );
 ```
