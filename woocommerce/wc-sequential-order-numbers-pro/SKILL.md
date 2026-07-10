@@ -67,13 +67,8 @@ Relevant public surfaces:
 
 - `$order->get_order_number()` via the `woocommerce_order_number` filter.
 - `wc_seq_order_number_pro()->find_order_by_order_number( $number )`.
-- `wc_seq_order_number_pro()->set_sequential_order_number( $order_id, $object = [] )`
-  for rare programmatic-order repair after the order exists and is not a checkout
-  draft. The first argument accepts either a `WC_Order` or an order ID (internally
-  `$order_id instanceof WC_Order ? $order_id : wc_get_order( $order_id )`); the
-  optional second argument is the hook payload (WordPress passes the post/object
-  as the 2nd arg on `save_post` / `woocommerce_process_shop_order_meta`). It is a
-  no-op when a number already exists, so it never overwrites one.
+- `wc_seq_order_number_pro()->set_sequential_order_number( $order )` for rare
+  programmatic-order repair after the order exists and is not a checkout draft.
 - `wc_seq_order_number_pro()->format_order_number(...)` when building previews,
   not when reading an existing order.
 
@@ -186,7 +181,6 @@ If a legacy importer creates a real order and bypasses all Woo hooks, call:
 
 ```php
 if ( function_exists( 'wc_seq_order_number_pro' ) ) {
-	// First arg accepts a WC_Order or an order ID; see the signature above.
 	wc_seq_order_number_pro()->set_sequential_order_number( $order );
 }
 ```

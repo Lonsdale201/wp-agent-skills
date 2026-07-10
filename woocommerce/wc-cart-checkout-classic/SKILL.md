@@ -1,12 +1,12 @@
 ---
 name: wc-cart-checkout-classic
-description: Customize the classic WooCommerce cart and shortcode checkout with `woocommerce_add_cart_item_data`, `woocommerce_get_item_data`, `woocommerce_before_calculate_totals`, `woocommerce_cart_calculate_fees`, `woocommerce_checkout_fields`, `woocommerce_after_checkout_validation`, `woocommerce_checkout_update_order_meta`, and `woocommerce_checkout_create_order_line_item`. Covers cart-key merging, absolute price mutation, fees, classic checkout fields, order-line meta vs order meta, HPOS-safe order saves, and the Checkout Block / Store API boundary. Use when adding product options, custom cart data, fees, classic checkout fields, validation, or debugging missing/duplicated cart/order item data.
+description: Customize the classic WooCommerce cart and shortcode checkout with `woocommerce_add_cart_item_data`, `woocommerce_get_item_data`, `woocommerce_before_calculate_totals`, `woocommerce_cart_calculate_fees`, `woocommerce_checkout_fields`, `woocommerce_after_checkout_validation`, `woocommerce_checkout_create_order`, and `woocommerce_checkout_create_order_line_item`. Covers cart-key merging, stable meta keys, absolute price mutation, fees, classic checkout fields, HPOS-safe order saves, and the Checkout Block / Store API boundary. Use when adding product options, custom cart data, fees, classic checkout fields, validation, or debugging missing or duplicated cart/order item data.
 author: Soczó Kristóf
 contact: mailto:lonsdale201@hotmail.com
 plugin: woocommerce
-plugin-version-tested: "10.8.0"
+plugin-version-tested: "10.9.4"
 php-min: "7.4"
-last-updated: "2026-05-27"
+last-updated: "2026-07-10"
 docs:
   - https://woocommerce.com/document/tutorial-customising-checkout-fields-using-actions-and-filters/
 source-refs:
@@ -117,18 +117,22 @@ add_action(
             return;
         }
 
-        $item->add_meta_data(
-            __( 'Engraving', 'myplugin' ),
-            sanitize_text_field( $values['myplugin_engraving'] ),
-            true
-        );
+        $item->add_meta_data( 'myplugin_engraving', sanitize_text_field( $values['myplugin_engraving'] ), true );
     },
     10,
     4
 );
 ```
 
-Use a private meta key such as `_myplugin_config` if the value is for machine logic only. Use a readable label when the value should appear to admins/customers.
+Never translate a stored meta key: the key would change with the checkout locale. Keep a stable private key and deliberately expose a translated label where needed:
+
+```php
+add_filter( 'woocommerce_order_item_display_meta_key', static function ( string $label, WC_Meta_Data $meta ): string {
+    return 'myplugin_engraving' === $meta->key ? __( 'Engraving', 'myplugin' ) : $label;
+}, 10, 2 );
+```
+
+Keys beginning with `_` are omitted by storefront/e-mail formatted item meta. Use an underscore-prefixed key such as `_myplugin_config` only for machine data that should remain hidden; otherwise use a stable namespaced visible key and translate its display label as above.
 
 ## Dynamic cart item prices
 
@@ -142,7 +146,9 @@ add_filter(
     static function ( array $cart_item_data, int $product_id, int $variation_id ): array {
         $product = wc_get_product( $variation_id ?: $product_id );
         if ( $product instanceof WC_Product ) {
-            $cart_item_data['myplugin_base_price'] = (float) $product->get_price( 'edit' );
+            // Choose the canonical base deliberately. View context includes active
+            // runtime price filters; edit context means the stored raw value.
+            $cart_item_data['myplugin_base_price'] = (float) $product->get_price();
         }
         return $cart_item_data;
     },
@@ -198,6 +204,8 @@ add_action(
 
 Fees become `WC_Order_Item_Fee` items during checkout. They are not product line items.
 
+Do not use a negative fee as a discount. It creates confusing tax/refund/accounting behavior; use a WooCommerce coupon or a purpose-built discount calculation.
+
 ## Classic checkout fields
 
 `woocommerce_checkout_fields` modifies the field arrays for classic checkout sections: `billing`, `shipping`, `account`, and `order`.
@@ -234,24 +242,20 @@ add_action(
 );
 
 add_action(
-    'woocommerce_checkout_update_order_meta',
-    static function ( int $order_id, array $data ): void {
+    'woocommerce_checkout_create_order',
+    static function ( WC_Order $order, array $data ): void {
         if ( empty( $data['billing_vat_id'] ) ) {
             return;
         }
 
-        $order = wc_get_order( $order_id );
-        if ( ! $order instanceof WC_Order ) {
-            return;
-        }
-
         $order->update_meta_data( '_billing_vat_id', sanitize_text_field( $data['billing_vat_id'] ) );
-        $order->save();
     },
     10,
     2
 );
 ```
+
+`woocommerce_checkout_create_order` runs before the checkout's first order save, so no reload or extra write is needed. The older `woocommerce_checkout_update_order_meta` hook receives an already-created order ID and costs an additional CRUD save.
 
 Use Woo order APIs for HPOS compatibility. Never write checkout order data with `update_post_meta( $order_id, ... )`.
 

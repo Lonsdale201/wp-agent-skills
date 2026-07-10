@@ -4,9 +4,9 @@ description: Store and use WooCommerce saved payment methods through `WC_Payment
 author: Soczó Kristóf
 contact: mailto:lonsdale201@hotmail.com
 plugin: woocommerce
-plugin-version-tested: "10.8.0"
+plugin-version-tested: "10.9.4"
 php-min: "7.4"
-last-updated: "2026-05-27"
+last-updated: "2026-07-10"
 docs:
   - https://woocommerce.com/document/payment-gateway-api/
 source-refs:
@@ -126,7 +126,15 @@ function myplugin_save_card_token( int $user_id, string $provider_token, array $
         return null;
     }
 
-    $token->save();
+    try {
+        $token_id = $token->save();
+    } catch ( Exception $e ) {
+        return null;
+    }
+
+    if ( ! $token_id ) {
+        return null;
+    }
 
     return $token;
 }
@@ -150,7 +158,9 @@ foreach ( $tokens as $token ) {
 
 When no gateway ID is passed, WooCommerce filters to currently registered gateway IDs plus an empty gateway ID. During migrations or disabled-gateway cleanup, query the explicit old gateway ID or you may not see those tokens.
 
-Use `WC_Payment_Tokens::get_order_tokens( $order_id )` when you need token objects attached to an order. In WC 10.8, `$order->get_payment_tokens()` returns token IDs from the order data store; `WC_Payment_Tokens::get_order_tokens()` wraps them into token objects.
+`get_customer_tokens()` is also limited by `woocommerce_get_customer_payment_tokens_limit` (`posts_per_page` by default). A migration that must enumerate every token should page through `WC_Payment_Tokens::get_tokens()` with explicit `user_id`, `gateway_id`, `limit`, and `page` arguments instead of assuming one call returns all rows.
+
+Use `WC_Payment_Tokens::get_order_tokens( $order_id )` when you need token objects attached to an order. In WC 10.9.4, `$order->get_payment_tokens()` returns token IDs from the order data store; `WC_Payment_Tokens::get_order_tokens()` wraps them into token objects.
 
 ## Validate a chosen saved token at checkout
 
@@ -224,7 +234,15 @@ WC_Payment_Tokens::set_users_default( $token->get_user_id(), $token_id );
 For deletion:
 
 ```php
-if ( $token instanceof WC_Payment_Token && (int) $token->get_user_id() === get_current_user_id() ) {
+$delete_nonce = isset( $_POST['_wpnonce'] )
+    ? sanitize_text_field( wp_unslash( $_POST['_wpnonce'] ) )
+    : '';
+
+if (
+    $token instanceof WC_Payment_Token &&
+    (int) $token->get_user_id() === get_current_user_id() &&
+    wp_verify_nonce( $delete_nonce, 'delete-payment-method-' . $token_id )
+) {
     WC_Payment_Tokens::delete( $token->get_id() );
 }
 ```
@@ -258,6 +276,5 @@ Deleting a WooCommerce token does not automatically revoke the token at your pay
 ## Cross-skill routing
 
 - Gateway `process_payment()` and add-payment-method flow: `wc-payment-gateway`
-- Subscriptions recurring saved-token charges: `wcs-renewal-scheduler`
 - HPOS-safe order reads/writes: `wc-hpos-compatibility`
 - Store API payment requirements: `wc-store-api`
