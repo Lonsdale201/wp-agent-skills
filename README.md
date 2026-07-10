@@ -1,5 +1,7 @@
 # wp-agent-skills
 
+**182 skills · 28 plugins**
+
 A community-maintained collection of **agent skills** for WordPress plugin and theme development.
 
 These skills give an AI coding assistant a concrete, version-tested playbook for common WordPress development tasks — security audits, scaffolding, REST API patterns, plugin-specific helpers (WooCommerce, JetEngine, JetFormBuilder, etc.) — so you spend less time re-explaining "the WordPress way" on every project.

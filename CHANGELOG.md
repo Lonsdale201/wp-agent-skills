@@ -4,6 +4,10 @@ This collection is continuously evolving — entries are date-based, not version
 
 ## 2026-07-10
 
+### Repo / docs
+
+- Root `README.md` now shows a coverage line under the title — **182 skills · 28 plugins** (skill count + distinct plugins/products the skills cover, excluding WordPress core). Bump both numbers when skills/plugins are added.
+
 ### New skill — `elementor/elementor-experiments-and-markup` (Elementor 4.1.4 / Pro 4.1.2)
 
 - **`elementor/elementor-experiments-and-markup`** — Design addons / widgets / dynamic tags to survive Elementor's two STABLE, default-ON "Performance" experiments that change rendered HTML. Covers runtime detection (`Plugin::$instance->experiments->is_feature_active()` — the effective default differs between fresh and upgraded installs, so never assume), **Optimized Markup** (`e_optimized_markup`, drops the `.elementor-widget-container` inner wrapper — your own widget keeps it because `Element_Base::has_widget_inner_wrapper()` defaults to `true`, but CSS/JS targeting core/Pro widgets' wrapper breaks; override the method with the core one-liner to opt in), **Inline Font Icons** (`e_font_icon_svg`, renders inline SVG and does not load Font Awesome CSS on the frontend — always emit icons via `Icons_Manager::render_icon()`, and note the editor still loads fonts so a hardcoded `<i>` looks fine there but breaks live), and registering your own experiment via `elementor/experiments/default-features-registered`. Grounded in verified 4.1.4 / 4.1.2 line refs. `plugin: elementor`, `plugin-version-tested: "4.1.4 (free) / 4.1.2 (pro)"`, `php-min: "7.4"`.
