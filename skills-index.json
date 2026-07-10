@@ -12,7 +12,7 @@
     "skill_file": "SKILL.md"
   },
   "domain_count": 19,
-  "skill_count": 185,
+  "skill_count": 186,
   "domains": [
     {
       "slug": "better-data",
@@ -108,7 +108,7 @@
       "slug": "woocommerce",
       "path": "woocommerce",
       "readme_path": "woocommerce/README.md",
-      "skill_count": 31
+      "skill_count": 32
     },
     {
       "slug": "wordpress",
@@ -5435,7 +5435,7 @@
       "slug": "wc-action-scheduler-jobs",
       "name": "wc-action-scheduler-jobs",
       "domain": "woocommerce",
-      "description": "Queue and run WooCommerce background jobs with Action Scheduler. Covers `as_enqueue_async_action`, `as_schedule_single_action`, `as_schedule_recurring_action`, `as_schedule_cron_action`, `as_has_scheduled_action`, `as_next_scheduled_action`, `as_unschedule_action`, `as_unschedule_all_actions`, groups, scalar args, WP-CLI runner, activation/deactivation scheduling, batching, idempotency, and the important WC 10.8 DB-store gotcha that `$unique` prevents another pending/running action with the same hook and group, not one per argument set. Use when moving slow order/product/customer work out of requests or status hooks.",
+      "description": "Queue and run WooCommerce background jobs with Action Scheduler. Covers async, single, recurring and cron actions, exact-argument checks, groups, scalar args, WP-CLI, lifecycle scheduling, batching, idempotency, and the WC 10.9.4 DB-store rule that `$unique` guards pending/running actions by hook and group rather than argument set. Use when moving slow order/product/customer work out of requests or status hooks.",
       "path": "woocommerce/wc-action-scheduler-jobs",
       "skill_path": "woocommerce/wc-action-scheduler-jobs/SKILL.md",
       "url": "https://raw.githubusercontent.com/Lonsdale201/wp-agent-skills/main/woocommerce/wc-action-scheduler-jobs/SKILL.md",
@@ -5446,9 +5446,9 @@
         "author": "Soczó Kristóf",
         "contact": "mailto:lonsdale201@hotmail.com",
         "plugin": "woocommerce",
-        "plugin-version-tested": "10.8.0",
+        "plugin-version-tested": "10.9.4",
         "php-min": "7.4",
-        "last-updated": "2026-05-27",
+        "last-updated": "2026-07-10",
         "docs": [
           "https://actionscheduler.org/"
         ],
@@ -5465,9 +5465,9 @@
       "has_examples": false,
       "has_scripts": false,
       "skill_md": {
-        "bytes": 8699,
-        "lines": 208,
-        "sha256": "9cf50495cbb269205b3b4f198a6d27d5fc9287d21ed1ab9c88455e36ae383754"
+        "bytes": 8867,
+        "lines": 207,
+        "sha256": "5deeefc9ad28fcacb6434874ed8cd29f57ad47f731dbdd0c25785274ef78c559"
       }
     },
     {
@@ -5485,9 +5485,9 @@
         "author": "Soczó Kristóf",
         "contact": "mailto:lonsdale201@hotmail.com",
         "plugin": "woocommerce",
-        "plugin-version-tested": "10.9.3",
+        "plugin-version-tested": "10.9.4",
         "php-min": "7.4",
-        "last-updated": "2026-07-06",
+        "last-updated": "2026-07-10",
         "source-refs": [
           "wp-content/plugins/woocommerce/includes/wc-core-functions.php",
           "wp-content/plugins/woocommerce/includes/wc-template-hooks.php",
@@ -5504,14 +5504,14 @@
       "skill_md": {
         "bytes": 7019,
         "lines": 182,
-        "sha256": "d93018ea840df3245e9c07d11cf2f4e437bde049b57fa2711bbc4419c128afb8"
+        "sha256": "712c503db51a1ac1990752793db3f59f5adbdac91462ad4e80f73522703914d4"
       }
     },
     {
       "slug": "wc-cart-checkout-classic",
       "name": "wc-cart-checkout-classic",
       "domain": "woocommerce",
-      "description": "Customize the classic WooCommerce cart and shortcode checkout with `woocommerce_add_cart_item_data`, `woocommerce_get_item_data`, `woocommerce_before_calculate_totals`, `woocommerce_cart_calculate_fees`, `woocommerce_checkout_fields`, `woocommerce_after_checkout_validation`, `woocommerce_checkout_update_order_meta`, and `woocommerce_checkout_create_order_line_item`. Covers cart-key merging, absolute price mutation, fees, classic checkout fields, order-line meta vs order meta, HPOS-safe order saves, and the Checkout Block / Store API boundary. Use when adding product options, custom cart data, fees, classic checkout fields, validation, or debugging missing/duplicated cart/order item data.",
+      "description": "Customize the classic WooCommerce cart and shortcode checkout with `woocommerce_add_cart_item_data`, `woocommerce_get_item_data`, `woocommerce_before_calculate_totals`, `woocommerce_cart_calculate_fees`, `woocommerce_checkout_fields`, `woocommerce_after_checkout_validation`, `woocommerce_checkout_create_order`, and `woocommerce_checkout_create_order_line_item`. Covers cart-key merging, stable meta keys, absolute price mutation, fees, classic checkout fields, HPOS-safe order saves, and the Checkout Block / Store API boundary. Use when adding product options, custom cart data, fees, classic checkout fields, validation, or debugging missing or duplicated cart/order item data.",
       "path": "woocommerce/wc-cart-checkout-classic",
       "skill_path": "woocommerce/wc-cart-checkout-classic/SKILL.md",
       "url": "https://raw.githubusercontent.com/Lonsdale201/wp-agent-skills/main/woocommerce/wc-cart-checkout-classic/SKILL.md",
@@ -5522,9 +5522,9 @@
         "author": "Soczó Kristóf",
         "contact": "mailto:lonsdale201@hotmail.com",
         "plugin": "woocommerce",
-        "plugin-version-tested": "10.8.0",
+        "plugin-version-tested": "10.9.4",
         "php-min": "7.4",
-        "last-updated": "2026-05-27",
+        "last-updated": "2026-07-10",
         "docs": [
           "https://woocommerce.com/document/tutorial-customising-checkout-fields-using-actions-and-filters/"
         ],
@@ -5541,16 +5541,16 @@
       "has_examples": false,
       "has_scripts": false,
       "skill_md": {
-        "bytes": 10310,
-        "lines": 275,
-        "sha256": "082dc0b4a38e1f160e35fdbf7d17f3b16dd43285c9cd934ec1fe913efe6f8a0a"
+        "bytes": 11169,
+        "lines": 279,
+        "sha256": "29b174020317f0dbbe1abeee165e180975b4922cb9fed4b7b67ccf89fb0c9a1f"
       }
     },
     {
       "slug": "wc-coupon-dynamic",
       "name": "wc-coupon-dynamic",
       "domain": "woocommerce",
-      "description": "Synthesize WooCommerce coupons at runtime without creating shop_coupon posts in the DB — via the woocommerce_get_shop_coupon_data filter, the hidden-but-powerful virtual-coupon mechanism. Filter fires inside WC_Coupon::__construct, and a non-false return becomes a fully functional coupon read through read_manual_coupon. Plus custom discount types via woocommerce_coupon_discount_types and woocommerce_coupon_get_discount_amount, and the validation triple woocommerce_coupon_is_valid / _is_valid_for_cart / _is_valid_for_product. Use when implementing rule-driven coupons (auto-apply X% to logged-in users, code-pattern detection like LOYALTY-42, external CRM integration that hands out codes), without populating wp_posts. The AI-deficient pattern; most LLMs don't know dynamic coupons exist. Triggers on woocommerce_get_shop_coupon_data, woocommerce_coupon_discount_types, woocommerce_coupon_get_discount_amount, read_manual_coupon, virtual coupon, dynamic coupon in WC context.",
+      "description": "Implement dynamic or virtual WooCommerce coupons without creating `shop_coupon` posts. Covers `woocommerce_get_shop_coupon_data`, the `read_manual_coupon` field contract, precedence, validation, custom discount types, exact usage-limit behavior, idempotent usage accounting, performance, and security. Use for generated loyalty, partner, campaign, or entitlement codes resolved from an owned table or service.",
       "path": "woocommerce/wc-coupon-dynamic",
       "skill_path": "woocommerce/wc-coupon-dynamic/SKILL.md",
       "url": "https://raw.githubusercontent.com/Lonsdale201/wp-agent-skills/main/woocommerce/wc-coupon-dynamic/SKILL.md",
@@ -5561,17 +5561,16 @@
         "author": "Soczó Kristóf",
         "contact": "mailto:lonsdale201@hotmail.com",
         "plugin": "woocommerce",
-        "plugin-version-tested": "10.7",
+        "plugin-version-tested": "10.9.4",
         "php-min": "7.4",
-        "last-updated": "2026-04-28",
+        "last-updated": "2026-07-10",
         "docs": [
-          "https://woocommerce.com/document/woocommerce-coupons/"
+          "https://woocommerce.github.io/code-reference/classes/WC-Coupon.html"
         ],
         "source-refs": [
           "wp-content/plugins/woocommerce/includes/class-wc-coupon.php",
           "wp-content/plugins/woocommerce/includes/class-wc-discounts.php",
-          "wp-content/plugins/woocommerce/includes/wc-coupon-functions.php",
-          "wp-content/plugins/woocommerce/includes/class-wc-cart.php"
+          "wp-content/plugins/woocommerce/includes/wc-coupon-functions.php"
         ]
       },
       "resources": [],
@@ -5579,16 +5578,16 @@
       "has_examples": false,
       "has_scripts": false,
       "skill_md": {
-        "bytes": 21552,
-        "lines": 393,
-        "sha256": "1454c15d0129d5531282c3b2ead6f0c14ad82e5899bcca31a1c3726a0e0c2666"
+        "bytes": 8489,
+        "lines": 208,
+        "sha256": "f276587858a22f17be860c638815c889d99d293eea91441eb7d3d64b19618ae2"
       }
     },
     {
       "slug": "wc-customer-and-sessions",
       "name": "wc-customer-and-sessions",
       "domain": "woocommerce",
-      "description": "Use WooCommerce's customer and session APIs correctly — WC ships its own session handler (WC_Session_Handler, single wp_woocommerce_sessions table for both guests and logged-in users) and its own customer object (WC_Customer via WC()->customer). Avoid $_SESSION, direct setcookie, and user_meta for guest/session state. Use WC()->session->set/get for ephemeral visitor data, WC()->customer->get_billing_* for active customer context including guests, and new WC_Customer($user_id) for one-off loads. WC()->session auto-inits only on frontend/admin-ajax; REST, cron, and WP-CLI must call wc_load_cart() explicitly, while Store API cart/checkout routes can use Cart-Token sessions. Use when storing per-visitor state, reading billing data, or debugging session loss across cache/REST/cron. Triggers on WC_Session, WC_Session_Handler, WC_Customer, WC()->session, WC()->customer, wp_woocommerce_sessions.",
+      "description": "Use WooCommerce customer objects and sessions without confusing checkout-session state with persistent account data. Covers `WC()->customer`, `WC_Customer( $user_id )`, `WC()->session`, cookie creation, shutdown persistence, guest-to-user migration, Cart-Token sessions, safe session values, and the experimental empty-session cleanup. Use when storing cart-flow state, changing billing or shipping data, creating guest sessions, or debugging values that disappear or unexpectedly alter checkout only.",
       "path": "woocommerce/wc-customer-and-sessions",
       "skill_path": "woocommerce/wc-customer-and-sessions/SKILL.md",
       "url": "https://raw.githubusercontent.com/Lonsdale201/wp-agent-skills/main/woocommerce/wc-customer-and-sessions/SKILL.md",
@@ -5599,23 +5598,19 @@
         "author": "Soczó Kristóf",
         "contact": "mailto:lonsdale201@hotmail.com",
         "plugin": "woocommerce",
-        "plugin-version-tested": "10.8.0",
+        "plugin-version-tested": "10.9.4",
         "php-min": "7.4",
-        "last-updated": "2026-05-26",
+        "last-updated": "2026-07-10",
         "docs": [
-          "https://woocommerce.com/document/woocommerce-data-storage/"
+          "https://woocommerce.github.io/code-reference/classes/WC-Customer.html"
         ],
         "source-refs": [
+          "wp-content/plugins/woocommerce/includes/class-wc-customer.php",
           "wp-content/plugins/woocommerce/includes/abstracts/abstract-wc-session.php",
           "wp-content/plugins/woocommerce/includes/class-wc-session-handler.php",
-          "wp-content/plugins/woocommerce/includes/class-wc-customer.php",
-          "wp-content/plugins/woocommerce/includes/class-wc-cart-session.php",
-          "wp-content/plugins/woocommerce/includes/class-woocommerce.php",
-          "wp-content/plugins/woocommerce/includes/wc-core-functions.php",
-          "wp-content/plugins/woocommerce/src/StoreApi/Authentication.php",
+          "wp-content/plugins/woocommerce/includes/data-stores/class-wc-customer-data-store-session.php",
           "wp-content/plugins/woocommerce/src/StoreApi/SessionHandler.php",
-          "wp-content/plugins/woocommerce/src/StoreApi/Routes/V1/AbstractCartRoute.php",
-          "wp-content/plugins/woocommerce/src/StoreApi/Utilities/CartController.php"
+          "wp-content/plugins/woocommerce/src/Internal/Features/FeaturesController.php"
         ]
       },
       "resources": [],
@@ -5623,16 +5618,16 @@
       "has_examples": false,
       "has_scripts": false,
       "skill_md": {
-        "bytes": 24039,
-        "lines": 376,
-        "sha256": "1e7ba1da73808f1b04a668c8e37fa2ffe233047e3e11a3b9cab78e569080cb79"
+        "bytes": 8288,
+        "lines": 193,
+        "sha256": "d3922148d2123d80af649af4a9794dde907c0d77e38596c3eeb5a5411e10a0ca"
       }
     },
     {
       "slug": "wc-emails-classic",
       "name": "wc-emails-classic",
       "domain": "woocommerce",
-      "description": "Customize WooCommerce transactional emails the classic PHP-template way (NOT the block email editor) — extend WC_Email, declare $id / $title / $template_html / $template_plain / $placeholders, hook trigger() to a woocommerce_order_status_*_notification action, register via the woocommerce_email_classes filter. Plus the canonical template-override pattern (copy templates/emails/*.php to your theme's /woocommerce/emails/ folder; wc_get_template resolves them automatically), WC 10.9 transactional email logging hooks, and the get_default_subject / get_default_heading override pattern for admin-customizable strings. Use when adding a new transactional email (custom shipped notification, vendor split, internal alert), overriding an existing template, or customizing strings that the admin Settings cannot reach. Triggers on WC_Email, woocommerce_email_classes, woocommerce_order_status_*_notification, woocommerce_email_sent, woocommerce_email_skipped, woocommerce_email_disabled, wc_get_template_html, template_html / template_plain in WC context, \"transactional email\" / \"send WooCommerce email programmatically\".",
+      "description": "Add or customize classic WooCommerce transactional emails with `WC_Email`. Covers registration, constructor timing, templates and theme overrides, status notification triggers, locale handling, the WooCommerce 10.9 `send_notification()` guard, disabled/skipped/sent outcome hooks, HPOS-safe order data, and one-off styled mail. Use when adding an email type, overriding email templates, or debugging sends that bypass settings and logging.",
       "path": "woocommerce/wc-emails-classic",
       "skill_path": "woocommerce/wc-emails-classic/SKILL.md",
       "url": "https://raw.githubusercontent.com/Lonsdale201/wp-agent-skills/main/woocommerce/wc-emails-classic/SKILL.md",
@@ -5643,20 +5638,18 @@
         "author": "Soczó Kristóf",
         "contact": "mailto:lonsdale201@hotmail.com",
         "plugin": "woocommerce",
-        "plugin-version-tested": "10.9.1",
+        "plugin-version-tested": "10.9.4",
         "php-min": "7.4",
-        "last-updated": "2026-06-29",
+        "last-updated": "2026-07-10",
         "docs": [
           "https://woocommerce.com/document/template-structure/"
         ],
         "source-refs": [
-          "wp-content/plugins/woocommerce/includes/class-wc-emails.php",
           "wp-content/plugins/woocommerce/includes/emails/class-wc-email.php",
+          "wp-content/plugins/woocommerce/includes/class-wc-emails.php",
           "wp-content/plugins/woocommerce/includes/emails/class-wc-email-customer-processing-order.php",
-          "wp-content/plugins/woocommerce/includes/emails/class-wc-email-customer-review-request.php",
-          "wp-content/plugins/woocommerce/includes/wc-core-functions.php",
           "wp-content/plugins/woocommerce/src/Internal/Email/EmailLogger.php",
-          "wp-content/plugins/woocommerce/templates/emails/"
+          "wp-content/plugins/woocommerce/templates/emails"
         ]
       },
       "resources": [],
@@ -5664,16 +5657,16 @@
       "has_examples": false,
       "has_scripts": false,
       "skill_md": {
-        "bytes": 23279,
-        "lines": 399,
-        "sha256": "4601ce0b298c1efb28c2fdb8e946a1f3da0e0153ee363a581099cd7c39585f15"
+        "bytes": 8977,
+        "lines": 227,
+        "sha256": "f969f9948df2c299bdb788e9afdbc11858f79d25b4e539b7f02fb840a42a8b84"
       }
     },
     {
       "slug": "wc-hpos-compatibility",
       "name": "wc-hpos-compatibility",
       "domain": "woocommerce",
-      "description": "Make a WooCommerce plugin HPOS-compatible (High-Performance Order Storage, default-on in WC 10.x) — declare via FeaturesUtil::declare_compatibility on before_woocommerce_init, replace $wpdb->postmeta / WP_Query order code with wc_get_orders + WC_Order::get_meta / update_meta_data, gate runtime branches on OrderUtil::custom_orders_table_usage_is_enabled, use OrderUtil::get_order_admin_screen for screen IDs while branching order-list hook names by HPOS vs legacy mode. Use when scaffolding an order-touching plugin, auditing existing code for HPOS readiness, or fixing post-WC-10 silent breakage. Triggers on shop_order, get_post_meta with order context, FeaturesUtil, OrderUtil, custom_order_tables, before_woocommerce_init.",
+      "description": "Make WooCommerce order integrations compatible with High-Performance Order Storage. Covers compatibility declaration, order CRUD and queries, authoritative storage, sync mode, HPOS-aware admin list/meta-box hooks, cache-safe metadata access, migrations, and dual-mode testing. Use when a plugin reads or writes orders, queries order metadata, adds order admin UI, runs SQL, or declares `custom_order_tables` compatibility.",
       "path": "woocommerce/wc-hpos-compatibility",
       "skill_path": "woocommerce/wc-hpos-compatibility/SKILL.md",
       "url": "https://raw.githubusercontent.com/Lonsdale201/wp-agent-skills/main/woocommerce/wc-hpos-compatibility/SKILL.md",
@@ -5684,23 +5677,18 @@
         "author": "Soczó Kristóf",
         "contact": "mailto:lonsdale201@hotmail.com",
         "plugin": "woocommerce",
-        "plugin-version-tested": "10.9.1",
+        "plugin-version-tested": "10.9.4",
         "php-min": "7.4",
-        "last-updated": "2026-06-29",
+        "last-updated": "2026-07-10",
         "docs": [
-          "https://developer.woocommerce.com/docs/hpos/",
-          "https://github.com/woocommerce/woocommerce/wiki/High-Performance-Order-Storage-Upgrade-Recipe-Book"
+          "https://developer.woocommerce.com/docs/features/high-performance-order-storage/extension-recipe-book/"
         ],
         "source-refs": [
           "wp-content/plugins/woocommerce/src/Utilities/FeaturesUtil.php",
           "wp-content/plugins/woocommerce/src/Utilities/OrderUtil.php",
-          "wp-content/plugins/woocommerce/src/Internal/Utilities/COTMigrationUtil.php",
-          "wp-content/plugins/woocommerce/src/Internal/Admin/Orders/PageController.php",
           "wp-content/plugins/woocommerce/src/Internal/DataStores/Orders/OrdersTableDataStore.php",
-          "wp-content/plugins/woocommerce/src/Internal/DataStores/Orders/OrdersTableQuery.php",
-          "wp-content/plugins/woocommerce/includes/wc-update-functions.php",
-          "wp-content/plugins/woocommerce/src/Admin/Features/Fulfillments/FulfillmentsRenderer.php",
-          "wp-content/plugins/woocommerce-subscriptions/includes/core/class-wc-subscriptions-order.php"
+          "wp-content/plugins/woocommerce/src/Internal/DataStores/Orders/CustomOrdersTableController.php",
+          "wp-content/plugins/woocommerce/includes/wc-order-functions.php"
         ]
       },
       "resources": [],
@@ -5708,9 +5696,48 @@
       "has_examples": false,
       "has_scripts": false,
       "skill_md": {
-        "bytes": 23420,
-        "lines": 411,
-        "sha256": "f9dce566e843d9a6584c8f61e4882db814338fd3a2f1e0eeb288d6bdea79a483"
+        "bytes": 8469,
+        "lines": 215,
+        "sha256": "37a6c3f2a36bb4497c35aa516c79bd2e2ab8a697ccb127e162dd633d8290aa4c"
+      }
+    },
+    {
+      "slug": "wc-logging",
+      "name": "wc-logging",
+      "domain": "woocommerce",
+      "description": "Add production-safe WooCommerce logs with `wc_get_logger()`. Covers stable sources, severity levels and thresholds, structured context, correlation IDs, sensitive-data redaction, handler and retention behavior, volume control, custom handlers, and why logs are not durable business state. Use when adding diagnostics to gateways, webhooks, background jobs, imports, REST endpoints, or order integrations.",
+      "path": "woocommerce/wc-logging",
+      "skill_path": "woocommerce/wc-logging/SKILL.md",
+      "url": "https://raw.githubusercontent.com/Lonsdale201/wp-agent-skills/main/woocommerce/wc-logging/SKILL.md",
+      "raw_url": "https://raw.githubusercontent.com/Lonsdale201/wp-agent-skills/main/woocommerce/wc-logging/SKILL.md",
+      "html_url": "https://github.com/Lonsdale201/wp-agent-skills/blob/main/woocommerce/wc-logging/SKILL.md",
+      "directory_url": "https://github.com/Lonsdale201/wp-agent-skills/tree/main/woocommerce/wc-logging",
+      "metadata": {
+        "author": "Soczó Kristóf",
+        "contact": "mailto:lonsdale201@hotmail.com",
+        "plugin": "woocommerce",
+        "plugin-version-tested": "10.9.4",
+        "php-min": "7.4",
+        "last-updated": "2026-07-10",
+        "source-refs": [
+          "wp-content/plugins/woocommerce/includes/wc-core-functions.php",
+          "wp-content/plugins/woocommerce/includes/class-wc-logger.php",
+          "wp-content/plugins/woocommerce/includes/class-wc-log-levels.php",
+          "wp-content/plugins/woocommerce/includes/abstracts/abstract-wc-log-handler.php",
+          "wp-content/plugins/woocommerce/includes/log-handlers/class-wc-log-handler-db.php",
+          "wp-content/plugins/woocommerce/includes/log-handlers/class-wc-log-handler-file.php",
+          "wp-content/plugins/woocommerce/src/Utilities/LoggingUtil.php",
+          "wp-content/plugins/woocommerce/src/Internal/Admin/Logging/Settings.php"
+        ]
+      },
+      "resources": [],
+      "has_reference": false,
+      "has_examples": false,
+      "has_scripts": false,
+      "skill_md": {
+        "bytes": 8936,
+        "lines": 185,
+        "sha256": "9173ce8276e50415eacab7535e90efe9cb58943063a80ddf473169d8795607bc"
       }
     },
     {
@@ -5728,9 +5755,9 @@
         "author": "Soczó Kristóf",
         "contact": "mailto:lonsdale201@hotmail.com",
         "plugin": "woocommerce",
-        "plugin-version-tested": "10.8.0",
+        "plugin-version-tested": "10.9.4",
         "php-min": "7.4",
-        "last-updated": "2026-05-27",
+        "last-updated": "2026-07-10",
         "docs": [
           "https://woocommerce.github.io/code-reference/classes/WC-Order.html"
         ],
@@ -5749,16 +5776,16 @@
       "has_examples": false,
       "has_scripts": false,
       "skill_md": {
-        "bytes": 9001,
-        "lines": 202,
-        "sha256": "ac878096f662998817bbfedd276a09f89232c03f2b2dc9f9d87056f23d4b4fc0"
+        "bytes": 9477,
+        "lines": 203,
+        "sha256": "689f6052f662b4b1909928c313546b779c7b2c9c3f193fdca2ed73cf00cd9897"
       }
     },
     {
       "slug": "wc-payment-gateway",
       "name": "wc-payment-gateway",
       "domain": "woocommerce",
-      "description": "Register a custom WooCommerce payment gateway — extend WC_Payment_Gateway, declare $id / $title / $supports, implement process_payment returning array(result, redirect), optionally process_refund when refunds is in supports, register via the woocommerce_payment_gateways filter. Canonical gotcha: payment_complete vs update_status — payment_complete runs the paid-order state machine (status, transaction id, session flag, payment-complete action), update_status only changes status. Includes the forgotten WC()->cart->empty_cart() call and Store API payment requirements for Checkout Blocks. Use when integrating/reviewing gateways or debugging \"payment succeeded but cart didn't clear\" / \"order stuck in pending\". Triggers on WC_Payment_Gateway, woocommerce_payment_gateways, process_payment, process_refund, payment_complete, get_return_url, woocommerce_payment_complete_order_status, woocommerce_store_api_register_payment_requirements.",
+      "description": "Build a secure WooCommerce core payment gateway. Covers `WC_Payment_Gateway` registration/settings, synchronous captured versus authorized/pending outcomes, `payment_complete()` versus status updates, refunds, core support flags, customer-safe errors, logging, signed and idempotent webhooks, callback URLs, tokenization boundaries, and Checkout Block compatibility. Use when creating or auditing a gateway or debugging charged orders, stale carts, duplicate webhooks, or unsafe provider errors.",
       "path": "woocommerce/wc-payment-gateway",
       "skill_path": "woocommerce/wc-payment-gateway/SKILL.md",
       "url": "https://raw.githubusercontent.com/Lonsdale201/wp-agent-skills/main/woocommerce/wc-payment-gateway/SKILL.md",
@@ -5769,9 +5796,9 @@
         "author": "Soczó Kristóf",
         "contact": "mailto:lonsdale201@hotmail.com",
         "plugin": "woocommerce",
-        "plugin-version-tested": "10.8.0",
+        "plugin-version-tested": "10.9.4",
         "php-min": "7.4",
-        "last-updated": "2026-05-26",
+        "last-updated": "2026-07-10",
         "docs": [
           "https://woocommerce.com/document/payment-gateway-api/"
         ],
@@ -5780,12 +5807,8 @@
           "wp-content/plugins/woocommerce/includes/abstracts/abstract-wc-settings-api.php",
           "wp-content/plugins/woocommerce/includes/class-wc-payment-gateways.php",
           "wp-content/plugins/woocommerce/includes/class-wc-order.php",
-          "wp-content/plugins/woocommerce/includes/gateways/bacs/class-wc-gateway-bacs.php",
-          "wp-content/plugins/woocommerce/includes/gateways/cheque/class-wc-gateway-cheque.php",
-          "wp-content/plugins/woocommerce/includes/gateways/cod/class-wc-gateway-cod.php",
           "wp-content/plugins/woocommerce/includes/class-woocommerce.php",
-          "wp-content/plugins/woocommerce/src/StoreApi/Schemas/ExtendSchema.php",
-          "wp-content/plugins/woocommerce/assets/client/blocks/wc-blocks-registry.js"
+          "wp-content/plugins/woocommerce/src/Enums/PaymentGatewayFeature.php"
         ]
       },
       "resources": [],
@@ -5793,9 +5816,9 @@
       "has_examples": false,
       "has_scripts": false,
       "skill_md": {
-        "bytes": 27347,
-        "lines": 487,
-        "sha256": "d7693a2bcb8b88ebe41ce7b77d773accfb7b2925be3edf96e58a8cc5c190b6c0"
+        "bytes": 10360,
+        "lines": 218,
+        "sha256": "d4fe42985cc4e8d7c880fecfa2ea8f52d44bb156ebbf7cf7eee113786e2ee7d3"
       }
     },
     {
@@ -5813,9 +5836,9 @@
         "author": "Soczó Kristóf",
         "contact": "mailto:lonsdale201@hotmail.com",
         "plugin": "woocommerce",
-        "plugin-version-tested": "10.8.0",
+        "plugin-version-tested": "10.9.4",
         "php-min": "7.4",
-        "last-updated": "2026-05-27",
+        "last-updated": "2026-07-10",
         "docs": [
           "https://woocommerce.com/document/payment-gateway-api/"
         ],
@@ -5836,9 +5859,9 @@
       "has_examples": false,
       "has_scripts": false,
       "skill_md": {
-        "bytes": 11188,
-        "lines": 264,
-        "sha256": "29e162dce8ded18399c210e0218ca51eecc35bc41e86c98c64971ed8c34d633d"
+        "bytes": 11796,
+        "lines": 281,
+        "sha256": "9e42759b45c6adf445441634726a7c8d1399e1b38e8e2dcb4a9f705475738741"
       }
     },
     {
@@ -5856,9 +5879,9 @@
         "author": "Soczó Kristóf",
         "contact": "mailto:lonsdale201@hotmail.com",
         "plugin": "woocommerce",
-        "plugin-version-tested": "10.9.1",
+        "plugin-version-tested": "10.9.4",
         "php-min": "7.4",
-        "last-updated": "2026-06-29",
+        "last-updated": "2026-07-10",
         "docs": [
           "https://woocommerce.com/document/variable-product/",
           "https://developer.woocommerce.com/docs/apis/store-api/"
@@ -5870,8 +5893,6 @@
           "wp-content/plugins/woocommerce/src/Internal/ProductAttributes/VisualAttributeTermAdmin.php",
           "wp-content/plugins/woocommerce/src/StoreApi/Routes/V1/ProductAttributeTerms.php",
           "wp-content/plugins/woocommerce/src/StoreApi/Schemas/V1/ProductAttributeTermSchema.php",
-          "wp-content/plugins/woocommerce/src/Blocks/BlockTypes/AddToCartWithOptions/VariationSelectorAttribute.php",
-          "wp-content/plugins/woocommerce/src/Blocks/BlockTypes/ProductFilterAttribute.php",
           "wp-content/plugins/woocommerce/includes/admin/meta-boxes/views/html-product-attribute-inner.php",
           "wp-content/plugins/woocommerce/includes/wc-template-functions.php",
           "wp-content/plugins/woocommerce/templates/single-product/add-to-cart/variable.php"
@@ -5882,9 +5903,9 @@
       "has_examples": false,
       "has_scripts": false,
       "skill_md": {
-        "bytes": 13694,
+        "bytes": 13639,
         "lines": 300,
-        "sha256": "9ffa3dfb0ae72d97cd0a5725bdc4fb51b193266b415674a0deef91e44c8c8d1a"
+        "sha256": "cb1bd81ee1ba8dbfd2fbe5c330055d0c7a35090936ce0a9ac4d6777017d5e623"
       }
     },
     {
@@ -5902,9 +5923,9 @@
         "author": "Soczó Kristóf",
         "contact": "mailto:lonsdale201@hotmail.com",
         "plugin": "woocommerce",
-        "plugin-version-tested": "10.8.0",
+        "plugin-version-tested": "10.9.4",
         "php-min": "7.4",
-        "last-updated": "2026-05-26",
+        "last-updated": "2026-07-10",
         "docs": [
           "https://github.com/woocommerce/selectWoo",
           "https://woocommerce.com/document/woocommerce-json-search/"
@@ -5921,16 +5942,16 @@
       "has_examples": false,
       "has_scripts": false,
       "skill_md": {
-        "bytes": 16322,
-        "lines": 285,
-        "sha256": "4f36476a91de09f2e8e86e6523fb34f45286163f6bc494be846bba95d6d78ebd"
+        "bytes": 16630,
+        "lines": 287,
+        "sha256": "1fd0f9f2d94dd6129fa3691562a2f60bb0b6662f655c3e75415cd85c95e640c3"
       }
     },
     {
       "slug": "wc-rest-api-v4",
       "name": "wc-rest-api-v4",
       "domain": "woocommerce",
-      "description": "Use the WooCommerce REST API v4 (namespace wc/v4, since WC 10.2) alongside or in place of v3 — verified route catalog (Customers, Orders, Refunds, Products, ShippingZones with DELETE, ShippingZoneMethod, Fulfillments, segmented Settings under /wc/v4/settings/<group>), the hook prefix pattern woocommerce_rest_api_v4_<route>_*, shared error codes, and the RestApiCache trait (WC 10.5+) for endpoint response caching. The v4 AbstractController lives under the Internal namespace and is NOT a public extension surface; plugin-defined REST routes use WP_REST_Controller directly. Use when calling WC REST endpoints, when picking v3 vs v4, or when reviewing /wc/v3/ URLs that now have v4 equivalents; notes WCS 9.0 subscription-plan endpoints that remain wc/v3. Triggers on wc/v4, /wc/v4/, woocommerce_rest_api_v4_*, RestApiCache, customer-owned Woo endpoints, REST API v4 in WooCommerce context.",
+      "description": "Audit WooCommerce's source-gated `wc/v4` REST API. In WooCommerce 10.9.4 the core v4 controllers exist but the release build sets `rest-api-v4` false, so core routes are not registered by default. Covers runtime discovery, safe v3 fallback, latent v4 routes, settings paths, hook prefixes, authentication, fulfillments, and internal caching. Use when code targets `/wc/v4` or assumes source files mean a live public API.",
       "path": "woocommerce/wc-rest-api-v4",
       "skill_path": "woocommerce/wc-rest-api-v4/SKILL.md",
       "url": "https://raw.githubusercontent.com/Lonsdale201/wp-agent-skills/main/woocommerce/wc-rest-api-v4/SKILL.md",
@@ -5941,33 +5962,38 @@
         "author": "Soczó Kristóf",
         "contact": "mailto:lonsdale201@hotmail.com",
         "plugin": "woocommerce",
-        "plugin-version-tested": "10.9.1",
+        "plugin-version-tested": "10.9.4",
         "php-min": "7.4",
-        "last-updated": "2026-06-29",
+        "last-updated": "2026-07-10",
         "docs": [
           "https://woocommerce.com/document/woocommerce-rest-api/"
         ],
         "source-refs": [
-          "wp-content/plugins/woocommerce/includes/wc-rest-functions.php",
+          "wp-content/plugins/woocommerce/includes/rest-api/Server.php",
+          "wp-content/plugins/woocommerce/includes/react-admin/feature-config.php",
+          "wp-content/plugins/woocommerce/includes/rest-api/Controllers/Version4/class-wc-rest-settings-v4-controller.php",
           "wp-content/plugins/woocommerce/src/Internal/RestApi/Routes/V4/AbstractController.php",
-          "wp-content/plugins/woocommerce/src/Internal/RestApi/Routes/V4/",
-          "wp-content/plugins/woocommerce/src/Internal/RestApi/Routes/V4/Orders/CollectionQuery.php",
-          "wp-content/plugins/woocommerce/src/Internal/RestApi/Routes/V4/Products/Controller.php",
+          "wp-content/plugins/woocommerce/src/Internal/RestApi/Routes/V4",
           "wp-content/plugins/woocommerce/src/Internal/Traits/RestApiCache.php",
-          "wp-content/plugins/woocommerce/src/StoreApi/RoutesController.php",
-          "wp-content/plugins/woocommerce-subscriptions/includes/api/class-wc-rest-subscriptions-controller.php",
-          "wp-content/plugins/woocommerce-subscriptions/includes/apfs/admin/class-wcs-att-rest-plans-controller.php",
-          "wp-content/plugins/woocommerce-subscriptions/includes/apfs/admin/class-wcs-att-rest-product-plans-controller.php"
+          "wp-content/plugins/woocommerce/src/Internal/Features/FeaturesController.php"
         ]
       },
-      "resources": [],
-      "has_reference": false,
+      "resources": [
+        {
+          "path": "reference.md",
+          "repo_path": "woocommerce/wc-rest-api-v4/reference.md",
+          "type": "reference",
+          "bytes": 3023,
+          "sha256": "c184013bcad6157e6cebecd95e6549bfb092598c7c01ce0dbd192005b71431db"
+        }
+      ],
+      "has_reference": true,
       "has_examples": false,
       "has_scripts": false,
       "skill_md": {
-        "bytes": 23633,
-        "lines": 334,
-        "sha256": "be72e990221162da94eb118f7decf4c2856d1517ea3b495ec9ff93a2b07d3169"
+        "bytes": 10757,
+        "lines": 227,
+        "sha256": "3bf32b0dbd7c2dc4643398ebcc26a86aff6f8d450cb1b5ffd3175a6979a4b58c"
       }
     },
     {
@@ -6015,16 +6041,16 @@
       "has_examples": false,
       "has_scripts": false,
       "skill_md": {
-        "bytes": 11040,
-        "lines": 302,
-        "sha256": "b4e1e96abc79b54d0c9ff85a46c15808a84ec83f3dd64e4ceee9a397e84f7cc4"
+        "bytes": 10564,
+        "lines": 296,
+        "sha256": "db085ebf886ab621311a5cc275651295fc1e7a833d8eaedfd39b092f952f0b46"
       }
     },
     {
       "slug": "wc-shipping-method",
       "name": "wc-shipping-method",
       "domain": "woocommerce",
-      "description": "Registers a custom WooCommerce shipping method with explicit control over which fields appear in the per-zone settings modal — extend WC_Shipping_Method, declare your fields in init_form_fields (and ONLY those fields, no unset / DOM hacks / CSS hides), set the $supports array to control whether the modal opens (omit 'instance-settings' to suppress it entirely), register via the woocommerce_shipping_methods filter, load the class on woocommerce_shipping_init. Corrects the \"this is React, removing fields is hard\" misconception — the zone-method modal is Backbone with a PHP-rendered settings_html string; the field list is wholly PHP-controlled. Use when scaffolding a shipping method or when you want a feature-flag-only modal without WC defaults. Triggers on WC_Shipping_Method, woocommerce_shipping_methods, woocommerce_shipping_init, init_form_fields with shipping context, $supports shipping-zones, calculate_shipping, add_rate, or \"remove default fields from shipping method\".",
+      "description": "Build a zone-based WooCommerce shipping method with `WC_Shipping_Method`. Covers deferred class loading, registration, instance settings and modal support flags, package-based calculation, unique rate IDs, decimal/tax handling, availability, save behavior, caching, and testing. Use when adding carrier rates, custom shipping rules, a feature-only settings modal, or a method with no per-zone settings UI.",
       "path": "woocommerce/wc-shipping-method",
       "skill_path": "woocommerce/wc-shipping-method/SKILL.md",
       "url": "https://raw.githubusercontent.com/Lonsdale201/wp-agent-skills/main/woocommerce/wc-shipping-method/SKILL.md",
@@ -6035,20 +6061,18 @@
         "author": "Soczó Kristóf",
         "contact": "mailto:lonsdale201@hotmail.com",
         "plugin": "woocommerce",
-        "plugin-version-tested": "10.x",
+        "plugin-version-tested": "10.9.4",
         "php-min": "7.4",
-        "last-updated": "2026-04-28",
+        "last-updated": "2026-07-10",
         "docs": [
-          "https://woocommerce.com/document/shipping-method-api/",
-          "https://github.com/woocommerce/woocommerce"
+          "https://woocommerce.com/document/shipping-method-api/"
         ],
         "source-refs": [
           "wp-content/plugins/woocommerce/includes/abstracts/abstract-wc-shipping-method.php",
           "wp-content/plugins/woocommerce/includes/abstracts/abstract-wc-settings-api.php",
           "wp-content/plugins/woocommerce/includes/class-wc-shipping.php",
           "wp-content/plugins/woocommerce/includes/shipping/free-shipping/class-wc-shipping-free-shipping.php",
-          "wp-content/plugins/woocommerce/includes/shipping/flat-rate/class-wc-shipping-flat-rate.php",
-          "wp-content/plugins/woocommerce/assets/js/admin/wc-shipping-zone-methods.js"
+          "wp-content/plugins/woocommerce/includes/shipping/flat-rate/class-wc-shipping-flat-rate.php"
         ]
       },
       "resources": [],
@@ -6056,16 +6080,16 @@
       "has_examples": false,
       "has_scripts": false,
       "skill_md": {
-        "bytes": 17846,
-        "lines": 349,
-        "sha256": "51303955edaf149e0412b31d9f2396ed9749cfbd4951c527c64c33916b95d88b"
+        "bytes": 8877,
+        "lines": 219,
+        "sha256": "f556e754aa3f63154b696586c350bcc1c77c31021b9c0f7064c8e561e571319e"
       }
     },
     {
       "slug": "wc-shipping-providers",
       "name": "wc-shipping-providers",
       "domain": "woocommerce",
-      "description": "Register a custom WooCommerce shipping provider — extend AbstractShippingProvider and add it via the woocommerce_fulfillment_shipping_providers filter (WC 10.1+). Distinct from shipping methods (rate at checkout) — a provider is a carrier identity (UPS, FedEx, DHL, your custom carrier) used by the Fulfillments system for tracking URLs, tracking-number pattern detection, country-pair support, and the orders-list filter. Required methods get_key / get_name / get_icon / get_tracking_url, with optional shipping-from / shipping-to / try_parse_tracking_number. Registration accepts class names (resolved via the DI container) or pre-built instances, keyed by get_key. Use when integrating a private carrier, fulfillment service, or any tracking-aware shipping identity. Triggers on AbstractShippingProvider, woocommerce_fulfillment_shipping_providers, FulfillmentUtils::get_shipping_providers, \"shipping provider\" in WooCommerce context, or carrier tracking integration.",
+      "description": "Extend WooCommerce core Order Fulfillments with a custom tracking provider. Covers the `fulfillments` feature gate, `AbstractShippingProvider`, provider registration and collision rules, tracking URL construction, country support, tracking-number parsing and ambiguity scores, REST exposure, input safety, and version guards. Use when a carrier must appear in fulfillment tracking or be auto-detected from tracking numbers.",
       "path": "woocommerce/wc-shipping-providers",
       "skill_path": "woocommerce/wc-shipping-providers/SKILL.md",
       "url": "https://raw.githubusercontent.com/Lonsdale201/wp-agent-skills/main/woocommerce/wc-shipping-providers/SKILL.md",
@@ -6076,20 +6100,15 @@
         "author": "Soczó Kristóf",
         "contact": "mailto:lonsdale201@hotmail.com",
         "plugin": "woocommerce",
-        "plugin-version-tested": "10.8.0",
+        "plugin-version-tested": "10.9.4",
         "php-min": "7.4",
-        "last-updated": "2026-05-26",
-        "docs": [
-          "https://github.com/woocommerce/woocommerce"
-        ],
+        "last-updated": "2026-07-10",
         "source-refs": [
           "wp-content/plugins/woocommerce/src/Admin/Features/Fulfillments/Providers/AbstractShippingProvider.php",
-          "wp-content/plugins/woocommerce/src/Admin/Features/Fulfillments/Providers/DHLShippingProvider.php",
-          "wp-content/plugins/woocommerce/src/Admin/Features/Fulfillments/Providers/UPSShippingProvider.php",
-          "wp-content/plugins/woocommerce/src/Admin/Features/Fulfillments/ShippingProviders.php",
           "wp-content/plugins/woocommerce/src/Admin/Features/Fulfillments/FulfillmentUtils.php",
           "wp-content/plugins/woocommerce/src/Admin/Features/Fulfillments/FulfillmentsManager.php",
-          "wp-content/plugins/woocommerce/src/Internal/RestApi/Routes/V4/Fulfillments/Controller.php"
+          "wp-content/plugins/woocommerce/src/Internal/RestApi/Routes/V4/Fulfillments/Controller.php",
+          "wp-content/plugins/woocommerce/src/Internal/Features/FeaturesController.php"
         ]
       },
       "resources": [],
@@ -6097,16 +6116,16 @@
       "has_examples": false,
       "has_scripts": false,
       "skill_md": {
-        "bytes": 17861,
-        "lines": 333,
-        "sha256": "fcb9b2e37dba62fe2a026db527b14400820e0593f3ceb61e7d50acaa56018183"
+        "bytes": 7951,
+        "lines": 207,
+        "sha256": "bc3d8c607be8e8a82fe01a45b0f1986807a3cd607dea501aa28c52fc209e4ffd"
       }
     },
     {
       "slug": "wc-store-api",
       "name": "wc-store-api",
       "domain": "woocommerce",
-      "description": "Build against the WooCommerce Store API (`/wp-json/wc/store/v1`) for shopper-facing products, cart, checkout, Cart/Checkout Blocks, and headless carts. Covers route choice, Nonce header (`wp_create_nonce('wc_store_api')`) vs Cart-Token, Store API sessions/CORS/rate limits, `woocommerce_store_api_register_endpoint_data`, `/cart/extensions` + `extensionCartUpdate`, `woocommerce_store_api_add_to_cart_data`, payment requirements, WC 10.8+ deferred checkout draft-order creation, WCS 9.0 subscription-plan validation, product query pitfalls such as `related`, and when to use WC REST `wc/v4` instead. Use when adding checkout-block data, Store API calls, custom cart state, Store API payment availability, or headless cart/checkout behavior.",
+      "description": "Build shopper-facing WooCommerce integrations with the Store API. Covers `/wc/store/v1`, public product reads, cart Nonce and Cart-Token authentication, CORS, Store API sessions, endpoint data and cart update extensions, add-to-cart validation, payment requirements, checkout draft timing, and feature-gated routes. Use for headless carts, Checkout Block server integration, Store API response extensions, cart mutations, or debugging nonce/session/order timing.",
       "path": "woocommerce/wc-store-api",
       "skill_path": "woocommerce/wc-store-api/SKILL.md",
       "url": "https://raw.githubusercontent.com/Lonsdale201/wp-agent-skills/main/woocommerce/wc-store-api/SKILL.md",
@@ -6117,31 +6136,22 @@
         "author": "Soczó Kristóf",
         "contact": "mailto:lonsdale201@hotmail.com",
         "plugin": "woocommerce",
-        "plugin-version-tested": "10.9.1",
+        "plugin-version-tested": "10.9.4",
         "php-min": "7.4",
-        "last-updated": "2026-06-29",
+        "last-updated": "2026-07-10",
         "docs": [
           "https://developer.woocommerce.com/docs/apis/store-api/",
           "https://developer.woocommerce.com/docs/apis/store-api/nonce-tokens/",
-          "https://developer.woocommerce.com/docs/apis/store-api/cart-tokens/",
-          "https://developer.woocommerce.com/docs/apis/store-api/extending-store-api/extend-store-api-add-data/"
+          "https://developer.woocommerce.com/docs/apis/store-api/cart-tokens/"
         ],
         "source-refs": [
           "wp-content/plugins/woocommerce/src/StoreApi/RoutesController.php",
-          "wp-content/plugins/woocommerce/src/StoreApi/Routes/V1/AbstractCartRoute.php",
           "wp-content/plugins/woocommerce/src/StoreApi/Authentication.php",
-          "wp-content/plugins/woocommerce/src/StoreApi/Schemas/ExtendSchema.php",
-          "wp-content/plugins/woocommerce/src/StoreApi/functions.php",
-          "wp-content/plugins/woocommerce/src/StoreApi/Routes/V1/CartExtensions.php",
-          "wp-content/plugins/woocommerce/src/StoreApi/Routes/V1/CartAddItem.php",
+          "wp-content/plugins/woocommerce/src/StoreApi/SessionHandler.php",
+          "wp-content/plugins/woocommerce/src/StoreApi/Routes/V1/AbstractCartRoute.php",
           "wp-content/plugins/woocommerce/src/StoreApi/Routes/V1/Checkout.php",
-          "wp-content/plugins/woocommerce/src/StoreApi/Schemas/V1/CartExtensionsSchema.php",
-          "wp-content/plugins/woocommerce/src/StoreApi/Utilities/CartController.php",
-          "wp-content/plugins/woocommerce/src/StoreApi/Utilities/ProductQuery.php",
-          "wp-content/plugins/woocommerce/src/StoreApi/Routes/V1/Products.php",
-          "wp-content/plugins/woocommerce/assets/client/blocks/wc-blocks-data.js",
-          "wp-content/plugins/woocommerce-subscriptions/includes/core/class-wc-subscriptions-extend-store-endpoint.php",
-          "wp-content/plugins/woocommerce-subscriptions/includes/apfs/api/class-wcs-att-store-api.php"
+          "wp-content/plugins/woocommerce/src/StoreApi/Schemas/ExtendSchema.php",
+          "wp-content/plugins/woocommerce/src/StoreApi/functions.php"
         ]
       },
       "resources": [],
@@ -6149,9 +6159,9 @@
       "has_examples": false,
       "has_scripts": false,
       "skill_md": {
-        "bytes": 20387,
-        "lines": 334,
-        "sha256": "b87f1a47fa57833e7cba8a03816d349cf468f528f0813145a8aafc995cfcb747"
+        "bytes": 9702,
+        "lines": 214,
+        "sha256": "886fd1643edd2ead142a23909cdc46dfd1a3297537c60be2966064d6b414de91"
       }
     },
     {
@@ -6218,9 +6228,9 @@
         "author": "Soczó Kristóf",
         "contact": "mailto:lonsdale201@hotmail.com",
         "plugin": "woocommerce",
-        "plugin-version-tested": "10.9.1",
+        "plugin-version-tested": "10.9.4",
         "php-min": "7.4",
-        "last-updated": "2026-06-29",
+        "last-updated": "2026-07-10",
         "docs": [
           "https://woocommerce.com/document/managing-product-variations/"
         ],
@@ -6243,16 +6253,16 @@
       "has_examples": false,
       "has_scripts": false,
       "skill_md": {
-        "bytes": 10557,
+        "bytes": 10753,
         "lines": 197,
-        "sha256": "a6d1301148966e9caf4ca8131721ef4a3e96bedfd20be0aea8c3d0f7b89949e0"
+        "sha256": "655a2359f59d2d77a6eeaff013bff24980ea24dc0a520b086e15785eaccfd00e"
       }
     },
     {
       "slug": "wc-variations-data",
       "name": "wc-variations-data",
       "domain": "woocommerce",
-      "description": "Read, query, and write WooCommerce product variations correctly — the WC_Product_Variable (parent) vs WC_Product_Variation (child) class split, the parent's get_variation_prices( $for_display ) cached aggregation and how to bust the wc_var_prices_<id> transient, programmatic variation creation via WC_Product_Variation + set_parent_id + set_attributes + save followed by WC_Product_Variable::sync, the inherited-vs-own variation stock model (parent flag, variation flag, derived stock_status), get_available_variations for frontend variation data, and the $for_display tax-handling parameter that breaks display logic when forgotten. Use when scaffolding plugin code that creates / queries / modifies variations or when debugging stale variation data after programmatic writes. Triggers on WC_Product_Variation, WC_Product_Variable, get_variation_prices, get_available_variations, product_variation post type, wc_var_prices, sync_variation, or programmatic variation creation context.",
+      "description": "Read, query, and write WooCommerce product variations through `WC_Product_Variation` and `WC_Product_Variable`. Covers parent/child storage, cached variation prices, CRUD creation, WooCommerce 10.9 deferred parent synchronization, stock inheritance, frontend variation data, and raw versus display-tax price reads. Use when creating, importing, querying, or debugging stale variation data.",
       "path": "woocommerce/wc-variations-data",
       "skill_path": "woocommerce/wc-variations-data/SKILL.md",
       "url": "https://raw.githubusercontent.com/Lonsdale201/wp-agent-skills/main/woocommerce/wc-variations-data/SKILL.md",
@@ -6263,9 +6273,9 @@
         "author": "Soczó Kristóf",
         "contact": "mailto:lonsdale201@hotmail.com",
         "plugin": "woocommerce",
-        "plugin-version-tested": "10.x",
+        "plugin-version-tested": "10.9.4",
         "php-min": "7.4",
-        "last-updated": "2026-06-29",
+        "last-updated": "2026-07-10",
         "docs": [
           "https://github.com/woocommerce/woocommerce/wiki/Product-Variations",
           "https://woocommerce.com/document/managing-product-variations/"
@@ -6283,16 +6293,16 @@
       "has_examples": false,
       "has_scripts": false,
       "skill_md": {
-        "bytes": 17836,
-        "lines": 298,
-        "sha256": "6c1293166812c009cfaeae8b73c8b930f61fe1827a53a320fba6e2c34991f259"
+        "bytes": 16309,
+        "lines": 272,
+        "sha256": "ab6053ec08520cd570cf585ff769c20eaa66f545dc5cad1064ae7880548b9083"
       }
     },
     {
       "slug": "wc-variations-pricing-filters",
       "name": "wc-variations-pricing-filters",
       "domain": "woocommerce",
-      "description": "Mutate WooCommerce variation prices via filters — pick the right layer (woocommerce_product_get_price for simple/non-variation products, woocommerce_product_variation_get_price for variations, the woocommerce_variation_prices_* family for the parent min/max aggregation that feeds the catalog \"From X to Y\" range), and the critical step of filtering woocommerce_get_variation_prices_hash whenever your price logic depends on context outside the default cache key (user role, custom toggle, time of day) — otherwise one user's filtered price gets cached and served to everyone. Use for role-based pricing, time-based discounts, or \"filter variation prices but the min/max range doesn't update\" debugging. Triggers on woocommerce_product_get_price, woocommerce_product_variation_get_price, woocommerce_variation_prices_*, woocommerce_get_variation_prices_hash, wc_var_prices.",
+      "description": "Customize WooCommerce variation prices without stale or cross-user parent price caches. Covers direct variation getter filters, parent aggregation filters, the `woocommerce_get_variation_prices_hash` cache contract, bounded pricing contexts, role checks, tax/display separation, cache invalidation, and when stored CRUD prices are preferable. Use for B2B, role, segment, campaign, or context-dependent variation pricing.",
       "path": "woocommerce/wc-variations-pricing-filters",
       "skill_path": "woocommerce/wc-variations-pricing-filters/SKILL.md",
       "url": "https://raw.githubusercontent.com/Lonsdale201/wp-agent-skills/main/woocommerce/wc-variations-pricing-filters/SKILL.md",
@@ -6303,18 +6313,14 @@
         "author": "Soczó Kristóf",
         "contact": "mailto:lonsdale201@hotmail.com",
         "plugin": "woocommerce",
-        "plugin-version-tested": "10.x",
+        "plugin-version-tested": "10.9.4",
         "php-min": "7.4",
-        "last-updated": "2026-04-29",
-        "docs": [
-          "https://woocommerce.com/document/woocommerce-pricing-functions/",
-          "https://github.com/woocommerce/woocommerce/wiki/Product-Variations"
-        ],
+        "last-updated": "2026-07-10",
         "source-refs": [
           "wp-content/plugins/woocommerce/includes/class-wc-product-variable.php",
           "wp-content/plugins/woocommerce/includes/class-wc-product-variation.php",
           "wp-content/plugins/woocommerce/includes/data-stores/class-wc-product-variable-data-store-cpt.php",
-          "wp-content/plugins/woocommerce/includes/abstracts/abstract-wc-product.php"
+          "wp-content/plugins/woocommerce/includes/abstracts/abstract-wc-data.php"
         ]
       },
       "resources": [],
@@ -6322,9 +6328,9 @@
       "has_examples": false,
       "has_scripts": false,
       "skill_md": {
-        "bytes": 19489,
-        "lines": 306,
-        "sha256": "185a829307f033082f9544be222cb71bcd28cfa119742cb784b4fdd65b324a8e"
+        "bytes": 8137,
+        "lines": 196,
+        "sha256": "a9de6c4282c96421fd6ba6ae0f3099c76bdd368200c85bf8537b9cbbf29fb7e4"
       }
     },
     {

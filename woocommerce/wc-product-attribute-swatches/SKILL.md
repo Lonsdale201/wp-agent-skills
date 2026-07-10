@@ -4,9 +4,9 @@ description: Build or audit WooCommerce 10.9+ product attribute swatch integrati
 author: Soczó Kristóf
 contact: mailto:lonsdale201@hotmail.com
 plugin: woocommerce
-plugin-version-tested: "10.9.1"
+plugin-version-tested: "10.9.4"
 php-min: "7.4"
-last-updated: "2026-06-29"
+last-updated: "2026-07-10"
 docs:
   - https://woocommerce.com/document/variable-product/
   - https://developer.woocommerce.com/docs/apis/store-api/
@@ -17,8 +17,6 @@ source-refs:
   - wp-content/plugins/woocommerce/src/Internal/ProductAttributes/VisualAttributeTermAdmin.php
   - wp-content/plugins/woocommerce/src/StoreApi/Routes/V1/ProductAttributeTerms.php
   - wp-content/plugins/woocommerce/src/StoreApi/Schemas/V1/ProductAttributeTermSchema.php
-  - wp-content/plugins/woocommerce/src/Blocks/BlockTypes/AddToCartWithOptions/VariationSelectorAttribute.php
-  - wp-content/plugins/woocommerce/src/Blocks/BlockTypes/ProductFilterAttribute.php
   - wp-content/plugins/woocommerce/includes/admin/meta-boxes/views/html-product-attribute-inner.php
   - wp-content/plugins/woocommerce/includes/wc-template-functions.php
   - wp-content/plugins/woocommerce/templates/single-product/add-to-cart/variable.php
@@ -26,9 +24,9 @@ source-refs:
 
 # WooCommerce product attribute swatches
 
-Use this skill when a plugin or theme needs to read, write, render, or audit WooCommerce visual product attributes. In WooCommerce 10.9.1 this is not a mature "classic variation swatches" template API. It is an experimental `wc-visual` product attribute type with color/image term metadata, consumed by selected block UI and optionally exposed by Store API.
+Use this skill when a plugin or theme needs to read, write, render, or audit WooCommerce visual product attributes. In WooCommerce 10.9.4 this is not a mature "classic variation swatches" template API. It is an experimental `wc-visual` product attribute type with color/image term metadata, consumed by selected block UI and optionally exposed by Store API.
 
-## Source-verified status in 10.9.1
+## Source-verified status in 10.9.4
 
 - Feature ID: `wc-visual-attribute`.
 - Feature option: `woocommerce_feature_wc_visual_attribute_enabled`.
@@ -148,11 +146,7 @@ if ( array_key_exists( 'wc-visual', wc_get_attribute_types() ) ) {
 }
 ```
 
-Do not force-create visual attributes on classic-theme stores just to get swatches. In 10.9.1 WooCommerce intentionally hides the feature setting UI outside block themes unless a visual attribute already exists.
-
-## Admin integration points
-
-Core adds visual fields only for `wc-visual` attribute taxonomies: `wc_visual_attribute_type` radio values `color` / `image`, `term_color`, and `term_image`. The product edit "Create value" modal uses the same fields, and admin scripts enqueue media plus `visual-attribute-color-picker` on product and visual attribute term screens. Extend those screens without duplicating these field names for non-visual attributes.
+Do not force-create visual attributes on classic-theme stores just to get swatches. In 10.9.4 WooCommerce intentionally hides the feature setting UI outside block themes unless a visual attribute already exists.
 
 ## Store API
 
@@ -276,24 +270,30 @@ jQuery( function ( $ ) {
 
                 $( this ).prop( 'disabled', ! enabled );
             } );
+
+            $wrap.find( '.myplugin-wc-swatch' ).attr( 'aria-pressed', 'false' )
+                .filter( function () {
+                    return String( $( this ).data( 'value' ) ) === String( $select.val() || '' );
+                } )
+                .attr( 'aria-pressed', 'true' );
         } );
+    } );
+
+    $( document ).on( 'change', '.variations_form .variations select', function () {
+        $( this ).closest( '.variations_form' ).trigger( 'woocommerce_update_variation_values' );
     } );
 } );
 ```
 
-Keep accessibility boring: use real `<button type="button">`, clear `aria-label`, `aria-pressed`, visible focus styles, disabled states that mirror the select options, and a native select fallback.
+Keep the native select available as the authoritative accessible control. Swatches are enhancement buttons: use `type="button"`, an accessible name, synchronized `aria-pressed`, visible focus styles, and disabled states matching the select. If a design hides the native select, replace this shortcut pattern with a complete radio-group implementation including arrow-key behavior; visual buttons alone are not an accessible select replacement.
 
 ## Common mistakes
-
-- Calling this "variation swatches" and storing data on `product_variation` posts. In core 10.9.1 the swatch data belongs to attribute terms, not variations.
+- Calling this "variation swatches" and storing data on `product_variation` posts. In core 10.9.4 the swatch data belongs to attribute terms, not variations.
 - Removing the select from classic variation forms. Core JS and POST handling expect `attribute_pa_*` select values.
-- Creating `wc-visual` attributes on classic-theme stores and assuming the feature is supported. The 10.9.1 UI gate is deliberate.
+- Creating `wc-visual` attributes on classic-theme stores and assuming the feature is supported. The 10.9.4 UI gate is deliberate.
 - Importing internal Woo classes as if they were stable public APIs.
 - Assuming Store API visual data is returned by default. It requires `__experimental_visual=true`.
 - Treating image swatches as attachment arrays in Store API. The value is a URL string.
-- Hardcoding Woo admin CSS classes such as `wc-admin-color-swatch` for frontend contracts.
-- Confusing this with native variation gallery support. Variation gallery is a separate WooCommerce 10.9 feature for per-variation image sets.
-
-## Cross-references
+- Do not hardcode Woo admin CSS classes as frontend contracts or confuse term swatches with per-variation galleries.
 
 Use `wc-variations-data` for real variation CRUD/sync, `wc-variation-gallery` for per-variation image sets, `wc-store-api` for headless reads, and `wc-variations-pricing-filters` when selection affects price/availability display.

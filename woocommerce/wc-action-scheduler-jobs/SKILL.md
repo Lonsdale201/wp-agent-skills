@@ -1,12 +1,12 @@
 ---
 name: wc-action-scheduler-jobs
-description: Queue and run WooCommerce background jobs with Action Scheduler. Covers `as_enqueue_async_action`, `as_schedule_single_action`, `as_schedule_recurring_action`, `as_schedule_cron_action`, `as_has_scheduled_action`, `as_next_scheduled_action`, `as_unschedule_action`, `as_unschedule_all_actions`, groups, scalar args, WP-CLI runner, activation/deactivation scheduling, batching, idempotency, and the important WC 10.8 DB-store gotcha that `$unique` prevents another pending/running action with the same hook and group, not one per argument set. Use when moving slow order/product/customer work out of requests or status hooks.
+description: Queue and run WooCommerce background jobs with Action Scheduler. Covers async, single, recurring and cron actions, exact-argument checks, groups, scalar args, WP-CLI, lifecycle scheduling, batching, idempotency, and the WC 10.9.4 DB-store rule that `$unique` guards pending/running actions by hook and group rather than argument set. Use when moving slow order/product/customer work out of requests or status hooks.
 author: Soczó Kristóf
 contact: mailto:lonsdale201@hotmail.com
 plugin: woocommerce
-plugin-version-tested: "10.8.0"
+plugin-version-tested: "10.9.4"
 php-min: "7.4"
-last-updated: "2026-05-27"
+last-updated: "2026-07-10"
 docs:
   - https://actionscheduler.org/
 source-refs:
@@ -27,9 +27,9 @@ Use it instead of doing slow work during checkout, order status hooks, admin sav
 
 > "I will pass `$unique = true` so there is only one job per order ID."
 
-In WooCommerce 10.8's DB store, unique inserts guard by pending/running `hook + group`. They do not include args in the SQL uniqueness check. If you schedule `myplugin_sync_order` with group `myplugin` and `$unique = true`, a pending job for order 10 can block scheduling order 11.
+In WooCommerce 10.9.4's DB store, unique inserts guard by pending/running `hook + group`. They do not include args in the SQL uniqueness check. If you schedule `myplugin_sync_order` with group `myplugin` and `$unique = true`, a pending job for order 10 can block scheduling order 11.
 
-For per-order uniqueness, check `as_has_scheduled_action( $hook, $args, $group )` with the exact args, then schedule normally.
+For per-order deduplication, check `as_has_scheduled_action( $hook, $args, $group )` with the exact args, then schedule normally. This check-and-schedule pair is best-effort and can race under concurrent requests; the callback must still be idempotent. Strict uniqueness needs an owned atomic claim/unique key.
 
 ## When to use this skill
 
@@ -113,26 +113,26 @@ if ( ! as_has_scheduled_action( $hook, $args, $group ) ) {
 
 `as_next_scheduled_action()` returns a timestamp for a pending scheduled action, `true` for running/async, and `false` for no match. Use `as_has_scheduled_action()` when you only need a boolean.
 
-## Recurring job on activation/deactivation
+## Recurring job initialization and deactivation
 
-Guard for sites where WooCommerce or Action Scheduler is unavailable.
+Do not make plugin activation the only scheduling opportunity: WooCommerce or Action Scheduler may be inactive or not loaded then, leaving the recurring job absent forever. Initialize idempotently after Action Scheduler is ready.
 
 ```php
-register_activation_hook(
-    MYPLUGIN_FILE,
+add_action(
+    'action_scheduler_init',
     static function (): void {
-        if ( ! function_exists( 'as_has_scheduled_action' ) ) {
-            return;
-        }
-
         if ( ! as_has_scheduled_action( 'myplugin_hourly_maintenance', array(), 'myplugin' ) ) {
-            as_schedule_recurring_action(
+            $action_id = as_schedule_recurring_action(
                 time() + 5 * MINUTE_IN_SECONDS,
                 HOUR_IN_SECONDS,
                 'myplugin_hourly_maintenance',
                 array(),
                 'myplugin'
             );
+
+            if ( ! $action_id ) {
+                wc_get_logger()->error( 'Could not schedule maintenance action.', array( 'source' => 'myplugin' ) );
+            }
         }
     }
 );
@@ -191,7 +191,7 @@ Use the CLI runner for deterministic local tests and production maintenance wind
 
 ## Common mistakes
 
-- Using `$unique = true` for per-order/per-product jobs. In WC 10.8 DB store, that is hook+group uniqueness, not args-level uniqueness.
+- Using `$unique = true` for per-order/per-product jobs. In the current DB store, that is hook+group uniqueness, not args-level uniqueness.
 - Omitting the group and later being unable to isolate your jobs.
 - Passing objects or closures as args.
 - Doing slow external API calls directly in WooCommerce hooks instead of queueing.
@@ -202,6 +202,5 @@ Use the CLI runner for deterministic local tests and production maintenance wind
 ## Cross-skill routing
 
 - Order lifecycle hooks that enqueue jobs: `wc-order-lifecycle-and-items`
-- Subscription renewal scheduler: `wcs-renewal-scheduler`
 - HPOS-safe order reads/writes inside jobs: `wc-hpos-compatibility`
 - Store API/block cart updates that need async follow-up: `wc-store-api`

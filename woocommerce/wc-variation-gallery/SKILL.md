@@ -4,9 +4,9 @@ description: Build or audit WooCommerce 10.9+ native variation gallery integrati
 author: Soczó Kristóf
 contact: mailto:lonsdale201@hotmail.com
 plugin: woocommerce
-plugin-version-tested: "10.9.1"
+plugin-version-tested: "10.9.4"
 php-min: "7.4"
-last-updated: "2026-06-29"
+last-updated: "2026-07-10"
 docs:
   - https://woocommerce.com/document/managing-product-variations/
 source-refs:
@@ -27,7 +27,7 @@ source-refs:
 
 Use this skill when a plugin or theme needs to read, write, render, or audit WooCommerce native variation gallery images. This is separate from attribute swatches: swatches choose an attribute value; variation gallery controls the images shown after a variation is selected.
 
-## Source-verified status in 10.9.1
+## Source-verified status in 10.9.4
 
 - Feature ID: `variation_gallery`.
 - Feature option: `wc_feature_woocommerce_additional_variation_images_enabled`.
@@ -118,7 +118,7 @@ function myplugin_set_variation_gallery_ordered_ids( int $variation_id, array $o
 }
 ```
 
-For bulk imports, collect parent IDs and run `wc_delete_product_transients( $parent_id )` plus `WC_Product_Variable::sync( $parent_id )` once per touched parent after the batch, as with other variation writes.
+Variation CRUD clears relevant caches and queues the parent for deferred synchronization at shutdown. For bulk imports, keep using CRUD and let WooCommerce deduplicate touched parents. Call `WC_Product_Variable::sync( $parent_id )` explicitly only when the current request must observe the rebuilt parent immediately; direct meta/SQL writes still require deliberate cache invalidation and synchronization.
 
 ## REST v3 payload
 

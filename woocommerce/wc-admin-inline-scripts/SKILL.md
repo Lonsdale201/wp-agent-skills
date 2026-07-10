@@ -11,9 +11,9 @@ description: WooCommerce admin inline JavaScript and script-data migration
 author: Soczó Kristóf
 contact: mailto:lonsdale201@hotmail.com
 plugin: woocommerce
-plugin-version-tested: "10.9.3"
+plugin-version-tested: "10.9.4"
 php-min: "7.4"
-last-updated: "2026-07-06"
+last-updated: "2026-07-10"
 source-refs:
   - wp-content/plugins/woocommerce/includes/wc-core-functions.php
   - wp-content/plugins/woocommerce/includes/wc-template-hooks.php
@@ -31,7 +31,7 @@ Use this when adding or reviewing small JavaScript glue in WooCommerce admin scr
 
 > "WooCommerce has `wc_enqueue_js()`, so use that for admin inline JS."
 
-Do not use it. In WooCommerce 10.9.3 the function still exists, but it is deprecated since 10.4.0 with the replacement `wp_add_inline_script()`. It appends code to a global queue printed by `wc_print_js()` on `wp_footer` and `admin_footer`, wrapped in `jQuery(function($) { ... })`. That global footer queue is hard to scope, hard to dequeue, and not tied to a real script handle.
+Do not use it. In WooCommerce 10.9.4 the function still exists, but it is deprecated since 10.4.0 with the replacement `wp_add_inline_script()`. It appends code to a global queue printed by `wc_print_js()` on `wp_footer` and `admin_footer`, wrapped in `jQuery(function($) { ... })`. That global footer queue is hard to scope, hard to dequeue, and not tied to a real script handle.
 
 ## When to use this skill
 
@@ -129,7 +129,7 @@ wp_add_inline_script(
 
 ## Woo admin handles
 
-Common handles from WooCommerce 10.9.3:
+Common handles from WooCommerce 10.9.4:
 
 | Screen need | Existing handle |
 |---|---|

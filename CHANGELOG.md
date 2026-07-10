@@ -4,6 +4,24 @@ This collection is continuously evolving — entries are date-based, not version
 
 ## 2026-07-10
 
+### New skill — WooCommerce core logging (`wc-logging`, WC 10.9.4)
+
+- **`woocommerce/wc-logging`** — Add production-safe WooCommerce logging with `wc_get_logger()`. Covers stable log sources, severity levels and thresholds, structured `context`, correlation IDs, sensitive-data redaction, the DB vs file handler + retention model, volume control, custom handlers, and why logs are diagnostics not durable business state — for adding diagnostics to gateways, webhooks, background jobs, imports, REST endpoints, or order integrations. `plugin: woocommerce`, `plugin-version-tested: "10.9.4"`, `php-min: "7.4"`.
+
+### Updated — WooCommerce core skills re-grounded to WooCommerce 10.9.4
+
+- 19 `woocommerce/` core skills were re-verified and refreshed against **WooCommerce 10.9.4** (`plugin-version-tested` bumped from the prior `10.7` / `10.8.0` / `10.9.1` / `10.9.3` / `10.x` baselines): `wc-action-scheduler-jobs`, `wc-admin-inline-scripts`, `wc-cart-checkout-classic`, `wc-coupon-dynamic`, `wc-customer-and-sessions`, `wc-emails-classic`, `wc-hpos-compatibility`, `wc-order-lifecycle-and-items`, `wc-payment-gateway`, `wc-payment-tokens`, `wc-product-attribute-swatches`, `wc-product-search-select`, `wc-rest-api-v4`, `wc-shipping-method`, `wc-shipping-providers`, `wc-store-api`, `wc-variation-gallery`, `wc-variations-data`, `wc-variations-pricing-filters`.
+- **`woocommerce/wc-rest-api-v4`** — split into `SKILL.md` + a new `reference.md` (progressive disclosure).
+- **`woocommerce/wc-sequential-order-numbers-pro`** — content refreshed in the same pass (extension; `plugin-version-tested` unchanged at `1.21.9`).
+- The WooCommerce extension-family skills were unchanged this batch — Subscriptions (`wcs-*`, 9.0.0), Memberships (`wcm-*`, 1.29.0), and the Stripe gateway (`wc-stripe-add-payment-method`, 10.6.1).
+- Intake formatting fix: `wc-product-search-select` had a literal `✕` reintroduced in the data-attribute table; restored to the repo's ASCII wording ("a clear (x) control") to keep the source emoji-free.
+
+### Repo / docs (WooCommerce batch)
+
+- `woocommerce/README.md`: added a `wc-logging` row to the WooCommerce core table.
+- Root `README.md` coverage line: **185 → 186 skills** (plugins unchanged at 28 — `wc-logging` is `plugin: woocommerce`, already counted).
+- `skills-index.json` regenerated (`skill_count` 185 → 186; `woocommerce` 31 → 32; `domain_count` unchanged at 19).
+
 ### New skills — WordPress core security & privacy (WP 7.0.1)
 
 - **`wordpress/wp-file-upload-security`** — Implement or audit secure WordPress file uploads and sideloads. Covers `media_handle_upload()`, `wp_handle_upload()`, `wp_check_filetype_and_ext()`, strict MIME/extension allowlists, capability + nonce checks, size limits, attachment cleanup, SVG/archive (ZIP) policy, remote-download cleanup, and private file storage — for code that handles `$_FILES`, multipart forms, REST uploads, Media Library attachments, imported remote files, or custom download endpoints. `plugin: wordpress`, `plugin-version-tested: "6.0 - 7.0.1"`, `php-min: "7.4"`.

@@ -4,9 +4,9 @@ description: Work safely with WooCommerce order statuses, payment completion, st
 author: Soczó Kristóf
 contact: mailto:lonsdale201@hotmail.com
 plugin: woocommerce
-plugin-version-tested: "10.8.0"
+plugin-version-tested: "10.9.4"
 php-min: "7.4"
-last-updated: "2026-05-27"
+last-updated: "2026-07-10"
 docs:
   - https://woocommerce.github.io/code-reference/classes/WC-Order.html
 source-refs:
@@ -27,7 +27,7 @@ Use this when plugin code reacts to orders, changes statuses, creates or edits o
 
 > "The payment succeeded, so I can just call `$order->update_status( 'completed' )`."
 
-For a real payment success path, gateways should call `$order->payment_complete( $transaction_id )`. That clears the awaiting-payment session flag, sets transaction/date-paid data, chooses processing vs completed via `woocommerce_payment_complete_order_status`, saves, and fires `woocommerce_payment_complete`. `update_status()` only changes status.
+For a real payment success path, gateways should call `$order->payment_complete( $transaction_id )`. That clears the awaiting-payment session flag, sets transaction/date-paid data, chooses processing vs completed via `woocommerce_payment_complete_order_status`, saves, and fires `woocommerce_payment_complete`. `update_status()` still fires status hooks, emails, and stock handlers, but it does not perform the full paid-order contract.
 
 ## When to use this skill
 
@@ -107,7 +107,7 @@ Do not perform slow API calls directly inside status hooks. Enqueue a job and ma
 
 ## Order creation hooks
 
-`woocommerce_new_order` is not a universal "checkout just started" hook. In WC 10.8 the CPT and HPOS stores skip normal new-order behavior for draft/new/checkout-draft transitions and fire it when the order becomes non-draft. For checkout-specific behavior, use checkout hooks such as `woocommerce_checkout_order_created` or `woocommerce_checkout_order_processed`.
+`woocommerce_new_order` is not a universal "checkout just started" hook. Since WC 10.8 the CPT and HPOS stores skip normal new-order behavior for draft/new/checkout-draft transitions and fire it when the order becomes non-draft. For checkout-specific behavior, use checkout hooks such as `woocommerce_checkout_order_created` or `woocommerce_checkout_order_processed`.
 
 ## Add a product line item
 
@@ -150,11 +150,12 @@ if ( $order instanceof WC_Order ) {
         $item->save();
     }
 
-    $order->save();
 }
 ```
 
-For machine data, use private meta keys. For customer/admin-visible item meta, use readable labels.
+`$item->save()` persists an item-only change; an additional `$order->save()` is needed only when order properties also changed. For machine data, use private meta keys. For customer/admin-visible item meta, use stable keys and translate only the display label.
+
+In WooCommerce 10.9+, `$item->get_order()` returns the item's already-associated order instance when available. It is not guaranteed to be an independent snapshot: mutating that object mutates the same in-memory order used by surrounding code.
 
 ## Stock side effects
 
