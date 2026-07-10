@@ -15,9 +15,9 @@ description: Add custom WP-CLI commands to a WordPress plugin via
 author: Soczó Kristóf
 contact: mailto:lonsdale201@hotmail.com
 plugin: wordpress
-plugin-version-tested: "WP-CLI 2.10 - 2.11; WP 6.0 - 7.0"
+plugin-version-tested: "WP-CLI 2.10 - 2.11; WP 6.0 - 7.0.1"
 php-min: "7.4"
-last-updated: "2026-05-24"
+last-updated: "2026-07-10"
 docs:
   - https://make.wordpress.org/cli/handbook/references/internal-api/wp-cli-add-command/
   - https://make.wordpress.org/cli/handbook/references/internal-api/
@@ -167,7 +167,10 @@ $users = \WP_CLI::runcommand( 'user list --role=customer --format=json', array(
 
 ## Lifecycle hooks — `WP_CLI::add_hook`
 
-Useful for plugins that need to run init logic before/after specific commands, or before WP loads at all:
+Useful for command lifecycle logic. An ordinary active plugin is loaded during
+WordPress bootstrap, so it cannot register code early enough to run before
+WordPress loads; `before_wp_load` is for commands registered by WP-CLI packages
+or an earlier bootstrap file.
 
 | Hook | When |
 |---|---|
@@ -213,7 +216,10 @@ foreach ( array_chunk( $ids, 500 ) as $chunk ) {
 - **Method visibility matters**. Only `public` methods are exposed as subcommands. `protected` / `private` helpers don't leak — use them freely.
 - **Underscores are not automatically converted to hyphens**. A method named `import_licenses` registers as `import_licenses`; add `@subcommand import-licenses` when the CLI command should be hyphenated.
 - **Register a class name, not an already-instantiated object, when you want lazy loading**. With a class string, WP-CLI reflects PHPDoc during registration/help and only constructs the class when the command is invoked. Constructors should still stay cheap because every real command run pays for them.
-- **`@when after_wp_load` is the default**. Only use `@when before_wp_load` for genuinely WP-independent commands (config inspection, file scaffolding). Most plugin commands need WP loaded.
+- **`@when after_wp_load` is the default and the normal plugin mode**. A command
+  declared by an active plugin is registered only while WP is loading, too late
+  for a real `before_wp_load` command. Put WP-independent early commands in a
+  WP-CLI package/bootstrap loaded before core.
 - **`WP_CLI::error()` exits with non-zero by default**. Pass `false` as the 2nd arg only when you genuinely want to print "Error:" but continue.
 - **Format your output via `WP_CLI\Utils\format_items()`, not by `echo`**. Users expect `--format=json` to work; rolling your own table breaks pipelines and scripts.
 - **Don't bypass `WP_CLI::log` with raw `echo`**. `echo` doesn't respect `--quiet`; logs always do.

@@ -7,16 +7,16 @@ description: Handle dates, times, and numbers in WordPress plugins with
   and avoid the legacy foot-guns (`current_time('timestamp')` returning
   offset-summed not-quite-Unix, `date_i18n` quirks, `mysql_to_rfc3339`
   not actually being RFC3339). Covers `timezone_string` vs `gmt_offset`
-  fallback, storing site-local + UTC MySQL columns, REST date emission,
+  fallback, choosing canonical UTC or paired core-style columns, REST dates,
   and locale-aware number formatting. Use for any plugin that stores,
   queries, or displays dates / numbers in multi-locale, multi-timezone
   installs.
 author: Soczó Kristóf
 contact: mailto:lonsdale201@hotmail.com
 plugin: wordpress
-plugin-version-tested: "5.3 - 7.0"
+plugin-version-tested: "5.3 - 7.0.1"
 php-min: "7.4"
-last-updated: "2026-05-24"
+last-updated: "2026-07-10"
 docs:
   - https://developer.wordpress.org/reference/functions/wp_date/
   - https://developer.wordpress.org/reference/functions/current_datetime/
@@ -42,7 +42,9 @@ Trigger when ANY of the following is true:
 Since WP 5.3, the rule is:
 
 - **Timestamps stored in code (and Unix epoch in general) are UTC integers**. `time()` returns UTC. `wp_date()` accepts UTC and formats in a target timezone.
-- **MySQL DATETIME columns in WP are stored in the SITE's timezone** (`post_date` is local; `post_date_gmt` is UTC — that's why both columns exist).
+- **Core post date fields are paired by convention**: `post_date` is site-local
+  and `post_date_gmt` is UTC. This does not mean every WordPress/plugin
+  `DATETIME` is implicitly local; a SQL `DATETIME` has no timezone metadata.
 - **The "site's timezone" is configurable** — `Settings → General → Timezone`. It's either `Europe/Budapest` (IANA name in `timezone_string`) or a manual `+02:00` offset (in `gmt_offset`). Use `wp_timezone()` / `wp_timezone_string()` — they handle the fallback for you (`wp-includes/functions.php:124-154`).
 
 ## Always reach for these (modern API)
@@ -68,14 +70,16 @@ Since WP 5.3, the rule is:
 
 ### MySQL DATETIME columns
 
-Standard WP convention: store both the site-local and the UTC version side by side. This is what `post_date` / `post_date_gmt` does and what most plugin tables should follow.
+For new plugin tables, prefer one canonical UTC instant: a UTC `DATETIME` or a
+Unix integer. Add a site-local companion only when interoperating with a core
+schema/pattern or when a demonstrated local-time query/display requirement
+justifies the duplication. Document the timezone semantics in the column name
+and schema comments.
 
 ```php
-$now_local = current_datetime();                          // DateTimeImmutable in site timezone
-$now_utc   = $now_local->setTimezone( new DateTimeZone( 'UTC' ) );
+$now_utc = current_datetime()->setTimezone( new DateTimeZone( 'UTC' ) );
 
 $wpdb->insert( $wpdb->prefix . 'myplugin_events', array(
-    'event_date'     => $now_local->format( 'Y-m-d H:i:s' ),
     'event_date_gmt' => $now_utc->format( 'Y-m-d H:i:s' ),
 ) );
 ```
@@ -88,6 +92,13 @@ $gmt_string = get_gmt_from_date( $user_input );           // → 'Y-m-d H:i:s' i
 ```
 
 `get_gmt_from_date()` and `get_date_from_gmt()` are converters, not validators. On parse failure core returns `gmdate( $format, 0 )` (usually `1970-01-01 00:00:00`), so validate user input before conversion.
+
+Local date-times can also be nonexistent or ambiguous across DST transitions.
+For exact scheduling, parse with `wp_timezone()`, round-trip the formatted
+value to detect normalization through a DST gap, and define a product policy
+for repeated local times (ask for an offset/occurrence or reject ambiguity).
+Date-only values do not identify an instant and should remain `Y-m-d` when
+that is the real domain value.
 
 ### Storage as Unix integer
 
@@ -144,19 +155,24 @@ $displayed = number_format_i18n( $total, 2 ) . ' ' . esc_html( get_option( 'mypl
 
 ## Locale file loading
 
-Translation loading is its own topic — see the existing **`wp-i18n-audit`** skill. Note for date/locale work specifically: `$wp_locale` is initialized as part of WP bootstrap; calling `wp_date` BEFORE the `init` action may produce English month names because the locale text domain hasn't loaded yet. Render dates from `init` or later.
+Translation loading is its own topic — see **`wp-i18n-audit`**. `$wp_locale` is
+initialized during core bootstrap, but plugins should not render user-facing
+dates at file-load time. Generate UI on its normal lifecycle hook (`init` or a
+later render hook), after locale and plugin translation setup is available.
 
 ## Critical rules
 
 - **Treat `time()` results as UTC integers**. Pass them to `wp_date()` for display in site timezone, or `gmdate()` for UTC display. NEVER add the site offset to a `time()` value before formatting — that's the legacy `current_time('timestamp')` foot-gun.
 - **`current_time( 'timestamp' )` is NOT a Unix timestamp**. It's `time() + offset * 3600`. PHPCS flags it. The correct replacement: `current_datetime()` for an object, `time()` for UTC int.
 - **`mysql_to_rfc3339()` does NOT produce RFC3339**. The function name is wrong; it produces ISO 8601 without timezone. Source explicitly notes this. Use it for REST compatibility; use `DateTimeInterface::ATOM` for actually-RFC3339-compliant output.
-- **If you store site-local MySQL DATETIME, also store the UTC companion**. Follow the `*_gmt` pattern (`event_date` + `event_date_gmt`) so display and UTC queries don't drift.
-- **UTC-only storage is also valid for custom plugin tables**. A UTC `BIGINT` or UTC `DATETIME` can be simpler for expiry, logs, queues, and external integrations. Format at display with `wp_date()`.
+- **Prefer one canonical UTC instant in custom tables**. Use paired local/UTC
+  columns only for a documented interoperability or query requirement; when a
+  local column exists, keep its UTC companion authoritative and synchronized.
 - **`wp_timezone_string()` may return an IANA name OR a `±HH:MM` offset**. Don't assume IANA — sites with `gmt_offset` set but no `timezone_string` produce the offset form. `DateTimeZone()` accepts both, so use `wp_timezone()` (object) whenever possible.
 - **Use `get_option('date_format')` + `get_option('time_format')` for user-facing display**, not hardcoded `'Y-m-d'`. Respects the site admin's preference.
 - **Don't store locale-formatted strings**. Store machine values (`Y-m-d H:i:s` or UTC integers), then format at display. Locale-shaped strings are hard to query and migrate.
-- **Don't render dates before `init`**. `$wp_locale` translation domain isn't bound yet; month/day names come back in English.
+- **Do not render user-facing dates at plugin file load**. Use the normal
+  `init`-or-later application/render lifecycle so locale setup is complete.
 
 ## Common AI mistakes
 

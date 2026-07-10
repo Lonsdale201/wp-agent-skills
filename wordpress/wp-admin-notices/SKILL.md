@@ -13,9 +13,9 @@ description: Render WordPress admin notices via the four core hooks
 author: Soczó Kristóf
 contact: mailto:lonsdale201@hotmail.com
 plugin: wordpress
-plugin-version-tested: "6.4 - 7.0"
+plugin-version-tested: "6.4 - 7.0.1"
 php-min: "7.4"
-last-updated: "2026-05-24"
+last-updated: "2026-07-10"
 docs:
   - https://developer.wordpress.org/reference/functions/wp_admin_notice/
   - https://developer.wordpress.org/reference/functions/wp_get_admin_notice/
@@ -120,6 +120,14 @@ add_action( 'rest_api_init', static function (): void {
     register_rest_route( 'myplugin/v1', '/dismiss-notice/(?P<slug>[a-z0-9_-]+)', array(
         'methods'             => WP_REST_Server::EDITABLE,
         'permission_callback' => static fn () => is_user_logged_in(),
+        'args'                => array(
+            'slug' => array(
+                'type'              => 'string',
+                'enum'              => array( 'v2_intro' ),
+                'validate_callback' => 'rest_validate_request_arg',
+                'sanitize_callback' => 'sanitize_key',
+            ),
+        ),
         'callback'            => static function ( WP_REST_Request $req ) {
             $slug = sanitize_key( $req['slug'] );
             update_user_meta( get_current_user_id(), 'myplugin_dismissed_' . $slug, 1 );
@@ -131,15 +139,18 @@ add_action( 'rest_api_init', static function (): void {
 
 ```js
 // 3. Client-side: capture either the built-in close button OR your "Got it" link.
-// Enqueue this script with deps: array( 'wp-api-fetch' ).
+// Enqueue with: array( 'wp-api-fetch', 'wp-a11y', 'wp-i18n' ).
 jQuery( function ( $ ) {
     $( document ).on( 'click', '#myplugin-v2-intro .notice-dismiss, .myplugin-dismiss-intro', function ( event ) {
         event.preventDefault();
         wp.apiFetch( {
             path:   '/myplugin/v1/dismiss-notice/v2_intro',
             method: 'POST',
+        } ).then( () => {
+            $( '#myplugin-v2-intro' ).fadeOut( 100 );
+        } ).catch( () => {
+            wp.a11y.speak( wp.i18n.__( 'The notice could not be dismissed.', 'myplugin' ) );
         } );
-        $( '#myplugin-v2-intro' ).fadeOut( 100 );
     } );
 } );
 ```
@@ -204,7 +215,11 @@ add_filter( 'wp_admin_notice_args', static function ( array $args, string $messa
 - **`is-dismissible` only hides client-side — it does NOT persist**. The dismiss button doesn't write anywhere. If you want "dismiss forever", you write the user meta yourself via a REST/AJAX endpoint.
 - **Declare `wp-api-fetch` when dismissing through REST**. The admin nonce middleware is attached by that script; otherwise your dismiss call can fail or `wp.apiFetch` can be undefined.
 - **The `type` arg must NOT contain spaces**. WP triggers `_doing_it_wrong` and the value still goes directly into `notice-<type>`, producing broken / extra classes.
-- **Escape the message yourself**. `wp_admin_notice()` runs `wp_kses_post()` on the final markup — which allows `<a>` / `<strong>` / common HTML but strips dangerous tags. Inline user-controlled data with `esc_html()` / `esc_attr()` / `esc_url()` BEFORE passing to the function. The wrapper is not a sanitizer.
+- **Escape dynamic values for their context before composing the message**.
+  `wp_admin_notice()` then applies `wp_kses_post()` as a final HTML allowlist.
+  That KSES pass is sanitization, but it does not know whether a dynamic value
+  was intended as text, URL, or attribute and does not replace contextual
+  escaping.
 - **`wp_get_admin_notice()` returns raw markup**. It does not run `wp_kses_post()`; only `wp_admin_notice()` does that before echoing.
 - **Flash transients must be per-user**. A global `myplugin_flash` key shows User B's "Imported!" notice to every admin on the next page load.
 - **Don't render notices in cron / REST contexts**. Hooks like `admin_notices` only fire on admin page renders. A successful background job should write to a transient and let the next admin pageview surface it.

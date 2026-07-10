@@ -12,9 +12,9 @@ description: Wire up WordPress postboxes on custom plugin admin pages with
 author: Soczó Kristóf
 contact: mailto:lonsdale201@hotmail.com
 plugin: wordpress
-plugin-version-tested: "6.0 - 7.0"
+plugin-version-tested: "6.0 - 7.0.1"
 php-min: "7.4"
-last-updated: "2026-05-24"
+last-updated: "2026-07-10"
 docs:
   - https://developer.wordpress.org/reference/functions/add_meta_box/
   - https://developer.wordpress.org/reference/functions/do_meta_boxes/
@@ -89,12 +89,12 @@ add_action( 'admin_enqueue_scripts', static function ( string $hook_suffix ): vo
                 <div id="post-body-content"><!-- main column content --></div>
 
                 <div id="postbox-container-1" class="postbox-container">
-                    <?php do_meta_boxes( 'myplugin_page', 'side', $data_object ); ?>
+                    <?php do_meta_boxes( 'toplevel_page_myplugin', 'side', $data_object ); ?>
                 </div>
 
                 <div id="postbox-container-2" class="postbox-container">
-                    <?php do_meta_boxes( 'myplugin_page', 'normal', $data_object ); ?>
-                    <?php do_meta_boxes( 'myplugin_page', 'advanced', $data_object ); ?>
+                    <?php do_meta_boxes( 'toplevel_page_myplugin', 'normal', $data_object ); ?>
+                    <?php do_meta_boxes( 'toplevel_page_myplugin', 'advanced', $data_object ); ?>
                 </div>
             </div>
             <br class="clear">
@@ -103,7 +103,11 @@ add_action( 'admin_enqueue_scripts', static function ( string $hook_suffix ): vo
 </div>
 ```
 
-`do_meta_boxes()` outputs the `.meta-box-sortables` containers and reads the user's saved order from `meta-box-order_myplugin_page` automatically.
+`do_meta_boxes()` outputs the `.meta-box-sortables` containers and reads the
+user's saved order from `meta-box-order_toplevel_page_myplugin` automatically.
+Register every box with this same actual screen ID. The safest registration
+point is `load-{$hook_suffix}`, where `get_current_screen()->id` is available;
+pass that value to `add_meta_box()`, `do_meta_boxes()`, and the JavaScript.
 
 ### 3. The two nonce fields — the most-forgotten step
 
@@ -122,14 +126,17 @@ The screen identifier you pass — `pageId` — is what gets sanitize_key'd serv
 
 ```js
 jQuery( function ( $ ) {
-    postboxes.add_postbox_toggles( 'myplugin_page', {
+    postboxes.add_postbox_toggles( 'toplevel_page_myplugin', {
         pbshow: function ( id ) { /* optional: called when a box opens */ },
         pbhide: function ( id ) { /* optional: called when a box closes */ },
     } );
 } );
 ```
 
-After this call, the user gets: click-to-collapse, drag-to-reorder, the move-up / move-down accessibility buttons, the Screen Options checkboxes (if you also register Screen Options — see "Screen Options" below), and all three states persist to user meta.
+After this call, the user gets click-to-collapse, drag-to-reorder, the move-up /
+move-down accessibility buttons, and Screen Options visibility. The three
+postbox states below persist to user meta. One/two-column layout is separate
+screen-layout state and requires the corresponding Screen Options setup.
 
 ## Per-user persistence — the three storage keys
 
@@ -147,7 +154,11 @@ To reset a user's preferences (e.g. an "Reset layout" button on your page), `del
 
 ## Screen Options registration (the hide/show checkboxes)
 
-Postboxes appear in Screen Options automatically if your screen has registered itself via `get_current_screen()`. For an `add_menu_page` / `add_submenu_page` page, this happens automatically. The Screen Options pane lists every registered meta box for that screen — users can hide ones they don't need, and the hidden set lands in `metaboxhidden_$page`.
+The Screen Options pane can list meta boxes registered against the **actual
+current screen ID**. `add_menu_page()`/`add_submenu_page()` creates the screen,
+but it does not repair a mismatched ID: a box registered as `myplugin_page`
+will not belong to a screen whose ID is `toplevel_page_myplugin`. Register on
+`load-{$hook_suffix}` and use `get_current_screen()->id` consistently.
 
 If you want a custom "Layout" or "Show on screen" panel in Screen Options, use `add_screen_option()` from the `load-{$hook_suffix}` hook (covered separately by the WP-List-Table skill since it overlaps).
 
@@ -216,18 +227,22 @@ Two non-obvious bits worth keeping:
 - **Never enqueue `postbox` globally**. It binds click handlers on `.postbox .hndle` and `.handlediv` globally; if another plugin's UI happens to have a `.postbox` element, you'll bind their elements too.
 - **The `$page` argument must be sanitize_key-safe**. Core does `sanitize_key( $page )` and `wp_die(0)` if it doesn't match — see `ajax-actions.php:1813`. Use `myplugin_settings`, never `MyPlugin Settings`.
 - **Don't write your own AJAX handlers for these**. Core already handles AJAX actions `closed-postboxes` and `meta-box-order` through `wp_ajax_closed_postboxes()` and `wp_ajax_meta_box_order()`. Reusing them is the whole point.
-- **`metaboxhidden_$page` has a hardcoded exemption list**. `submitdiv`, `linksubmitdiv`, `manage-menu`, `create-menu` cannot be hidden via Screen Options — see `ajax-actions.php:1828`. If you need an always-visible box on a custom screen, name it accordingly OR accept that Screen Options can hide it.
+- **Do not reuse reserved core box IDs to force visibility**. Core exempts
+  `submitdiv`, `linksubmitdiv`, `manage-menu`, and `create-menu` from its hidden
+  list, but colliding with those IDs couples plugin UI to unrelated core
+  behavior. Render mandatory controls outside the optional postbox area or
+  deliberately own the screen's visibility policy.
 - **Postbox JS uses `ajaxurl`**, the global injected by core on admin pages. If you're enqueueing on a screen where `ajaxurl` isn't defined (rare — really only the frontend), localize it yourself.
 
 ## Common mistakes
 
 ```js
 // WRONG — runs before postbox.js loads (when postbox is in_footer, defer, or strategy=defer)
-postboxes.add_postbox_toggles( 'myplugin_page' );
+postboxes.add_postbox_toggles( 'toplevel_page_myplugin' );
 
 // RIGHT — wait for DOM ready
 jQuery( function () {
-    postboxes.add_postbox_toggles( 'myplugin_page' );
+    postboxes.add_postbox_toggles( 'toplevel_page_myplugin' );
 } );
 ```
 

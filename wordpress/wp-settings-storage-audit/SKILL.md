@@ -4,9 +4,9 @@ description: "Audit how WordPress plugins and classic themes store settings and 
 author: Soczo Kristof
 contact: mailto:lonsdale201@hotmail.com
 plugin: wordpress
-plugin-version-tested: "7.0"
+plugin-version-tested: "7.0.1"
 php-min: "7.4"
-last-updated: "2026-07-09"
+last-updated: "2026-07-10"
 docs:
   - https://developer.wordpress.org/plugins/settings/settings-api/
   - https://developer.wordpress.org/reference/functions/register_setting/

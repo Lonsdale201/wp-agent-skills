@@ -13,9 +13,9 @@ description: Embed WordPress's bundled CodeMirror editor in admin pages via
 author: Soczó Kristóf
 contact: mailto:lonsdale201@hotmail.com
 plugin: wordpress
-plugin-version-tested: "6.0 - 7.0"
+plugin-version-tested: "6.0 - 7.0.1"
 php-min: "7.4"
-last-updated: "2026-05-24"
+last-updated: "2026-07-10"
 docs:
   - https://developer.wordpress.org/reference/functions/wp_enqueue_code_editor/
   - https://developer.wordpress.org/reference/functions/wp_get_code_editor_settings/
@@ -100,7 +100,9 @@ If you want to pass a CSS selector, pass a jQuery object instead: `wp.codeEditor
 ?></textarea>
 ```
 
-That's the whole flow. The submit works automatically because CodeMirror's `EditorFromTextArea` sync-writes back into the original `<textarea>`.
+That's the whole flow for a native form submission. CodeMirror's
+`EditorFromTextArea` saves its value back into the original `<textarea>` when
+that form submits.
 
 ## Reading / writing programmatically
 
@@ -223,7 +225,11 @@ wp.codeEditor.initialize( 'my-editor', {
 - **Don't `wp_enqueue_code_editor()` globally**. It runs on every admin page-load and adds ~6 scripts + 1 stylesheet plus linters. Always gate on `$hook_suffix`.
 - **The `<textarea>` must exist before `initialize()` runs**. CodeMirror replaces the textarea in the DOM — late-added textareas (e.g. in a repeater) need their own `initialize()` after insertion.
 - **Don't re-initialize an already-initialized textarea**. Track instances; if you must re-init, call `instance.codemirror.toTextArea()` first to detach.
-- **Save the textarea, not the CodeMirror instance**. `EditorFromTextArea` syncs values back into the original `<textarea>` on every change — so `$_POST['myplugin_options']['custom_css']` works server-side without extra work. Don't pull from `wp.codeEditor.instances[...]` on submit.
+- **Native form submit is synchronized; arbitrary serialization is not**.
+  `EditorFromTextArea` updates the original `<textarea>` for the form's native
+  submit event. Before programmatically reading or serializing that textarea,
+  call `instance.codemirror.save()` or use `getValue()` directly. It does not
+  write the textarea on every editor change.
 
 ## Common mistakes
 

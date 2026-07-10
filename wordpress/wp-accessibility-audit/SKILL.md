@@ -4,9 +4,9 @@ description: Audit or implement accessibility for WordPress plugins, admin scree
 author: Soczó Kristóf
 contact: mailto:lonsdale201@hotmail.com
 plugin: wordpress
-plugin-version-tested: "7.0"
+plugin-version-tested: "7.0.1"
 php-min: "7.4"
-last-updated: "2026-06-11"
+last-updated: "2026-07-10"
 docs:
   - https://developer.wordpress.org/coding-standards/wordpress-coding-standards/accessibility/
   - https://www.w3.org/TR/WCAG22/
@@ -192,28 +192,38 @@ wp.a11y.speak( __( 'Settings saved.', 'textdomain' ) );
 - Do not use color as the only way to show errors, selected state, required fields, or links in prose.
 
 - Use relative units for text: `rem`, `em`, `%`.
-- Start body text at `1rem`; avoid UI text below 14px, and prefer 16px for content and form-heavy screens.
+- As design guidance, start body text at `1rem`, avoid UI text below 14px, and
+  prefer 16px for content/form-heavy screens. WCAG does not define a universal
+  minimum font-size pass/fail threshold.
 - Use line-height around `1.4` to `1.6` for readable body text.
 - Avoid fixed-height containers for text that can wrap or zoom.
-- Test at 200% browser zoom and narrow width.
-- Preserve content when users override text spacing.
+- Test text zoom at 200%, and test reflow at 400% zoom / a 320 CSS-pixel-wide
+  viewport without two-dimensional scrolling except for allowed content such
+  as data tables.
+- Test WCAG text-spacing overrides: line height `1.5`, paragraph spacing `2em`,
+  letter spacing `0.12em`, and word spacing `0.16em`; content and controls must
+  remain available.
 
 Reduced motion:
 
 ```css
 @media (prefers-reduced-motion: reduce) {
-	.myplugin-ui *,
-	.myplugin-ui *::before,
-	.myplugin-ui *::after {
+	.myplugin-nonessential-animation {
 		scroll-behavior: auto !important;
-		animation-duration: 0.01ms !important;
-		animation-iteration-count: 1 !important;
-		transition-duration: 0.01ms !important;
+		animation: none !important;
+		transition: none !important;
 	}
 }
 ```
 
-- Interactive targets should be at least 24 by 24 CSS pixels for WCAG 2.2 AA.
+Scope reduced-motion changes to nonessential effects. Do not globally shorten
+animations when application logic waits for `animationend`/`transitionend`;
+provide a no-motion code path and test that completion still occurs.
+
+- WCAG 2.2 AA target size is 24 by 24 CSS pixels, with defined exceptions for
+  sufficient spacing, inline text, equivalent larger controls, user-agent
+  controls, and essential presentation. Audit the exception before reporting
+  every smaller compact control as a failure.
 - Prefer 44 by 44 CSS pixels for touch-heavy frontend UI.
 - If the visual icon is smaller, increase clickable padding.
 
@@ -260,7 +270,7 @@ Before building a custom widget, check whether native HTML or a WordPress compon
 2. Verify accessible name, role, value, and state.
 3. Tab through the whole UI without a mouse.
 4. Trigger validation errors and verify visible/focus/ARIA behavior.
-5. Test 200% zoom and mobile width.
+5. Test 200% text zoom, 400%/320-CSS-pixel reflow, and text-spacing overrides.
 6. Check contrast for text, focus, borders, icons, and error states.
 7. Disable animations through reduced-motion preference.
 8. Run an automated checker, then manually verify anything it cannot know.
@@ -270,25 +280,20 @@ Before building a custom widget, check whether native HTML or a WordPress compon
 
 - Critical: keyboard trap, unreachable primary action, missing accessible names on required controls, modal focus broken, security/checkout/account flow unusable.
 - High: invalid fields not announced, focus invisible, insufficient contrast on important text/actions, destructive action ambiguity, dynamic state not announced.
-- Medium: poor heading order, missing landmark names, weak help text association, target size below 24px, nonessential motion not reduced.
+- Medium: poor heading order, missing landmark names, weak help text
+  association, target size below 24px without a WCAG exception, or
+  nonessential motion not reduced.
 - Low: redundant labels, minor screen-reader verbosity, cosmetic focus inconsistency that remains usable.
 
 ## Common Mistakes
-
-- Adding `aria-label` instead of a visible label.
-- Using `aria-describedby` as if it were the field label.
-- Hiding real labels with `display: none` instead of `.screen-reader-text`.
-- Removing outlines globally.
-- Positive `tabindex`.
-- Click handlers on non-interactive elements.
-- Relying on color alone for errors or selected states.
-- Showing a spinner after AJAX but not announcing completion.
-- Building custom controls without implementing keyboard behavior.
-- Assuming an automated scan proves accessibility.
+- Common failures: replacing visible labels with `aria-label`, using
+  `aria-describedby` as the name, hiding labels with `display:none`, removing
+  outlines, positive `tabindex`, click handlers on non-interactive elements,
+  color-only state, silent AJAX completion, and trusting an automated scan as
+  proof of accessibility.
 
 ## Cross-References
 
-- Use `wp-admin-settings-api` with this skill for accessible settings pages.
-- Use `wp-admin-list-table` with this skill for accessible bulk actions, row actions, and table navigation.
-- Use `wp-admin-media-frame` with this skill for accessible media modal integrations.
+- Pair with `wp-admin-settings-api`, `wp-admin-list-table`, or
+  `wp-admin-media-frame` for those specific admin components.
 - Use `classic-theme-accessibility-semantics` for classic theme document structure and landmarks.

@@ -4,6 +4,24 @@ This collection is continuously evolving — entries are date-based, not version
 
 ## 2026-07-10
 
+### New skills — WordPress core security & privacy (WP 7.0.1)
+
+- **`wordpress/wp-file-upload-security`** — Implement or audit secure WordPress file uploads and sideloads. Covers `media_handle_upload()`, `wp_handle_upload()`, `wp_check_filetype_and_ext()`, strict MIME/extension allowlists, capability + nonce checks, size limits, attachment cleanup, SVG/archive (ZIP) policy, remote-download cleanup, and private file storage — for code that handles `$_FILES`, multipart forms, REST uploads, Media Library attachments, imported remote files, or custom download endpoints. `plugin: wordpress`, `plugin-version-tested: "6.0 - 7.0.1"`, `php-min: "7.4"`.
+- **`wordpress/wp-http-api-client`** — Implement or audit outbound HTTP integrations. Covers `wp_remote_request()` / `wp_safe_remote_get/post/request()`, bounded timeouts / redirects / response sizes, host allowlists (SSRF), JSON handling, auth-header redaction, retries + idempotency, streaming downloads, and test hooks — for plugins that call an external API, webhook destination, feed, license server, OAuth endpoint, remote file, or fetch a user-supplied URL. `plugin: wordpress`, `plugin-version-tested: "6.0 - 7.0.1"`, `php-min: "7.4"`.
+- **`wordpress/wp-privacy-personal-data`** — Implement or audit WordPress privacy integration. Covers `wp_add_privacy_policy_content()`, personal-data exporters (`wp_privacy_personal_data_exporters`) and erasers (`wp_privacy_personal_data_erasers`), the paged callback contract, retained-data messages, idempotent erasure, custom tables/meta/remote systems, retention, and multisite scope — for plugins storing emails, IPs, user identifiers, profiles, form submissions, logs, orders, or other personal data. `plugin: wordpress`, `plugin-version-tested: "4.9.6 - 7.0.1"`, `php-min: "7.4"`.
+
+### Updated — WordPress core skills re-grounded to WP 7.0.1
+
+- The 25 existing `wordpress/` skills were re-verified and refreshed against **WordPress 7.0.1** (`plugin-version-tested` bumped from the prior `… - 7.0` / point releases; e.g. `wp-presence-api` presence-api-v0.1.2 → v0.1.4), with content and examples updated where the release moved ground.
+- **`wordpress/wp-abilities-api`** — split into `SKILL.md` + a new `reference.md` (progressive disclosure).
+- **`wordpress/wp-html-api`** — in the text-node mutation example, the literal `🙂` was replaced with the equivalent PHP `\u{1F642}` escape so the source stays emoji-free (repo emoji ban); runtime behavior is unchanged.
+
+### Repo / docs (this batch)
+
+- `wordpress/README.md`: intro now mentions file-upload / outbound-HTTP security and privacy tooling; added rows for the three new skills.
+- Root `README.md` coverage line: **182 → 185 skills** (plugins unchanged at 28 — all three new skills are `plugin: wordpress` core).
+- `skills-index.json` regenerated (`skill_count` 182 → 185; `wordpress` 25 → 28; `domain_count` unchanged at 19).
+
 ### Repo / docs
 
 - Root `README.md` now shows a coverage line under the title — **182 skills · 28 plugins** (skill count + distinct plugins/products the skills cover, excluding WordPress core). Bump both numbers when skills/plugins are added.

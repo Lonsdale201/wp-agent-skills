@@ -12,9 +12,9 @@ description: Build and review WordPress 7.0 WP AI Client integrations for
 author: Soczó Kristóf
 contact: mailto:lonsdale201@hotmail.com
 plugin: wordpress
-plugin-version-tested: "7.0"
+plugin-version-tested: "7.0.1"
 php-min: "7.4"
-last-updated: "2026-05-21"
+last-updated: "2026-07-10"
 docs:
   - https://make.wordpress.org/core/2026/03/24/introducing-the-ai-client-in-wordpress-7-0/
   - https://make.wordpress.org/core/2026/05/14/wordpress-7-0-field-guide/
