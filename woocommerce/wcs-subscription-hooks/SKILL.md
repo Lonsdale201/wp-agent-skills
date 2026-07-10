@@ -1,23 +1,13 @@
 ---
 name: wcs-subscription-hooks
-description: Curated WooCommerce Subscriptions hook and extension-point map
-  for choosing the right action/filter around WC_Subscription creation,
-  status transitions, date changes, renewal orders, scheduled payments,
-  payment retries, gateway events, switching, gifting, related orders,
-  APFS subscription plans, REST/API responses, and account/admin UI. Use when the user asks for a
-  Woo Subscriptions hook list, "where should I hook", "after renewal",
-  "subscription status changed", or when code contains WC_Subscription,
-  wcs_create_subscription, wcs_create_renewal_order,
-  woocommerce_scheduled_subscription_payment, wcs_renewal_order_created,
-  payment_retry, wcs_get_subscriptions, wcsg_, subscription_switch,
-  _subscription_switch_data, _recipient_user, wcsg_recipient, WCS_ATT,
-  wcsatt_, _wcsatt_scheme, convert_to_sub, or subscription switching.
+description: Curated WooCommerce Subscriptions hook map for subscription creation, status/date transitions, renewal orders, scheduled payments, retries, gateway events, switching, gifting, related orders, APFS plans, REST, and account/admin UI. Use when choosing where to hook around WC_Subscription, wcs_create_subscription, wcs_create_renewal_order, woocommerce_scheduled_subscription_payment, payment_retry, wcsg_, subscription_switch, WCS_ATT, wcsatt_, or _wcsatt_scheme.
 author: Soczó Kristóf
 contact: mailto:lonsdale201@hotmail.com
 plugin: woocommerce-subscriptions
 plugin-version-tested: "9.0.0"
+woocommerce-version-tested: "10.9.4"
 php-min: "7.4"
-last-updated: "2026-06-29"
+last-updated: "2026-07-10"
 docs:
   - https://woocommerce.com/document/subscriptions/develop/
 source-refs:
@@ -114,7 +104,7 @@ WCS 9.0 bundles All Products for Subscriptions / Subscription Plans. APFS-select
 | Scheduled renewal is due | `woocommerce_scheduled_subscription_payment` | action | `int $subscription_id` | Fired by Action Scheduler/admin action. WCS prepares renewal at priority 1 and gateway processing runs at priority 10. |
 | Renewal order creation failed | `wcs_failed_to_create_renewal_order` | action | `WP_Error $error, WC_Subscription $subscription` | Alert/log/retry externally. |
 | Renewal order created | `wcs_renewal_order_created` | filter | `WC_Order $renewal_order, WC_Subscription $subscription` | Add order meta, line item data, external IDs. Return a `WC_Order`. |
-| Gateway charge hook | `woocommerce_scheduled_subscription_payment_{gateway_id}` | action | `float $amount, WC_Order $renewal_order` | Payment gateways implement recurring charge here, e.g. `_stripe` or `_paypal`. |
+| Gateway charge hook | `woocommerce_scheduled_subscription_payment_{gateway_id}` | action | `float $amount, WC_Order $renewal_order` | Payment gateways implement recurring charge here, e.g. the stored ID `stripe` produces `woocommerce_scheduled_subscription_payment_stripe`. |
 | Manual renewal order generated | `woocommerce_generated_manual_renewal_order` | action | `int $renewal_order_id, WC_Subscription $subscription` | Notify, adjust pending manual renewal order. |
 | Renewal payment complete | `woocommerce_subscription_renewal_payment_complete` | action | `WC_Subscription $subscription, WC_Order $last_order` | Provision after a successful renewal, not before gateway payment. |
 | Renewal payment failed | `woocommerce_subscription_renewal_payment_failed` | action | `WC_Subscription $subscription, WC_Order $related_order` | Handle failed renewal consequences. |
@@ -185,7 +175,8 @@ Use `wcs-subscription-plans-apfs` for storage, REST endpoints, cart data, and he
 | Payment method updated to/from gateway | `woocommerce_subscription_payment_method_updated_to_{gateway_id}`, `woocommerce_subscription_payment_method_updated_from_{gateway_id}` | action | `WC_Subscription $subscription, string $other_gateway_id` | Gateway-specific migration logic. |
 | Failing method updated | `woocommerce_subscription_failing_payment_method_updated` and `..._{gateway_id}` | action | `WC_Subscription $subscription, WC_Order $renewal_order` | After failed-renewal payment method handling. Use this for same-gateway failed-renewal retries in WCS 8.8+, because `update_payment_method()` hooks are skipped when the gateway did not actually change. |
 | Payment meta fields | `woocommerce_subscription_payment_meta` | filter | `array $payment_meta, WC_Subscription $subscription` | Add fields to payment-method change UI. |
-| Validate payment meta | `woocommerce_subscription_validate_payment_meta` and `..._{gateway_id}` | action | `array $payment_meta, WC_Subscription $subscription` | Throw/notice on invalid payment details. |
+| Validate all payment meta | `woocommerce_subscription_validate_payment_meta` | action | `string $payment_method_id, array $payment_meta, WC_Subscription $subscription` | Generic validator receives 3 arguments. Register with accepted args `3`. |
+| Validate one gateway's meta | `woocommerce_subscription_validate_payment_meta_{gateway_id}` | action | `array $payment_meta, WC_Subscription $subscription` | Gateway-specific validator receives 2 arguments. Do not give the generic callback this signature. |
 
 ## Health Check and Processing reliability
 

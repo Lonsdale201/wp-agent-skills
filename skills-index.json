@@ -12,7 +12,7 @@
     "skill_file": "SKILL.md"
   },
   "domain_count": 19,
-  "skill_count": 186,
+  "skill_count": 189,
   "domains": [
     {
       "slug": "better-data",
@@ -108,7 +108,7 @@
       "slug": "woocommerce",
       "path": "woocommerce",
       "readme_path": "woocommerce/README.md",
-      "skill_count": 32
+      "skill_count": 35
     },
     {
       "slug": "wordpress",
@@ -6168,7 +6168,7 @@
       "slug": "wc-stripe-add-payment-method",
       "name": "wc-stripe-add-payment-method",
       "domain": "woocommerce",
-      "description": "WooCommerce Stripe Gateway skill for the fragile My Account payment-methods and add-payment-method flows. Use when editing or replacing Woo account templates, payment-methods.php, form-add-payment-method.php, Stripe card/token UI, saved cards, SetupIntent, Payment Element/UPE, billing details, WC payment tokens, customer account payment-method endpoints, Subscriptions change-payment-method compatibility, or code contains add_payment_method, add-payment-method, form#add_payment_method, payment_method_stripe, wc-stripe-upe-element, wc-stripe-setup-intent, stripe_source, wc_stripe_create_setup_intent, wc_stripe_upe_params, wc-stripe-payment-method, or woocommerce-gateway-stripe.",
+      "description": "Build or audit WooCommerce Stripe Gateway My Account saved-payment-method flows. Covers the canonical Woo form contract, Stripe UPE SetupIntent flow, exact selectors and POST fields, billing details, WC payment tokens, remote detach/default synchronization, custom endpoint security, and the boundary with WooCommerce Subscriptions. Use for payment-methods.php, form-add-payment-method.php, add_payment_method, wc-stripe-setup-intent, wc-stripe-upe-element, Stripe saved cards, or custom customer payment-method screens.",
       "path": "woocommerce/wc-stripe-add-payment-method",
       "skill_path": "woocommerce/wc-stripe-add-payment-method/SKILL.md",
       "url": "https://raw.githubusercontent.com/Lonsdale201/wp-agent-skills/main/woocommerce/wc-stripe-add-payment-method/SKILL.md",
@@ -6179,28 +6179,68 @@
         "author": "Soczo Kristof",
         "contact": "mailto:lonsdale201@hotmail.com",
         "plugin": "woocommerce-gateway-stripe",
-        "plugin-version-tested": "10.6.1",
-        "woocommerce-version-tested": "10.7",
+        "plugin-version-tested": "10.8.3",
+        "woocommerce-version-tested": "10.9.4",
         "php-min": "7.4",
-        "last-updated": "2026-05-01",
+        "last-updated": "2026-07-10",
         "source-refs": [
           "wp-content/plugins/woocommerce/templates/myaccount/payment-methods.php",
           "wp-content/plugins/woocommerce/templates/myaccount/form-add-payment-method.php",
           "wp-content/plugins/woocommerce/includes/class-wc-form-handler.php",
-          "wp-content/plugins/woocommerce/includes/class-wc-frontend-scripts.php",
-          "wp-content/plugins/woocommerce/includes/shortcodes/class-wc-shortcode-my-account.php",
           "wp-content/plugins/woocommerce/assets/js/frontend/add-payment-method.js",
-          "wp-content/plugins/woocommerce-gateway-stripe/woocommerce-gateway-stripe.php",
           "wp-content/plugins/woocommerce-gateway-stripe/includes/payment-methods/class-wc-stripe-upe-payment-gateway.php",
           "wp-content/plugins/woocommerce-gateway-stripe/includes/payment-methods/class-wc-stripe-upe-payment-method.php",
           "wp-content/plugins/woocommerce-gateway-stripe/includes/class-wc-stripe-intent-controller.php",
-          "wp-content/plugins/woocommerce-gateway-stripe/includes/abstracts/abstract-wc-stripe-payment-gateway.php",
-          "wp-content/plugins/woocommerce-gateway-stripe/assets/js/stripe.js",
-          "wp-content/plugins/woocommerce-gateway-stripe/build/upe-classic.js",
           "wp-content/plugins/woocommerce-gateway-stripe/includes/payment-tokens/class-wc-stripe-payment-tokens.php",
-          "wp-content/plugins/woocommerce/includes/class-wc-payment-tokens.php",
-          "wp-content/plugins/woocommerce/includes/data-stores/class-wc-payment-token-data-store.php",
-          "wp-content/plugins/woocommerce-subscriptions/includes/core/class-wc-subscriptions-change-payment-gateway.php"
+          "wp-content/plugins/woocommerce-gateway-stripe/includes/compat/trait-wc-stripe-subscriptions.php"
+        ]
+      },
+      "resources": [
+        {
+          "path": "reference.md",
+          "repo_path": "woocommerce/wc-stripe-add-payment-method/reference.md",
+          "type": "reference",
+          "bytes": 2708,
+          "sha256": "184b9f1b63b1ef2ecea73c84f2a651bba7bb811bee10f95b735d47d7c5550e37"
+        }
+      ],
+      "has_reference": true,
+      "has_examples": false,
+      "has_scripts": false,
+      "skill_md": {
+        "bytes": 10454,
+        "lines": 155,
+        "sha256": "2172446f80a26dab8ba2aab7eec20a4b21d5646ad391f8ac251786c513bab6c9"
+      }
+    },
+    {
+      "slug": "wc-stripe-subscriptions",
+      "name": "wc-stripe-subscriptions",
+      "domain": "woocommerce",
+      "description": "Integrate WooCommerce Stripe Gateway 10.8+ with WooCommerce Subscriptions 9.0. Covers gateway feature support, automatic renewal charges, Stripe customer/payment-method metadata, failed-renewal recovery, SCA, change-payment SetupIntents, update-all behavior, Express Checkout on the change-payment page, detached tokens, and safe test cases. Use when Stripe is a subscription gateway or code touches scheduled_subscription_payment_stripe, _stripe_source_id on WC_Subscription, change_payment_method, renewal authentication, or Stripe token migration.",
+      "path": "woocommerce/wc-stripe-subscriptions",
+      "skill_path": "woocommerce/wc-stripe-subscriptions/SKILL.md",
+      "url": "https://raw.githubusercontent.com/Lonsdale201/wp-agent-skills/main/woocommerce/wc-stripe-subscriptions/SKILL.md",
+      "raw_url": "https://raw.githubusercontent.com/Lonsdale201/wp-agent-skills/main/woocommerce/wc-stripe-subscriptions/SKILL.md",
+      "html_url": "https://github.com/Lonsdale201/wp-agent-skills/blob/main/woocommerce/wc-stripe-subscriptions/SKILL.md",
+      "directory_url": "https://github.com/Lonsdale201/wp-agent-skills/tree/main/woocommerce/wc-stripe-subscriptions",
+      "metadata": {
+        "author": "Soczo Kristof",
+        "contact": "mailto:lonsdale201@hotmail.com",
+        "plugin": "woocommerce-gateway-stripe + woocommerce-subscriptions",
+        "plugin-version-tested": "woocommerce-gateway-stripe 10.8.3; woocommerce-subscriptions 9.0.0",
+        "woocommerce-version-tested": "10.9.4",
+        "php-min": "7.4",
+        "last-updated": "2026-07-10",
+        "source-refs": [
+          "wp-content/plugins/woocommerce-gateway-stripe/includes/compat/trait-wc-stripe-subscriptions.php",
+          "wp-content/plugins/woocommerce-gateway-stripe/includes/compat/trait-wc-stripe-subscriptions-utilities.php",
+          "wp-content/plugins/woocommerce-gateway-stripe/includes/compat/class-wc-stripe-subscriptions-helper.php",
+          "wp-content/plugins/woocommerce-gateway-stripe/includes/payment-methods/class-wc-stripe-upe-payment-gateway.php",
+          "wp-content/plugins/woocommerce-gateway-stripe/includes/payment-methods/class-wc-stripe-express-checkout-element.php",
+          "wp-content/plugins/woocommerce-gateway-stripe/includes/payment-methods/class-wc-stripe-express-checkout-helper.php",
+          "wp-content/plugins/woocommerce-subscriptions/includes/core/class-wc-subscriptions-change-payment-gateway.php",
+          "wp-content/plugins/woocommerce-subscriptions/includes/gateways/class-wc-subscriptions-payment-gateways.php"
         ]
       },
       "resources": [],
@@ -6208,9 +6248,49 @@
       "has_examples": false,
       "has_scripts": false,
       "skill_md": {
-        "bytes": 21170,
-        "lines": 383,
-        "sha256": "6b5ae4cf4484ef1a46254f4277af22e11ddf96fc2e7b75514d487915b2f3de2d"
+        "bytes": 10916,
+        "lines": 184,
+        "sha256": "6576ad7ba339000abf1ac236a8d7926e217dee64c703f3123e0604a3ffb0d5e9"
+      }
+    },
+    {
+      "slug": "wc-stripe-webhooks",
+      "name": "wc-stripe-webhooks",
+      "domain": "woocommerce",
+      "description": "Build or audit integrations around WooCommerce Stripe Gateway webhooks and asynchronous payment settlement. Covers the canonical wc-api endpoint, Stripe-Signature validation, order resolution, PaymentIntent and Checkout Session deferral, Action Scheduler, order locks, idempotency, safe extension hooks, Adaptive Pricing dependence, unexpected-charge detection, logging, and deprecated Stripe hooks/classes. Use for wc_stripe_webhook_received, payment_intent events, checkout.session events, pending Stripe orders, duplicate settlement, custom webhook observers, or Stripe reconciliation.",
+      "path": "woocommerce/wc-stripe-webhooks",
+      "skill_path": "woocommerce/wc-stripe-webhooks/SKILL.md",
+      "url": "https://raw.githubusercontent.com/Lonsdale201/wp-agent-skills/main/woocommerce/wc-stripe-webhooks/SKILL.md",
+      "raw_url": "https://raw.githubusercontent.com/Lonsdale201/wp-agent-skills/main/woocommerce/wc-stripe-webhooks/SKILL.md",
+      "html_url": "https://github.com/Lonsdale201/wp-agent-skills/blob/main/woocommerce/wc-stripe-webhooks/SKILL.md",
+      "directory_url": "https://github.com/Lonsdale201/wp-agent-skills/tree/main/woocommerce/wc-stripe-webhooks",
+      "metadata": {
+        "author": "Soczo Kristof",
+        "contact": "mailto:lonsdale201@hotmail.com",
+        "plugin": "woocommerce-gateway-stripe",
+        "plugin-version-tested": "10.8.3",
+        "woocommerce-version-tested": "10.9.4",
+        "php-min": "7.4",
+        "last-updated": "2026-07-10",
+        "source-refs": [
+          "wp-content/plugins/woocommerce-gateway-stripe/includes/class-wc-stripe-webhook-handler.php",
+          "wp-content/plugins/woocommerce-gateway-stripe/includes/class-wc-stripe-webhook-state.php",
+          "wp-content/plugins/woocommerce-gateway-stripe/includes/class-wc-stripe-order-handler.php",
+          "wp-content/plugins/woocommerce-gateway-stripe/includes/class-wc-stripe-order-helper.php",
+          "wp-content/plugins/woocommerce-gateway-stripe/includes/class-wc-stripe-api.php",
+          "wp-content/plugins/woocommerce-gateway-stripe/includes/class-wc-stripe-helper.php",
+          "wp-content/plugins/woocommerce-gateway-stripe/includes/class-wc-stripe-logger.php",
+          "wp-content/plugins/woocommerce-gateway-stripe/includes/abilities/class-wc-stripe-abilities-registrar.php"
+        ]
+      },
+      "resources": [],
+      "has_reference": false,
+      "has_examples": false,
+      "has_scripts": false,
+      "skill_md": {
+        "bytes": 10743,
+        "lines": 193,
+        "sha256": "5486e07d4a970c128dc2bdcf01f25c7899860b4f674615955402c091c4a91d41"
       }
     },
     {
@@ -6506,7 +6586,7 @@
       "slug": "wcs-data-model-switching-gifting",
       "name": "wcs-data-model-switching-gifting",
       "domain": "woocommerce",
-      "description": "WooCommerce Subscriptions data model, switcher, and gifting reference for exact order type names, product type slugs, subscription meta keys, schedule/date keys, related-order relation meta, switch cart data, switch order data, switched item types/meta, proration hooks, and WCS Gifting recipient storage, plus WCS 9.0 APFS subscription-plan storage for ordinary products. Use when code reads or writes shop_subscription, subscription, variable-subscription, subscription_variation, _billing_period, _schedule_next_payment, _subscription_switch_data, _subscription_switch, subscription_switch, _switched_subscription_item_id, wcsg_gift_recipients_email, _recipient_user, _recipient_user_email_address, wcsg_recipient, _wcsatt_schemes_status, _wcsatt_schemes, _wcsatt_scheme, or when an agent needs the full WooCommerce Subscriptions switcher/gifting flow.",
+      "description": "WooCommerce Subscriptions data model, switching, and gifting reference for order/product types, schedule and relation storage, switch cart/order payloads, proration hooks, recipient data, and WCS 9.0 APFS plan markers. Use for shop_subscription, _schedule_next_payment, _subscription_switch_data, subscription_switch, _switched_subscription_item_id, wcsg_gift_recipients_email, _recipient_user, _wcsatt_schemes, or _wcsatt_scheme.",
       "path": "woocommerce/wcs-data-model-switching-gifting",
       "skill_path": "woocommerce/wcs-data-model-switching-gifting/SKILL.md",
       "url": "https://raw.githubusercontent.com/Lonsdale201/wp-agent-skills/main/woocommerce/wcs-data-model-switching-gifting/SKILL.md",
@@ -6518,8 +6598,9 @@
         "contact": "mailto:lonsdale201@hotmail.com",
         "plugin": "woocommerce-subscriptions",
         "plugin-version-tested": "9.0.0",
+        "woocommerce-version-tested": "10.9.4",
         "php-min": "7.4",
-        "last-updated": "2026-06-29",
+        "last-updated": "2026-07-10",
         "docs": [
           "https://woocommerce.com/document/subscriptions/develop/"
         ],
@@ -6545,21 +6626,29 @@
           "wp-content/plugins/woocommerce-subscriptions/includes/gifting/class-wcsg-recipient-management.php"
         ]
       },
-      "resources": [],
+      "resources": [
+        {
+          "path": "switching-reference.md",
+          "repo_path": "woocommerce/wcs-data-model-switching-gifting/switching-reference.md",
+          "type": "resource",
+          "bytes": 4222,
+          "sha256": "70f08b803b8374a47281bce439eac371406a323659494fb76fd5e626576da142"
+        }
+      ],
       "has_reference": false,
       "has_examples": false,
       "has_scripts": false,
       "skill_md": {
-        "bytes": 21831,
-        "lines": 350,
-        "sha256": "bcebd2a4068b7a4d15792552e376ce79d446ea15b22e25cfa3a83822e68de4be"
+        "bytes": 16676,
+        "lines": 238,
+        "sha256": "0666df85a754209ee297e63a0d10aeaaabf6d017307d44111a4f5b41f2791b22"
       }
     },
     {
       "slug": "wcs-health-check-processing",
       "name": "wcs-health-check-processing",
       "domain": "woocommerce",
-      "description": "WooCommerce Subscriptions 8.8+ Health Check and Processing Reliability playbook for diagnosing missing renewal schedules, subscriptions that should support automatic renewal, Resolve actions, dedicated Action Scheduler processing, web cron support, health-check candidate tables, logs, AJAX nonces, and queue tuning filters. Use when code or support work mentions WCS Health Check, WooCommerce > Status > Subscriptions, wcs_health_check_candidates, wcs_health_check_runs, Processing reliability, Dedicated processing, Web cron support, subscriptions/job-queue, wcs_external_trigger_rate_limit_window, or renewal scans/remediation.",
+      "description": "WooCommerce Subscriptions 8.8+ Health Check and Processing Reliability playbook for missing renewal schedules, automatic-renewal candidates, guarded Resolve actions, dedicated Action Scheduler processing, web cron, health-check tables, logs, AJAX nonces, and queue filters. Use for WCS Health Check, wcs_health_check_candidates, wcs_health_check_runs, Processing reliability, subscriptions/job-queue, or renewal remediation.",
       "path": "woocommerce/wcs-health-check-processing",
       "skill_path": "woocommerce/wcs-health-check-processing/SKILL.md",
       "url": "https://raw.githubusercontent.com/Lonsdale201/wp-agent-skills/main/woocommerce/wcs-health-check-processing/SKILL.md",
@@ -6571,8 +6660,9 @@
         "contact": "mailto:lonsdale201@hotmail.com",
         "plugin": "woocommerce-subscriptions",
         "plugin-version-tested": "9.0.0",
+        "woocommerce-version-tested": "10.9.4",
         "php-min": "7.4",
-        "last-updated": "2026-06-29",
+        "last-updated": "2026-07-10",
         "docs": [
           "https://woocommerce.com/document/subscriptions/develop/"
         ],
@@ -6590,16 +6680,16 @@
       "has_examples": false,
       "has_scripts": false,
       "skill_md": {
-        "bytes": 10865,
-        "lines": 199,
-        "sha256": "139fec7e978fb9dbf8503a3fed1dd897ca138fb8ba737938773102f744c2245a"
+        "bytes": 11573,
+        "lines": 188,
+        "sha256": "743a0f6192d9fcf30f9db267eeab0bc0b9b5fa4cc4b65c1c7c032882897cca8e"
       }
     },
     {
       "slug": "wcs-renewal-scheduler",
       "name": "wcs-renewal-scheduler",
       "domain": "woocommerce",
-      "description": "Safely integrate with WooCommerce Subscriptions renewal, next-payment scheduling, Action Scheduler events, and retry flow. Shows when to use WC_Subscription::update_dates, update_status, wcs_create_renewal_order, wcs_renewal_order_created, woocommerce_scheduled_subscription_payment, woocommerce_scheduled_subscription_payment_{gateway_id}, woocommerce_subscription_renewal_payment_complete, and payment retry hooks. Use when changing next payment dates, forcing/rescheduling renewals, reacting to failed renewals, building gateway recurring charge logic, or debugging missing/duplicate renewal orders.",
+      "description": "Safely integrate with WooCommerce Subscriptions renewal scheduling, Action Scheduler, renewal-order creation, gateway charge dispatch, guarded process-renewal-now commands, and retries. Use for WC_Subscription::update_dates, wcs_create_renewal_order, woocommerce_scheduled_subscription_payment, gateway-specific scheduled payment hooks, renewal success/failure, missing renewals, or duplicate renewal orders.",
       "path": "woocommerce/wcs-renewal-scheduler",
       "skill_path": "woocommerce/wcs-renewal-scheduler/SKILL.md",
       "url": "https://raw.githubusercontent.com/Lonsdale201/wp-agent-skills/main/woocommerce/wcs-renewal-scheduler/SKILL.md",
@@ -6611,8 +6701,9 @@
         "contact": "mailto:lonsdale201@hotmail.com",
         "plugin": "woocommerce-subscriptions",
         "plugin-version-tested": "9.0.0",
+        "woocommerce-version-tested": "10.9.4",
         "php-min": "7.4",
-        "last-updated": "2026-06-29",
+        "last-updated": "2026-07-10",
         "docs": [
           "https://woocommerce.com/document/subscriptions/develop/"
         ],
@@ -6630,21 +6721,69 @@
           "wp-content/plugins/woocommerce-subscriptions/src/Internal/HealthCheck/"
         ]
       },
+      "resources": [
+        {
+          "path": "programmatic-renewal.md",
+          "repo_path": "woocommerce/wcs-renewal-scheduler/programmatic-renewal.md",
+          "type": "resource",
+          "bytes": 3004,
+          "sha256": "92e11486a5da6e63c5497c5dea8ddc943522fb502ee9e1c1b0b823c1f02c7bd8"
+        }
+      ],
+      "has_reference": false,
+      "has_examples": false,
+      "has_scripts": false,
+      "skill_md": {
+        "bytes": 16228,
+        "lines": 287,
+        "sha256": "001f732dce3deaf356b2a2af785caeb1468aa5c757de900bf8e250d02c7df89d"
+      }
+    },
+    {
+      "slug": "wcs-rest-api",
+      "name": "wcs-rest-api",
+      "domain": "woocommerce",
+      "description": "Integrate with WooCommerce Subscriptions REST API v3. Covers subscription CRUD, status versus transition_status, GMT schedule fields, payment_details validation, related-order and order-to-subscriptions routes, notes, batch operations, creating subscriptions from an order, HPOS-safe behavior, APFS plan route boundaries, authentication, idempotency, and Store API separation. Use for /wc/v3/subscriptions, headless subscription administration, external subscription sync, or code attempting to expose subscription writes through the Store API.",
+      "path": "woocommerce/wcs-rest-api",
+      "skill_path": "woocommerce/wcs-rest-api/SKILL.md",
+      "url": "https://raw.githubusercontent.com/Lonsdale201/wp-agent-skills/main/woocommerce/wcs-rest-api/SKILL.md",
+      "raw_url": "https://raw.githubusercontent.com/Lonsdale201/wp-agent-skills/main/woocommerce/wcs-rest-api/SKILL.md",
+      "html_url": "https://github.com/Lonsdale201/wp-agent-skills/blob/main/woocommerce/wcs-rest-api/SKILL.md",
+      "directory_url": "https://github.com/Lonsdale201/wp-agent-skills/tree/main/woocommerce/wcs-rest-api",
+      "metadata": {
+        "author": "Soczo Kristof",
+        "contact": "mailto:lonsdale201@hotmail.com",
+        "plugin": "woocommerce-subscriptions",
+        "plugin-version-tested": "9.0.0",
+        "woocommerce-version-tested": "10.9.4",
+        "php-min": "7.4",
+        "last-updated": "2026-07-10",
+        "source-refs": [
+          "wp-content/plugins/woocommerce-subscriptions/includes/class-wcs-api.php",
+          "wp-content/plugins/woocommerce-subscriptions/includes/api/class-wc-rest-subscriptions-controller.php",
+          "wp-content/plugins/woocommerce-subscriptions/includes/api/class-wc-rest-subscription-notes-controller.php",
+          "wp-content/plugins/woocommerce-subscriptions/includes/api/v2/class-wc-rest-subscriptions-v2-controller.php",
+          "wp-content/plugins/woocommerce-subscriptions/includes/core/class-wc-subscription.php",
+          "wp-content/plugins/woocommerce-subscriptions/includes/core/class-wc-subscriptions-change-payment-gateway.php",
+          "wp-content/plugins/woocommerce-subscriptions/includes/apfs/admin/class-wcs-att-rest-plans-controller.php",
+          "wp-content/plugins/woocommerce-subscriptions/includes/apfs/admin/class-wcs-att-rest-product-plans-controller.php"
+        ]
+      },
       "resources": [],
       "has_reference": false,
       "has_examples": false,
       "has_scripts": false,
       "skill_md": {
-        "bytes": 16710,
-        "lines": 304,
-        "sha256": "486781a7490a3f5ac4dc84cc2ad18648efc5185559614d8d8e8e13200ad4d964"
+        "bytes": 10842,
+        "lines": 207,
+        "sha256": "718ba7d476555758b64ed4bd1d6c77d172a3acfa1899a1cf3a09db739eacde4f"
       }
     },
     {
       "slug": "wcs-subscription-downloads",
       "name": "wcs-subscription-downloads",
       "domain": "woocommerce",
-      "description": "WooCommerce Subscriptions built-in Subscription Downloads reference for linking downloadable products to subscription products, the woocommerce_subscription_downloads mapping table, downloadable file sharing settings, download permission grants/revokes, email download lists, switch cleanup, the performance setting that avoids zero-cost line items, and WCS Gifting download permission edge cases. Use when code mentions WC_Subscription_Downloads, subscription downloads, shared downloadable products, linked downloadable products, woocommerce_subscription_downloads, downloadable subscription access, or subscription-related download permissions.",
+      "description": "WooCommerce Subscriptions built-in Subscription Downloads reference for linked downloadable products, the woocommerce_subscription_downloads table, file-sharing settings, permission grants/revokes, email/account lists, switch cleanup, optional zero-cost line items, and WCS Gifting ownership. Use for WC_Subscription_Downloads, shared or linked downloads, downloadable subscription access, or subscription download permissions.",
       "path": "woocommerce/wcs-subscription-downloads",
       "skill_path": "woocommerce/wcs-subscription-downloads/SKILL.md",
       "url": "https://raw.githubusercontent.com/Lonsdale201/wp-agent-skills/main/woocommerce/wcs-subscription-downloads/SKILL.md",
@@ -6656,8 +6795,9 @@
         "contact": "mailto:lonsdale201@hotmail.com",
         "plugin": "woocommerce-subscriptions",
         "plugin-version-tested": "9.0.0",
+        "woocommerce-version-tested": "10.9.4",
         "php-min": "7.4",
-        "last-updated": "2026-06-29",
+        "last-updated": "2026-07-10",
         "docs": [
           "https://woocommerce.com/document/subscriptions/develop/"
         ],
@@ -6673,16 +6813,16 @@
       "has_examples": false,
       "has_scripts": false,
       "skill_md": {
-        "bytes": 8796,
-        "lines": 182,
-        "sha256": "09a8e1e4ad5d5d623758e086d2f78a6790b595e6f7352545bdbe43a8600357af"
+        "bytes": 8595,
+        "lines": 174,
+        "sha256": "a8104dd624266387ad3c165e87174f2f3bfdd65da1c33e7dfaa5eee02f3c9c7f"
       }
     },
     {
       "slug": "wcs-subscription-hooks",
       "name": "wcs-subscription-hooks",
       "domain": "woocommerce",
-      "description": "Curated WooCommerce Subscriptions hook and extension-point map for choosing the right action/filter around WC_Subscription creation, status transitions, date changes, renewal orders, scheduled payments, payment retries, gateway events, switching, gifting, related orders, APFS subscription plans, REST/API responses, and account/admin UI. Use when the user asks for a Woo Subscriptions hook list, \"where should I hook\", \"after renewal\", \"subscription status changed\", or when code contains WC_Subscription, wcs_create_subscription, wcs_create_renewal_order, woocommerce_scheduled_subscription_payment, wcs_renewal_order_created, payment_retry, wcs_get_subscriptions, wcsg_, subscription_switch, _subscription_switch_data, _recipient_user, wcsg_recipient, WCS_ATT, wcsatt_, _wcsatt_scheme, convert_to_sub, or subscription switching.",
+      "description": "Curated WooCommerce Subscriptions hook map for subscription creation, status/date transitions, renewal orders, scheduled payments, retries, gateway events, switching, gifting, related orders, APFS plans, REST, and account/admin UI. Use when choosing where to hook around WC_Subscription, wcs_create_subscription, wcs_create_renewal_order, woocommerce_scheduled_subscription_payment, payment_retry, wcsg_, subscription_switch, WCS_ATT, wcsatt_, or _wcsatt_scheme.",
       "path": "woocommerce/wcs-subscription-hooks",
       "skill_path": "woocommerce/wcs-subscription-hooks/SKILL.md",
       "url": "https://raw.githubusercontent.com/Lonsdale201/wp-agent-skills/main/woocommerce/wcs-subscription-hooks/SKILL.md",
@@ -6694,8 +6834,9 @@
         "contact": "mailto:lonsdale201@hotmail.com",
         "plugin": "woocommerce-subscriptions",
         "plugin-version-tested": "9.0.0",
+        "woocommerce-version-tested": "10.9.4",
         "php-min": "7.4",
-        "last-updated": "2026-06-29",
+        "last-updated": "2026-07-10",
         "docs": [
           "https://woocommerce.com/document/subscriptions/develop/"
         ],
@@ -6726,9 +6867,9 @@
       "has_examples": false,
       "has_scripts": false,
       "skill_md": {
-        "bytes": 25059,
-        "lines": 271,
-        "sha256": "776139902b4498ffe4f73991d12fb0a60f9dfbe619db5f249dc68a4814a875a1"
+        "bytes": 25066,
+        "lines": 262,
+        "sha256": "13023a4e19b0a2948d81b6eb6c993e6d810d1f5cf32ae262f9e3885fa39c54e5"
       }
     },
     {
@@ -6747,8 +6888,9 @@
         "contact": "mailto:lonsdale201@hotmail.com",
         "plugin": "woocommerce-subscriptions",
         "plugin-version-tested": "9.0.0",
+        "woocommerce-version-tested": "10.9.4",
         "php-min": "7.4",
-        "last-updated": "2026-06-29",
+        "last-updated": "2026-07-10",
         "docs": [
           "https://woocommerce.com/document/all-products-for-woocommerce-subscriptions/"
         ],
@@ -6769,14 +6911,22 @@
           "wp-content/plugins/woocommerce-subscriptions/src/Internal/Products/BulkActions.php"
         ]
       },
-      "resources": [],
+      "resources": [
+        {
+          "path": "headless-admin-reference.md",
+          "repo_path": "woocommerce/wcs-subscription-plans-apfs/headless-admin-reference.md",
+          "type": "resource",
+          "bytes": 2922,
+          "sha256": "704a0e86cb07de2b5a63486a908a8d30ec0f4cef4f22ec307677c822a519dbc0"
+        }
+      ],
       "has_reference": false,
       "has_examples": false,
       "has_scripts": false,
       "skill_md": {
-        "bytes": 17042,
-        "lines": 323,
-        "sha256": "ea0b975937d0d80493c74c35532fb8b810c165aa46d5fc7a7736955d01e573be"
+        "bytes": 15727,
+        "lines": 283,
+        "sha256": "25571ef3f117400035159a64d6a112581411785231a27ec8758746498606317d"
       }
     },
     {

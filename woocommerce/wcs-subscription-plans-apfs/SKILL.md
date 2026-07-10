@@ -5,8 +5,9 @@ author: Soczó Kristóf
 contact: mailto:lonsdale201@hotmail.com
 plugin: woocommerce-subscriptions
 plugin-version-tested: "9.0.0"
+woocommerce-version-tested: "10.9.4"
 php-min: "7.4"
-last-updated: "2026-06-29"
+last-updated: "2026-07-10"
 docs:
   - https://woocommerce.com/document/all-products-for-woocommerce-subscriptions/
 source-refs:
@@ -142,7 +143,7 @@ WCS 9.0 adds manager/controller classes for plan CRUD:
 | Need | API |
 |---|---|
 | Storewide plan storage | `new WCS_ATT_Plans_Manager( 'storewide' )` |
-| Product plan storage | `new WCS_ATT_Plans_Manager( 'product' )` with product ID context |
+| Product plan storage | `new WCS_ATT_Plans_Manager( 'product' )`; pass product ID to each `read/create/update/delete/reorder` call |
 | Storewide REST | `/wp-json/wc/v3/subscriptions/storewide-plans` |
 | Product REST | `/wp-json/wc/v3/products/<product_id>/subscription-plans` |
 | Reorder storewide | `PUT /wc/v3/subscriptions/storewide-plans/reorder` |
@@ -170,6 +171,16 @@ Core plan fields:
 ```
 
 Product plans also support `subscription_pricing_method: "override"` with `subscription_regular_price` and `subscription_sale_price`. Storewide plans support `inherit` and `fixed_discount`, not `override`.
+
+The manager constructor accepts only the plan type. This is the correct product call shape:
+
+```php
+$manager = new WCS_ATT_Plans_Manager( 'product' );
+$plans   = $manager->read( $product_id );
+$created = $manager->create( $plan_data, $product_id );
+```
+
+Do not pass a product ID to `__construct()`; a single product manager can operate on multiple products.
 
 ## Cart and checkout behavior
 
@@ -220,68 +231,17 @@ What APFS does add to Store API:
 
 Headless clients must preserve the selected plan when adding to cart. Use the same request shape the frontend expects: `convert_to_sub_<product_id>` on product add-to-cart or `convert_to_sub` for cart item updates. Then read the Store API cart response and keep the returned cart key/token flow intact.
 
-For JSON Store API clients, add an explicit bridge because `/wc/store/v1/cart/add-item` builds `cart_item_data` through `woocommerce_store_api_add_to_cart_data` and APFS itself reads classic `$_REQUEST` keys:
+For JSON Store API clients, add an explicit `woocommerce_store_api_add_to_cart_data` bridge because APFS itself reads classic `$_REQUEST` keys. The bridge must parse the key with `WCS_ATT_Product_Schemes::parse_subscription_scheme_key()` and set `cart_item_data.wcsatt_data.active_subscription_scheme`. See [headless-admin-reference.md](headless-admin-reference.md) for the complete example.
 
-```php
-add_filter( 'woocommerce_store_api_add_to_cart_data', function ( array $data, WP_REST_Request $request ): array {
-    if ( ! class_exists( 'WCS_ATT_Product_Schemes' ) ) {
-        return $data;
-    }
-
-    $product_id = absint( $data['id'] ?? 0 );
-    $raw_key    = $request->get_param( 'convert_to_sub_' . $product_id );
-
-    if ( null === $raw_key ) {
-        $raw_key = $request->get_param( 'convert_to_sub' );
-    }
-
-    if ( null !== $raw_key ) {
-        $data['cart_item_data']['wcsatt_data']['active_subscription_scheme'] =
-            WCS_ATT_Product_Schemes::parse_subscription_scheme_key( wc_clean( (string) $raw_key ) );
-    }
-
-    return $data;
-}, 10, 2 );
-```
-
-If your client posts form/query params instead of JSON, the classic `convert_to_sub_<product_id>` path can still work through `$_REQUEST`, but the bridge is the robust headless pattern.
+If the client posts form/query params, the classic `convert_to_sub_<product_id>` path can still work through `$_REQUEST`; explicit cart item data is the robust JSON contract.
 
 For checkout order meta, remember WC 10.8+ deferred draft order creation: `woocommerce_store_api_checkout_update_order_meta` runs when the real order exists during POST checkout, not on every checkout PATCH.
 
-## Admin and bulk edit
+## Admin, bulk edit, and hooks
 
-Product edit screen:
+The product screen adds a Subscriptions tab to supported ordinary products and stores plan/mode fields through its save handler. Bulk edit uses `_wcsatt_bulk_purchase_option` (`inherit`, `override`, `disable`) and `_wcsatt_bulk_allow_one_off`; it skips override without custom plans and saves the product itself.
 
-- APFS adds a `Subscriptions` product data tab for supported ordinary product types.
-- It hides that tab for native `subscription` and `variable-subscription` product types.
-- The React panel writes hidden fields such as `_wcsatt_schemes_status`, `_wcsatt_allow_one_off`, `_wcsatt_storewide_selection_mode`, `_wcsatt_selected_storewide_plans`, and `_wcsatt_subscription_plan_gifting`.
-
-Bulk edit:
-
-- `src/Internal/Products/BulkActions.php` adds `_wcsatt_bulk_purchase_option`.
-- Values are `inherit`, `override`, and `disable`.
-- `_wcsatt_bulk_allow_one_off` updates `_wcsatt_force_subscription`.
-- Override mode is skipped when the product has no custom plans.
-- The bulk handler calls `$product->save()` itself because WooCommerce bulk save has already happened.
-
-## Extension hooks
-
-Common APFS extension points:
-
-| Hook/filter | Use |
-|---|---|
-| `wcsatt_supported_product_types` | Add a compatible product type. |
-| `woocommerce_subscriptions_default_product_subscription_scheme_mode` | Change default mode for products without APFS config. |
-| `wcsatt_product_subscription_schemes` | Filter resolved product schemes. |
-| `wcsatt_cart_item_subscription_schemes` | Filter schemes available to a cart item. |
-| `wcsatt_set_product_subscription_scheme` | Observe active scheme changes on a product object. |
-| `wcsatt_cart_product_price` | Filter cart price HTML for a selected scheme. |
-| `wcsatt_cart_item` | Adjust cart item after APFS applies a scheme. |
-| `wcsatt_processed_cart_scheme_data` | Add custom fields to storewide plans saved via REST. |
-| `wcsatt_processed_scheme_data` | Add custom fields to product plans saved via REST. |
-| `wcsatt_restore_subscription_scheme_from_subscription_args` | Control fallback matching when line item meta lacks a scheme key. |
-
-Frontend display filters live under `includes/apfs/display/` and start with `wcsatt_single_product_`, `wcsatt_show_single_product_options`, `wcsatt_subscription_options_layout`, and `wcsatt_add_to_cart_text`.
+Use APFS filters rather than replacing its admin save path. High-value hooks include `wcsatt_supported_product_types`, `wcsatt_product_subscription_schemes`, `wcsatt_cart_item_subscription_schemes`, `wcsatt_set_product_subscription_scheme`, `wcsatt_cart_item`, `wcsatt_processed_cart_scheme_data`, and `wcsatt_processed_scheme_data`. Exact fields and the extended hook map are in [headless-admin-reference.md](headless-admin-reference.md).
 
 ## Gifting
 

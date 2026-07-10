@@ -1,21 +1,13 @@
 ---
 name: wcs-health-check-processing
-description: WooCommerce Subscriptions 8.8+ Health Check and Processing
-  Reliability playbook for diagnosing missing renewal schedules,
-  subscriptions that should support automatic renewal, Resolve actions,
-  dedicated Action Scheduler processing, web cron support, health-check
-  candidate tables, logs, AJAX nonces, and queue tuning filters. Use when
-  code or support work mentions WCS Health Check, WooCommerce > Status >
-  Subscriptions, wcs_health_check_candidates, wcs_health_check_runs,
-  Processing reliability, Dedicated processing, Web cron support,
-  subscriptions/job-queue, wcs_external_trigger_rate_limit_window, or
-  renewal scans/remediation.
+description: WooCommerce Subscriptions 8.8+ Health Check and Processing Reliability playbook for missing renewal schedules, automatic-renewal candidates, guarded Resolve actions, dedicated Action Scheduler processing, web cron, health-check tables, logs, AJAX nonces, and queue filters. Use for WCS Health Check, wcs_health_check_candidates, wcs_health_check_runs, Processing reliability, subscriptions/job-queue, or renewal remediation.
 author: Soczó Kristóf
 contact: mailto:lonsdale201@hotmail.com
 plugin: woocommerce-subscriptions
 plugin-version-tested: "9.0.0"
+woocommerce-version-tested: "10.9.4"
 php-min: "7.4"
-last-updated: "2026-06-29"
+last-updated: "2026-07-10"
 docs:
   - https://woocommerce.com/document/subscriptions/develop/
 source-refs:
@@ -86,15 +78,9 @@ if ( $subscription instanceof WC_Subscription ) {
 }
 ```
 
-For "process renewal now", trigger the normal scheduled-payment flow only after confirming the subscription is eligible:
+For "process renewal now", prefer the built-in Resolve action. Do **not** translate it to a bare `do_action( 'woocommerce_scheduled_subscription_payment', $id )`: that path has no caller-level recent-renewal/running-action guard and can race an Action Scheduler worker into a duplicate order or charge.
 
-```php
-$subscription = wcs_get_subscription( $subscription_id );
-
-if ( $subscription instanceof WC_Subscription && $subscription->has_status( 'active' ) ) {
-    do_action( 'woocommerce_scheduled_subscription_payment', $subscription->get_id() );
-}
-```
+The WCS 9.0 Resolve implementation first checks for a recent renewal, accepts only `active`/`on-hold`, checks for a running canonical scheduled action, calls `WC_Subscriptions_Manager::process_renewal()` with the current status, unschedules the pending canonical action only after a renewal order exists, and then calls `WC_Subscriptions_Payment_Gateways::gateway_scheduled_subscription_payment()`. These classes form a source-verified implementation model, but `Internal\HealthCheck\*` itself is not a public service API. Custom programmatic renewal needs equivalent idempotency and locking; see `wcs-renewal-scheduler`.
 
 ## Failed-renewal retry hook change
 
@@ -124,6 +110,8 @@ The external route is:
 ```
 
 It accepts `GET`, `POST`, and `PUT`. On a valid, non-rate-limited request, it returns `{"status":"dispatched"}` and dispatches the queue on `shutdown`. If the subscription Action Scheduler group does not exist yet, it returns `{"status":"not_dispatched","hint":"..."}` instead of trying to claim a non-existent group.
+
+The route has a public REST permission callback because authentication happens through the generated `wcs_token` in the handler. Treat the full URL as a secret: do not expose it in frontend markup, analytics, support screenshots, or shared logs.
 
 ## Queue components
 
@@ -187,8 +175,9 @@ add_action( 'woocommerce_subscription_failing_payment_method_updated', 'my_clear
 // WRONG: call internal Health Check remediation from plugin code.
 ( new Automattic\WooCommerce_Subscriptions\Internal\HealthCheck\ToolRunner() )->run( 'process_renewal_now', $subscription_id );
 
-// RIGHT: use public WCS renewal flow and object APIs.
-do_action( 'woocommerce_scheduled_subscription_payment', $subscription_id );
+// RIGHT for merchant remediation: use the built-in Health Check Resolve action.
+// Programmatic code must reproduce its recent-order, running-action, status,
+// creation, unschedule-after-success, and gateway-dispatch guards.
 ```
 
 ## Cross-references

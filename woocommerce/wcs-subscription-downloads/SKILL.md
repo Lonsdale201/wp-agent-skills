@@ -1,21 +1,13 @@
 ---
 name: wcs-subscription-downloads
-description: WooCommerce Subscriptions built-in Subscription Downloads
-  reference for linking downloadable products to subscription products,
-  the woocommerce_subscription_downloads mapping table, downloadable file
-  sharing settings, download permission grants/revokes, email download
-  lists, switch cleanup, the performance setting that avoids zero-cost
-  line items, and WCS Gifting download permission edge cases. Use when
-  code mentions WC_Subscription_Downloads, subscription downloads,
-  shared downloadable products, linked downloadable products,
-  woocommerce_subscription_downloads, downloadable subscription access,
-  or subscription-related download permissions.
+description: WooCommerce Subscriptions built-in Subscription Downloads reference for linked downloadable products, the woocommerce_subscription_downloads table, file-sharing settings, permission grants/revokes, email/account lists, switch cleanup, optional zero-cost line items, and WCS Gifting ownership. Use for WC_Subscription_Downloads, shared or linked downloads, downloadable subscription access, or subscription download permissions.
 author: Soczó Kristóf
 contact: mailto:lonsdale201@hotmail.com
 plugin: woocommerce-subscriptions
 plugin-version-tested: "9.0.0"
+woocommerce-version-tested: "10.9.4"
 php-min: "7.4"
-last-updated: "2026-06-29"
+last-updated: "2026-07-10"
 docs:
   - https://woocommerce.com/document/subscriptions/develop/
 source-refs:
