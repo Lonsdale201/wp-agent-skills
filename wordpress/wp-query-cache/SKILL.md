@@ -1,20 +1,22 @@
 ---
 name: wp-query-cache
-description: Review and implement WordPress query-cache usage on WP 6.9+,
+description: Review and implement WordPress core query-cache usage on WP 6.9+,
   especially direct interaction with query cache groups now using salted
   cache helpers. Covers wp_cache_get_salted, wp_cache_set_salted,
   wp_cache_get_multiple_salted, wp_cache_set_multiple_salted,
   wp_cache_get_last_changed, affected query
   groups like post-queries, term-queries, user-queries, comment-queries,
   site-queries, and why plugins should usually use WP_Query APIs instead
-  of writing query cache entries directly. Use when optimizing expensive
-  reads, persistent object cache behavior, or cache invalidation bugs.
+  of writing query cache entries directly. Use when code touches those core
+  query groups/salts, duplicates WP_Query cache internals, or shows stale/miss
+  behavior specifically after direct query-cache reads or writes; use the
+  database-performance skill for general SQL, transient, OFFSET, or N+1 issues.
 author: Soczó Kristóf
 contact: mailto:lonsdale201@hotmail.com
 plugin: wordpress
 plugin-version-tested: "6.9 - 7.0.1"
 php-min: "7.4"
-last-updated: "2026-07-10"
+last-updated: "2026-07-12"
 docs:
   - https://make.wordpress.org/core/2025/11/17/consistent-cache-keys-for-query-groups-in-wordpress-6-9/
 ---
@@ -24,6 +26,10 @@ docs:
 WordPress 6.9 changed how query cache groups store invalidation state. Core now uses stable cache keys with stored salts instead of baking changing `last_changed` values into every key. This reduces unreachable cache keys on high-update sites.
 
 This skill is for plugin code that directly reads/writes object-cache entries for query results. Most plugins should not do that.
+
+Do not trigger this skill merely because code uses a transient or has a slow
+query. Use `wp-database-performance-audit` for general SQL shape, indexes,
+pagination, N+1 calls, payload size, or cache stampedes.
 
 ## When to use this skill
 
@@ -147,14 +153,16 @@ wp_cache_set_salted( $key, $data, 'post-queries', $salt );
 ## Cross-references
 
 - Run **`wp-plugin-options-storage`** when persistent data is being stored in options/transients instead of cache.
-- Run **`wp-plugin-cron`** when cache warming or refresh work is scheduled.
+- Run **`wp-database-performance-audit`** for slow SQL, OFFSET, N+1,
+  transient payload, or stampede analysis.
 - Run **`wp-security-audit`** when direct SQL is part of the cache path.
 
 ## What this skill does NOT cover
 
 - Writing a persistent object cache drop-in.
 - CDN/page cache invalidation.
-- General query optimization unrelated to cache keys.
+- General query optimization unrelated to core query-cache keys; use
+  `wp-database-performance-audit`.
 
 ## References
 

@@ -2,6 +2,45 @@
 
 This collection is continuously evolving — entries are date-based, not version-tagged. New skills land when they're ready; updates go in when they cover real ground (a new release of an upstream plugin, a verified misconception, a corrected example).
 
+## 2026-07-12
+
+### Updated — better-route re-grounded to v1.0.0 (first stable release)
+
+- 12 `better-route/` skills re-grounded against **better-route 1.0.0**: `br-install-and-migrate` (new v1.0.0 behavior-change checklist), `br-auth-middleware` (`WpClaimsUserMapper` email/login mapping off by default + `email_verified` requirement; granted-scope `*` wildcards opt-in via `allowGrantedScopeWildcards`), `br-error-contract` (non-`ApiException` 400s no longer leak `details.exception`; new `insufficient_scope` / `coupon_exists` / `woo_line_items_locked` / `precondition_required` codes; `hpos_required` moved 409 → 503), `br-network-security` (`X-Forwarded-For` walked right-to-left to the closest untrusted hop — spoof-resistant), `br-cors-public-client` (`CorsPolicy` throws on `*` + `allowCredentials`), `br-hmac-signature` (query string unsigned by default; opt-in `signQueryString: true` fifth canonical line), `br-jwks-jwt-auth` (JWKS fetch via `wp_safe_remote_get`, bounded redirects/size), `br-single-use-token` (`WpCacheSingleUseTokenStore` throws without persistent object cache; documented `wp_salt('auth')` salt derivation), `br-idempotency` + `br-atomic-idempotency` (wpdb stores restrict `unserialize()` to the `Response` class), `br-openapi` (Woo monetary component fields typed `string`), and `br-woo-routes` (money as decimal strings, HPOS gate order-routes-only, working `?search=`, product `price` read-only, line-item edits locked on stock-reduced orders, `coupon_exists`, `HposGuard::declareCompatibility()` helper, customer delete fix, `orders_count`/`total_spent` off the default list fields).
+- Intake consistency pass: `br-hmac-signature` and `br-jwks-jwt-auth` frontmatter descriptions still said "0.6.0" after the 1.0.0 bump, and `br-atomic-idempotency` / `br-cors-public-client` (minimal frontmatter, no version fields) still said "0.5.0" — all four descriptions now say 1.0.0.
+- Not yet re-grounded (still at their older `plugin-version-tested` baselines): `br-routes`, `br-resource-cpt`, `br-resource-table`, `br-resource-policy`, `br-write-schema`, `br-etag-cache`, `br-rate-limiting`, `br-crypto`, `br-audit-enrichment`, `br-owned-resource-guards`.
+
+### New skills — WordPress core audits + Metadata API
+
+- **`wordpress/wp-batch-mutation-audit`** — Audits destructive or long-running batch writes for retry safety, idempotency, lost-response ambiguity, durable cursors, OFFSET drift, concurrent execution, atomic locks, partial failures, return-value handling, cancellation, and resumability. For AJAX loops, admin bulk tools, WP-Cron/Action Scheduler workers, WP-CLI migrations, importers, and backfills. `plugin: wordpress`, `plugin-version-tested: "6.0 - 7.0.1"`, `php-min: "7.4"`.
+- **`wordpress/wp-database-performance-audit`** — Audits WordPress PHP data access for slow or unbounded SQL, LIMIT/OFFSET degradation, N+1 queries, missing cache priming, expensive postmeta joins, LONGTEXT sorting, leading-wildcard LIKE, unsuitable indexes, cache stampedes, stale invalidation, and direct-write cache bypass. `plugin: wordpress`, `plugin-version-tested: "6.0 - 7.0.1"`, `php-min: "7.4"`.
+- **`wordpress/wp-metadata-api`** — Implements and audits post/user/term/comment/generic metadata code: per-API slashing contracts, revision redirection in post wrappers, multi-row keys and by-mid operations, return-value ambiguity, scalar typing, registration/auth schemas, and safe handling of serialized or double-serialized values (byte-length corruption, `is_serialized()` limits, object-construction trust boundaries). `plugin: wordpress`, `plugin-version-tested: "6.0 - 7.0.1"`, `php-min: "7.4"`.
+- All three ship an `agents/openai.yaml` interface file like the other recent wordpress-domain skills.
+
+### Updated — wordpress + plugin-scaffold false-positive-guard pass
+
+A coordinated refinement wave against cargo-cult review findings, cross-referencing the new audit skills:
+
+- **`wordpress/wp-security-audit`** (+ `reference.md`) — input pipeline reframed as "unslash → normalize when needed → validate"; new exact-preservation pattern for migration/import/opaque-meta tools (sanitizers are lossy — require type/size/encoding contracts and safe sinks instead of ritual `sanitize_text_field()`); new "False-positive guards" section (trust boundaries for nonces, code-generated `IN` placeholders); scope hand-offs to `wp-batch-mutation-audit` and `wp-metadata-api`.
+- **`wordpress/wp-security-deep`** — object-injection severity now requires tracing who can write the raw serialized bytes and which gadgets are loadable; `allowed_classes => false` limits documented (doesn't bound graphs/recursion); transient locks demoted to "soft stampede hint"; cross-reference to `wp-batch-mutation-audit`.
+- **`wordpress/wp-settings-storage-audit`** — custom admin form handlers are valid with equivalent controls (nonce, capability, field allowlist, schema validation, deliberate merge); `register_setting()` required for `options.php` / `/wp/v2/settings` integration, not as a universal precondition; separate scalar options accepted when write cadence/autoload/secret/migration needs differ; author-name diacritics fixed (Soczó Kristóf).
+- **`wordpress/wp-query-cache`** — trigger boundary sharpened: core query-cache groups/salts only; general SQL, transient, OFFSET, and N+1 concerns routed to `wp-database-performance-audit`.
+- **`plugin-scaffold/wp-plugin-options-storage`** — "ONE option, not 100" softened to "group coherent settings; separate independent state" — separate scalar options are valid for independent write cadence/autoload/capability/secret/migration needs; counter caveat expanded (a separate option limits the collision domain but is not an atomic increment).
+- **`plugin-scaffold/wp-plugin-update-migrations`** — migration lock renamed to `MYPLUGIN_SOFT_LOCK_TRANSIENT` and documented as stampede reduction only (get-then-set is not atomic; `add_option()` is not a compare-and-set gate on current core — it uses `ON DUPLICATE KEY UPDATE`); correctness comes from idempotent steps + version-after-success; points long/destructive migrations at `wp-batch-mutation-audit`.
+
+### Intake notes
+
+- `wordpress/wp-html-api` was intentionally NOT re-synced this round — the incoming drop only replaced the repo's deliberate plain-ASCII `"\u{1F642}"` escape (and its explanatory comment) with a literal emoji glyph; the repo version was kept, matching the `wc-product-search-select` precedent from 2026-07-09/10.
+- The rest of the two parent-folder drops (`plugin-scaffold/`, `wordpress/`) was byte-identical to the repo and needed no action.
+
+### Repo / docs
+
+- `better-route/README.md`: header bumped to v1.0.0 (first stable) and the affected skill rows updated with the 1.0.0 behavior changes.
+- `wordpress/README.md`: header widened; added `wp-batch-mutation-audit`, `wp-database-performance-audit`, and `wp-metadata-api` rows.
+- `plugin-scaffold/README.md`: `wp-plugin-options-storage` and `wp-plugin-update-migrations` rows aligned with the refined guidance.
+- Root `README.md` coverage line: **189 → 192 skills** (plugins unchanged at 28 — all three new skills are `plugin: wordpress`, excluded from the plugin count).
+- `skills-index.json` regenerated (`skill_count` 189 → 192; `wordpress` 28 → 31; `domain_count` unchanged at 19).
+
 ## 2026-07-10
 
 ### New skills — WooCommerce Subscriptions REST + Stripe subscriptions/webhooks

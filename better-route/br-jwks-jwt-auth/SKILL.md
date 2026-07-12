@@ -1,12 +1,12 @@
 ---
 name: br-jwks-jwt-auth
-description: Configure better-route 0.6.0 RS256/ES256 JWT verification from JWKS. Use when adding Rs256JwksJwtVerifier, JwksProviderInterface, HttpJwksProvider, StaticJwksProvider, JwtBearerTokenVerifierAdapter, strict JOSE kid matching, issuer/audience checks, JWKS transient cache, better_route/jwks_refresh, or OIDC/OAuth bearer token verification. Rejects none and HS* algorithms. Updated 2026-05-02.
+description: Configure better-route 1.0.0 RS256/ES256 JWT verification from JWKS. Use when adding Rs256JwksJwtVerifier, JwksProviderInterface, HttpJwksProvider, StaticJwksProvider, JwtBearerTokenVerifierAdapter, strict JOSE kid matching, issuer/audience checks, JWKS transient cache, better_route/jwks_refresh, or OIDC/OAuth bearer token verification. Rejects none and HS* algorithms. Updated 2026-07-12.
 author: Soczó Kristóf
 contact: mailto:lonsdale201@hotmail.com
 plugin: better-route
-plugin-version-tested: "0.6.0"
+plugin-version-tested: "1.0.0"
 php-min: "8.1"
-last-updated: "2026-05-02"
+last-updated: "2026-07-12"
 docs:
   - https://lonsdale201.github.io/better-docs/docs/better-route/agents
 source-refs:
@@ -64,7 +64,9 @@ For write routes, still call `->protectedByMiddleware('bearerAuth')` so WordPres
 - Never fall back to "try every public key"; that accepts stale or unrelated keys.
 - `allowedAlgorithms` supports `RS256` and `ES256`; `none` and `HS*` are rejected even if accidentally configured.
 - `HttpJwksProvider` requires an `https` URI and uses `sslverify => true`.
+- **(1.0.0) `HttpJwksProvider` fetches via `wp_safe_remote_get()`** (WordPress SSRF protection — blocks internal/loopback hosts) with bounded `redirection => 1` and a `limit_response_size` cap, in addition to the existing HTTPS + `sslverify` enforcement. This hardens against a hostile or misbehaving issuer redirecting internally or returning an unbounded body.
 - Private JWK fields are stripped by `JwksKeySanitizer`; JWKS should contain public keys only.
+- **(1.0.0) When pairing with `WpClaimsUserMapper`**, note that email/login claim mapping is now off by default and requires a verified email — see `br-auth-middleware`. Third-party OIDC `email` claims must not be trusted for account resolution unless `email_verified` is set.
 - Set `expectedIssuer` and `expectedAudience` in production.
 - Keep `requireExpiration: true`; disabling it is a migration-only decision.
 

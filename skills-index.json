@@ -12,7 +12,7 @@
     "skill_file": "SKILL.md"
   },
   "domain_count": 19,
-  "skill_count": 189,
+  "skill_count": 192,
   "domains": [
     {
       "slug": "better-data",
@@ -114,7 +114,7 @@
       "slug": "wordpress",
       "path": "wordpress",
       "readme_path": "wordpress/README.md",
-      "skill_count": 28
+      "skill_count": 31
     },
     {
       "slug": "wp-rocket",
@@ -580,7 +580,7 @@
       "slug": "br-atomic-idempotency",
       "name": "br-atomic-idempotency",
       "domain": "better-route",
-      "description": "Use better-route 0.5.0 AtomicIdempotencyMiddleware for high-side-effect write endpoints where concurrent duplicate requests must not execute twice. Triggers on AtomicIdempotencyMiddleware, WpdbAtomicIdempotencyStore, ArrayAtomicIdempotencyStore, AtomicIdempotencyStoreInterface, idempotency_in_progress, Idempotency-Key for payment/order/subscription/account-like writes, or when reviewing retry-safe REST endpoints.",
+      "description": "Use better-route 1.0.0 AtomicIdempotencyMiddleware for high-side-effect write endpoints where concurrent duplicate requests must not execute twice. Triggers on AtomicIdempotencyMiddleware, WpdbAtomicIdempotencyStore, ArrayAtomicIdempotencyStore, AtomicIdempotencyStoreInterface, idempotency_in_progress, Idempotency-Key for payment/order/subscription/account-like writes, or when reviewing retry-safe REST endpoints.",
       "path": "better-route/br-atomic-idempotency",
       "skill_path": "better-route/br-atomic-idempotency/SKILL.md",
       "url": "https://raw.githubusercontent.com/Lonsdale201/wp-agent-skills/main/better-route/br-atomic-idempotency/SKILL.md",
@@ -601,9 +601,9 @@
       "has_examples": false,
       "has_scripts": false,
       "skill_md": {
-        "bytes": 2990,
-        "lines": 64,
-        "sha256": "9912ca7cbaafe6da0249a972ccffce7a8bb979786e76062e76fa0f23790253b1"
+        "bytes": 3226,
+        "lines": 66,
+        "sha256": "113ddbe1a0aa2a8bc5dc9069fadebe9effc8d4cc3e47e5a35e59413cb3280f80"
       }
     },
     {
@@ -651,9 +651,9 @@
         "author": "Soczó Kristóf",
         "contact": "mailto:lonsdale201@hotmail.com",
         "plugin": "better-route",
-        "plugin-version-tested": "0.6.0",
+        "plugin-version-tested": "1.0.0",
         "php-min": "8.1",
-        "last-updated": "2026-05-02",
+        "last-updated": "2026-07-12",
         "docs": [
           "https://lonsdale201.github.io/better-docs/docs/better-route/agents"
         ],
@@ -690,16 +690,16 @@
       "has_examples": false,
       "has_scripts": false,
       "skill_md": {
-        "bytes": 19309,
-        "lines": 393,
-        "sha256": "9d52c938fea05f84ab53efae6bba28ae84d18df055cff7187e03d64c3699ee3c"
+        "bytes": 21389,
+        "lines": 412,
+        "sha256": "4414b9fb138bcdb39fbdc89ecfe284592d62954c07a3845aa9f41404a837bcd5"
       }
     },
     {
       "slug": "br-cors-public-client",
       "name": "br-cors-public-client",
       "domain": "better-route",
-      "description": "Configure better-route 0.5.0 CORS and preflight support for public REST clients. Use when adding CorsMiddleware, CorsPolicy, Router::options(), Authorization or Idempotency-Key cross-origin requests, credentialed browser clients, app clients, OPTIONS routes, or debugging failed REST preflight requests.",
+      "description": "Configure better-route 1.0.0 CORS and preflight support for public REST clients. Use when adding CorsMiddleware, CorsPolicy, Router::options(), Authorization or Idempotency-Key cross-origin requests, credentialed browser clients, app clients, OPTIONS routes, or debugging failed REST preflight requests.",
       "path": "better-route/br-cors-public-client",
       "skill_path": "better-route/br-cors-public-client/SKILL.md",
       "url": "https://raw.githubusercontent.com/Lonsdale201/wp-agent-skills/main/better-route/br-cors-public-client/SKILL.md",
@@ -720,9 +720,9 @@
       "has_examples": false,
       "has_scripts": false,
       "skill_md": {
-        "bytes": 2347,
+        "bytes": 2689,
         "lines": 62,
-        "sha256": "a680c737356bf12fcc972b89f6a07ee027900e2d8186f00e1fdb5a7756a259d3"
+        "sha256": "cbcaa00bc46eda9c68b5ea8942231b3701f640b4d98f22643fac642709bbf7d4"
       }
     },
     {
@@ -775,7 +775,7 @@
       "slug": "br-error-contract",
       "name": "br-error-contract",
       "domain": "better-route",
-      "description": "Reference for the standard better-route error envelope — every error response has shape {error: {code, message, requestId, details}}. Throw ApiException(message, status, errorCode, details) inside handlers; better-route's ErrorNormalizer wraps it. Critical v0.3.0 normalization — for status >= 500 from non-ApiException failures, message is normalized to 'Unexpected error.' and details is empty (internal exception class + message NO LONGER leak); for status === 400 from non-ApiException, details.exception still includes the class name (developer aid for misuse). Common error codes — validation_failed (400, fieldErrors), idempotency_key_required (400), invalid_token (401), insufficient permissions (403), not_found (404), idempotency_conflict / hpos_required / customer_exists (409), rate_limited (429), woo_unavailable (503). Use when handlers need to throw structured errors, or consumers need to interpret them. v0.6.0 adds opt-in OAuth RFC6749 error format via ->meta(['error_format' => 'oauth_rfc6749']) and OAuthErrorNormalizer. Triggers on ApiException, ErrorNormalizer, OAuthErrorNormalizer, error_format, oauth_rfc6749, fromThrowable, error envelope, fieldErrors.",
+      "description": "Reference for the standard better-route error envelope — every error response has shape {error: {code, message, requestId, details}}. Throw ApiException(message, status, errorCode, details) inside handlers; better-route's ErrorNormalizer wraps it. Critical normalization — for ANY non-ApiException failure the internal exception class + message are scrubbed: status >= 500 becomes 'Unexpected error.' (internal_error) and status 400 becomes 'Invalid request.' (invalid_request), both with EMPTY details. (Since 1.0.0 the 400 case no longer leaks details.exception; earlier versions exposed the class name.) Common error codes — validation_failed (400, fieldErrors), idempotency_key_required (400), invalid_token (401), insufficient permissions (403), not_found (404), idempotency_conflict / customer_exists / coupon_exists / woo_line_items_locked (409), precondition_failed (412), precondition_required (428), rate_limited (429), hpos_required / woo_unavailable (503). Use when handlers need to throw structured errors, or consumers need to interpret them. v0.6.0 adds opt-in OAuth RFC6749 error format via ->meta(['error_format' => 'oauth_rfc6749']) and OAuthErrorNormalizer. Triggers on ApiException, ErrorNormalizer, OAuthErrorNormalizer, error_format, oauth_rfc6749, fromThrowable, error envelope, fieldErrors.",
       "path": "better-route/br-error-contract",
       "skill_path": "better-route/br-error-contract/SKILL.md",
       "url": "https://raw.githubusercontent.com/Lonsdale201/wp-agent-skills/main/better-route/br-error-contract/SKILL.md",
@@ -786,9 +786,9 @@
         "author": "Soczó Kristóf",
         "contact": "mailto:lonsdale201@hotmail.com",
         "plugin": "better-route",
-        "plugin-version-tested": "0.6.0",
+        "plugin-version-tested": "1.0.0",
         "php-min": "8.1",
-        "last-updated": "2026-05-02",
+        "last-updated": "2026-07-12",
         "docs": [
           "https://lonsdale201.github.io/better-docs/docs/better-route/agents"
         ],
@@ -817,9 +817,9 @@
       "has_examples": false,
       "has_scripts": false,
       "skill_md": {
-        "bytes": 18394,
-        "lines": 442,
-        "sha256": "6e20acaa8ea538f9ff90a72eeabbe433fc691b5f710c9b2973b392fe8ef0660d"
+        "bytes": 19692,
+        "lines": 448,
+        "sha256": "fd71bd55a249c7fad3c0101023fee464ee53a23f084bcfe0cc361e4b734ea97c"
       }
     },
     {
@@ -867,7 +867,7 @@
       "slug": "br-hmac-signature",
       "name": "br-hmac-signature",
       "domain": "better-route",
-      "description": "Configure better-route 0.6.0 HmacSignatureMiddleware for signed server-to-server REST requests and webhooks. Use when adding X-Signature, X-Timestamp, X-Key-Id, HmacSecretProviderInterface, ArrayHmacSecretProvider, request body HMAC verification, timestamp replay window checks, multi-key rotation, or replacing unsigned public POST endpoints with shared-secret authentication. Updated 2026-05-02.",
+      "description": "Configure better-route 1.0.0 HmacSignatureMiddleware for signed server-to-server REST requests and webhooks. Use when adding X-Signature, X-Timestamp, X-Key-Id, HmacSecretProviderInterface, ArrayHmacSecretProvider, request body HMAC verification, timestamp replay window checks, multi-key rotation, or replacing unsigned public POST endpoints with shared-secret authentication. Updated 2026-07-12.",
       "path": "better-route/br-hmac-signature",
       "skill_path": "better-route/br-hmac-signature/SKILL.md",
       "url": "https://raw.githubusercontent.com/Lonsdale201/wp-agent-skills/main/better-route/br-hmac-signature/SKILL.md",
@@ -878,9 +878,9 @@
         "author": "Soczó Kristóf",
         "contact": "mailto:lonsdale201@hotmail.com",
         "plugin": "better-route",
-        "plugin-version-tested": "0.6.0",
+        "plugin-version-tested": "1.0.0",
         "php-min": "8.1",
-        "last-updated": "2026-05-02",
+        "last-updated": "2026-07-12",
         "docs": [
           "https://lonsdale201.github.io/better-docs/docs/better-route/agents"
         ],
@@ -905,9 +905,9 @@
       "has_examples": false,
       "has_scripts": false,
       "skill_md": {
-        "bytes": 2788,
-        "lines": 83,
-        "sha256": "4cc5a029858cda1abda356910c717f95eefff58d42d0d0df729ad21b511696b6"
+        "bytes": 3670,
+        "lines": 90,
+        "sha256": "a23cdb25440feff2303c1f32c0fc738cf5e3ef3fa163ae6ef33266d1ef437280"
       }
     },
     {
@@ -925,9 +925,9 @@
         "author": "Soczó Kristóf",
         "contact": "mailto:lonsdale201@hotmail.com",
         "plugin": "better-route",
-        "plugin-version-tested": "0.5.0",
+        "plugin-version-tested": "1.0.0",
         "php-min": "8.1",
-        "last-updated": "2026-05-01",
+        "last-updated": "2026-07-12",
         "docs": [
           "https://lonsdale201.github.io/better-docs/docs/better-route/agents"
         ],
@@ -947,16 +947,16 @@
       "has_examples": false,
       "has_scripts": false,
       "skill_md": {
-        "bytes": 16524,
-        "lines": 321,
-        "sha256": "d45693e1e6622202d9ded349deb19e522641618bc8af07e4475a2525089c845f"
+        "bytes": 16803,
+        "lines": 322,
+        "sha256": "951cd49d1a46b465999a408f97adba5981692957b61ba1e12cd93984136cb895"
       }
     },
     {
       "slug": "br-install-and-migrate",
       "name": "br-install-and-migrate",
       "domain": "better-route",
-      "description": "Install better-route into a WordPress project and migrate to v0.6.0 — composer VCS repository (NOT yet on Packagist), PHP 8.1+ requirement, all route registration inside rest_api_init. Important — v0.4.0 raw Router write methods (POST / PUT / PATCH / DELETE) DENY by default at the WP permission layer; every write route now needs an explicit intent declaration via ->permission(callable), ->protectedByMiddleware($security), or ->publicRoute(). GET is unchanged. Older v0.3.0 breaking changes still apply when jumping from <0.3 — OpenAPI doc defaults to manage_options, custom-table resources are deny-by-default, JWT exp claim required, identity-aware default keys for cache / idempotency / rate-limit. v0.6.0 adds JWKS JWT verification, Crypto helpers, HMAC signatures, trusted-proxy IP/CIDR allowlists, single-use token stores, and opt-in OAuth error format. Use when adding better-route to a project, bumping the constraint to ^0.6.0, or triaging unintended 403s on writes after upgrade. Triggers on composer require better-route, ->permission, ->protectedByMiddleware, ->publicRoute, \"better-route 403 on POST\".",
+      "description": "Install better-route into a WordPress project and migrate to v1.0.0 — composer VCS repository (NOT yet on Packagist), PHP 8.1+ requirement, all route registration inside rest_api_init. Important — v0.4.0 raw Router write methods (POST / PUT / PATCH / DELETE) DENY by default at the WP permission layer; every write route now needs an explicit intent declaration via ->permission(callable), ->protectedByMiddleware($security), or ->publicRoute(). GET is unchanged. Older v0.3.0 breaking changes still apply when jumping from <0.3 — OpenAPI doc defaults to manage_options, custom-table resources are deny-by-default, JWT exp claim required, identity-aware default keys for cache / idempotency / rate-limit. v0.6.0 adds JWKS JWT verification, Crypto helpers, HMAC signatures, trusted-proxy IP/CIDR allowlists, single-use token stores, and opt-in OAuth error format. v1.0.0 is the first stable release and hardens those defaults (WpClaimsUserMapper email/login mapping off by default, XFF spoof-resistant client IP, CORS wildcard+credentials rejected, granted-scope wildcards opt-in) plus WooCommerce fixes (money as strings, HPOS 503, product price read-only) — see the v1.0.0 behavior-change checklist. Use when adding better-route to a project, bumping the constraint to ^1.0, or triaging unintended 403s on writes after upgrade. Triggers on composer require better-route, ->permission, ->protectedByMiddleware, ->publicRoute, \"better-route 403 on POST\".",
       "path": "better-route/br-install-and-migrate",
       "skill_path": "better-route/br-install-and-migrate/SKILL.md",
       "url": "https://raw.githubusercontent.com/Lonsdale201/wp-agent-skills/main/better-route/br-install-and-migrate/SKILL.md",
@@ -967,9 +967,9 @@
         "author": "Soczó Kristóf",
         "contact": "mailto:lonsdale201@hotmail.com",
         "plugin": "better-route",
-        "plugin-version-tested": "0.6.0",
+        "plugin-version-tested": "1.0.0",
         "php-min": "8.1",
-        "last-updated": "2026-05-02",
+        "last-updated": "2026-07-12",
         "docs": [
           "https://lonsdale201.github.io/better-docs/docs/better-route/agents",
           "https://github.com/Lonsdale201/better-route"
@@ -1002,16 +1002,16 @@
       "has_examples": false,
       "has_scripts": false,
       "skill_md": {
-        "bytes": 14651,
-        "lines": 287,
-        "sha256": "41cf0f57c52c6327460a07e0f0bcfb9a01fd7ed10309ee51e2f61fb1f0c168f8"
+        "bytes": 17376,
+        "lines": 311,
+        "sha256": "0836d76ab5c821424a6ceaa722115d10cacbb34f1e853484288ca93957d922dc"
       }
     },
     {
       "slug": "br-jwks-jwt-auth",
       "name": "br-jwks-jwt-auth",
       "domain": "better-route",
-      "description": "Configure better-route 0.6.0 RS256/ES256 JWT verification from JWKS. Use when adding Rs256JwksJwtVerifier, JwksProviderInterface, HttpJwksProvider, StaticJwksProvider, JwtBearerTokenVerifierAdapter, strict JOSE kid matching, issuer/audience checks, JWKS transient cache, better_route/jwks_refresh, or OIDC/OAuth bearer token verification. Rejects none and HS* algorithms. Updated 2026-05-02.",
+      "description": "Configure better-route 1.0.0 RS256/ES256 JWT verification from JWKS. Use when adding Rs256JwksJwtVerifier, JwksProviderInterface, HttpJwksProvider, StaticJwksProvider, JwtBearerTokenVerifierAdapter, strict JOSE kid matching, issuer/audience checks, JWKS transient cache, better_route/jwks_refresh, or OIDC/OAuth bearer token verification. Rejects none and HS* algorithms. Updated 2026-07-12.",
       "path": "better-route/br-jwks-jwt-auth",
       "skill_path": "better-route/br-jwks-jwt-auth/SKILL.md",
       "url": "https://raw.githubusercontent.com/Lonsdale201/wp-agent-skills/main/better-route/br-jwks-jwt-auth/SKILL.md",
@@ -1022,9 +1022,9 @@
         "author": "Soczó Kristóf",
         "contact": "mailto:lonsdale201@hotmail.com",
         "plugin": "better-route",
-        "plugin-version-tested": "0.6.0",
+        "plugin-version-tested": "1.0.0",
         "php-min": "8.1",
-        "last-updated": "2026-05-02",
+        "last-updated": "2026-07-12",
         "docs": [
           "https://lonsdale201.github.io/better-docs/docs/better-route/agents"
         ],
@@ -1053,16 +1053,16 @@
       "has_examples": false,
       "has_scripts": false,
       "skill_md": {
-        "bytes": 3699,
-        "lines": 97,
-        "sha256": "e383005f01c36a87192fd02a8d6dbbe63b17a7a1a1c7b5036dc9884864351529"
+        "bytes": 4343,
+        "lines": 99,
+        "sha256": "5918584a9bf1a12143a92f848a3e9c22254dd265e24102d58ebd11ccc1723f8d"
       }
     },
     {
       "slug": "br-network-security",
       "name": "br-network-security",
       "domain": "better-route",
-      "description": "Use better-route 0.6.0 network security middleware for trusted-proxy client IP resolution and CIDR allowlists. Triggers on TrustedProxyClientIpResolver, ClientIpResolverInterface, CidrMatcher, IpAllowlistMiddleware, CF-Connecting-IP, X-Forwarded-For, REMOTE_ADDR, trusted proxy CIDRs, IP allowlist, webhook IP pinning, or replacing direct forwarded-header reads. Updated 2026-05-02.",
+      "description": "Use better-route 1.0.0 network security middleware for trusted-proxy client IP resolution and CIDR allowlists. Triggers on TrustedProxyClientIpResolver, ClientIpResolverInterface, CidrMatcher, IpAllowlistMiddleware, CF-Connecting-IP, X-Forwarded-For, REMOTE_ADDR, trusted proxy CIDRs, IP allowlist, webhook IP pinning, or replacing direct forwarded-header reads. Updated 2026-07-12.",
       "path": "better-route/br-network-security",
       "skill_path": "better-route/br-network-security/SKILL.md",
       "url": "https://raw.githubusercontent.com/Lonsdale201/wp-agent-skills/main/better-route/br-network-security/SKILL.md",
@@ -1073,9 +1073,9 @@
         "author": "Soczó Kristóf",
         "contact": "mailto:lonsdale201@hotmail.com",
         "plugin": "better-route",
-        "plugin-version-tested": "0.6.0",
+        "plugin-version-tested": "1.0.0",
         "php-min": "8.1",
-        "last-updated": "2026-05-02",
+        "last-updated": "2026-07-12",
         "docs": [
           "https://lonsdale201.github.io/better-docs/docs/better-route/agents"
         ],
@@ -1102,9 +1102,9 @@
       "has_examples": false,
       "has_scripts": false,
       "skill_md": {
-        "bytes": 3111,
-        "lines": 87,
-        "sha256": "b668e05a258cd70c03a277ee029cb010866e5bc94df2f10895e956fb300fe9e5"
+        "bytes": 3974,
+        "lines": 89,
+        "sha256": "c645e9914529f7562d4691526cc6cf7d7c7fc0712cbd35799a0f280f1eb89978"
       }
     },
     {
@@ -1122,9 +1122,9 @@
         "author": "Soczó Kristóf",
         "contact": "mailto:lonsdale201@hotmail.com",
         "plugin": "better-route",
-        "plugin-version-tested": "0.4.0",
+        "plugin-version-tested": "1.0.0",
         "php-min": "8.1",
-        "last-updated": "2026-04-29",
+        "last-updated": "2026-07-12",
         "docs": [
           "https://lonsdale201.github.io/better-docs/docs/better-route/agents"
         ],
@@ -1143,9 +1143,9 @@
       "has_examples": false,
       "has_scripts": false,
       "skill_md": {
-        "bytes": 16015,
-        "lines": 357,
-        "sha256": "b7d48e537471f664e42777b3a6eedcbf467fd99d10ebc7e182bf6e5af64bda59"
+        "bytes": 16313,
+        "lines": 359,
+        "sha256": "ddf5e372b7d4246392dd2a58599b89f030d40e1bb17c5bdda3256facf54a76fc"
       }
     },
     {
@@ -1395,7 +1395,7 @@
       "slug": "br-single-use-token",
       "name": "br-single-use-token",
       "domain": "better-route",
-      "description": "Use better-route 0.6.0 SingleUseTokenMiddleware and stores for auth codes, reset links, magic links, email confirmation tokens, or any token that must be consumed exactly once. Triggers on SingleUseTokenMiddleware, SingleUseTokenStoreInterface, WpdbSingleUseTokenStore, WpCacheSingleUseTokenStore, ArraySingleUseTokenStore, token replay, single-use code, one-time token, or auth-code TOCTOU fixes. Updated 2026-05-02.",
+      "description": "Use better-route 1.0.0 SingleUseTokenMiddleware and stores for auth codes, reset links, magic links, email confirmation tokens, or any token that must be consumed exactly once. Triggers on SingleUseTokenMiddleware, SingleUseTokenStoreInterface, WpdbSingleUseTokenStore, WpCacheSingleUseTokenStore, ArraySingleUseTokenStore, token replay, single-use code, one-time token, or auth-code TOCTOU fixes. Updated 2026-07-12.",
       "path": "better-route/br-single-use-token",
       "skill_path": "better-route/br-single-use-token/SKILL.md",
       "url": "https://raw.githubusercontent.com/Lonsdale201/wp-agent-skills/main/better-route/br-single-use-token/SKILL.md",
@@ -1406,9 +1406,9 @@
         "author": "Soczó Kristóf",
         "contact": "mailto:lonsdale201@hotmail.com",
         "plugin": "better-route",
-        "plugin-version-tested": "0.6.0",
+        "plugin-version-tested": "1.0.0",
         "php-min": "8.1",
-        "last-updated": "2026-05-02",
+        "last-updated": "2026-07-12",
         "docs": [
           "https://lonsdale201.github.io/better-docs/docs/better-route/agents"
         ],
@@ -1434,9 +1434,9 @@
       "has_examples": false,
       "has_scripts": false,
       "skill_md": {
-        "bytes": 3184,
+        "bytes": 3674,
         "lines": 77,
-        "sha256": "2ebbb0af8c4622a055871ac35f0019d215d5ba2affe7d8d84456ce6fa2632571"
+        "sha256": "4018634aa3b701f58f5bebc1d3402cf7061df9f1965b8d2628bc05304fbd8512"
       }
     },
     {
@@ -1454,9 +1454,9 @@
         "author": "Soczó Kristóf",
         "contact": "mailto:lonsdale201@hotmail.com",
         "plugin": "better-route",
-        "plugin-version-tested": "0.4.0",
+        "plugin-version-tested": "1.0.0",
         "php-min": "8.1",
-        "last-updated": "2026-04-29",
+        "last-updated": "2026-07-12",
         "docs": [
           "https://lonsdale201.github.io/better-docs/docs/better-route/agents"
         ],
@@ -1481,9 +1481,9 @@
       "has_examples": false,
       "has_scripts": false,
       "skill_md": {
-        "bytes": 16579,
-        "lines": 339,
-        "sha256": "97bb3e1cd72522388ea585a4827cad50b7a6bc5d012a42630756809de4ca809b"
+        "bytes": 19871,
+        "lines": 368,
+        "sha256": "86769eeae9939ca365e5a858005f6c31bd2215d4eaf181ae6f67b5321e70f8b6"
       }
     },
     {
@@ -3854,7 +3854,7 @@
         "plugin": "wordpress",
         "plugin-version-tested": "6.5 - 7.0",
         "php-min": "7.4",
-        "last-updated": "2026-07-09",
+        "last-updated": "2026-07-12",
         "docs": [
           "https://developer.wordpress.org/reference/functions/add_option/",
           "https://developer.wordpress.org/reference/functions/get_option/",
@@ -3873,9 +3873,9 @@
       "has_examples": false,
       "has_scripts": false,
       "skill_md": {
-        "bytes": 17143,
-        "lines": 263,
-        "sha256": "aef14e208f8fb67447be2f83484f28037a86d3f70c542299f064e31efe05496e"
+        "bytes": 17647,
+        "lines": 273,
+        "sha256": "f17572d0b51d0f7b1ab53891f6c1bf668e77645826ca12fa46588cf9386d130b"
       }
     },
     {
@@ -3967,7 +3967,7 @@
       "slug": "wp-plugin-update-migrations",
       "name": "wp-plugin-update-migrations",
       "domain": "plugin-scaffold",
-      "description": "Designs and reviews WordPress plugin update-time version migrations — stored schema/data version options, version_compare or integer schema versions, idempotent v1->v2->v3 migrators, dbDelta inside migrations, locks, partial reruns, multisite handling, and safe use of upgrader_process_complete. Use when code mentions plugin updates, upgrade migrations, schema version, database version, data migration, upgrader_process_complete, Plugin_Upgrader, dbDelta after activation, or when activation hooks are being used to handle updates.",
+      "description": "Designs and reviews WordPress plugin update-time version migrations: stored schema/data version options, version_compare or integer schema versions, idempotent v1->v2->v3 migrators, dbDelta inside migrations, locks, partial reruns, multisite handling, and safe use of upgrader_process_complete. Use when code mentions plugin updates, upgrade migrations, schema version, database version, data migration, upgrader_process_complete, Plugin_Upgrader, dbDelta after activation, or when activation hooks are being used to handle updates.",
       "path": "plugin-scaffold/wp-plugin-update-migrations",
       "skill_path": "plugin-scaffold/wp-plugin-update-migrations/SKILL.md",
       "url": "https://raw.githubusercontent.com/Lonsdale201/wp-agent-skills/main/plugin-scaffold/wp-plugin-update-migrations/SKILL.md",
@@ -3980,7 +3980,7 @@
         "plugin": "wordpress",
         "plugin-version-tested": "7.0",
         "php-min": "7.4",
-        "last-updated": "2026-07-06",
+        "last-updated": "2026-07-12",
         "docs": [
           "https://developer.wordpress.org/reference/hooks/upgrader_process_complete/",
           "https://developer.wordpress.org/reference/functions/dbDelta/",
@@ -4001,9 +4001,9 @@
       "has_examples": false,
       "has_scripts": false,
       "skill_md": {
-        "bytes": 10248,
-        "lines": 237,
-        "sha256": "bea40613054e5609794ff20ea80a40827e42eefdb886cd3a33dab8024cb36f1a"
+        "bytes": 10961,
+        "lines": 248,
+        "sha256": "65a8651677ff2d97bb40dbabf249131097343c3e7e5bf6fb79347680a3c7b680"
       }
     },
     {
@@ -7375,6 +7375,52 @@
       }
     },
     {
+      "slug": "wp-batch-mutation-audit",
+      "name": "wp-batch-mutation-audit",
+      "domain": "wordpress",
+      "description": "Audits destructive or long-running WordPress batch writes for retry safety, idempotency, lost-response ambiguity, durable cursors, OFFSET drift, concurrent execution, atomic locks, partial failures, return-value handling, cancellation, and resumability. Use when reviewing AJAX loops, admin bulk tools, WP-Cron/Action Scheduler workers, WP-CLI migrations, importers, exporters with erasure, backfills, bulk update/delete code, LIMIT/OFFSET mutation loops, processing flags, or any workflow that changes many rows across multiple requests.",
+      "path": "wordpress/wp-batch-mutation-audit",
+      "skill_path": "wordpress/wp-batch-mutation-audit/SKILL.md",
+      "url": "https://raw.githubusercontent.com/Lonsdale201/wp-agent-skills/main/wordpress/wp-batch-mutation-audit/SKILL.md",
+      "raw_url": "https://raw.githubusercontent.com/Lonsdale201/wp-agent-skills/main/wordpress/wp-batch-mutation-audit/SKILL.md",
+      "html_url": "https://github.com/Lonsdale201/wp-agent-skills/blob/main/wordpress/wp-batch-mutation-audit/SKILL.md",
+      "directory_url": "https://github.com/Lonsdale201/wp-agent-skills/tree/main/wordpress/wp-batch-mutation-audit",
+      "metadata": {
+        "author": "Soczó Kristóf",
+        "contact": "mailto:lonsdale201@hotmail.com",
+        "plugin": "wordpress",
+        "plugin-version-tested": "6.0 - 7.0.1",
+        "php-min": "7.4",
+        "last-updated": "2026-07-12",
+        "docs": [
+          "https://developer.wordpress.org/plugins/cron/",
+          "https://developer.wordpress.org/cli/commands/"
+        ],
+        "source-refs": [
+          "wp-includes/option.php",
+          "wp-includes/meta.php",
+          "wp-includes/class-wpdb.php"
+        ]
+      },
+      "resources": [
+        {
+          "path": "agents/openai.yaml",
+          "repo_path": "wordpress/wp-batch-mutation-audit/agents/openai.yaml",
+          "type": "resource",
+          "bytes": 276,
+          "sha256": "ea9c0d79b2bedf5010b3b2f201db8c5876215c052973cbb8684fc16105f81392"
+        }
+      ],
+      "has_reference": false,
+      "has_examples": false,
+      "has_scripts": false,
+      "skill_md": {
+        "bytes": 8754,
+        "lines": 220,
+        "sha256": "be88d6485e4c3a402fbf26716470367ee8b25ac66ed881d66f688ec539fcbbac"
+      }
+    },
+    {
       "slug": "wp-cli-extending",
       "name": "wp-cli-extending",
       "domain": "wordpress",
@@ -7448,6 +7494,54 @@
         "bytes": 9136,
         "lines": 200,
         "sha256": "5af485b6ffe74aa4c06d5d878fa070962307d8318bab2e3f0115c6f0d447a70c"
+      }
+    },
+    {
+      "slug": "wp-database-performance-audit",
+      "name": "wp-database-performance-audit",
+      "domain": "wordpress",
+      "description": "Audits WordPress PHP data access for slow or unbounded SQL, LIMIT/OFFSET degradation, N+1 queries, missing cache priming, expensive postmeta joins, LONGTEXT sorting/aggregation, leading-wildcard LIKE, oversized result transfer, unsuitable indexes, cache stampedes, stale invalidation, and direct-write cache bypass. Use when reviewing $wpdb queries, WP_Query loops, metadata loops, admin reports, imports, migrations, bulk tools, transients, object-cache behavior, EXPLAIN plans, or performance problems that grow with posts/users/orders/meta rows.",
+      "path": "wordpress/wp-database-performance-audit",
+      "skill_path": "wordpress/wp-database-performance-audit/SKILL.md",
+      "url": "https://raw.githubusercontent.com/Lonsdale201/wp-agent-skills/main/wordpress/wp-database-performance-audit/SKILL.md",
+      "raw_url": "https://raw.githubusercontent.com/Lonsdale201/wp-agent-skills/main/wordpress/wp-database-performance-audit/SKILL.md",
+      "html_url": "https://github.com/Lonsdale201/wp-agent-skills/blob/main/wordpress/wp-database-performance-audit/SKILL.md",
+      "directory_url": "https://github.com/Lonsdale201/wp-agent-skills/tree/main/wordpress/wp-database-performance-audit",
+      "metadata": {
+        "author": "Soczó Kristóf",
+        "contact": "mailto:lonsdale201@hotmail.com",
+        "plugin": "wordpress",
+        "plugin-version-tested": "6.0 - 7.0.1",
+        "php-min": "7.4",
+        "last-updated": "2026-07-12",
+        "docs": [
+          "https://developer.wordpress.org/reference/classes/wpdb/",
+          "https://developer.wordpress.org/reference/classes/wp_query/",
+          "https://developer.wordpress.org/reference/functions/update_meta_cache/"
+        ],
+        "source-refs": [
+          "wp-admin/includes/schema.php",
+          "wp-includes/class-wpdb.php",
+          "wp-includes/meta.php",
+          "wp-includes/class-wp-query.php"
+        ]
+      },
+      "resources": [
+        {
+          "path": "agents/openai.yaml",
+          "repo_path": "wordpress/wp-database-performance-audit/agents/openai.yaml",
+          "type": "resource",
+          "bytes": 283,
+          "sha256": "1454034fdcfd4b0b5a7f8286b0b1fef220d85c43718f13d58c26d2cf5c229a84"
+        }
+      ],
+      "has_reference": false,
+      "has_examples": false,
+      "has_scripts": false,
+      "skill_md": {
+        "bytes": 8654,
+        "lines": 210,
+        "sha256": "bb2863d41d725cdc905438f6162e7f052ea9933a4f282b1d995f206453964bd3"
       }
     },
     {
@@ -7673,6 +7767,54 @@
       }
     },
     {
+      "slug": "wp-metadata-api",
+      "name": "wp-metadata-api",
+      "domain": "wordpress",
+      "description": "Implements and audits WordPress post, user, term, comment, and generic metadata code, including slashing contracts, revision redirection, multi-row keys, exact meta_id operations, return-value ambiguity, cache and hook behavior, registration/auth schemas, scalar typing, and safe handling of serialized or double-serialized values. Use when code calls get_*_meta, add_*_meta, update_*_meta, delete_*_meta, register_meta, update_metadata_by_mid, get_metadata_by_mid, maybe_serialize, maybe_unserialize, or queries a *_meta table directly.",
+      "path": "wordpress/wp-metadata-api",
+      "skill_path": "wordpress/wp-metadata-api/SKILL.md",
+      "url": "https://raw.githubusercontent.com/Lonsdale201/wp-agent-skills/main/wordpress/wp-metadata-api/SKILL.md",
+      "raw_url": "https://raw.githubusercontent.com/Lonsdale201/wp-agent-skills/main/wordpress/wp-metadata-api/SKILL.md",
+      "html_url": "https://github.com/Lonsdale201/wp-agent-skills/blob/main/wordpress/wp-metadata-api/SKILL.md",
+      "directory_url": "https://github.com/Lonsdale201/wp-agent-skills/tree/main/wordpress/wp-metadata-api",
+      "metadata": {
+        "author": "Soczó Kristóf",
+        "contact": "mailto:lonsdale201@hotmail.com",
+        "plugin": "wordpress",
+        "plugin-version-tested": "6.0 - 7.0.1",
+        "php-min": "7.4",
+        "last-updated": "2026-07-12",
+        "docs": [
+          "https://developer.wordpress.org/apis/metadata/",
+          "https://developer.wordpress.org/reference/functions/update_metadata/",
+          "https://developer.wordpress.org/reference/functions/update_metadata_by_mid/"
+        ],
+        "source-refs": [
+          "wp-includes/meta.php",
+          "wp-includes/post.php",
+          "wp-includes/functions.php",
+          "wp-includes/revision.php"
+        ]
+      },
+      "resources": [
+        {
+          "path": "agents/openai.yaml",
+          "repo_path": "wordpress/wp-metadata-api/agents/openai.yaml",
+          "type": "resource",
+          "bytes": 277,
+          "sha256": "e3b94705987ecd6911f6f94a1e8b62aa70890df5aa2134c997558cf8846f6083"
+        }
+      ],
+      "has_reference": false,
+      "has_examples": false,
+      "has_scripts": false,
+      "skill_md": {
+        "bytes": 9590,
+        "lines": 225,
+        "sha256": "83f62a0869e99d8ce128d38b4f3c4412f921b60a0b0400d94df7ad32b9369b97"
+      }
+    },
+    {
       "slug": "wp-presence-api",
       "name": "wp-presence-api",
       "domain": "wordpress",
@@ -7752,7 +7894,7 @@
       "slug": "wp-query-cache",
       "name": "wp-query-cache",
       "domain": "wordpress",
-      "description": "Review and implement WordPress query-cache usage on WP 6.9+, especially direct interaction with query cache groups now using salted cache helpers. Covers wp_cache_get_salted, wp_cache_set_salted, wp_cache_get_multiple_salted, wp_cache_set_multiple_salted, wp_cache_get_last_changed, affected query groups like post-queries, term-queries, user-queries, comment-queries, site-queries, and why plugins should usually use WP_Query APIs instead of writing query cache entries directly. Use when optimizing expensive reads, persistent object cache behavior, or cache invalidation bugs.",
+      "description": "Review and implement WordPress core query-cache usage on WP 6.9+, especially direct interaction with query cache groups now using salted cache helpers. Covers wp_cache_get_salted, wp_cache_set_salted, wp_cache_get_multiple_salted, wp_cache_set_multiple_salted, wp_cache_get_last_changed, affected query groups like post-queries, term-queries, user-queries, comment-queries, site-queries, and why plugins should usually use WP_Query APIs instead of writing query cache entries directly. Use when code touches those core query groups/salts, duplicates WP_Query cache internals, or shows stale/miss behavior specifically after direct query-cache reads or writes; use the database-performance skill for general SQL, transient, OFFSET, or N+1 issues.",
       "path": "wordpress/wp-query-cache",
       "skill_path": "wordpress/wp-query-cache/SKILL.md",
       "url": "https://raw.githubusercontent.com/Lonsdale201/wp-agent-skills/main/wordpress/wp-query-cache/SKILL.md",
@@ -7765,7 +7907,7 @@
         "plugin": "wordpress",
         "plugin-version-tested": "6.9 - 7.0.1",
         "php-min": "7.4",
-        "last-updated": "2026-07-10",
+        "last-updated": "2026-07-12",
         "docs": [
           "https://make.wordpress.org/core/2025/11/17/consistent-cache-keys-for-query-groups-in-wordpress-6-9/"
         ]
@@ -7775,9 +7917,9 @@
       "has_examples": false,
       "has_scripts": false,
       "skill_md": {
-        "bytes": 7000,
-        "lines": 164,
-        "sha256": "b91e60cb39bba60b9b4579895432be5c8ad9855277c75426a844e5ae84991308"
+        "bytes": 7466,
+        "lines": 172,
+        "sha256": "a29883a76a3434543a3286ddce32ce0bf1915e687a5b96f3d5a023d2fa332b99"
       }
     },
     {
@@ -7818,7 +7960,7 @@
       "slug": "wp-security-audit",
       "name": "wp-security-audit",
       "domain": "wordpress",
-      "description": "Audits WordPress plugin or theme PHP code for the most common security mistakes — missing nonce checks, capability checks, input sanitization, output escaping, unslashing, SQL preparation, AJAX nopriv exposure, file/path traversal, and unsafe redirects. Use when reviewing pull requests, before releasing a plugin, when the user asks \"is this secure\", or when handling code that touches $_GET / $_POST / $_REQUEST / $_COOKIE / $_FILES / $_SERVER, admin-ajax / admin-post, REST endpoints, options, user meta, custom DB queries, or file uploads.",
+      "description": "Audits WordPress plugin or theme PHP code for the most common security mistakes — missing nonce checks, capability checks, input normalization/validation, output escaping, unslashing, SQL preparation, AJAX nopriv exposure, file/path traversal, and unsafe redirects. Use when reviewing pull requests, before releasing a plugin, when the user asks \"is this secure\", or when handling code that touches $_GET / $_POST / $_REQUEST / $_COOKIE / $_FILES / $_SERVER, admin-ajax / admin-post, REST endpoints, options, user meta, custom DB queries, or file uploads.",
       "path": "wordpress/wp-security-audit",
       "skill_path": "wordpress/wp-security-audit/SKILL.md",
       "url": "https://raw.githubusercontent.com/Lonsdale201/wp-agent-skills/main/wordpress/wp-security-audit/SKILL.md",
@@ -7831,7 +7973,7 @@
         "plugin": "wordpress",
         "plugin-version-tested": "6.0 - 7.0.1",
         "php-min": "7.4",
-        "last-updated": "2026-07-10",
+        "last-updated": "2026-07-12",
         "docs": [
           "https://developer.wordpress.org/apis/security/",
           "https://developer.wordpress.org/plugins/security/",
@@ -7851,17 +7993,17 @@
           "path": "reference.md",
           "repo_path": "wordpress/wp-security-audit/reference.md",
           "type": "reference",
-          "bytes": 11449,
-          "sha256": "8ae3ce263ec06d44b3f06c04bd5ad9494862d135487f00807ac3c89d1cddd347"
+          "bytes": 12790,
+          "sha256": "5284f3609da78701fd66ab134276008148647874709248a0c7d7c23dca3e0f5a"
         }
       ],
       "has_reference": true,
       "has_examples": true,
       "has_scripts": false,
       "skill_md": {
-        "bytes": 11499,
-        "lines": 286,
-        "sha256": "b25fb96ff5c834e7ba83a4bf0b6c0c9d114e1a2e4054ccad10ac08a572da35d2"
+        "bytes": 12391,
+        "lines": 300,
+        "sha256": "fff4fdf802f2fe5ee2fb8fd64e5f9603941d5ce27b9ac54ba29161f503cbb15e"
       }
     },
     {
@@ -7881,7 +8023,7 @@
         "plugin": "wordpress",
         "plugin-version-tested": "6.0 - 7.0.1",
         "php-min": "7.4",
-        "last-updated": "2026-07-10",
+        "last-updated": "2026-07-12",
         "docs": [
           "https://developer.wordpress.org/plugins/security/",
           "https://www.php.net/manual/en/function.unserialize.php",
@@ -7893,9 +8035,9 @@
       "has_examples": false,
       "has_scripts": false,
       "skill_md": {
-        "bytes": 10533,
-        "lines": 291,
-        "sha256": "aeab0d3f2cfea0d16795ccabb6d12c20637f3e5d65d3c843a9b1db2f3e5ad5fc"
+        "bytes": 11252,
+        "lines": 300,
+        "sha256": "ff26afcf082d7c096ee7c3006d9674a16947e8ca83d800fd1a98ff674ac76be9"
       }
     },
     {
@@ -7944,12 +8086,12 @@
       "html_url": "https://github.com/Lonsdale201/wp-agent-skills/blob/main/wordpress/wp-settings-storage-audit/SKILL.md",
       "directory_url": "https://github.com/Lonsdale201/wp-agent-skills/tree/main/wordpress/wp-settings-storage-audit",
       "metadata": {
-        "author": "Soczo Kristof",
+        "author": "Soczó Kristóf",
         "contact": "mailto:lonsdale201@hotmail.com",
         "plugin": "wordpress",
         "plugin-version-tested": "7.0.1",
         "php-min": "7.4",
-        "last-updated": "2026-07-10",
+        "last-updated": "2026-07-12",
         "docs": [
           "https://developer.wordpress.org/plugins/settings/settings-api/",
           "https://developer.wordpress.org/reference/functions/register_setting/",
@@ -7980,9 +8122,9 @@
       "has_examples": false,
       "has_scripts": false,
       "skill_md": {
-        "bytes": 11847,
-        "lines": 260,
-        "sha256": "9e2a25416acaeeaf4fff9a11475c920a3a33e419b2ca13eda08f29fd96085d60"
+        "bytes": 13375,
+        "lines": 285,
+        "sha256": "495c39b2fc2d604faf59547cb22acb4caae6b603f227c96e31330ca3cc1b07af"
       }
     },
     {

@@ -1,12 +1,12 @@
 ---
 name: br-single-use-token
-description: Use better-route 0.6.0 SingleUseTokenMiddleware and stores for auth codes, reset links, magic links, email confirmation tokens, or any token that must be consumed exactly once. Triggers on SingleUseTokenMiddleware, SingleUseTokenStoreInterface, WpdbSingleUseTokenStore, WpCacheSingleUseTokenStore, ArraySingleUseTokenStore, token replay, single-use code, one-time token, or auth-code TOCTOU fixes. Updated 2026-05-02.
+description: Use better-route 1.0.0 SingleUseTokenMiddleware and stores for auth codes, reset links, magic links, email confirmation tokens, or any token that must be consumed exactly once. Triggers on SingleUseTokenMiddleware, SingleUseTokenStoreInterface, WpdbSingleUseTokenStore, WpCacheSingleUseTokenStore, ArraySingleUseTokenStore, token replay, single-use code, one-time token, or auth-code TOCTOU fixes. Updated 2026-07-12.
 author: Soczó Kristóf
 contact: mailto:lonsdale201@hotmail.com
 plugin: better-route
-plugin-version-tested: "0.6.0"
+plugin-version-tested: "1.0.0"
 php-min: "8.1"
-last-updated: "2026-05-02"
+last-updated: "2026-07-12"
 docs:
   - https://lonsdale201.github.io/better-docs/docs/better-route/agents
 source-refs:
@@ -56,14 +56,14 @@ $singleUse->storeToken($rawCode, [
 
 ## Store choices
 
-- `WpdbSingleUseTokenStore`: production default when DB writes are acceptable; call `installSchema()` on activation.
-- `WpCacheSingleUseTokenStore`: object-cache lock plus transient-backed record; useful when DB table migration is not desired.
+- `WpdbSingleUseTokenStore`: production default when DB writes are acceptable; call `installSchema()` on activation. Atomic on any host.
+- `WpCacheSingleUseTokenStore`: object-cache lock plus transient-backed record. **Since 1.0.0** its constructor **throws** when no persistent object cache is present — the `wp_cache_add` consume-lock is not cross-request atomic on the default in-process cache, so two concurrent requests could both consume the same token. Only use it with Redis/Memcached; otherwise use `WpdbSingleUseTokenStore`.
 - `ArraySingleUseTokenStore`: tests only.
 
 ## Critical rules
 
 - Never store raw token values. Use `storeToken()` or `hashToken()` with a dedicated salt.
-- Use a salt dedicated to the token class or application; do not reuse OAuth client secrets as storage salts.
+- Use a salt dedicated to the token class or application; do not reuse OAuth client secrets as storage salts. If `hashSalt` is omitted, the middleware derives one from the documented `wp_salt('auth')` scheme (1.0.0; earlier versions used the undocumented `wp_salt('better_route_single_use_token')` scheme).
 - Consume before issuing side effects. If consume returns null, fail closed.
 - A reused token returns conflict semantics (`single_use_token_reused`).
 - Unknown or expired tokens fail as invalid.

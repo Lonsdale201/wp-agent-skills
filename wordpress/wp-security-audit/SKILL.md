@@ -2,7 +2,7 @@
 name: wp-security-audit
 description: Audits WordPress plugin or theme PHP code for the most common
   security mistakes — missing nonce checks, capability checks, input
-  sanitization, output escaping, unslashing, SQL preparation, AJAX nopriv
+  normalization/validation, output escaping, unslashing, SQL preparation, AJAX nopriv
   exposure, file/path traversal, and unsafe redirects. Use when reviewing
   pull requests, before releasing a plugin, when the user asks "is this
   secure", or when handling code that touches $_GET / $_POST / $_REQUEST /
@@ -13,7 +13,7 @@ contact: mailto:lonsdale201@hotmail.com
 plugin: wordpress
 plugin-version-tested: "6.0 - 7.0.1"
 php-min: "7.4"
-last-updated: "2026-07-10"
+last-updated: "2026-07-12"
 docs:
   - https://developer.wordpress.org/apis/security/
   - https://developer.wordpress.org/plugins/security/
@@ -95,9 +95,11 @@ Authentication ≠ authorization. A logged-in subscriber is still a user.
   for genuinely public endpoints. Signed webhook routes should verify the
   signature before mutation, preferably in `permission_callback`.
 
-### 3. Input: unslash → sanitize → validate
+### 3. Input: unslash → normalize when needed → validate
 
-WordPress magically slashes superglobals. The pipeline is fixed:
+WordPress slashes superglobals. First recover the domain value, then choose
+lossy normalization only when the field's meaning permits it, and always
+validate the semantic contract:
 
 ```php
 $raw      = isset( $_POST['email'] ) ? wp_unslash( $_POST['email'] ) : '';
@@ -105,18 +107,20 @@ $email    = sanitize_email( $raw );
 if ( ! is_email( $email ) ) { /* reject */ }
 ```
 
-- Missing `wp_unslash` before sanitization → escaped quotes leak through.
-- Wrong sanitizer for the data type. Map by intent:
-  - text field: `sanitize_text_field`
-  - textarea: `sanitize_textarea_field`
-  - email: `sanitize_email`
-  - URL: `esc_url_raw` (storage) / `esc_url` (output)
-  - key/slug: `sanitize_key`, `sanitize_title`
-  - integer: `absint` or `(int)` with range check
-  - HTML allowed: `wp_kses_post` or `wp_kses` with explicit allowlist
-  - file path: `sanitize_file_name` + `realpath` containment check
+- Missing `wp_unslash` before normalization can leak transport slashes into
+  stored data. Do not unslash values that did not come from a slashed boundary.
+- Choose the normalizer by field meaning: text, textarea, email, URL, key,
+  integer, allowed HTML, and filesystem path need different contracts. See the
+  extended `reference.md` map.
 - Never trust `$_SERVER['HTTP_*']` headers without sanitizing; they're
   attacker-controlled.
+
+Sanitization is not a ritual and is often lossy. Migration, import/export,
+database repair, code-editor, and opaque meta-value tools may need to preserve
+HTML, percent sequences, quotes, or backslashes exactly. Do not recommend
+`sanitize_text_field()` merely to silence a sniff. Require strict type/shape,
+encoding/size/domain validation, a safe sink, and escaped output. See
+`reference.md` for the exact-preservation pattern.
 
 ### 4. Output escaping (XSS)
 
@@ -236,10 +240,23 @@ Findings to flag:
   performs privileged work, do not trust any "stored intent" without
   re-validating; treat persisted user input as untrusted.
 
+## False-positive guards
+
+- Accept exact preservation when its validation, sink, and output contracts are
+  explicit.
+- Do not require a nonce for read-only public endpoints, cron, WP-CLI, or signed
+  non-cookie requests; identify the actual trust boundary.
+- Do not flag code-generated `IN` placeholders as injection when the placeholder
+  string contains only generated `%s`/`%d` tokens and all values reach
+  `$wpdb->prepare()`.
+
 ## What this skill does NOT cover
 
 - Cryptographic correctness (key derivation, signing schemes).
 - Business-logic flaws (race conditions, IDOR beyond capability checks).
+- Retry/idempotency/partial-failure flaws in bulk writes — use
+  **`wp-batch-mutation-audit`**.
+- Metadata slashing/revision/multi-row/serialization — use **`wp-metadata-api`**.
 - Third-party library CVEs — run `composer audit` separately.
 - Frontend JS XSS — different skill.
 - Server / hosting hardening (file perms, disable_functions, etc.).
@@ -251,9 +268,7 @@ Findings to flag:
   **`wp-security-secrets`**. Run it whenever auth or third-party
   integrations are in scope.
 
-State this scope explicitly in the report. If the reviewed code
-clearly falls into one of the deeper categories above, recommend the
-appropriate skill in the report's footer.
+State this scope and recommend applicable deeper skills in the report footer.
 
 ## Report format
 
@@ -281,5 +296,4 @@ Date: <YYYY-MM-DD>
 
 - Detailed examples of each finding type, before/after: `reference.md`
 - Real-world snippets with the fix applied: `examples/`
-- WordPress core: [Plugin Security Handbook](https://developer.wordpress.org/plugins/security/)
-- Capability map: [Roles and Capabilities](https://wordpress.org/documentation/article/roles-and-capabilities/)
+- WordPress core: [Plugin Security Handbook](https://developer.wordpress.org/plugins/security/) and [Roles and Capabilities](https://wordpress.org/documentation/article/roles-and-capabilities/)

@@ -115,6 +115,31 @@ canonical value, store that value, then escape once for the exact output
 context. Pre-escaping creates corrupted/double-escaped data and still does not
 protect a later, different output context.
 
+### Exact-preservation tools
+
+Sanitizers are lossy normalizers, not a universal proof of safety. Migration,
+import/export, database repair, code-editor, and opaque meta tools can need to
+preserve HTML, percent sequences, quotes, and backslashes exactly.
+
+```php
+$value = isset( $_POST['value'] ) && is_string( $_POST['value'] )
+    ? wp_check_invalid_utf8( wp_unslash( $_POST['value'] ) )
+    : '';
+
+if ( '' === $value || strlen( $value ) > 65536 ) {
+    wp_die( 'Invalid value', 400 );
+}
+
+// Use only through a prepared statement or an API with a defined slash contract.
+// Escape by context if this value is ever rendered.
+```
+
+This is acceptable only when the feature defines the exact type/shape,
+encoding, byte limit, allowed operation, safe storage sink, and output
+escaping. It does not permit raw HTML output, dynamic SQL, arbitrary file paths,
+or executable template content. Do not replace an opaque value with
+`sanitize_text_field()` solely to satisfy a static-analysis warning.
+
 ## 4. Why `wp_unslash` matters
 
 WP runs `add_magic_quotes()` on all superglobals at request init. Without
@@ -123,8 +148,10 @@ WP runs `add_magic_quotes()` on all superglobals at request init. Without
 - Stores the backslash literally in the DB.
 - Lets an attacker craft input that survives escaping in unexpected ways.
 
-Rule: every read of `$_GET / $_POST / $_COOKIE / $_REQUEST` MUST go
-through `wp_unslash` before sanitizing.
+Rule: recover string/array domain values from `$_GET / $_POST / $_COOKIE /
+$_REQUEST` with `wp_unslash` before normalization. Do not apply `wp_unslash` to
+data that did not cross WordPress's slashed superglobal boundary. Direct numeric
+casts can validate a numeric request field without preserving quote characters.
 
 ## 5. SQL: prepared statements in detail
 
@@ -333,3 +360,5 @@ demonstrated:
   WP already filtered.
 - Translations: `esc_html_e( 'Hello', 'td' )` — already escaped.
 - `__()` used INSIDE `printf( '...%s...', esc_html( __( ... ) ) )`.
+- Missing `sanitize_text_field()` on an exact-preservation value whose
+  type/size/encoding, safe sink, and output escaping are all explicit.
