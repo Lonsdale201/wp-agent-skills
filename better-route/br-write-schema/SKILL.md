@@ -129,7 +129,7 @@ HTTP/1.1 400 Bad Request
 | `'object'` | non-list array (associative) | passthrough; rejects list arrays |
 | `'mixed'` | anything | passthrough |
 
-Aliases (`'integer'` ↔ `'int'`, `'number'` ↔ `'float'`, `'boolean'` ↔ `'bool'`) are equivalent; pick one across the codebase.
+Aliases (`'integer'` = `'int'`, `'number'` = `'float'`, `'boolean'` = `'bool'`) are equivalent; pick one across the codebase.
 
 ### 3. Constraint catalog
 
