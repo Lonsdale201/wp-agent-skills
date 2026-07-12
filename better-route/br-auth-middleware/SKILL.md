@@ -22,9 +22,9 @@ description: >-
 author: Soczó Kristóf
 contact: mailto:lonsdale201@hotmail.com
 plugin: better-route
-plugin-version-tested: "0.6.0"
+plugin-version-tested: "1.0.0"
 php-min: "8.1"
-last-updated: "2026-05-02"
+last-updated: "2026-07-12"
 docs:
   - https://lonsdale201.github.io/better-docs/docs/better-route/agents
 source-refs:
@@ -279,6 +279,8 @@ The middleware order matters — `RateLimitMiddleware`'s default key resolver re
 - **JWT `exp` claim REQUIRED by default (v0.3.0+).** Pass `requireExpiration: false` only for migration scenarios.
 - **Use `br-jwks-jwt-auth` for RS256/ES256 JWKS tokens (v0.6.0+).** Do not write a fallback verifier that tries every key.
 - **`WpClaimsUserMapper` does NOT include `sub` by default (v0.3.0+).** Re-add it explicitly via `idClaims: ['sub', ...]` if your tokens use `sub` as user ID.
+- **(1.0.0) `WpClaimsUserMapper` no longer maps `email`/`login` claims by default.** `$emailClaims` and `$loginClaims` now default to EMPTY arrays — only id claims (`user_id`/`uid`/`wp_user_id`) and an explicit `$customResolver` resolve a user. Email mapping is opt-in and, when enabled, requires a truthy `email_verified` claim (`$requireEmailVerified`, default `true`). Never authenticate on an unverified `email`/`login` claim from a third-party issuer — an attacker holding a validly signed token bearing a victim's email would otherwise be logged in as that WP user (account takeover). Prefer a first-party `user_id` claim or an issuer-scoped `$customResolver`.
+- **(1.0.0) Granted-scope `*` wildcards are opt-in.** A trailing `*` on a token-supplied (granted) scope is treated as a literal unless `allowGrantedScopeWildcards: true` is passed to `JwtAuthMiddleware` / `BearerTokenAuthMiddleware`. Server-defined REQUIRED-scope wildcards (e.g. requiring `content:*`) are always honored — this change only affects wildcards that arrive inside the token.
 - **Set `expectedIssuer` AND `expectedAudience` for production JWT.** Without them, any JWT signed with your secret is accepted, regardless of issuer / audience — no defense against cross-service token reuse.
 - **`maxLifetimeSeconds` caps token age.** A token with `exp - iat = 86400 * 365` (a year-long token) bypasses your security policy if you don't cap.
 - **`maxTokenLength: 8192` is the DoS guard** — rejects oversized tokens before parsing. Don't disable.
@@ -323,6 +325,23 @@ $middleware = new JwtAuthMiddleware($verifier, userMapper: new WpClaimsUserMappe
 
 // RIGHT — explicit idClaims with sub
 $mapper = new WpClaimsUserMapper(idClaims: ['sub', 'user_id']);
+
+// WRONG (1.0.0+) — expecting email / username claims to auto-map to a WP user
+$mapper = new WpClaimsUserMapper();
+// email/login claims are IGNORED by default now. And enabling email mapping without a
+// verified-email guard trusts an unverified third-party assertion → account takeover.
+
+// RIGHT — map by a trusted id claim, or opt in to VERIFIED email only
+$mapper = new WpClaimsUserMapper(idClaims: ['sub', 'user_id']);
+// or, only for an issuer you trust that sets email_verified:
+$mapper = new WpClaimsUserMapper(emailClaims: ['email']); // requires email_verified === true
+
+// WRONG (1.0.0+) — relying on a token-supplied wildcard scope to satisfy a required scope
+$jwt = new JwtAuthMiddleware($verifier, requiredScopes: ['orders:read']);
+// A token granting scope 'orders:*' no longer matches 'orders:read' by default.
+
+// RIGHT — opt in if your issuer grants hierarchical wildcard scopes
+$jwt = new JwtAuthMiddleware($verifier, requiredScopes: ['orders:read'], allowGrantedScopeWildcards: true);
 
 // WRONG — combining permission and protectedByMiddleware
 $router->post('/foo', $handler)

@@ -1,6 +1,6 @@
 ---
 name: br-atomic-idempotency
-description: Use better-route 0.5.0 AtomicIdempotencyMiddleware for high-side-effect write endpoints where concurrent duplicate requests must not execute twice. Triggers on AtomicIdempotencyMiddleware, WpdbAtomicIdempotencyStore, ArrayAtomicIdempotencyStore, AtomicIdempotencyStoreInterface, idempotency_in_progress, Idempotency-Key for payment/order/subscription/account-like writes, or when reviewing retry-safe REST endpoints.
+description: Use better-route 1.0.0 AtomicIdempotencyMiddleware for high-side-effect write endpoints where concurrent duplicate requests must not execute twice. Triggers on AtomicIdempotencyMiddleware, WpdbAtomicIdempotencyStore, ArrayAtomicIdempotencyStore, AtomicIdempotencyStoreInterface, idempotency_in_progress, Idempotency-Key for payment/order/subscription/account-like writes, or when reviewing retry-safe REST endpoints.
 ---
 
 # better-route: Atomic idempotency
@@ -25,6 +25,8 @@ $atomic = new AtomicIdempotencyMiddleware(
 ```
 
 Use `WpdbAtomicIdempotencyStore` in production. `ArrayAtomicIdempotencyStore` is for tests and local single-process checks only.
+
+**Since 1.0.0:** `WpdbAtomicIdempotencyStore` restricts `unserialize()` of the cached response to the library's `Response` class (`allowed_classes`), removing an object-injection sink; store plain arrays/scalars or `Response` objects.
 
 ## Route pattern
 

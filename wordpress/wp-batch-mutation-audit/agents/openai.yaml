@@ -1,0 +1,4 @@
+interface:
+  display_name: "WordPress Batch Mutation Audit"
+  short_description: "Audit retries, locks, and partial batch writes"
+  default_prompt: "Use $wp-batch-mutation-audit to review this WordPress batch write workflow for retry, concurrency, and partial-failure risks."

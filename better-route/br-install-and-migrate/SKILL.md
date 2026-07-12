@@ -1,7 +1,7 @@
 ---
 name: br-install-and-migrate
 description: Install better-route into a WordPress project and migrate
-  to v0.6.0 — composer VCS repository (NOT yet on Packagist), PHP 8.1+
+  to v1.0.0 — composer VCS repository (NOT yet on Packagist), PHP 8.1+
   requirement, all route registration inside rest_api_init. Important —
   v0.4.0 raw Router write methods (POST / PUT / PATCH / DELETE) DENY by
   default at the WP permission layer; every write route now needs an
@@ -13,17 +13,22 @@ description: Install better-route into a WordPress project and migrate
   default keys for cache / idempotency / rate-limit. v0.6.0 adds JWKS
   JWT verification, Crypto helpers, HMAC signatures, trusted-proxy
   IP/CIDR allowlists, single-use token stores, and opt-in OAuth error
-  format. Use when adding better-route to a project, bumping the
-  constraint to ^0.6.0, or
+  format. v1.0.0 is the first stable release and hardens those defaults
+  (WpClaimsUserMapper email/login mapping off by default, XFF
+  spoof-resistant client IP, CORS wildcard+credentials rejected,
+  granted-scope wildcards opt-in) plus WooCommerce fixes (money as
+  strings, HPOS 503, product price read-only) — see the v1.0.0
+  behavior-change checklist. Use when adding better-route to a project,
+  bumping the constraint to ^1.0, or
   triaging unintended 403s on writes after upgrade. Triggers on
   composer require better-route, ->permission, ->protectedByMiddleware,
   ->publicRoute, "better-route 403 on POST".
 author: Soczó Kristóf
 contact: mailto:lonsdale201@hotmail.com
 plugin: better-route
-plugin-version-tested: "0.6.0"
+plugin-version-tested: "1.0.0"
 php-min: "8.1"
-last-updated: "2026-05-02"
+last-updated: "2026-07-12"
 docs:
   - https://lonsdale201.github.io/better-docs/docs/better-route/agents
   - https://github.com/Lonsdale201/better-route
@@ -42,9 +47,9 @@ source-refs:
   - composer.json
 ---
 
-# better-route: Install and migrate to v0.6.0
+# better-route: Install and migrate to v1.0.0
 
-For developers adding [better-route](https://github.com/Lonsdale201/better-route) to a WordPress project for the first time OR upgrading an existing install to v0.6.0. The install path is non-Packagist (composer VCS repository). v0.6.0 is additive, but older v0.3.0/v0.4.0 migration rules still matter: JWT `exp` is required by default, custom table resources deny by default, and write routes deny by default until intent is declared.
+For developers adding [better-route](https://github.com/Lonsdale201/better-route) to a WordPress project for the first time OR upgrading an existing install to v1.0.0 (the first stable release). The install path is non-Packagist (composer VCS repository). v1.0.0 mostly consolidates the 0.3–0.6 line, but it ships a handful of intentional **behavior changes** (fail-safe hardening) — see the [v1.0.0 behavior-change checklist](#v100-behavior-change-checklist). Older v0.3.0/v0.4.0 migration rules still matter: JWT `exp` is required by default, custom table resources deny by default, and write routes deny by default until intent is declared.
 
 ## Misconception this skill corrects
 
@@ -74,7 +79,7 @@ Trigger when ANY of the following is true:
 
 - The diff or task adds `better-route/better-route` to `composer.json`.
 - The user asks "how do I install better-route" / "is it on Packagist".
-- The diff bumps `better-route` from any older version to `^0.6.0`.
+- The diff bumps `better-route` from any older version to `^1.0`.
 - After an upgrade, write routes return 403 with no other config change.
 - The user asks about `->publicRoute()`, `->protectedByMiddleware()`, or "deny by default".
 
@@ -89,7 +94,7 @@ PHP 8.1+ and Composer required. WordPress with REST API (the default — every m
 ```json
 {
   "require": {
-    "better-route/better-route": "^0.6.0"
+    "better-route/better-route": "^1.0"
   },
   "repositories": [
     {
@@ -143,6 +148,25 @@ composer update better-route/better-route
 ```
 
 Then walk the additive 0.6.0 checklist and the older breaking-change checklists.
+
+#### v1.0.0 behavior-change checklist
+
+1.0.0 is safe to adopt, but these consumer-visible defaults changed (all fail-safe hardening). Walk them when bumping to `^1.0`:
+
+| Area | Action required |
+|---|---|
+| `WpClaimsUserMapper` email/login mapping | **Off by default now.** If you mapped users by `email`/`login`, pass `emailClaims`/`loginClaims` explicitly AND ensure the issuer sets a truthy `email_verified` claim (`requireEmailVerified`, default true) — or map via a `user_id` claim / custom resolver. Prevents account takeover from unverified issuer emails. |
+| Granted-scope `*` wildcards (`JwtAuthMiddleware`/`BearerTokenAuthMiddleware`) | **Opt-in now.** If your issuer grants hierarchical wildcard scopes (e.g. `orders:*`), set `allowGrantedScopeWildcards: true`. Required-scope wildcards are unaffected. |
+| `CorsPolicy(['*'], allowCredentials: true)` | **Throws** at construction now. List explicit origins when credentials are enabled. |
+| `WpCacheSingleUseTokenStore` | **Throws** without a persistent object cache. Use `WpdbSingleUseTokenStore` on default hosting. |
+| Woo monetary response fields | Now **decimal strings** (order `total`/`total_tax`, line-item `subtotal`/`total`, coupon `amount`/`minimum_amount`/`maximum_amount`, customer `total_spent`). Update clients expecting JSON numbers. |
+| HPOS-unavailable status | Now `503` (was `409`). Update retry/error handling. HPOS gate applies to order routes only. |
+| Missing optimistic-lock precondition | Now `428 precondition_required` (was `412`). `412` = supplied-but-failed. |
+| Woo product `price` | **Not writable** (send `regular_price`/`sale_price`; `400` if `price` sent) and `sort=price` removed (`400`). |
+| Woo line-item edits on stock-reduced orders | Now `409 woo_line_items_locked`. Edit items before stock reduction. |
+| Woo CRUD setter errors | Now `400` (was surfacing as `500`). No action needed. |
+
+Non-behavioral 1.0.0 correctness fixes (no action): unfiltered custom-table lists no longer emit a `_doing_it_wrong` notice; `JwksProvider` HTTP fetch uses `wp_safe_remote_get`; error envelope no longer leaks exception class/message; idempotency stores restrict `unserialize()`.
 
 #### v0.6.0 additive checklist
 
@@ -242,14 +266,14 @@ add_action('rest_api_init', function () {
 // WRONG — composer.json without repositories block
 {
   "require": {
-    "better-route/better-route": "^0.6.0"
+    "better-route/better-route": "^1.0"
   }
 }
 // composer install: "Could not find package better-route/better-route".
 
 // RIGHT — VCS repository entry
 {
-  "require": { "better-route/better-route": "^0.6.0" },
+  "require": { "better-route/better-route": "^1.0" },
   "repositories": [
     { "type": "vcs", "url": "https://github.com/Lonsdale201/better-route" }
   ]

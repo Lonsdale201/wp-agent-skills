@@ -1,6 +1,6 @@
 ---
 name: br-cors-public-client
-description: Configure better-route 0.5.0 CORS and preflight support for public REST clients. Use when adding CorsMiddleware, CorsPolicy, Router::options(), Authorization or Idempotency-Key cross-origin requests, credentialed browser clients, app clients, OPTIONS routes, or debugging failed REST preflight requests.
+description: Configure better-route 1.0.0 CORS and preflight support for public REST clients. Use when adding CorsMiddleware, CorsPolicy, Router::options(), Authorization or Idempotency-Key cross-origin requests, credentialed browser clients, app clients, OPTIONS routes, or debugging failed REST preflight requests.
 ---
 
 # better-route: CORS and preflight
@@ -47,7 +47,7 @@ $router->options('/account/payment-methods', static fn () => null)
 ## Rules
 
 - Prefer an origin allowlist. Use `*` only for non-credentialed public APIs.
-- If `allowCredentials: true`, do not return wildcard origin; `CorsPolicy` echoes the allowed request origin.
+- **Since 1.0.0:** `CorsPolicy` **throws `InvalidArgumentException` at construction** when `allowedOrigins` contains `*` together with `allowCredentials: true`. The wildcard-with-credentials combination is now rejected outright, not merely discouraged — it would otherwise reflect any origin back with `Access-Control-Allow-Credentials: true`. List explicit origins when credentials are enabled; `CorsPolicy` then echoes the matching request origin.
 - Put CORS early in the middleware list so errors and short-circuits still get headers where possible.
 - Keep allowed headers aligned with actual client needs; add custom headers deliberately.
 - Keep CORS separate from authentication. CORS says which browser origins may call; auth says who the caller is.

@@ -13,7 +13,7 @@ contact: mailto:lonsdale201@hotmail.com
 plugin: wordpress
 plugin-version-tested: "6.5 - 7.0"
 php-min: "7.4"
-last-updated: "2026-07-09"
+last-updated: "2026-07-12"
 docs:
   - https://developer.wordpress.org/reference/functions/add_option/
   - https://developer.wordpress.org/reference/functions/get_option/
@@ -63,12 +63,13 @@ Trigger when ANY of the following is true:
 
 The rough rule: **scalar or grouped key/value with no querying needs → option / meta / transient. Multi-row data you'll filter, sort, aggregate, or index → custom table.**
 
-## Group settings into ONE option, not 100
+## Group coherent settings; separate independent state
 
-The biggest single mistake in WP plugin storage: one option per setting.
+Avoid mechanically creating one option for every form field, but do not replace
+that smell with one universal blob. Choose boundaries by read/write lifecycle.
 
 ```php
-// WRONG — 12 rows, 12 writes, 12 cache/autoload entries
+// SMELL when these fields are always read and saved together.
 update_option( 'myplugin_provider',         $provider );
 update_option( 'myplugin_default_model',    $model );
 update_option( 'myplugin_max_tokens',       $tokens );
@@ -78,7 +79,7 @@ update_option( 'myplugin_failure_mode',     $mode );
 ```
 
 ```php
-// RIGHT — one row, one write, one cache/autoload entry
+// GOOD when this is one coherent settings contract.
 update_option( 'myplugin_settings', array(
     'provider'         => $provider,
     'default_model'    => $model,
@@ -96,7 +97,14 @@ When to group:
 - **Secrets are the exception.** Do not bury API keys or OAuth tokens inside a normal grouped settings option that may autoload. Store them separately with explicit non-autoload, or prefer `wp-config.php` constants / an encryption layer.
 
 When NOT to group:
-- **Counters / increments updated by independent code paths.** Two requests writing to the same `myplugin_settings` array race each other (read-modify-write without atomic CAS — see `wp-plugin-cron` for the concurrency story). Counters live in their own option (single scalar value) or a custom table.
+- **Counters / increments updated by independent code paths.** Two requests
+  writing the same settings array race. A separate scalar option limits the
+  collision domain but still is not an atomic increment; use it only for
+  single-writer or best-effort state. Correct concurrent counters need an atomic
+  custom-table update or a backend whose increment primitive is guaranteed.
+- **Independent settings with different write cadence, capability, autoload,
+  secret, or migration requirements.** A few intentional scalar options are
+  clearer and safer than a shared read-modify-write blob.
 - **Cached values with different TTLs** — those are transients, not options.
 - **Per-user / per-post data** — wrong primitive, use the right meta API.
 
@@ -191,7 +199,9 @@ Rules:
 
 ## Critical rules
 
-- **Group settings into ONE associative-array option per feature.** Not 100 scalar options.
+- **Group settings that form one read/write contract.** Keep independently
+  updated or differently protected state separate; avoid both 100 accidental
+  scalar rows and one race-prone universal blob.
 - **Default `autoload` to `null`** (let WP decide). Force `false` for rarely-read options. Don't pass `'yes'`/`'no'` strings on WP 6.7+.
 - **For queryable / aggregable / append-mostly data, use a custom table.** JSON / PHP-serialized blobs in options can't be SQL-indexed.
 - **Transients are cache, not storage.** Always TTL, always plugin-prefixed.
@@ -202,7 +212,7 @@ Rules:
 ## Common mistakes
 
 ```php
-// WRONG — one option per setting, 30 rows, 30 autoload entries
+// SMELL — unbounded field-to-option expansion with no storage contract.
 foreach ( $settings as $key => $value ) {
     update_option( 'myplugin_' . $key, $value );
 }

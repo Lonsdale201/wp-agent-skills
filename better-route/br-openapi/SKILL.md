@@ -20,9 +20,9 @@ description: >-
 author: Soczó Kristóf
 contact: mailto:lonsdale201@hotmail.com
 plugin: better-route
-plugin-version-tested: "0.4.0"
+plugin-version-tested: "1.0.0"
 php-min: "8.1"
-last-updated: "2026-04-29"
+last-updated: "2026-07-12"
 docs:
   - https://lonsdale201.github.io/better-docs/docs/better-route/agents
 source-refs:
@@ -222,6 +222,8 @@ $document = $exporter->export($contracts, [
 ```
 
 `wooOpenApiComponents()` returns the WooCommerce-specific schemas (Order, Product, Customer, Coupon shapes) so routes registered via `wooRouteRegistrar()` resolve their `$ref`s. `BetterRouteBridge::openApiComponents([...])` walks each DTO class and emits its REST schema — feed both into the `components` option.
+
+**Since 1.0.0** the Woo component monetary fields are typed `string` (order `total`/`total_tax`, coupon `amount`/`minimum_amount`/`maximum_amount`, customer `total_spent`) — the services serialize money as decimal strings, so a `strictSchemas: true` export validates against string, not number.
 
 ### 6. Multiple sources in one document
 

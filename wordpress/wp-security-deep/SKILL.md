@@ -15,7 +15,7 @@ contact: mailto:lonsdale201@hotmail.com
 plugin: wordpress
 plugin-version-tested: "6.0 - 7.0.1"
 php-min: "7.4"
-last-updated: "2026-07-10"
+last-updated: "2026-07-12"
 docs:
   - https://developer.wordpress.org/plugins/security/
   - https://www.php.net/manual/en/function.unserialize.php
@@ -56,10 +56,18 @@ Trigger when the basic audit is clean but the code does any of:
 $data = unserialize( $_POST['payload'] );
 ```
 
-Even with `[ 'allowed_classes' => false ]`, prefer `json_decode` for
-network/user input. `maybe_unserialize` on `get_option` is generally
-safe (admin wrote it), but flag it on user-meta keys that any user
-can write (custom registration forms, profile editors).
+Before assigning severity, identify who can write the **raw serialized bytes**,
+whether classes and usable gadgets are loaded, and which magic method creates
+the security effect. `maybe_unserialize( get_option(...) )` is not automatically
+vulnerable; state the required writer instead of assuming either admin-only or
+attacker-controlled storage.
+
+Prefer JSON for network/user input. `allowed_classes => false` blocks normal
+class instantiation but not huge/deep/cyclic graphs or unsafe later recursion;
+also bound bytes, depth/nodes, accepted result type, and traversal.
+
+For nested/double serialization, byte-length corruption, and transformed-key
+collisions, apply **`wp-metadata-api`** rather than blind string replacement.
 
 `Phar` deserialization: on **PHP < 8.0**, filesystem functions
 (`file_exists`, `is_dir`, `filesize`, `fopen`, etc.) on a path using
@@ -74,8 +82,9 @@ finding severity depends on the deployment's minimum PHP version:
 - PHP 8.0+ only: still flag explicit `Phar::getMetadata()` over
   user-controlled archives, plus any `unserialize()` of binary blobs.
 
-**Fix:** JSON for transport, allowlist classes if unserialize is
-unavoidable, never accept `phar://` from input on PHP 7.x.
+**Fix:** JSON for transport; reject serialized user input when possible; if
+legacy parsing is unavoidable, constrain classes, bytes, depth, graph traversal,
+and accepted result types; never accept `phar://` from input on PHP 7.x.
 
 ### 2. SSRF in outbound requests
 
@@ -230,8 +239,8 @@ if ( ! get_option( 'myplugin_processing' ) ) {
 
 WP options have no atomic CAS. Mitigations:
 
-- Use a transient with a short TTL as a soft lock — not perfect, but
-  better than the above.
+- Use a transient with a short TTL only as a soft stampede hint. It is not an
+  atomic correctness lock.
 - For real exclusion: `$wpdb->query( "SELECT GET_LOCK('myplugin', 0)" )`
   and `RELEASE_LOCK`. MySQL-level, atomic.
 - If correctness matters (billing, idempotency), use a unique-key
@@ -271,20 +280,20 @@ findings into a single report grouped by severity, not by skill.
 - Run **`wp-security-secrets`** for hardcoded credentials, weak
   randomness in tokens, and password-storage issues — these are
   adjacent but distinct findings.
+- Run **`wp-batch-mutation-audit`** for durable cursors, lost responses,
+  retries, partial failures, and server-side exclusion.
 
 ## What this skill does NOT cover
 
 - Cryptographic protocol correctness (custom JWT, signing schemes).
 - Business-logic IDOR beyond capability/ownership checks.
 - Third-party dependency CVEs (run `composer audit`).
-- Concurrency analysis beyond surface TOCTOU patterns.
+- Batch retry/idempotency analysis beyond surface TOCTOU patterns.
 - Server hardening (open_basedir, disable_functions, file perms).
 
 ## References
 
-- WP Plugin Security Handbook:
-  https://developer.wordpress.org/plugins/security/
-- PHP unserialize advisory:
-  https://www.php.net/manual/en/function.unserialize.php
+- WP Plugin Security Handbook: https://developer.wordpress.org/plugins/security/
+- PHP unserialize advisory: https://www.php.net/manual/en/function.unserialize.php
 - Phar metadata RFC (PHP 8.0): https://wiki.php.net/rfc/phar_stop_autoloading_metadata
 - WP HTTP API request args: https://developer.wordpress.org/reference/classes/wp_http/request/

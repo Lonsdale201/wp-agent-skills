@@ -1,12 +1,12 @@
 ---
 name: wp-settings-storage-audit
 description: "Audit how WordPress plugins and classic themes store settings and configuration. Use when reviewing get_option/update_option/add_option/register_setting/settings_fields/options.php, Customizer add_setting/get_theme_mod/set_theme_mod, theme_mod vs option decisions, associative-array option schemas, keyed settings forms, sanitize_callback/validate_callback/defaults, show_in_rest schemas, autoload choices, update_option hooks, multisite site options, deprecated settings groups, or code that saves plugin settings, theme settings, feature flags, secrets, API config, Customizer values, or admin form data."
-author: Soczo Kristof
+author: Soczó Kristóf
 contact: mailto:lonsdale201@hotmail.com
 plugin: wordpress
 plugin-version-tested: "7.0.1"
 php-min: "7.4"
-last-updated: "2026-07-10"
+last-updated: "2026-07-12"
 docs:
   - https://developer.wordpress.org/plugins/settings/settings-api/
   - https://developer.wordpress.org/reference/functions/register_setting/
@@ -35,7 +35,7 @@ The core question is: can another developer safely predict where each setting is
 |---|---|
 | Correct | Each setting has the right storage primitive, stable prefixed name, documented array shape, sanitize/validate/default path, intentional autoload, and safe read/write APIs. |
 | Risky | The settings work but have weak schema, autoload bloat, tab wipe risk, unclear defaults, REST schema mismatch, or Customizer/plugin boundary issues. |
-| Incorrect | The code stores durable state in the wrong primitive, writes unregistered options from admin forms, stores plugin data in theme mods, saves raw request data, or relies on deprecated/unregistered settings behavior. |
+| Incorrect | The code stores durable state in the wrong primitive, trusts raw request data, bypasses nonce/capability checks, misuses unregistered options through `options.php`, stores plugin data in theme mods, or relies on deprecated behavior. |
 
 ## Audit Workflow
 
@@ -64,7 +64,8 @@ Plugin option names must be prefixed and domain-scoped:
 const OPTION = 'myplugin_settings';
 ```
 
-For normal plugin settings, prefer one associative-array option per feature:
+For coherent plugin settings read and saved together, prefer one
+associative-array option per feature:
 
 ```php
 $defaults = array(
@@ -86,11 +87,19 @@ Audit the array as a contract:
 - feature groups are split by domain, not by individual field;
 - settings that are updated independently are not forced into one race-prone blob.
 
+Separate scalar options are valid when fields have independent write cadence,
+autoload policy, access control, secret handling, migration lifecycle, or atomic
+update needs. Flag option-per-field storage only when it creates measurable
+autoload/query sprawl or lacks a deliberate contract; do not call three small,
+independent options incorrect by count alone.
+
 Avoid anonymous JSON strings in options. WordPress already serializes arrays. If inner fields must be queried, sorted, paginated, aggregated, or partially updated, use a custom table.
 
-### 3. Verify Settings API saves
+### 3. Verify the Settings API or an equivalent custom handler
 
-For classic plugin settings pages, require the Settings API path:
+Prefer the Settings API for conventional classic plugin settings because it
+centralizes registration, schema/sanitization, nonce fields, allowed options,
+and REST integration:
 
 ```php
 register_setting( 'myplugin', 'myplugin_settings', array(
@@ -101,7 +110,7 @@ register_setting( 'myplugin', 'myplugin_settings', array(
 ) );
 ```
 
-The form must post to core:
+The Settings API form posts to core:
 
 ```php
 <form method="post" action="options.php">
@@ -113,7 +122,7 @@ The form must post to core:
 </form>
 ```
 
-Audit these invariants:
+For the Settings API path, audit these invariants:
 
 - `register_setting()` runs on `admin_init`, not only when the page renders;
 - `settings_fields( $option_group )` matches the first `register_setting()` argument;
@@ -121,6 +130,20 @@ Audit these invariants:
 - field names use the option array shape, e.g. `myplugin_settings[retry_minutes]`;
 - `sanitize_callback` receives the whole submitted option value;
 - tabbed forms merge with the existing option so missing tab keys are not blanked.
+
+A custom admin handler is also valid. Do not report it as insecure or incorrect
+solely because it calls `update_option()` directly. Require equivalent controls:
+
+- process only an intended POST action on a capability-gated admin page/handler;
+- verify a purpose-specific nonce and capability before any write;
+- explicitly allowlist fields and unslash, normalize, and validate by schema;
+- reject arrays/scalars of the wrong shape and avoid mass assignment;
+- preserve existing values deliberately when fields are absent or invalid;
+- choose autoload intentionally when creating/changing options;
+- redirect after success when resubmission on refresh would be harmful.
+
+`register_setting()` is required for `options.php` and `/wp/v2/settings`
+integration, not as a universal precondition for every safe custom form.
 
 ### 4. Sanitize as a schema
 
@@ -238,7 +261,9 @@ Flag these:
 - using deprecated option keys `blacklist_keys` or `comment_whitelist`;
 - passing `'yes'` or `'no'` to autoload arguments;
 - using `$new_whitelist_options` in new code instead of `$new_allowed_options`;
-- using Customizer or raw admin forms as a substitute for proper plugin settings registration.
+- posting unregistered options to `options.php` and relying on them to save;
+- custom/raw admin forms missing the equivalent nonce, capability, field
+  allowlist, schema validation, or safe write contract described above.
 
 ## Report Format
 

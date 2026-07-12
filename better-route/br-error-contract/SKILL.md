@@ -5,15 +5,18 @@ description: >-
   every error response has shape {error: {code, message, requestId,
   details}}. Throw ApiException(message, status, errorCode, details)
   inside handlers; better-route's ErrorNormalizer wraps it. Critical
-  v0.3.0 normalization — for status >= 500 from non-ApiException
-  failures, message is normalized to 'Unexpected error.' and details
-  is empty (internal exception class + message NO LONGER leak); for
-  status === 400 from non-ApiException, details.exception still
-  includes the class name (developer aid for misuse). Common error
-  codes — validation_failed (400, fieldErrors), idempotency_key_required
+  normalization — for ANY non-ApiException failure the internal
+  exception class + message are scrubbed: status >= 500 becomes
+  'Unexpected error.' (internal_error) and status 400 becomes
+  'Invalid request.' (invalid_request), both with EMPTY details.
+  (Since 1.0.0 the 400 case no longer leaks details.exception; earlier
+  versions exposed the class name.) Common error codes —
+  validation_failed (400, fieldErrors), idempotency_key_required
   (400), invalid_token (401), insufficient permissions (403),
-  not_found (404), idempotency_conflict / hpos_required / customer_exists
-  (409), rate_limited (429), woo_unavailable (503). Use when handlers
+  not_found (404), idempotency_conflict / customer_exists /
+  coupon_exists / woo_line_items_locked (409), precondition_failed (412),
+  precondition_required (428), rate_limited (429), hpos_required /
+  woo_unavailable (503). Use when handlers
   need to throw structured errors, or consumers need to interpret them.
   v0.6.0 adds opt-in OAuth RFC6749 error format via
   ->meta(['error_format' => 'oauth_rfc6749']) and OAuthErrorNormalizer.
@@ -22,9 +25,9 @@ description: >-
 author: Soczó Kristóf
 contact: mailto:lonsdale201@hotmail.com
 plugin: better-route
-plugin-version-tested: "0.6.0"
+plugin-version-tested: "1.0.0"
 php-min: "8.1"
-last-updated: "2026-05-02"
+last-updated: "2026-07-12"
 docs:
   - https://lonsdale201.github.io/better-docs/docs/better-route/agents
 source-refs:
@@ -49,25 +52,24 @@ For developers writing handlers that throw structured errors, AND for AI agents 
 
 > "I'll just `throw new \RuntimeException('Database is down')` from my handler and the response will be a generic 500."
 
-Half-true. It IS a 500, but the v0.3.0 normalization at [src/Http/ErrorNormalizer.php:22-24](ErrorNormalizer.php) deliberately scrubs the message:
+Half-true. It IS a 500, but `ErrorNormalizer::fromThrowable()` deliberately scrubs everything for non-`ApiException` throwables:
 
 ```php
-$message = $throwable instanceof ApiException || $status === 400
-    ? ($throwable->getMessage() !== '' ? $throwable->getMessage() : 'Invalid request.')
-    : 'Unexpected error.';
+if ($throwable instanceof ApiException) {
+    // status / code / message / details all as-thrown
+} else {
+    $status  = $throwable instanceof \InvalidArgumentException ? 400 : 500;
+    $code    = $status === 400 ? 'invalid_request' : 'internal_error';
+    $details = [];                                   // always empty
+    $message = $status === 400 ? 'Invalid request.' : 'Unexpected error.';
+}
 ```
 
-For non-`ApiException` throwables that produce status >= 500, the consumer sees `"Unexpected error."` regardless of what your exception said. The `details` object is also empty (line 19-21):
+For any non-`ApiException` throwable the consumer sees a generic message and **empty** `details`, regardless of what your exception said. A 500 shows `"Unexpected error."`; a `\InvalidArgumentException` becomes a generic `400 invalid_request` `"Invalid request."`.
 
-```php
-$details = $throwable instanceof ApiException
-    ? $throwable->details()
-    : ($status === 400 ? ['exception' => $throwable::class] : []);
-```
+Reason: an unhandled `RuntimeException('Connection refused: db.internal:5432 user=app')` would leak internal infrastructure details to the consumer.
 
-Reason: an unhandled `RuntimeException('Connection refused: db.internal:5432 user=app')` would leak internal infrastructure details to the consumer. Pre-v0.3.0 the message and class name leaked; v0.3.0+ scrubs them for 5xx.
-
-For status 400 from non-`ApiException` (typically `\InvalidArgumentException` from your code), `details.exception` still contains the exception class name — a developer aid that helps trace a misuse without leaking 5xx detail.
+**Since 1.0.0** the 400 case is scrubbed too — earlier versions put the exception class name into `details.exception` for non-`ApiException` 400s, which leaked an internal implementation detail. That field is gone; both 400 and 500 non-`ApiException` responses now carry empty `details`. Only intentional `ApiException`s carry client-facing `message`/`code`/`details`.
 
 To control the response, throw `ApiException` instead:
 
@@ -87,7 +89,7 @@ throw new \BetterRoute\Http\ApiException(
 Other AI-prone misconceptions:
 
 - "I'll wrap my handler in try/catch and re-throw with a custom message." Wrong direction — the ErrorNormalizer already does this for you. Just throw `ApiException` and it lands in the response shape correctly.
-- "The 400 details.exception field is a security leak." Half-true — it's intentionally exposed for developer-error scenarios (`\InvalidArgumentException` from your handler is a misuse, not a security event). Production consumers shouldn't display it; they're helped by it during integration.
+- "The 400 details.exception field tells me which exception fired." Not anymore — as of 1.0.0 non-`ApiException` 400s carry empty `details` (the `details.exception` class-name field was removed). If you need a machine-readable reason, throw an `ApiException` with your own `errorCode`/`details`.
 - "The error envelope changes shape per error type." Wrong — every error has the same `{error: {code, message, requestId, details}}` shape. `details` may be empty `{}` or contain structured data; the wrapper is invariant.
 
 ## When to use this skill
@@ -194,14 +196,19 @@ The constructor signature: `ApiException(string $message, int $status, string $e
 | 400 | `validation_failed` | Resource writeSchema | Per-field validation errors. `details.fieldErrors: {field: [msg, ...]}` |
 | 400 | `idempotency_key_required` | IdempotencyMiddleware | requireKey: true and no `Idempotency-Key` header |
 | 400 | `unknown_parameter` | Query parsers | Query string contains a param not in the allowlist |
-| 400 | `invalid_request` | Default for non-ApiException 400 | `details.exception` includes class name |
+| 400 | `invalid_request` | Default for non-ApiException 400 | Generic; empty `details` (no class name — since 1.0.0) |
 | 401 | `invalid_token` | Auth middlewares | JWT / bearer token failed verification |
+| 403 | `insufficient_scope` | JWT / bearer middlewares | Token valid but missing a required scope |
 | 403 | (varies) | Permission callbacks | "Sorry, you are not allowed..." (WP default) or your custom message |
 | 404 | `not_found` | Resource get / handler | Record doesn't exist |
 | 409 | `idempotency_conflict` | IdempotencyMiddleware | Same key, different body (custom store implementations) |
-| 409 | `hpos_required` | HposGuard | Order route called when HPOS not active |
 | 409 | `customer_exists` | WooCustomerService | POST /customers with existing email |
+| 409 | `coupon_exists` | WooCouponService | POST /coupons with an existing coupon code (1.0.0) |
+| 409 | `woo_line_items_locked` | WooOrderService | Line-item edit on a stock-reduced order (1.0.0) |
+| 412 | `precondition_failed` / `optimistic_lock_failed` | OptimisticLockMiddleware | `If-Match` supplied but did not match current version |
+| 428 | `precondition_required` | OptimisticLockMiddleware | `If-Match` required but missing (1.0.0; was 412) |
 | 429 | `rate_limited` | RateLimitMiddleware | `details.{limit, remaining, resetAt}` |
+| 503 | `hpos_required` | HposGuard | Order route called when HPOS not active (1.0.0; was 409) |
 | 503 | `woo_unavailable` | Woo route registrar | WooCommerce not active |
 
 ### 4. Validation error shape
@@ -277,17 +284,16 @@ HTTP/1.1 422
 
 The `status` key is extracted; remaining `data` becomes `details`. Mostly for compat with WP REST conventions; new code should throw `ApiException` directly.
 
-### 7. v0.3.0 normalization rules
+### 7. Normalization rules (1.0.0)
 
 | Source | Status | Message | Details |
 |---|---|---|---|
 | `ApiException` (any status) | as-thrown | as-thrown | as-thrown |
-| `\InvalidArgumentException` | 400 | as-thrown (or "Invalid request.") | `{exception: "InvalidArgumentException"}` |
-| Other throwable, status 400 | 400 | as-thrown | `{exception: <class>}` |
-| Other throwable, status >= 500 | 500 | "Unexpected error." | `{}` (scrubbed) |
+| `\InvalidArgumentException` | 400 | "Invalid request." | `{}` (scrubbed) |
+| Other throwable | 500 | "Unexpected error." | `{}` (scrubbed) |
 | `WP_Error` | from `data.status` or 500 | from `get_error_message` | from `data` minus `status` |
 
-Verified at [ErrorNormalizer.php:13-37](ErrorNormalizer.php).
+Since 1.0.0 the internal exception class name and raw message no longer reach the client for **any** non-`ApiException` throwable — the earlier `details.exception` field on 400s is gone. Verified at `ErrorNormalizer::fromThrowable()`.
 
 ### 8. Client-side handling
 
@@ -330,8 +336,8 @@ Always switch on `error.code` (stable contract), not `error.message` (human-read
 - **Throw `ApiException` for caller-controlled errors.** Don't return error responses manually; the normalizer + envelope are the contract.
 - **Errors are envelope-shaped: `{error: {code, message, requestId, details}}`** — invariant across status codes.
 - **OAuth error shape is opt-in per route (v0.6.0).** Use `->meta(['error_format' => 'oauth_rfc6749'])`; otherwise the normal envelope is used.
-- **Status >= 500 from non-ApiException scrubs message + details** (v0.3.0+ leak prevention). Don't rely on `RuntimeException::getMessage` reaching the client.
-- **Status === 400 from non-ApiException keeps `details.exception`** as developer aid.
+- **Any non-ApiException throwable scrubs message + details** (leak prevention). A 500 → "Unexpected error."; a `\InvalidArgumentException` → generic `400 invalid_request` "Invalid request.". Don't rely on `RuntimeException::getMessage` reaching the client.
+- **Since 1.0.0, 400s from non-ApiException carry EMPTY details** — the old `details.exception` class-name field was removed. Throw an `ApiException` if you need a machine-readable code/detail.
 - **`requestId` is for log correlation** — every response (success and error) carries the same request ID. Surface it in client logs.
 - **Switch on `error.code`, not `error.message`.** Code is a stable machine-readable identifier; message is i18n-able and may rephrase.
 - **`fieldErrors`** is the canonical shape for per-field validation errors. Maps field name → list of error strings.
@@ -399,7 +405,7 @@ log.error(`API error: ${json.error.message} (request: ${json.error.requestId})`)
 
 // WRONG — relying on details.exception for production logic
 if (json.error.details.exception === 'InvalidArgumentException') { /* ... */ }
-// Only present for status 400; absent for status 500 (post-v0.3.0). Brittle and reveals impl detail.
+// Removed in 1.0.0 — non-ApiException 400s now carry empty details. This never fires.
 
 // RIGHT — switch on error.code
 if (json.error.code === 'invalid_request') { /* ... */ }
@@ -437,5 +443,5 @@ $router->get('/items/{id}', $handler)
 - Status / code / details / message mapping: [ErrorNormalizer.php:13-24](ErrorNormalizer.php).
 - WP_Error normalization: [ErrorNormalizer.php:39-69](ErrorNormalizer.php) — `fromWpError(object, string)`.
 - ApiException: [libraries/better-route/src/Http/ApiException.php](ApiException.php) — `class ApiException extends RuntimeException`. Constructor takes `(message, status, errorCode, details)`.
-- ConflictException / PreconditionFailedException: [libraries/better-route/src/Http/ConflictException.php](ConflictException.php), [PreconditionFailedException.php](PreconditionFailedException.php) — typed shortcuts for 409 / 412.
+- ConflictException / PreconditionFailedException / PreconditionRequiredException: [libraries/better-route/src/Http/ConflictException.php](ConflictException.php), [PreconditionFailedException.php](PreconditionFailedException.php), [PreconditionRequiredException.php](PreconditionRequiredException.php) — typed shortcuts for 409 / 412 / 428 (428 added in 1.0.0).
 - Validation error helper: [libraries/better-route/src/Resource/Resource.php:1453-1460](Resource.php) — `validationError(fieldErrors): ApiException` for `validation_failed` envelope.

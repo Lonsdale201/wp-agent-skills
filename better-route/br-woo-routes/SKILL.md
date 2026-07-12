@@ -18,9 +18,9 @@ description: Expose WooCommerce data (orders, products, customers,
 author: Soczó Kristóf
 contact: mailto:lonsdale201@hotmail.com
 plugin: better-route
-plugin-version-tested: "0.4.0"
+plugin-version-tested: "1.0.0"
 php-min: "8.1"
-last-updated: "2026-04-29"
+last-updated: "2026-07-12"
 docs:
   - https://lonsdale201.github.io/better-docs/docs/better-route/agents
 source-refs:
@@ -54,7 +54,7 @@ The reasoning: customer endpoints expose PII (email, addresses, order history); 
 Other AI-prone misconceptions:
 
 - "Meta keys are read/write by default like normal WP fields." Wrong — keys starting with `_` (underscore) are NOT writable and NOT returned. `MetaDataHelper` strips them. To read or write them, pass `$allowProtected = true` to the helper. Verified by error responses at [MetaDataHelper.php:137-139](MetaDataHelper.php) (`'protected meta keys are not writable'`).
-- "I'll use the registrar without `requireHpos: true` for backwards compatibility." Wrong direction — `requireHpos` defaults to `true`, which forces HPOS to be active and emits a clear `503 hpos_required` error if not. Setting it to `false` makes routes run against legacy postmeta storage on installs that haven't migrated, which produces inconsistent results (some queries hit HPOS, others hit postmeta).
+- "I'll use the registrar without `requireHpos: true` for backwards compatibility." Wrong direction — `requireHpos` defaults to `true`, which forces HPOS to be active and emits a clear `503 hpos_required` error if not. Setting it to `false` makes routes run against legacy postmeta storage on installs that haven't migrated, which produces inconsistent results (some queries hit HPOS, others hit postmeta). **Since 1.0.0** `requireHpos` gates ONLY the **order** routes — products, coupons, and customers are not moved by HPOS, so they only require WooCommerce to be available and never return `hpos_required`.
 - "DELETE force-deletes orders by default — I need to set `deleteMode: 'trash'`." The default `deleteMode` is in fact `'force'` (permanent delete) per the agents.md doc — but this is consequential for live sites. Always set `'trash'` explicitly for customer-facing APIs.
 
 ## When to use this skill
@@ -201,6 +201,11 @@ Customer endpoints have two additional gates beyond standard registrar permissio
 
 These caps run BEFORE your registrar-level `permissions` callback. Both must pass.
 
+**Since 1.0.0:**
+
+- `DELETE /customers/{id}` now works in a normal REST request — the library loads `wp-admin/includes/user.php` before `wp_delete_user()` (previously the guard silently failed, so delete never happened).
+- `orders_count` and `total_spent` are **no longer in the default `GET /customers` list fields** — each is a per-customer order query and made list an N+1. They remain available on `GET /customers/{id}` and on the list when requested explicitly via `?fields=orders_count,total_spent`. `total_spent` is serialized as a decimal string.
+
 ### 8. Idempotency on Woo writes
 
 ```php
@@ -221,9 +226,33 @@ Enables `IdempotencyMiddleware` on every write route. Clients send `Idempotency-
 'requireHpos' => true,   // default
 ```
 
-Verified at [WooRouteRegistrar.php:63](WooRouteRegistrar.php). When true, the registrar checks that HPOS is active (via `OrderUtil::custom_orders_table_usage_is_enabled()`); if not, every order route returns `503 hpos_required`. Always leave true on production sites — it surfaces the migration debt.
+Verified at [WooRouteRegistrar.php:63](WooRouteRegistrar.php). When true, the registrar checks that HPOS is active (via `OrderUtil::custom_orders_table_usage_is_enabled()`); if not, every **order** route returns `503 hpos_required`. Always leave true on production sites — it surfaces the migration debt.
+
+**Since 1.0.0** the HPOS gate applies to **order routes only**. Products, coupons, and customers are not moved by HPOS, so their routes only require WooCommerce to be available (they never emit `hpos_required`).
 
 For dev / staging where you're testing both stores: set `false` and live with the inconsistency, OR migrate to HPOS first.
+
+#### Declaring HPOS compatibility (host plugin)
+
+A library cannot declare HPOS compatibility on behalf of the plugin that embeds it. **Since 1.0.0** call the helper from your host plugin's main file so WooCommerce doesn't flag it incompatible (which would block HPOS enablement):
+
+```php
+\BetterRoute\Integration\Woo\HposGuard::declareCompatibility(__FILE__);
+```
+
+It hooks `before_woocommerce_init` and declares `custom_order_tables` compatibility via `FeaturesUtil`. The runtime `requireHpos` check does not remove this obligation.
+
+### 10. What changed in 1.0.0
+
+Behavior changes in the Woo layer that consumers must know:
+
+- **Money is serialized as decimal strings.** Order `total`/`total_tax`, line-item `subtotal`/`total`, coupon `amount`/`minimum_amount`/`maximum_amount`, and customer `total_spent` are now JSON strings (were floats) — matching WooCommerce's own REST API and avoiding float drift.
+- **Order/product `search` works.** `?search=` on orders and products now uses the supported `s` query var (previously an unsupported var that WooCommerce silently ignored, returning unfiltered results). Customer search (WP_User_Query) is unchanged.
+- **Variation line items are priced from the variation.** An order line item with `variation_id` is built from the actual variation product (validated to belong to `product_id`; `400` on mismatch), not the parent — correct price/name/attributes.
+- **Line-item edits are locked on stock-reduced orders.** `PUT/PATCH /orders/{id}` with `line_items` returns `409 woo_line_items_locked` once the order has reduced stock (replacing items would silently corrupt inventory). Edit items before stock reduction or adjust via status transitions.
+- **Product `price` is read-only.** It's a derived field — send `regular_price`/`sale_price`; sending `price` returns `400`. `sort=price` is removed (also `400`). Order `total` sort is retained (verified on HPOS).
+- **Coupon code resolution.** The `?code=` filter and create resolve through `wc_get_coupon_id_by_code()` (normalization + cache); create rejects a duplicate code with `409 coupon_exists`.
+- **Woo CRUD validation errors are `400`.** `WC_Data_Exception` thrown by WooCommerce setters (invalid email, discount type, etc.) maps to `400`, not `500`.
 
 ## Critical rules
 
@@ -315,7 +344,7 @@ return rest_response($orders);
 - Run **`br-routes`** for raw routes alongside Woo routes (e.g. custom `/store-info` endpoint that's not WC-data).
 - Run **`br-idempotency`** for the idempotency store config (`WpdbIdempotencyStore::installSchema()` on activation).
 - Run **`br-resource-policy`** for the cap-string/array/callable patterns used in `permissions`.
-- Run **`br-error-contract`** for the standard error envelope — `503 hpos_required`, `409 customer_exists`, `503 woo_unavailable` shapes.
+- Run **`br-error-contract`** for the standard error envelope — `503 hpos_required`, `409 customer_exists`, `409 coupon_exists`, `409 woo_line_items_locked`, `503 woo_unavailable` shapes.
 - Run **`wc-hpos-compatibility`** (in the woocommerce/ folder) for HPOS migration mechanics.
 
 ## What this skill does NOT cover

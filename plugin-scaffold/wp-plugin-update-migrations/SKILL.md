@@ -1,7 +1,8 @@
 ---
 name: wp-plugin-update-migrations
-description: Designs and reviews WordPress plugin update-time version
-  migrations — stored schema/data version options, version_compare or
+description: >-
+  Designs and reviews WordPress plugin update-time version
+  migrations: stored schema/data version options, version_compare or
   integer schema versions, idempotent v1->v2->v3 migrators, dbDelta inside
   migrations, locks, partial reruns, multisite handling, and safe use of
   upgrader_process_complete. Use when code mentions plugin updates,
@@ -13,7 +14,7 @@ contact: mailto:lonsdale201@hotmail.com
 plugin: wordpress
 plugin-version-tested: "7.0"
 php-min: "7.4"
-last-updated: "2026-07-06"
+last-updated: "2026-07-12"
 docs:
   - https://developer.wordpress.org/reference/hooks/upgrader_process_complete/
   - https://developer.wordpress.org/reference/functions/dbDelta/
@@ -59,7 +60,7 @@ Use a separate schema/data version, not necessarily the plugin marketing version
 ```php
 const MYPLUGIN_SCHEMA_VERSION = 3;
 const MYPLUGIN_SCHEMA_OPTION  = 'myplugin_schema_version';
-const MYPLUGIN_LOCK_TRANSIENT = 'myplugin_migration_lock';
+const MYPLUGIN_SOFT_LOCK_TRANSIENT = 'myplugin_migration_lock';
 
 add_action( 'plugins_loaded', 'myplugin_maybe_run_migrations', 5 );
 
@@ -74,16 +75,17 @@ function myplugin_maybe_run_migrations(): void {
         return;
     }
 
-    if ( get_transient( MYPLUGIN_LOCK_TRANSIENT ) ) {
+    if ( get_transient( MYPLUGIN_SOFT_LOCK_TRANSIENT ) ) {
         return;
     }
 
-    set_transient( MYPLUGIN_LOCK_TRANSIENT, 1, 5 * MINUTE_IN_SECONDS );
+    // Stampede reduction only; this get/set pair is not an atomic lock.
+    set_transient( MYPLUGIN_SOFT_LOCK_TRANSIENT, 1, 5 * MINUTE_IN_SECONDS );
 
     try {
         myplugin_run_migrations( $stored );
     } finally {
-        delete_transient( MYPLUGIN_LOCK_TRANSIENT );
+        delete_transient( MYPLUGIN_SOFT_LOCK_TRANSIENT );
     }
 }
 ```
@@ -112,6 +114,15 @@ function myplugin_run_migrations( int $from ): void {
 ```
 
 Each `myplugin_migrate_to_N()` must tolerate being re-run. Check before adding columns, options, caps, cron events, or meta transformations. Never set the stored version before the step succeeds.
+
+The transient above reduces ordinary duplicate boot work; it does not provide
+mutual exclusion because get-then-set is not atomic and transients can disappear.
+Correctness must come from idempotent steps and advancing the version only after
+success. If concurrent execution can corrupt data, use a custom-table unique
+lease/insert or a deliberately managed database advisory lock. Do not substitute
+`add_option()` as an assumed atomic gate: current core uses an
+`ON DUPLICATE KEY UPDATE` statement, so that API is not a compare-and-set lock.
+Apply `wp-batch-mutation-audit` to long-running or destructive migrations.
 
 ## dbDelta inside migrations
 

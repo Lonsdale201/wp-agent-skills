@@ -1,12 +1,12 @@
 ---
 name: br-hmac-signature
-description: Configure better-route 0.6.0 HmacSignatureMiddleware for signed server-to-server REST requests and webhooks. Use when adding X-Signature, X-Timestamp, X-Key-Id, HmacSecretProviderInterface, ArrayHmacSecretProvider, request body HMAC verification, timestamp replay window checks, multi-key rotation, or replacing unsigned public POST endpoints with shared-secret authentication. Updated 2026-05-02.
+description: Configure better-route 1.0.0 HmacSignatureMiddleware for signed server-to-server REST requests and webhooks. Use when adding X-Signature, X-Timestamp, X-Key-Id, HmacSecretProviderInterface, ArrayHmacSecretProvider, request body HMAC verification, timestamp replay window checks, multi-key rotation, or replacing unsigned public POST endpoints with shared-secret authentication. Updated 2026-07-12.
 author: Soczó Kristóf
 contact: mailto:lonsdale201@hotmail.com
 plugin: better-route
-plugin-version-tested: "0.6.0"
+plugin-version-tested: "1.0.0"
 php-min: "8.1"
-last-updated: "2026-05-02"
+last-updated: "2026-07-12"
 docs:
   - https://lonsdale201.github.io/better-docs/docs/better-route/agents
 source-refs:
@@ -52,6 +52,12 @@ The signature input is:
 timestamp + "\n" + method + "\n" + path + "\n" + sha256(body)
 ```
 
+**Since 1.0.0:** the query string is **not** part of the canonical by default — authenticate security-relevant parameters by sending them in the request **body**. To also sign the query string, construct with `signQueryString: true`; the middleware then appends a fifth canonical line — the canonicalized query string (keys sorted with `ksort`, re-encoded via `http_build_query`) — and the client's signer must append the identical line:
+
+```text
+timestamp + "\n" + method + "\n" + path + "\n" + sha256(body) + "\n" + canonicalQuery
+```
+
 Default headers:
 
 - `X-Signature`
@@ -72,6 +78,7 @@ Accepted signature encodings:
 - Missing signature/timestamp/key-id fails closed with `401`.
 - Timestamp outside `replayWindowSeconds` fails closed.
 - Signature comparison uses `Crypto::equals()`.
+- **(1.0.0) Query-string params are NOT authenticated by default.** Put signed/security-relevant parameters in the request body, or opt in with `signQueryString: true` (both server and client signer must include the canonical query line). A captured signed request could otherwise be replayed within the window with mutated query params.
 - Keep secrets outside code; use constants/env/options managed by the host application.
 - HMAC authenticates the sender and request body. It does not make the route private at the WordPress permission layer; pair public webhook routes with `->publicRoute()` deliberately.
 

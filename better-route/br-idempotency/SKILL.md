@@ -22,9 +22,9 @@ description: >-
 author: Soczó Kristóf
 contact: mailto:lonsdale201@hotmail.com
 plugin: better-route
-plugin-version-tested: "0.5.0"
+plugin-version-tested: "1.0.0"
 php-min: "8.1"
-last-updated: "2026-05-01"
+last-updated: "2026-07-12"
 docs:
   - https://lonsdale201.github.io/better-docs/docs/better-route/agents
 source-refs:
@@ -213,6 +213,7 @@ One store, two middleware instances with different TTL configs.
 - **TTL pruning is on-access.** Expired rows aren't garbage-collected by a cron; they're removed when read after expiration. So a row idle for years just sits there until someone tries the same key.
 - **Cached response includes the original status code.** A 201 is returned 201 on retry; a 4xx error on the first request is also "remembered" and returned again. Decide if that's what you want for failed-but-deterministic flows.
 - **Combine with auth middleware (auth FIRST).** Otherwise the idempotency key resolver can't distinguish users — everything keys on `'guest'`.
+- **Cached responses deserialize safely (1.0.0).** `WpdbIdempotencyStore` restricts `unserialize()` to the library's `Response` class (`allowed_classes`), so a tampered row cannot trigger PHP object injection. Cache plain arrays/scalars or `Response` objects from your handlers.
 
 ## Common mistakes
 
