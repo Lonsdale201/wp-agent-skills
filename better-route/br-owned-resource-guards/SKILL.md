@@ -1,6 +1,13 @@
 ---
 name: br-owned-resource-guards
 description: Add better-route 0.5.0 ownership checks for user-owned REST resources. Use when a route or Resource DSL endpoint must ensure the authenticated user owns the order, record, token, subscription, membership, profile object, or other per-user object. Triggers on OwnershipGuardMiddleware, OwnedResourcePolicy, currentUserOwns, ownerResolver, bypassCapability, and customer-owned or user-owned API routes.
+author: Soczó Kristóf
+contact: mailto:lonsdale201@hotmail.com
+plugin: better-route
+plugin-version-tested: "0.5.0"
+php-min: "8.1"
+docs:
+  - https://lonsdale201.github.io/better-docs/docs/better-route/agents
 ---
 
 # better-route: Owned resource guards

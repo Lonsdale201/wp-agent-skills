@@ -219,7 +219,7 @@ One store, two middleware instances with different TTL configs.
 
 ```php
 // WRONG — ArrayIdempotencyStore in production
-$store = new ArrayIdempotencyStore();   // 🔴 single-process; not what you want
+$store = new ArrayIdempotencyStore();   // WRONG: single-process; not what you want
 $middleware = new IdempotencyMiddleware($store);
 
 // RIGHT
@@ -236,7 +236,7 @@ register_activation_hook(__FILE__, function (): void {
 });
 
 // WRONG — cross-DB table
-$store = new WpdbIdempotencyStore(table: 'analytics_db.idempotency');   // 🔴 rejected
+$store = new WpdbIdempotencyStore(table: 'analytics_db.idempotency');   // WRONG: rejected
 
 // RIGHT — same DB
 $store = new WpdbIdempotencyStore(table: 'better_route_idempotency');

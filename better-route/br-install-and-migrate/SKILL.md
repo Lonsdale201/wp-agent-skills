@@ -1,7 +1,7 @@
 ---
 name: br-install-and-migrate
 description: Install better-route into a WordPress project and migrate
-  to v1.0.0 — composer VCS repository (NOT yet on Packagist), PHP 8.1+
+  to v1.0.0 — on Packagist since 1.0.0 (plain composer require), PHP 8.1+
   requirement, all route registration inside rest_api_init. Important —
   v0.4.0 raw Router write methods (POST / PUT / PATCH / DELETE) DENY by
   default at the WP permission layer; every write route now needs an
@@ -49,7 +49,7 @@ source-refs:
 
 # better-route: Install and migrate to v1.0.0
 
-For developers adding [better-route](https://github.com/Lonsdale201/better-route) to a WordPress project for the first time OR upgrading an existing install to v1.0.0 (the first stable release). The install path is non-Packagist (composer VCS repository). v1.0.0 mostly consolidates the 0.3–0.6 line, but it ships a handful of intentional **behavior changes** (fail-safe hardening) — see the [v1.0.0 behavior-change checklist](#v100-behavior-change-checklist). Older v0.3.0/v0.4.0 migration rules still matter: JWT `exp` is required by default, custom table resources deny by default, and write routes deny by default until intent is declared.
+For developers adding [better-route](https://github.com/Lonsdale201/better-route) to a WordPress project for the first time OR upgrading an existing install to v1.0.0 (the first stable release). As of v1.0.0 the package is published on Packagist, so a plain `composer require` works — a VCS repository entry is only needed to track an unreleased branch or a fork. v1.0.0 mostly consolidates the 0.3–0.6 line, but it ships a handful of intentional **behavior changes** (fail-safe hardening) — see the [v1.0.0 behavior-change checklist](#v100-behavior-change-checklist). Older v0.3.0/v0.4.0 migration rules still matter: JWT `exp` is required by default, custom table resources deny by default, and write routes deny by default until intent is declared.
 
 ## Misconception this skill corrects
 
@@ -69,7 +69,7 @@ GET routes are unchanged — they remain public by default.
 
 Other AI-prone misconceptions:
 
-- "I'll add `better-route` to `composer.json` like any other package." Wrong — not on Packagist yet. You need a VCS repository entry.
+- "I still need a VCS `repositories` entry to install it." Not since v1.0.0 — it's on Packagist; a plain `composer require better-route/better-route:^1.0` works. Only add a VCS repository to track an unreleased branch/fork.
 - "I'm jumping from v0.2.x to v0.4.0 — I only need the v0.4.0 changelog." Wrong — the v0.3.0 breaking changes still apply (custom-table deny-by-default, JWT `exp` requirement, identity-aware default keys, OpenAPI doc admin-only). Walk through both.
 - "v0.6.0 means I must migrate all HS256 JWTs to RS256." Wrong — `Hs256JwtVerifier` remains valid. Use `Rs256JwksJwtVerifier` for OIDC/OAuth/JWKS tokens.
 
@@ -89,31 +89,23 @@ Trigger when ANY of the following is true:
 
 PHP 8.1+ and Composer required. WordPress with REST API (the default — every modern install has it).
 
-`composer.json`:
-
-```json
-{
-  "require": {
-    "better-route/better-route": "^1.0"
-  },
-  "repositories": [
-    {
-      "type": "vcs",
-      "url": "https://github.com/Lonsdale201/better-route"
-    }
-  ],
-  "prefer-stable": true
-}
-```
-
-Then:
+Published on Packagist since v1.0.0 — install directly:
 
 ```bash
-composer install
+composer require better-route/better-route:^1.0
 composer show better-route/better-route   # verify resolved version
 ```
 
-The `repositories` block is required until the package lands on Packagist — without it, Composer can't find the package.
+No `repositories` entry is needed. Only add a VCS repository if you must track an unreleased branch or a fork:
+
+```json
+{
+  "require": { "better-route/better-route": "dev-main" },
+  "repositories": [
+    { "type": "vcs", "url": "https://github.com/Lonsdale201/better-route" }
+  ]
+}
+```
 
 ### 2. Bootstrap inside `rest_api_init`
 
@@ -215,7 +207,7 @@ curl -i https://your-site/wp-json/myapp/v1/openapi.json  # 401 if admin-only, 20
 
 ## Critical rules
 
-- **NOT on Packagist** — install via Composer VCS repository pointing to `https://github.com/Lonsdale201/better-route`.
+- **On Packagist since v1.0.0** — install with a plain `composer require better-route/better-route:^1.0`. A VCS repository entry is only needed to track an unreleased branch or a fork.
 - **PHP 8.1+** — strict requirement.
 - **All route registration goes inside `rest_api_init`.** Earlier and later hooks both miss the window.
 - **v0.4.0 — every write route needs explicit intent.** `->permission()`, `->protectedByMiddleware()`, OR `->publicRoute()`. GET unchanged.
@@ -263,17 +255,16 @@ add_action('rest_api_init', function () {
     $router->register();
 });
 
-// WRONG — composer.json without repositories block
+// RIGHT (since v1.0.0) — plain Packagist require, no repositories block
 {
   "require": {
     "better-route/better-route": "^1.0"
   }
 }
-// composer install: "Could not find package better-route/better-route".
 
-// RIGHT — VCS repository entry
+// Only needed to track an unreleased branch or a fork — VCS repository entry
 {
-  "require": { "better-route/better-route": "^1.0" },
+  "require": { "better-route/better-route": "dev-main" },
   "repositories": [
     { "type": "vcs", "url": "https://github.com/Lonsdale201/better-route" }
   ]

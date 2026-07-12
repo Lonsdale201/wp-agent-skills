@@ -230,7 +230,7 @@ See **`br-resource-policy`** for the complete preset reference.
 ```php
 // WRONG — using allowedStatuses (older docs name)
 Resource::make('books')->sourceCpt('book')
-    ->allowedStatuses(['publish', 'draft'])  // 🔴 method does not exist
+    ->allowedStatuses(['publish', 'draft'])  // WRONG: method does not exist
     ->register($router);
 
 // RIGHT
@@ -253,7 +253,7 @@ Resource::make('books')->sourceCpt('book')->register($router);
 ->restNamespace('myapp/v1')
 
 // WRONG — invalid deleteMode
-->deleteMode('soft')   // 🔴 throws
+->deleteMode('soft')   // WRONG: throws
 ->deleteMode('archive')
 
 // RIGHT

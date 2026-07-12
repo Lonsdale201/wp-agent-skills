@@ -231,7 +231,7 @@ global $wpdb;
 
 // WRONG — assuming CPT visibility methods work on tables
 Resource::make('events')->sourceTable($wpdb->prefix . 'events')
-    ->cptVisibleStatuses(['active'])   // 🔴 method exists but does nothing for table-source
+    ->cptVisibleStatuses(['active'])   // WRONG: method exists but does nothing for table-source
     ->register($router);
 
 // RIGHT — implement soft-delete in the table itself
@@ -242,7 +242,7 @@ Resource::make('events')->sourceTable($wpdb->prefix . 'events')
 // Or use ->usingTableRepository(...) with a custom repo that always filters status='active' on reads.
 
 // WRONG — cross-database table reference
-->sourceTable('other_db.wp_myapp_events')   // 🔴 rejected by guard
+->sourceTable('other_db.wp_myapp_events')   // WRONG: rejected by guard
 
 // RIGHT — same database
 ->sourceTable($wpdb->prefix . 'myapp_events')
@@ -256,7 +256,7 @@ Resource::make('events')->sourceTable($wpdb->prefix . 'events')
 ->sort(['-created_at', 'id'])   // newest-first; id as tiebreaker
 
 // WRONG — hoping deleteMode('trash') gives soft-delete on tables
-->deleteMode('trash')   // 🔴 throws or no-ops; trash is CPT-only
+->deleteMode('trash')   // WRONG: throws or no-ops; trash is CPT-only
 
 // RIGHT — soft-delete via column + repository filter
 // Add 'deleted_at' nullable column, filter rows where deleted_at IS NULL, set deleted_at on DELETE.

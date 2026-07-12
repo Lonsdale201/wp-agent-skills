@@ -228,7 +228,7 @@ Or do per-field validation inside the handler for complex rules.
 
 // WRONG — sanitize with random WP function name string
 'title' => ['type' => 'string', 'sanitize' => 'wp_kses_post']
-// 🔴 'wp_kses_post' isn't 'text'/'email'/'key'/'url' AND it IS callable —
+// WRONG: 'wp_kses_post' isn't 'text'/'email'/'key'/'url' AND it IS callable —
 // PHP's is_callable() treats function-name strings as callable, so it actually works,
 // but ONLY because the function exists at runtime.
 // Cleaner: use the callable form explicitly:
@@ -254,7 +254,7 @@ Or do per-field validation inside the handler for complex rules.
 
 // WRONG — using minLength on a numeric field
 'price' => ['type' => 'float', 'minLength' => 1]
-// 🔴 silently no-ops; minLength is for strings.
+// WRONG: silently no-ops; minLength is for strings.
 
 // RIGHT
 'price' => ['type' => 'float', 'min' => 0.01]
