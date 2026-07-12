@@ -304,7 +304,7 @@ options: [
 
 // WRONG — invalid restNamespace format
 OpenApiRouteRegistrar::register(
-    restNamespace: 'myapp',   // 🔴 missing version
+    restNamespace: 'myapp',   // WRONG: missing version
 );
 // → InvalidArgumentException
 

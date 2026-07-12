@@ -263,7 +263,7 @@ Public endpoints get a low anonymous limit. Authenticated API gets a much higher
 ```php
 // WRONG — trusting forwarded headers without proxy gate
 $ip = $_SERVER['HTTP_X_FORWARDED_FOR'] ?? $_SERVER['REMOTE_ADDR'] ?? '0.0.0.0';
-$rateLimitKey = 'user:' . $ip;   // 🔴 client controls $ip
+$rateLimitKey = 'user:' . $ip;   // WRONG: client controls $ip
 
 // RIGHT — ClientIpResolver
 $ip = (new ClientIpResolver(trustedProxies: ['127.0.0.1']))->resolve();
@@ -309,7 +309,7 @@ keyResolver: fn ($ctx) => $ctx->routePath . '|' . ($ipResolver->resolve() ?? 'un
 
 // WRONG — trusting CF-Connecting-IP without confirming Cloudflare proxy IPs
 new ClientIpResolver(
-    trustedProxies: [],   // 🔴 empty
+    trustedProxies: [],   // WRONG: empty
     trustedHeaders: ['HTTP_CF_CONNECTING_IP'],
 );
 // REMOTE_ADDR not trusted → resolver returns REMOTE_ADDR; CF header ignored. Backwards.

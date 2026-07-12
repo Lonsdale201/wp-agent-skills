@@ -267,7 +267,7 @@ $router->register();
 
 // WRONG — assuming body 'id' wins on a PUT /articles/{id}
 $router->put('/articles/{id}', function ($ctx) {
-    $id = $ctx->params['id'] ?? $ctx->body['id'];   // 🔴 confusion: better-route already resolves URL > body
+    $id = $ctx->params['id'] ?? $ctx->body['id'];   // WRONG: confusion: better-route already resolves URL > body
     // The URL 'id' is always in $ctx->params['id'] for matching routes.
 });
 
@@ -290,7 +290,7 @@ add_action('rest_api_init', function () {
 
 // WRONG — using publicRoute on a route that should require auth
 $router->post('/api/admin-action', $handler)->publicRoute();
-// 🔴 OpenAPI now shows this as unauthenticated; WP allows anonymous; handler must do its OWN auth
+// WRONG: OpenAPI now shows this as unauthenticated; WP allows anonymous; handler must do its OWN auth
 
 // RIGHT — admin actions go through permission() or protectedByMiddleware()
 ```

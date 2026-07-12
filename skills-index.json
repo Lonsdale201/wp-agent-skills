@@ -587,7 +587,17 @@
       "raw_url": "https://raw.githubusercontent.com/Lonsdale201/wp-agent-skills/main/better-route/br-atomic-idempotency/SKILL.md",
       "html_url": "https://github.com/Lonsdale201/wp-agent-skills/blob/main/better-route/br-atomic-idempotency/SKILL.md",
       "directory_url": "https://github.com/Lonsdale201/wp-agent-skills/tree/main/better-route/br-atomic-idempotency",
-      "metadata": {},
+      "metadata": {
+        "author": "Soczó Kristóf",
+        "contact": "mailto:lonsdale201@hotmail.com",
+        "plugin": "better-route",
+        "plugin-version-tested": "1.0.0",
+        "php-min": "8.1",
+        "last-updated": "2026-07-12",
+        "docs": [
+          "https://lonsdale201.github.io/better-docs/docs/better-route/agents"
+        ]
+      },
       "resources": [
         {
           "path": "agents/openai.yaml",
@@ -601,9 +611,9 @@
       "has_examples": false,
       "has_scripts": false,
       "skill_md": {
-        "bytes": 3226,
-        "lines": 66,
-        "sha256": "113ddbe1a0aa2a8bc5dc9069fadebe9effc8d4cc3e47e5a35e59413cb3280f80"
+        "bytes": 3461,
+        "lines": 74,
+        "sha256": "228497a2ab858a9df3aa6eee30c69a1399b656c990ec12b7505b7924b7848f33"
       }
     },
     {
@@ -617,7 +627,16 @@
       "raw_url": "https://raw.githubusercontent.com/Lonsdale201/wp-agent-skills/main/better-route/br-audit-enrichment/SKILL.md",
       "html_url": "https://github.com/Lonsdale201/wp-agent-skills/blob/main/better-route/br-audit-enrichment/SKILL.md",
       "directory_url": "https://github.com/Lonsdale201/wp-agent-skills/tree/main/better-route/br-audit-enrichment",
-      "metadata": {},
+      "metadata": {
+        "author": "Soczó Kristóf",
+        "contact": "mailto:lonsdale201@hotmail.com",
+        "plugin": "better-route",
+        "plugin-version-tested": "0.5.0",
+        "php-min": "8.1",
+        "docs": [
+          "https://lonsdale201.github.io/better-docs/docs/better-route/agents"
+        ]
+      },
       "resources": [
         {
           "path": "agents/openai.yaml",
@@ -631,9 +650,9 @@
       "has_examples": false,
       "has_scripts": false,
       "skill_md": {
-        "bytes": 1951,
-        "lines": 53,
-        "sha256": "12cc63ca394a6ccc6e93ae2b56ea5b20052bad3f122287bc7f7148f90ef58b0c"
+        "bytes": 2159,
+        "lines": 60,
+        "sha256": "3fa33d63fa4e099cde253c939a20946e975fc7f18459b4d459010e45701dd3fa"
       }
     },
     {
@@ -706,7 +725,17 @@
       "raw_url": "https://raw.githubusercontent.com/Lonsdale201/wp-agent-skills/main/better-route/br-cors-public-client/SKILL.md",
       "html_url": "https://github.com/Lonsdale201/wp-agent-skills/blob/main/better-route/br-cors-public-client/SKILL.md",
       "directory_url": "https://github.com/Lonsdale201/wp-agent-skills/tree/main/better-route/br-cors-public-client",
-      "metadata": {},
+      "metadata": {
+        "author": "Soczó Kristóf",
+        "contact": "mailto:lonsdale201@hotmail.com",
+        "plugin": "better-route",
+        "plugin-version-tested": "1.0.0",
+        "php-min": "8.1",
+        "last-updated": "2026-07-12",
+        "docs": [
+          "https://lonsdale201.github.io/better-docs/docs/better-route/agents"
+        ]
+      },
       "resources": [
         {
           "path": "agents/openai.yaml",
@@ -720,9 +749,9 @@
       "has_examples": false,
       "has_scripts": false,
       "skill_md": {
-        "bytes": 2689,
-        "lines": 62,
-        "sha256": "cbcaa00bc46eda9c68b5ea8942231b3701f640b4d98f22643fac642709bbf7d4"
+        "bytes": 2924,
+        "lines": 70,
+        "sha256": "22ad971fab34f6b2e69ba5fb40de9be57010145423b529b22353ec0b04c46c75"
       }
     },
     {
@@ -947,16 +976,16 @@
       "has_examples": false,
       "has_scripts": false,
       "skill_md": {
-        "bytes": 16803,
+        "bytes": 16807,
         "lines": 322,
-        "sha256": "951cd49d1a46b465999a408f97adba5981692957b61ba1e12cd93984136cb895"
+        "sha256": "c17e4093010765d5d36322fcf2127cdce3b705173a7d0b5d608b84d54ccb02a5"
       }
     },
     {
       "slug": "br-install-and-migrate",
       "name": "br-install-and-migrate",
       "domain": "better-route",
-      "description": "Install better-route into a WordPress project and migrate to v1.0.0 — composer VCS repository (NOT yet on Packagist), PHP 8.1+ requirement, all route registration inside rest_api_init. Important — v0.4.0 raw Router write methods (POST / PUT / PATCH / DELETE) DENY by default at the WP permission layer; every write route now needs an explicit intent declaration via ->permission(callable), ->protectedByMiddleware($security), or ->publicRoute(). GET is unchanged. Older v0.3.0 breaking changes still apply when jumping from <0.3 — OpenAPI doc defaults to manage_options, custom-table resources are deny-by-default, JWT exp claim required, identity-aware default keys for cache / idempotency / rate-limit. v0.6.0 adds JWKS JWT verification, Crypto helpers, HMAC signatures, trusted-proxy IP/CIDR allowlists, single-use token stores, and opt-in OAuth error format. v1.0.0 is the first stable release and hardens those defaults (WpClaimsUserMapper email/login mapping off by default, XFF spoof-resistant client IP, CORS wildcard+credentials rejected, granted-scope wildcards opt-in) plus WooCommerce fixes (money as strings, HPOS 503, product price read-only) — see the v1.0.0 behavior-change checklist. Use when adding better-route to a project, bumping the constraint to ^1.0, or triaging unintended 403s on writes after upgrade. Triggers on composer require better-route, ->permission, ->protectedByMiddleware, ->publicRoute, \"better-route 403 on POST\".",
+      "description": "Install better-route into a WordPress project and migrate to v1.0.0 — on Packagist since 1.0.0 (plain composer require), PHP 8.1+ requirement, all route registration inside rest_api_init. Important — v0.4.0 raw Router write methods (POST / PUT / PATCH / DELETE) DENY by default at the WP permission layer; every write route now needs an explicit intent declaration via ->permission(callable), ->protectedByMiddleware($security), or ->publicRoute(). GET is unchanged. Older v0.3.0 breaking changes still apply when jumping from <0.3 — OpenAPI doc defaults to manage_options, custom-table resources are deny-by-default, JWT exp claim required, identity-aware default keys for cache / idempotency / rate-limit. v0.6.0 adds JWKS JWT verification, Crypto helpers, HMAC signatures, trusted-proxy IP/CIDR allowlists, single-use token stores, and opt-in OAuth error format. v1.0.0 is the first stable release and hardens those defaults (WpClaimsUserMapper email/login mapping off by default, XFF spoof-resistant client IP, CORS wildcard+credentials rejected, granted-scope wildcards opt-in) plus WooCommerce fixes (money as strings, HPOS 503, product price read-only) — see the v1.0.0 behavior-change checklist. Use when adding better-route to a project, bumping the constraint to ^1.0, or triaging unintended 403s on writes after upgrade. Triggers on composer require better-route, ->permission, ->protectedByMiddleware, ->publicRoute, \"better-route 403 on POST\".",
       "path": "better-route/br-install-and-migrate",
       "skill_path": "better-route/br-install-and-migrate/SKILL.md",
       "url": "https://raw.githubusercontent.com/Lonsdale201/wp-agent-skills/main/better-route/br-install-and-migrate/SKILL.md",
@@ -1002,9 +1031,9 @@
       "has_examples": false,
       "has_scripts": false,
       "skill_md": {
-        "bytes": 17376,
-        "lines": 311,
-        "sha256": "0836d76ab5c821424a6ceaa722115d10cacbb34f1e853484288ca93957d922dc"
+        "bytes": 17652,
+        "lines": 302,
+        "sha256": "d4b585c5e75288f4994008aed1115939667e6077c0135056cebec8a5717b67ec"
       }
     },
     {
@@ -1143,9 +1172,9 @@
       "has_examples": false,
       "has_scripts": false,
       "skill_md": {
-        "bytes": 16313,
+        "bytes": 16315,
         "lines": 359,
-        "sha256": "ddf5e372b7d4246392dd2a58599b89f030d40e1bb17c5bdda3256facf54a76fc"
+        "sha256": "175acfc7e4e4ff658d5f3b224142975bfbc4235f19623319fa28b1db9d3cf528"
       }
     },
     {
@@ -1159,7 +1188,16 @@
       "raw_url": "https://raw.githubusercontent.com/Lonsdale201/wp-agent-skills/main/better-route/br-owned-resource-guards/SKILL.md",
       "html_url": "https://github.com/Lonsdale201/wp-agent-skills/blob/main/better-route/br-owned-resource-guards/SKILL.md",
       "directory_url": "https://github.com/Lonsdale201/wp-agent-skills/tree/main/better-route/br-owned-resource-guards",
-      "metadata": {},
+      "metadata": {
+        "author": "Soczó Kristóf",
+        "contact": "mailto:lonsdale201@hotmail.com",
+        "plugin": "better-route",
+        "plugin-version-tested": "0.5.0",
+        "php-min": "8.1",
+        "docs": [
+          "https://lonsdale201.github.io/better-docs/docs/better-route/agents"
+        ]
+      },
       "resources": [
         {
           "path": "agents/openai.yaml",
@@ -1173,9 +1211,9 @@
       "has_examples": false,
       "has_scripts": false,
       "skill_md": {
-        "bytes": 2485,
-        "lines": 58,
-        "sha256": "1e4cfe33a10db8472d7362f696b95e2b2601e96ddd360de1f7d3474de160e0e8"
+        "bytes": 2693,
+        "lines": 65,
+        "sha256": "774715a6ce653cc81eb783a5706774e077fda9a4b727faa5395e6325acb426e5"
       }
     },
     {
@@ -1225,9 +1263,9 @@
       "has_examples": false,
       "has_scripts": false,
       "skill_md": {
-        "bytes": 17383,
+        "bytes": 17387,
         "lines": 357,
-        "sha256": "1ae5ec39331b4f90e0bf4b1f869d8a7d5c1c831d3a24ce51df2ae21bc08dc8d2"
+        "sha256": "d0c6ba3951d3cf1f4db60453966eb6fee0dbec81807341dffc10cca573fd8407"
       }
     },
     {
@@ -1266,9 +1304,9 @@
       "has_examples": false,
       "has_scripts": false,
       "skill_md": {
-        "bytes": 15083,
+        "bytes": 15087,
         "lines": 335,
-        "sha256": "d8230d4b303de84890ebd7e1479317b182b1dc6ec5203ec2aa6cb3e7eba06ef5"
+        "sha256": "fb8721c74592d5fa560f6e5874cc0cab083a51e86c0b89b129292059ce7a3c06"
       }
     },
     {
@@ -1302,9 +1340,9 @@
       "has_examples": false,
       "has_scripts": false,
       "skill_md": {
-        "bytes": 14924,
+        "bytes": 14928,
         "lines": 313,
-        "sha256": "e859386ee78937f1b5f4626da170e6ac4e30881583fe66e9977b071ccc2ce6e0"
+        "sha256": "af266180ab64acc9657c7fb23fc7af475dc33a6fbbd676e81a39516cd7aef20e"
       }
     },
     {
@@ -1342,9 +1380,9 @@
       "has_examples": false,
       "has_scripts": false,
       "skill_md": {
-        "bytes": 14129,
+        "bytes": 14135,
         "lines": 298,
-        "sha256": "986bba706b925b7397321aaeff846e61e5586f988dd11b59c6e3390d675354cf"
+        "sha256": "7e61d70db5cf567354db0cc15946d133b9c07fd89e3599d04fd710e12acff95f"
       }
     },
     {
@@ -1386,9 +1424,9 @@
       "has_examples": false,
       "has_scripts": false,
       "skill_md": {
-        "bytes": 15658,
+        "bytes": 15662,
         "lines": 320,
-        "sha256": "d4dab1c3e0a8e5f85a57cbcb4dcda08647c05c3a12a5c2c6fb59c1ed7795aee9"
+        "sha256": "40bb05ca1bec837353d56e99721bbb991aa9d192da36e7d8f15bc1fd2b38223c"
       }
     },
     {
@@ -1517,9 +1555,9 @@
       "has_examples": false,
       "has_scripts": false,
       "skill_md": {
-        "bytes": 15484,
+        "bytes": 15488,
         "lines": 309,
-        "sha256": "f389bff774ec03edb0b2457ec34d9d536b8e97530e6c37b91bf75c5796579075"
+        "sha256": "bdfe310482fd04b72690c1547d590b7f0fa1e55a79beef27a3a151913b5168c5"
       }
     },
     {

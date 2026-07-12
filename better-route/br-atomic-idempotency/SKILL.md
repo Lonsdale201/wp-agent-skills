@@ -1,6 +1,14 @@
 ---
 name: br-atomic-idempotency
 description: Use better-route 1.0.0 AtomicIdempotencyMiddleware for high-side-effect write endpoints where concurrent duplicate requests must not execute twice. Triggers on AtomicIdempotencyMiddleware, WpdbAtomicIdempotencyStore, ArrayAtomicIdempotencyStore, AtomicIdempotencyStoreInterface, idempotency_in_progress, Idempotency-Key for payment/order/subscription/account-like writes, or when reviewing retry-safe REST endpoints.
+author: Soczó Kristóf
+contact: mailto:lonsdale201@hotmail.com
+plugin: better-route
+plugin-version-tested: "1.0.0"
+php-min: "8.1"
+last-updated: "2026-07-12"
+docs:
+  - https://lonsdale201.github.io/better-docs/docs/better-route/agents
 ---
 
 # better-route: Atomic idempotency

@@ -247,7 +247,7 @@ Resource::make('events')
 
 // WRONG — string capability assumed to be ANY-of when wrapped in array implicitly
 'permissions' => [
-    'create' => 'edit_posts manage_woocommerce',  // 🔴 single string with spaces; treated as the literal cap name
+    'create' => 'edit_posts manage_woocommerce',  // WRONG: single string with spaces; treated as the literal cap name
 ]
 
 // RIGHT — array of cap names for any-of
@@ -277,7 +277,7 @@ $router->put('/books/{id}', $myCustomHandler)->permission(...);
 // WRONG — fieldPolicy without writeSchema declaring the field
 ->writeSchema(['title' => ['type' => 'string']])  // doesn't list 'featured'
 ->fieldPolicy(['featured' => fn () => false])
-// 🔴 'featured' isn't in writeSchema, so it's dropped at the schema layer regardless.
+// WRONG: 'featured' isn't in writeSchema, so it's dropped at the schema layer regardless.
 // fieldPolicy never runs because the field never enters the validated payload.
 
 // RIGHT — declare in writeSchema

@@ -1,6 +1,14 @@
 ---
 name: br-cors-public-client
 description: Configure better-route 1.0.0 CORS and preflight support for public REST clients. Use when adding CorsMiddleware, CorsPolicy, Router::options(), Authorization or Idempotency-Key cross-origin requests, credentialed browser clients, app clients, OPTIONS routes, or debugging failed REST preflight requests.
+author: Soczó Kristóf
+contact: mailto:lonsdale201@hotmail.com
+plugin: better-route
+plugin-version-tested: "1.0.0"
+php-min: "8.1"
+last-updated: "2026-07-12"
+docs:
+  - https://lonsdale201.github.io/better-docs/docs/better-route/agents
 ---
 
 # better-route: CORS and preflight

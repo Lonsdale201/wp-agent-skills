@@ -32,6 +32,7 @@ A coordinated refinement wave against cargo-cult review findings, cross-referenc
 
 - `wordpress/wp-html-api` was intentionally NOT re-synced this round — the incoming drop only replaced the repo's deliberate plain-ASCII `"\u{1F642}"` escape (and its explanatory comment) with a literal emoji glyph; the repo version was kept, matching the `wc-product-search-select` precedent from 2026-07-09/10.
 - The rest of the two parent-folder drops (`plugin-scaffold/`, `wordpress/`) was byte-identical to the repo and needed no action.
+- Validator cleanup (surfaced by `validate-skill.js` on the changed files): the four minimal-frontmatter better-route skills (`br-atomic-idempotency`, `br-cors-public-client`, `br-audit-enrichment`, `br-owned-resource-guards`) now carry the required `author` / `plugin` / `plugin-version-tested` / `php-min` fields — the first two at their re-grounded `"1.0.0"`, the untouched last two honestly at their original `"0.5.0"` baseline; and the 16 `// 🔴` annotation markers dating from the initial commit (across 8 better-route skills) were replaced with the ASCII `// WRONG:` marker to satisfy the emoji-free rule.
 
 ### Repo / docs
 

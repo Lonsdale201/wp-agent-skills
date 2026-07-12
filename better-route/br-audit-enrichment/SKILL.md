@@ -1,6 +1,13 @@
 ---
 name: br-audit-enrichment
 description: Enrich better-route 0.5.0 audit events with safe operational metadata. Use when adding AuditEnricherMiddleware, AuditMiddleware context fields, auth user/provider metadata, hashed Idempotency-Key logging, resource/action audit fields, or reviewing sensitive REST write routes that need traceable but redacted audit events.
+author: Soczó Kristóf
+contact: mailto:lonsdale201@hotmail.com
+plugin: better-route
+plugin-version-tested: "0.5.0"
+php-min: "8.1"
+docs:
+  - https://lonsdale201.github.io/better-docs/docs/better-route/agents
 ---
 
 # better-route: Audit enrichment
