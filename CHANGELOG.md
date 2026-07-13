@@ -2,6 +2,15 @@
 
 This collection is continuously evolving — entries are date-based, not version-tagged. New skills land when they're ready; updates go in when they cover real ground (a new release of an upstream plugin, a verified misconception, a corrected example).
 
+## 2026-07-14 (rules refresh)
+
+### Updated — `rules/` layer aligned with the recent batches
+
+Post-migration review of the always-on rules layer. The rules' own frontmatter (`scope` / `globs` / `always-apply`) is intentionally NOT the Agent Skills SKILL.md schema — it maps 1:1 onto tool-specific rule formats — and `rules/README.md` now states this explicitly so nobody "migrates" it by mistake. Content-wise every existing invariant was re-checked against the current groundings (WC 10.9.4 / WP 7.0) and all 12 defer-pointers still resolve; two small refreshes landed:
+
+- **`woocommerce-baseline` 1.1.0** — new "Background work" invariants from the Action Scheduler delivery-semantics batch (never run slow work inline in checkout/order/webhook hooks — queue with Action Scheduler, scalar IDs only; callbacks must be replay-safe, no exactly-once guarantee), plus two defer-pointers: `wc-action-scheduler-jobs`, `wc-logging`.
+- **`wp-core-baseline` 1.1.0** — REST bullet extended with the wp-rest-api rewrite's key false-positive guard: an `X-WP-Nonce` is CSRF protection, not authorization; capability checks still apply.
+
 ## 2026-07-13 (fifth batch — migration to the open Agent Skills format)
 
 ### Changed — every SKILL.md migrated to the portable Agent Skills specification

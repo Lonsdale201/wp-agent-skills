@@ -19,6 +19,8 @@ Because rules are always-on, they must stay short. There are deliberately only a
 
 ## Frontmatter
 
+> **Not the SKILL.md schema — on purpose.** Skills in this repo follow the open [Agent Skills specification](https://agentskills.io/specification) (`name` / `description` / `metadata` with the `wp-skills-*` namespace). Rules do **not**: they are not skills, and their frontmatter keys below are a deliberate 1:1 mapping onto tool-specific rule formats (Cursor `globs` / `alwaysApply`, Copilot `applyTo`, Windsurf activation modes). Do not "migrate" these files to the skills schema — that would break the tool mappings documented below.
+
 ```yaml
 ---
 name: wp-core-baseline          # identifier = filename

@@ -8,8 +8,8 @@ scope: global
 globs:
   - "**/*.php"
 always-apply: false
-version: "1.0.0"
-last-updated: "2026-07-01"
+version: "1.1.0"
+last-updated: "2026-07-14"
 ---
 
 # WordPress core baseline (always-on)
@@ -22,7 +22,7 @@ Invariants that hold for every WordPress plugin/theme PHP task, regardless of wh
 - Sanitize and unslash every request value before use: `wp_unslash()` then a matching `sanitize_*()` on `$_GET` / `$_POST` / `$_REQUEST` / `$_COOKIE` / `$_SERVER`.
 - Guard every state-changing action with a nonce **and** a capability check: `check_admin_referer()` / `wp_verify_nonce()` + `current_user_can()`. `is_admin()` is not authorization.
 - Use `$wpdb->prepare()` for every query with dynamic values. Never concatenate input into SQL.
-- REST: never `'permission_callback' => '__return_true'` on a route that writes. Check capabilities per object.
+- REST: never `'permission_callback' => '__return_true'` on a route that writes. Check capabilities per object. An `X-WP-Nonce` is CSRF protection, not authorization — the capability check still applies.
 - Treat `wp_ajax_nopriv_*` and any public endpoint as attacker-reachable.
 
 ## Internationalization
