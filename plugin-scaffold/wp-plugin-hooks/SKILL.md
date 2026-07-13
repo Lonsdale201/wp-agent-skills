@@ -250,7 +250,7 @@ do_action( 'before_save', $data );
 // v1.0
 apply_filters( 'myplugin/response_message', $msg, $form_id );
 // v1.1
-apply_filters( 'myplugin/response_message', $msg, $context, $form_id ); // 💥
+apply_filters( 'myplugin/response_message', $msg, $context, $form_id ); // BUG — breaks existing listeners
 
 // RIGHT — append at the end, document with @since
 apply_filters( 'myplugin/response_message', $msg, $form_id, $context );

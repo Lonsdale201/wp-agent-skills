@@ -220,7 +220,7 @@ public function decrypt(string $ciphertext, string $field): string
 {
     $plaintext = self::actualDecrypt($ciphertext);
     if (\defined('BETTER_DATA_DEBUG') && BETTER_DATA_DEBUG) {
-        \error_log("Decrypted {$field}: {$plaintext}");  // 🔴 plaintext to log
+        \error_log("Decrypted {$field}: {$plaintext}");  // INSECURE — plaintext to log
     }
     return $plaintext;
 }
@@ -233,7 +233,7 @@ public function decrypt(string $ciphertext, string $field): ?string
     try {
         return self::actualDecrypt($ciphertext);
     } catch (\Throwable) {
-        return null;  // 🔴 caller can't tell garbage data from missing data
+        return null;  // BUG — caller can't tell garbage data from missing data
     }
 }
 
@@ -251,7 +251,7 @@ class EncryptionEngine
 
     private static function getKey(): string
     {
-        return self::$cachedKey ??= \constant(self::CONST_PRIMARY);  // 🔴 rotation broken
+        return self::$cachedKey ??= \constant(self::CONST_PRIMARY);  // BUG — rotation broken
     }
 }
 
@@ -262,7 +262,7 @@ private static function getKey(): string
 }
 
 // WRONG — equality with ===
-if ($candidate === $secret->reveal()) {  // 🔴 timing oracle
+if ($candidate === $secret->reveal()) {  // INSECURE — timing oracle
     grant_access();
 }
 
@@ -274,7 +274,7 @@ if ($secret->equals($candidate)) {  // hash_equals under the hood
 // WRONG — relaxing __serialize to redact
 public function __serialize(): array
 {
-    return ['value' => '***'];  // 🔴 silent: caller's serialized blob looks "fine"
+    return ['value' => '***'];  // BUG — silent: caller's serialized blob looks "fine"
 }
 
 // RIGHT — throw, force explicit reveal at the call site

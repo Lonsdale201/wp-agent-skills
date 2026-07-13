@@ -1,6 +1,6 @@
 # wp-agent-skills
 
-**192 skills · 28 plugins**
+**195 skills · 29 plugins**
 
 A community-maintained collection of **agent skills** for WordPress plugin and theme development.
 
@@ -39,6 +39,7 @@ Skills are grouped by domain. Each domain has its own README listing the skills 
 | [`polylang/`](polylang) | Making your own plugin/theme **Polylang-compatible** — the guarded public language API, translated post/term groups via the model (not raw DB writes), Pro slugs / sync / ACF behavior, REST & headless `lang` semantics, string/option translation, and Polylang for WooCommerce data stores. Covers the free core plus Polylang Pro and Polylang for WooCommerce. |
 | [`wpml/`](wpml) | Making your own plugin/theme **WPML-compatible** — the "WPML translates copies" model, detecting the base plugin vs the String Translation / Media / Translation Management add-ons, declaring translatable content in `wpml-config.xml`, the runtime language hook API (`wpml_object_id`, `wpml_switch_language`, `wpml_permalink`), and registering/translating dynamic strings. |
 | [`learndash/`](learndash) | Making your own plugin, theme, or integration cooperate with **LearnDash LMS** (`sfwd-lms`) and the **LearnDash WooCommerce** bridge — course and group access/enrollment through the public access APIs (not raw usermeta), the user/course/group/leader relationship model and hierarchical groups, Woo order/subscription/refund-driven enrollment with the access counter, and the `ldlms/v2` + `learndash/v1` REST surfaces. |
+| [`rankmath/`](rankmath) | Making your own plugin/theme **Rank Math**-compatible — safe bootstrap around `rank_math/loaded`, frontend metadata filters (title / robots / canonical / Open Graph), replacement variables and content-analysis fields, extending the JSON-LD Schema `@graph`, and XML sitemap entries, providers, and cache invalidation. |
 
 New domain folders follow the same convention: top-level folder per plugin (or plugin family), one subfolder per skill, each containing at minimum a `SKILL.md`. Larger skills may also include `reference.md`, `examples/`, or `scripts/`.
 
