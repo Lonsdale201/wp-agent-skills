@@ -2,6 +2,33 @@
 
 This collection is continuously evolving — entries are date-based, not version-tagged. New skills land when they're ready; updates go in when they cover real ground (a new release of an upstream plugin, a verified misconception, a corrected example).
 
+## 2026-07-13 (fourth batch — Action Scheduler delivery semantics)
+
+### Updated — `woocommerce/wc-action-scheduler-jobs` (major expansion)
+
+The skill grew from an API-map-plus-gotchas card into a full delivery-semantics playbook (+153 lines), still grounded to WC 10.9.4 (which pins Action Scheduler **3.9.3** exactly — verified against the `10.9.4` tag's `composer.json`):
+
+- **Delivery contract** — new section: `as_enqueue_async_action()` makes an action *due*, it does not *run* it; no exactly-once, strict FIFO, or max-start-time promises; run production-critical queues from a real system cron and monitor queue age.
+- **Idempotency upgraded** — the order-sync example now derives a deterministic remote operation key (`Idempotency-Key`) instead of treating a post-success local meta marker as the idempotency boundary; explicit crash-window / replay discussion (outbox, reconciliation).
+- **Recurring repair via the AS 3.9.3 ensure hook** — bootstrap-state option on activation + `action_scheduler_ensure_recurring_actions` (fired by AS's own daily internal action) behind an `as_supports( 'ensure_recurring_actions_hook' )` guard, with an idempotent fallback for older bundled copies; plus the consistently-failing recurring pause (filterable threshold, default 5 same-hook actions).
+- **Explicit retries + telemetry** — new section: bounded attempt-carrying retries with exponential backoff and jitter, rethrow-after-scheduling so the failed attempt stays visible, and an `action_scheduler_failed_execution` (3 args) logging listener.
+- **Args semantics** — args persisted as JSON (key order and scalar types affect exact-match queries; oversized args rejected by `validate_action()`), and callbacks invoked with `array_values( $args )` — associative keys are not PHP named arguments.
+- **Groups vs locks** — new section: a group is an operational namespace, not a mutex / FIFO / per-resource serializer; owned atomic claims for overlap-sensitive work.
+- **CLI diagnostics** — the 3.9.1+ system commands (`wp action-scheduler version [--all]` / `source [--all]` / `data-store` / `runner` / `status`, plus `action run`), the `--force` overlap warning, and the caveat that `source --all` omits duplicate physical copies registered under the same version.
+- Common-mistakes list roughly doubled to match; frontmatter `last-updated` bumped and three source-refs added (`System_Command.php`, `ActionScheduler_Abstract_QueueRunner.php`, `ActionScheduler_RecurringActionScheduler.php`).
+
+### Intake notes (Action Scheduler batch)
+
+- Pre-check clean: no emoji, no tabs, YAML parses, no private-infra references.
+- Every new API claim was source-verified against the `3.9.3` tag of `woocommerce/action-scheduler` (the wp-skills index gap for Woo's bundled AS procedural functions made web grounding necessary): `as_supports()` is real (`@since 3.9.3`, sole flag `ensure_recurring_actions_hook`), the ensure hook fires via a daily internal recurring action, `action_scheduler_failed_execution` passes `( $action_id, Exception, $context )` (Throwables are converted — the example's `Throwable` hint still binds), System_Command registers at the top-level `action-scheduler` namespace (so the skill's command names are correct), and the failure threshold defaults to 5.
+- Noted for a future re-ground: **Action Scheduler 4.0.0 (2026-06-16) makes `$unique` args-aware as a breaking change** — the skill's central `$unique = hook + group` misconception holds for WC 10.9.4/AS 3.9.3 but must flip when Woo bundles AS 4.x; the skill's new "treat `$unique` as active-store-specific" warning already anticipates this.
+
+### Repo / docs (Action Scheduler batch)
+
+- `woocommerce/README.md`: `wc-action-scheduler-jobs` row rewritten to the new scope (also fixed its stale "WC 10.8" reference — the skill has been at 10.9.4 since the re-ground).
+- Skill/plugin counts unchanged (content fix, no new skill).
+- `skills-index.json` regenerated (description/hash/line-count refresh).
+
 ## 2026-07-13 (third batch — better-route 1.1)
 
 ### Updated — the entire `better-route/` domain re-grounded to 1.1.0
