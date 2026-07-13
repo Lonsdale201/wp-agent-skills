@@ -1,27 +1,18 @@
 ---
 name: br-hmac-signature
-description: Configure better-route 1.0.0 HmacSignatureMiddleware for signed server-to-server REST requests and webhooks. Use when adding X-Signature, X-Timestamp, X-Key-Id, HmacSecretProviderInterface, ArrayHmacSecretProvider, request body HMAC verification, timestamp replay window checks, multi-key rotation, or replacing unsigned public POST endpoints with shared-secret authentication. Updated 2026-07-12.
+description: Configure Better Route 1.1 HMAC authentication for webhooks and server-to-server REST requests. Use when signing request timestamps, methods, paths, raw bodies, optional query strings, rotating key IDs, or consuming the shared HMAC AuthContext identity.
 author: Soczó Kristóf
 contact: mailto:lonsdale201@hotmail.com
 plugin: better-route
-plugin-version-tested: "1.0.0"
+plugin-version-tested: "1.1.0"
 php-min: "8.1"
-last-updated: "2026-07-12"
-docs:
-  - https://lonsdale201.github.io/better-docs/docs/better-route/agents
-source-refs:
-  - src/Middleware/Auth/HmacSignatureMiddleware.php
-  - src/Middleware/Auth/HmacSecretProviderInterface.php
-  - src/Middleware/Auth/ArrayHmacSecretProvider.php
-  - src/Support/Crypto.php
-  - tests/SecurityPrimitivesTest.php
+last-updated: "2026-07-13"
+docs: https://lonsdale201.github.io/better-docs/docs/better-route/agents
 ---
 
-# better-route: HMAC request signatures
+# Better Route HMAC request signatures
 
-Use this for server-to-server endpoints, webhooks, and back-channel calls where a bearer user token is not the right primitive. The middleware validates headers before the handler runs.
-
-## Pattern
+Use HMAC for a shared-secret webhook or back-channel client. Attach the middleware and mark the raw route as middleware-protected; HMAC is authentication, not a public-route exception.
 
 ```php
 use BetterRoute\Middleware\Auth\ArrayHmacSecretProvider;
@@ -29,61 +20,42 @@ use BetterRoute\Middleware\Auth\HmacSignatureMiddleware;
 
 $hmac = new HmacSignatureMiddleware(
     secrets: new ArrayHmacSecretProvider([
-        'primary' => getenv('MYAPP_WEBHOOK_SECRET'),
-        'next' => getenv('MYAPP_WEBHOOK_SECRET_NEXT'),
+        'primary' => MY_PLUGIN_WEBHOOK_SECRET,
+        'next' => MY_PLUGIN_WEBHOOK_SECRET_NEXT,
     ]),
-    signatureHeader: 'X-Signature',
-    timestampHeader: 'X-Timestamp',
-    keyIdHeader: 'X-Key-Id',
     replayWindowSeconds: 300,
-    algorithm: 'sha256'
+    algorithm: 'sha256',
+    signQueryString: true
 );
 
 $router->post('/webhooks/provider', $handler)
     ->middleware([$hmac])
-    ->publicRoute();
+    ->protectedByMiddleware('hmacAuth');
 ```
 
-## Canonical input
+## Canonical string
 
-The signature input is:
+The client must sign the exact raw request body and construct:
 
 ```text
-timestamp + "\n" + method + "\n" + path + "\n" + sha256(body)
+timestamp + "\n" + UPPERCASE_METHOD + "\n" + path + "\n" + sha256(rawBody)
 ```
 
-**Since 1.0.0:** the query string is **not** part of the canonical by default — authenticate security-relevant parameters by sending them in the request **body**. To also sign the query string, construct with `signQueryString: true`; the middleware then appends a fifth canonical line — the canonicalized query string (keys sorted with `ksort`, re-encoded via `http_build_query`) — and the client's signer must append the identical line:
+With `signQueryString: true`, append a fifth line containing the recursively key-sorted query encoded by PHP `http_build_query()`. Both client and server must use the same nested-array and space-encoding rules. Query parameters are unsigned by default, so enable this option or keep every security-relevant value in the signed body.
 
-```text
-timestamp + "\n" + method + "\n" + path + "\n" + sha256(body) + "\n" + canonicalQuery
-```
+Default headers are `X-Signature`, `X-Timestamp`, and `X-Key-Id`. The signature accepts hex, Base64, or Base64URL, optionally prefixed with `<algorithm>=`. Prefer one documented client encoding even though the server accepts several.
 
-Default headers:
+## Security rules
 
-- `X-Signature`
-- `X-Timestamp`
-- `X-Key-Id`
+- Generate high-entropy secrets and keep them out of source control and logs.
+- Rotate keys by accepting old and new key IDs briefly; remove the old key after rollout.
+- Use HTTPS. HMAC authenticates content but does not encrypt it.
+- A timestamp window limits delayed replay but does not prevent two identical requests inside the window. Combine writes with atomic idempotency or a single-use-token store when duplicate execution is unsafe.
+- Sign the raw transmitted bytes. JSON re-encoding, changed whitespace, or a different path causes a legitimate signature to fail.
+- Never choose the secret from request data except through a reviewed `HmacSecretProviderInterface` key-ID lookup.
 
-Accepted signature encodings:
+After verification, Better Route 1.1 writes `provider: hmac` and `subject: <key-id>` into the shared `auth` context and adds an `hmac` attribute. Audit and rate-limit middleware can use that identity.
 
-- lowercase hex
-- uppercase hex
-- base64
-- base64url
-- the same values prefixed with `sha256=`
+Test missing headers, unknown key ID, malformed and out-of-window timestamps, altered body/path/query, key rotation, and an unsigned-route configuration mistake.
 
-## Critical rules
-
-- Unknown key ID fails closed.
-- Missing signature/timestamp/key-id fails closed with `401`.
-- Timestamp outside `replayWindowSeconds` fails closed.
-- Signature comparison uses `Crypto::equals()`.
-- **(1.0.0) Query-string params are NOT authenticated by default.** Put signed/security-relevant parameters in the request body, or opt in with `signQueryString: true` (both server and client signer must include the canonical query line). A captured signed request could otherwise be replayed within the window with mutated query params.
-- Keep secrets outside code; use constants/env/options managed by the host application.
-- HMAC authenticates the sender and request body. It does not make the route private at the WordPress permission layer; pair public webhook routes with `->publicRoute()` deliberately.
-
-## Cross-references
-
-- Use `br-network-security` if the same route also needs a CIDR allowlist.
-- Use `br-routes` for `publicRoute()` vs `protectedByMiddleware()` intent.
-- Use `br-error-contract` for `401 invalid_signature` and `stale_signature` handling.
+Source references: `src/Middleware/Auth/HmacSignatureMiddleware.php`, `src/Middleware/Auth/HmacSecretProviderInterface.php`, `src/Middleware/Auth/ArrayHmacSecretProvider.php`.

@@ -12,7 +12,7 @@
     "skill_file": "SKILL.md"
   },
   "domain_count": 20,
-  "skill_count": 196,
+  "skill_count": 197,
   "domains": [
     {
       "slug": "better-data",
@@ -24,7 +24,7 @@
       "slug": "better-route",
       "path": "better-route",
       "readme_path": "better-route/README.md",
-      "skill_count": 22
+      "skill_count": 23
     },
     {
       "slug": "dev-tooling",
@@ -586,7 +586,7 @@
       "slug": "br-atomic-idempotency",
       "name": "br-atomic-idempotency",
       "domain": "better-route",
-      "description": "Use better-route 1.0.0 AtomicIdempotencyMiddleware for high-side-effect write endpoints where concurrent duplicate requests must not execute twice. Triggers on AtomicIdempotencyMiddleware, WpdbAtomicIdempotencyStore, ArrayAtomicIdempotencyStore, AtomicIdempotencyStoreInterface, idempotency_in_progress, Idempotency-Key for payment/order/subscription/account-like writes, or when reviewing retry-safe REST endpoints.",
+      "description": "Configure better-route 1.1 AtomicIdempotencyMiddleware for side-effectful POST, PUT, PATCH, or DELETE routes where concurrent duplicate execution must be prevented. Use for WpdbAtomicIdempotencyStore, lease-aware reservations, reservation_token schema migration, Idempotency-Key validation, idempotency_in_progress/conflict/replay behavior, safe stored responses, releaseOnThrowable, Woo write idempotency, or retry-safe payment/order/subscription/account operations.",
       "path": "better-route/br-atomic-idempotency",
       "skill_path": "better-route/br-atomic-idempotency/SKILL.md",
       "url": "https://raw.githubusercontent.com/Lonsdale201/wp-agent-skills/main/better-route/br-atomic-idempotency/SKILL.md",
@@ -597,11 +597,14 @@
         "author": "Soczó Kristóf",
         "contact": "mailto:lonsdale201@hotmail.com",
         "plugin": "better-route",
-        "plugin-version-tested": "1.0.0",
+        "plugin-version-tested": "1.1.0",
         "php-min": "8.1",
-        "last-updated": "2026-07-12",
-        "docs": [
-          "https://lonsdale201.github.io/better-docs/docs/better-route/agents"
+        "last-updated": "2026-07-13",
+        "source-refs": [
+          "src/Middleware/Write/AtomicIdempotencyMiddleware.php",
+          "src/Middleware/Write/WpdbAtomicIdempotencyStore.php",
+          "src/Middleware/Write/LeaseAwareAtomicIdempotencyStoreInterface.php",
+          "src/Middleware/Write/StoredResponseCodec.php"
         ]
       },
       "resources": [
@@ -617,16 +620,16 @@
       "has_examples": false,
       "has_scripts": false,
       "skill_md": {
-        "bytes": 3461,
-        "lines": 74,
-        "sha256": "228497a2ab858a9df3aa6eee30c69a1399b656c990ec12b7505b7924b7848f33"
+        "bytes": 5391,
+        "lines": 116,
+        "sha256": "9f603631e348fadb08f67cc27aefdb5831b8f20be07b6edc955b7d5a92132c17"
       }
     },
     {
       "slug": "br-audit-enrichment",
       "name": "br-audit-enrichment",
       "domain": "better-route",
-      "description": "Enrich better-route 0.5.0 audit events with safe operational metadata. Use when adding AuditEnricherMiddleware, AuditMiddleware context fields, auth user/provider metadata, hashed Idempotency-Key logging, resource/action audit fields, or reviewing sensitive REST write routes that need traceable but redacted audit events.",
+      "description": "Configure Better Route 1.1 audit events and safe enrichment. Use when logging route outcomes, authenticated identity, hashed idempotency keys, trusted client IPs, domain action metadata, or ensuring telemetry failures cannot change API behavior.",
       "path": "better-route/br-audit-enrichment",
       "skill_path": "better-route/br-audit-enrichment/SKILL.md",
       "url": "https://raw.githubusercontent.com/Lonsdale201/wp-agent-skills/main/better-route/br-audit-enrichment/SKILL.md",
@@ -637,11 +640,10 @@
         "author": "Soczó Kristóf",
         "contact": "mailto:lonsdale201@hotmail.com",
         "plugin": "better-route",
-        "plugin-version-tested": "0.5.0",
+        "plugin-version-tested": "1.1.0",
         "php-min": "8.1",
-        "docs": [
-          "https://lonsdale201.github.io/better-docs/docs/better-route/agents"
-        ]
+        "last-updated": "2026-07-13",
+        "docs": "https://lonsdale201.github.io/better-docs/docs/better-route/agents"
       },
       "resources": [
         {
@@ -656,16 +658,16 @@
       "has_examples": false,
       "has_scripts": false,
       "skill_md": {
-        "bytes": 2159,
-        "lines": 60,
-        "sha256": "3fa33d63fa4e099cde253c939a20946e975fc7f18459b4d459010e45701dd3fa"
+        "bytes": 2631,
+        "lines": 48,
+        "sha256": "28cc8784ee06689ecedf4e9e92f1cea53ef655491dac70c3189d1045a4b1b071"
       }
     },
     {
       "slug": "br-auth-middleware",
       "name": "br-auth-middleware",
       "domain": "better-route",
-      "description": "Pick and configure the right authentication middleware for a better-route endpoint — JwtAuthMiddleware (Bearer JWT, HS256 via Hs256JwtVerifier), RS256/ES256 JWT via Rs256JwksJwtVerifier + JwtBearerTokenVerifierAdapter, BearerTokenAuthMiddleware (custom bearer tokens with a verifier callback), ApplicationPasswordAuthMiddleware (WP application passwords), CookieNonceAuthMiddleware (browser-based cookie + nonce auth). Critical v0.3.0 JWT defaults — exp claim is REQUIRED (pass requireExpiration: false to disable), WpClaimsUserMapper no longer maps sub by default (re-add it explicitly if your tokens use sub as user ID), expectedIssuer / expectedAudience enable strict iss/aud checks, maxLifetimeSeconds caps token lifetime, maxTokenLength rejects oversized tokens before parsing. Use ->protectedByMiddleware() at the route layer to defer authorization to the middleware pipeline. Use when adding authentication to an endpoint or group. Triggers on JwtAuthMiddleware, BearerTokenAuthMiddleware, ApplicationPasswordAuthMiddleware, CookieNonceAuthMiddleware, Hs256JwtVerifier, Rs256JwksJwtVerifier, JwtBearerTokenVerifierAdapter, WpClaimsUserMapper.",
+      "description": "Configure Better Route 1.1 authentication with JWT, custom bearer tokens, WordPress Application Passwords, or cookie nonces. Use when protecting routes, mapping verified claims to WordPress users, enforcing scopes, or consuming the shared AuthContext identity.",
       "path": "better-route/br-auth-middleware",
       "skill_path": "better-route/br-auth-middleware/SKILL.md",
       "url": "https://raw.githubusercontent.com/Lonsdale201/wp-agent-skills/main/better-route/br-auth-middleware/SKILL.md",
@@ -676,55 +678,34 @@
         "author": "Soczó Kristóf",
         "contact": "mailto:lonsdale201@hotmail.com",
         "plugin": "better-route",
-        "plugin-version-tested": "1.0.0",
+        "plugin-version-tested": "1.1.0",
         "php-min": "8.1",
-        "last-updated": "2026-07-12",
-        "docs": [
-          "https://lonsdale201.github.io/better-docs/docs/better-route/agents"
-        ],
-        "source-refs": [
-          "src/Middleware/Jwt/Hs256JwtVerifier.php",
-          "src/Middleware/Jwt/Rs256JwksJwtVerifier.php",
-          "src/Middleware/Jwt/HttpJwksProvider.php",
-          "src/Middleware/Jwt/StaticJwksProvider.php",
-          "src/Middleware/Jwt/JwksProviderInterface.php",
-          "src/Middleware/Jwt/JwtAuthMiddleware.php",
-          "src/Middleware/Jwt/JwtVerifierInterface.php",
-          "src/Middleware/Auth/BearerTokenAuthMiddleware.php",
-          "src/Middleware/Auth/BearerTokenVerifierInterface.php",
-          "src/Middleware/Auth/ApplicationPasswordAuthMiddleware.php",
-          "src/Middleware/Auth/CookieNonceAuthMiddleware.php",
-          "src/Middleware/Auth/WpClaimsUserMapper.php",
-          "src/Middleware/Auth/ClaimsUserMapperInterface.php",
-          "src/Middleware/Auth/JwtBearerTokenVerifierAdapter.php",
-          "src/Middleware/Auth/AuthContext.php",
-          "src/Middleware/Auth/AuthIdentity.php",
-          "src/Router/RouteBuilder.php"
-        ]
+        "last-updated": "2026-07-13",
+        "docs": "https://lonsdale201.github.io/better-docs/docs/better-route/agents"
       },
       "resources": [
         {
           "path": "agents/openai.yaml",
           "repo_path": "better-route/br-auth-middleware/agents/openai.yaml",
           "type": "resource",
-          "bytes": 224,
-          "sha256": "36ef7ab843d39a0b594e51733d5fb831b4fbd95f2ea51552289d78e9cc12f8c2"
+          "bytes": 254,
+          "sha256": "8576e6f172596b1f50cee3d23710325fbc4df1259a6021119e5b650299003936"
         }
       ],
       "has_reference": false,
       "has_examples": false,
       "has_scripts": false,
       "skill_md": {
-        "bytes": 21389,
-        "lines": 412,
-        "sha256": "4414b9fb138bcdb39fbdc89ecfe284592d62954c07a3845aa9f41404a837bcd5"
+        "bytes": 4247,
+        "lines": 72,
+        "sha256": "e82448d53a1fb00de1fb8762ba791e4ca23191924c4fa8068eaaae9afedc8ef9"
       }
     },
     {
       "slug": "br-cors-public-client",
       "name": "br-cors-public-client",
       "domain": "better-route",
-      "description": "Configure better-route 1.0.0 CORS and preflight support for public REST clients. Use when adding CorsMiddleware, CorsPolicy, Router::options(), Authorization or Idempotency-Key cross-origin requests, credentialed browser clients, app clients, OPTIONS routes, or debugging failed REST preflight requests.",
+      "description": "Configure better-route 1.1 CORS for browser, mobile, and embedded WordPress REST clients. Use for CorsPolicy, CorsMiddleware, WordPressCorsBridge, allowed origins/methods/headers, credentials, OPTIONS preflight, Authorization, X-WP-Nonce, Idempotency-Key, If-Match, If-None-Match, X-Request-ID, core WordPress CORS conflicts, or cors_origin_denied errors. In 1.1 matched routes get authoritative bridge headers and every explicit OPTIONS route needs publicRoute or another permission intent.",
       "path": "better-route/br-cors-public-client",
       "skill_path": "better-route/br-cors-public-client/SKILL.md",
       "url": "https://raw.githubusercontent.com/Lonsdale201/wp-agent-skills/main/better-route/br-cors-public-client/SKILL.md",
@@ -735,11 +716,14 @@
         "author": "Soczó Kristóf",
         "contact": "mailto:lonsdale201@hotmail.com",
         "plugin": "better-route",
-        "plugin-version-tested": "1.0.0",
+        "plugin-version-tested": "1.1.0",
         "php-min": "8.1",
-        "last-updated": "2026-07-12",
-        "docs": [
-          "https://lonsdale201.github.io/better-docs/docs/better-route/agents"
+        "last-updated": "2026-07-13",
+        "source-refs": [
+          "src/Middleware/Cors/CorsMiddleware.php",
+          "src/Middleware/Cors/CorsPolicy.php",
+          "src/Middleware/Cors/WordPressCorsBridge.php",
+          "src/Middleware/WordPressRouteMiddlewareInterface.php"
         ]
       },
       "resources": [
@@ -747,24 +731,24 @@
           "path": "agents/openai.yaml",
           "repo_path": "better-route/br-cors-public-client/agents/openai.yaml",
           "type": "resource",
-          "bytes": 241,
-          "sha256": "2b5644bef97d5b6d059d2da033a61fae9c5bfc3c32497a28ebf9beb5bf8ad948"
+          "bytes": 251,
+          "sha256": "6107b5872366565e8237390c2d6d548ac704e998da64a5d4a2757b238d304e2e"
         }
       ],
       "has_reference": false,
       "has_examples": false,
       "has_scripts": false,
       "skill_md": {
-        "bytes": 2924,
-        "lines": 70,
-        "sha256": "22ad971fab34f6b2e69ba5fb40de9be57010145423b529b22353ec0b04c46c75"
+        "bytes": 4828,
+        "lines": 114,
+        "sha256": "6bfdfe46d1f096f433716df027d091158a1bcf29c047fa4580f8af12e4491d03"
       }
     },
     {
       "slug": "br-crypto",
       "name": "br-crypto",
       "domain": "better-route",
-      "description": "Use better-route 0.6.0 Crypto and CryptoEncoding helpers for secure random token generation, base64url encoding/decoding, hex tokens, and constant-time comparisons. Triggers on Crypto::token, Crypto::tokenHex, Crypto::equals, Crypto::base64UrlEncode, Crypto::base64UrlDecode, PKCE, nonce, state, CSRF token, HMAC compare, or replacing !== token comparisons. Updated 2026-05-02.",
+      "description": "Use Better Route 1.1 cryptographic helpers for secure random tokens, Hex/Base64/Base64URL encoding, strict Base64URL decoding, and constant-time secret comparison. Use when implementing nonces, state, PKCE, opaque tokens, or signature comparisons.",
       "path": "better-route/br-crypto",
       "skill_path": "better-route/br-crypto/SKILL.md",
       "url": "https://raw.githubusercontent.com/Lonsdale201/wp-agent-skills/main/better-route/br-crypto/SKILL.md",
@@ -775,18 +759,10 @@
         "author": "Soczó Kristóf",
         "contact": "mailto:lonsdale201@hotmail.com",
         "plugin": "better-route",
-        "plugin-version-tested": "0.6.0",
+        "plugin-version-tested": "1.1.0",
         "php-min": "8.1",
-        "last-updated": "2026-05-02",
-        "docs": [
-          "https://lonsdale201.github.io/better-docs/docs/better-route/agents"
-        ],
-        "source-refs": [
-          "src/Support/Crypto.php",
-          "src/Support/CryptoEncoding.php",
-          "src/Middleware/Jwt/Hs256JwtVerifier.php",
-          "tests/SecurityPrimitivesTest.php"
-        ]
+        "last-updated": "2026-07-13",
+        "docs": "https://lonsdale201.github.io/better-docs/docs/better-route/agents"
       },
       "resources": [
         {
@@ -801,16 +777,16 @@
       "has_examples": false,
       "has_scripts": false,
       "skill_md": {
-        "bytes": 2071,
-        "lines": 54,
-        "sha256": "3017331f0c22c83de663547c9b7accc640045e22df795c611d9482f4c5b17e56"
+        "bytes": 2070,
+        "lines": 44,
+        "sha256": "787de0eeeef2d51104589fb43601ebf39aad76e60e97505f4c3d5d7e29d30a2f"
       }
     },
     {
       "slug": "br-error-contract",
       "name": "br-error-contract",
       "domain": "better-route",
-      "description": "Reference for the standard better-route error envelope — every error response has shape {error: {code, message, requestId, details}}. Throw ApiException(message, status, errorCode, details) inside handlers; better-route's ErrorNormalizer wraps it. Critical normalization — for ANY non-ApiException failure the internal exception class + message are scrubbed: status >= 500 becomes 'Unexpected error.' (internal_error) and status 400 becomes 'Invalid request.' (invalid_request), both with EMPTY details. (Since 1.0.0 the 400 case no longer leaks details.exception; earlier versions exposed the class name.) Common error codes — validation_failed (400, fieldErrors), idempotency_key_required (400), invalid_token (401), insufficient permissions (403), not_found (404), idempotency_conflict / customer_exists / coupon_exists / woo_line_items_locked (409), precondition_failed (412), precondition_required (428), rate_limited (429), hpos_required / woo_unavailable (503). Use when handlers need to throw structured errors, or consumers need to interpret them. v0.6.0 adds opt-in OAuth RFC6749 error format via ->meta(['error_format' => 'oauth_rfc6749']) and OAuthErrorNormalizer. Triggers on ApiException, ErrorNormalizer, OAuthErrorNormalizer, error_format, oauth_rfc6749, fromThrowable, error envelope, fieldErrors.",
+      "description": "Produce and consume better-route 1.1 structured errors. Use for ApiException, Response, ErrorNormalizer, ResponseNormalizer, WP_Error conversion, OAuth RFC 6749 error_format, status/code/details/headers, Retry-After, validation_failed, idempotency/rate/optimistic-lock/Woo errors, leak prevention, or invalid response/header diagnostics. In 1.1 ApiException and Response validate status and headers, and WP_Error details are allowlisted.",
       "path": "better-route/br-error-contract",
       "skill_path": "better-route/br-error-contract/SKILL.md",
       "url": "https://raw.githubusercontent.com/Lonsdale201/wp-agent-skills/main/better-route/br-error-contract/SKILL.md",
@@ -821,22 +797,15 @@
         "author": "Soczó Kristóf",
         "contact": "mailto:lonsdale201@hotmail.com",
         "plugin": "better-route",
-        "plugin-version-tested": "1.0.0",
+        "plugin-version-tested": "1.1.0",
         "php-min": "8.1",
-        "last-updated": "2026-07-12",
-        "docs": [
-          "https://lonsdale201.github.io/better-docs/docs/better-route/agents"
-        ],
+        "last-updated": "2026-07-13",
         "source-refs": [
           "src/Http/ApiException.php",
-          "src/Http/ConflictException.php",
-          "src/Http/PreconditionFailedException.php",
           "src/Http/ErrorNormalizer.php",
           "src/Http/OAuthErrorNormalizer.php",
           "src/Http/ResponseNormalizer.php",
-          "src/Http/Response.php",
-          "src/Http/RequestContext.php",
-          "src/Resource/Resource.php"
+          "src/Http/Response.php"
         ]
       },
       "resources": [
@@ -852,16 +821,16 @@
       "has_examples": false,
       "has_scripts": false,
       "skill_md": {
-        "bytes": 19692,
-        "lines": 448,
-        "sha256": "fd71bd55a249c7fad3c0101023fee464ee53a23f084bcfe0cc361e4b734ea97c"
+        "bytes": 5060,
+        "lines": 140,
+        "sha256": "2dc02c89baf91a2a55bc7c3f1241aae9f0af13ba11bd2aa5df6f306cc798cbd1"
       }
     },
     {
       "slug": "br-etag-cache",
       "name": "br-etag-cache",
       "domain": "better-route",
-      "description": "HTTP-level response caching for better-route GET / HEAD endpoints via ETagMiddleware — computes a hash of the response body (sha1 of json_encode by default), emits an ETag response header, and returns 304 Not Modified with no body when the request's If-None-Match header matches. Critical scope rules — only applies to GET and HEAD; POST / PUT / PATCH / DELETE pass through unchanged (verified at src/Middleware/Cache/ETagMiddleware.php:28-30); only applies to 2xx-non-204 responses (verified at line 33-35) — 4xx / 5xx / 204 / 3xx skip ETag. The default body-hash approach is appropriate for small JSON responses; for large or expensive bodies pass an etagResolver callable to compute the hash from a cheap source (e.g. last_modified timestamp + ID). weak: true emits a weak validator (W/\"hash\"). Use when adding HTTP cacheability to read endpoints. Triggers on ETagMiddleware, If-None-Match, 304 Not Modified.",
+      "description": "Add better-route 1.1 ETag and If-None-Match handling to GET or HEAD routes. Use for ETagMiddleware, strong or weak validators, custom etagResolver, WP_REST_Response preservation, comma-separated validators, wildcard matching, 304 responses, Cache-Control, proxy-stripped ETag troubleshooting, or reviewing conditional HTTP caching. The middleware skips WP_Error, 204, redirects, and non-2xx responses.",
       "path": "better-route/br-etag-cache",
       "skill_path": "better-route/br-etag-cache/SKILL.md",
       "url": "https://raw.githubusercontent.com/Lonsdale201/wp-agent-skills/main/better-route/br-etag-cache/SKILL.md",
@@ -872,19 +841,11 @@
         "author": "Soczó Kristóf",
         "contact": "mailto:lonsdale201@hotmail.com",
         "plugin": "better-route",
-        "plugin-version-tested": "0.4.0",
+        "plugin-version-tested": "1.1.0",
         "php-min": "8.1",
-        "last-updated": "2026-04-29",
-        "docs": [
-          "https://lonsdale201.github.io/better-docs/docs/better-route/agents"
-        ],
+        "last-updated": "2026-07-13",
         "source-refs": [
           "src/Middleware/Cache/ETagMiddleware.php",
-          "src/Middleware/Cache/CachingMiddleware.php",
-          "src/Middleware/Cache/CacheStoreInterface.php",
-          "src/Middleware/Cache/TransientCacheStore.php",
-          "src/Middleware/MiddlewareInterface.php",
-          "src/Http/RequestContext.php",
           "src/Http/Response.php"
         ]
       },
@@ -893,16 +854,16 @@
       "has_examples": false,
       "has_scripts": false,
       "skill_md": {
-        "bytes": 12947,
-        "lines": 270,
-        "sha256": "f3383b2dc560ce4289ee461d4527b5b655f42769137e0a76d5e924aa5e6e8215"
+        "bytes": 4254,
+        "lines": 116,
+        "sha256": "a05940b983bb17d8cad67e30f762fc142c56b58a0f3a932282a7f7e806027deb"
       }
     },
     {
       "slug": "br-hmac-signature",
       "name": "br-hmac-signature",
       "domain": "better-route",
-      "description": "Configure better-route 1.0.0 HmacSignatureMiddleware for signed server-to-server REST requests and webhooks. Use when adding X-Signature, X-Timestamp, X-Key-Id, HmacSecretProviderInterface, ArrayHmacSecretProvider, request body HMAC verification, timestamp replay window checks, multi-key rotation, or replacing unsigned public POST endpoints with shared-secret authentication. Updated 2026-07-12.",
+      "description": "Configure Better Route 1.1 HMAC authentication for webhooks and server-to-server REST requests. Use when signing request timestamps, methods, paths, raw bodies, optional query strings, rotating key IDs, or consuming the shared HMAC AuthContext identity.",
       "path": "better-route/br-hmac-signature",
       "skill_path": "better-route/br-hmac-signature/SKILL.md",
       "url": "https://raw.githubusercontent.com/Lonsdale201/wp-agent-skills/main/better-route/br-hmac-signature/SKILL.md",
@@ -913,19 +874,10 @@
         "author": "Soczó Kristóf",
         "contact": "mailto:lonsdale201@hotmail.com",
         "plugin": "better-route",
-        "plugin-version-tested": "1.0.0",
+        "plugin-version-tested": "1.1.0",
         "php-min": "8.1",
-        "last-updated": "2026-07-12",
-        "docs": [
-          "https://lonsdale201.github.io/better-docs/docs/better-route/agents"
-        ],
-        "source-refs": [
-          "src/Middleware/Auth/HmacSignatureMiddleware.php",
-          "src/Middleware/Auth/HmacSecretProviderInterface.php",
-          "src/Middleware/Auth/ArrayHmacSecretProvider.php",
-          "src/Support/Crypto.php",
-          "tests/SecurityPrimitivesTest.php"
-        ]
+        "last-updated": "2026-07-13",
+        "docs": "https://lonsdale201.github.io/better-docs/docs/better-route/agents"
       },
       "resources": [
         {
@@ -940,16 +892,16 @@
       "has_examples": false,
       "has_scripts": false,
       "skill_md": {
-        "bytes": 3670,
-        "lines": 90,
-        "sha256": "a23cdb25440feff2303c1f32c0fc738cf5e3ef3fa163ae6ef33266d1ef437280"
+        "bytes": 3257,
+        "lines": 62,
+        "sha256": "f949ab6fa96067c22a2d848828c0e525a15cb353954b07fe2d50a01205d0555f"
       }
     },
     {
       "slug": "br-idempotency",
       "name": "br-idempotency",
       "domain": "better-route",
-      "description": "Configure better-route idempotent write behavior. Use IdempotencyMiddleware for replay-cache semantics and use the separate br-atomic-idempotency skill / AtomicIdempotencyMiddleware for side-effectful writes where concurrent duplicate execution must be prevented. Client sends an Idempotency-Key header; the classic middleware caches the first completed response and returns it on retries within the TTL. Store options — ArrayIdempotencyStore (in-memory, tests), TransientIdempotencyStore (WP transients), and WpdbIdempotencyStore (custom DB table, recommended for production). Critical requirement — call WpdbIdempotencyStore::installSchema() once on plugin activation. Cross-database table names (containing .) are rejected by the table-name guard at WpdbIdempotencyStore.php:107. v0.3.0 default key is identity-aware — pass an explicit keyResolver to preserve pre-v0.3 keys. requireKey: true rejects requests without an Idempotency-Key header (400 idempotency_key_required). Use when duplicate-write protection is needed. Triggers on IdempotencyMiddleware, WpdbIdempotencyStore, Idempotency-Key.",
+      "description": "Configure better-route 1.1 replay-cache idempotency with IdempotencyMiddleware and Idempotency-Key. Use for ArrayIdempotencyStore, TransientIdempotencyStore, WpdbIdempotencyStore, installSchema, identity-aware canonical keys, body fingerprints, key conflicts, replay headers, key validation, custom methods/resolvers, or choosing between classic and atomic idempotency. Use AtomicIdempotencyMiddleware instead when concurrent duplicate side effects must be prevented.",
       "path": "better-route/br-idempotency",
       "skill_path": "better-route/br-idempotency/SKILL.md",
       "url": "https://raw.githubusercontent.com/Lonsdale201/wp-agent-skills/main/better-route/br-idempotency/SKILL.md",
@@ -960,21 +912,14 @@
         "author": "Soczó Kristóf",
         "contact": "mailto:lonsdale201@hotmail.com",
         "plugin": "better-route",
-        "plugin-version-tested": "1.0.0",
+        "plugin-version-tested": "1.1.0",
         "php-min": "8.1",
-        "last-updated": "2026-07-12",
-        "docs": [
-          "https://lonsdale201.github.io/better-docs/docs/better-route/agents"
-        ],
+        "last-updated": "2026-07-13",
         "source-refs": [
           "src/Middleware/Write/IdempotencyMiddleware.php",
-          "src/Middleware/Write/IdempotencyStoreInterface.php",
-          "src/Middleware/Write/ArrayIdempotencyStore.php",
-          "src/Middleware/Write/TransientIdempotencyStore.php",
           "src/Middleware/Write/WpdbIdempotencyStore.php",
-          "src/Middleware/Write/AtomicIdempotencyMiddleware.php",
-          "src/Middleware/Write/WpdbAtomicIdempotencyStore.php",
-          "src/Http/ApiException.php"
+          "src/Middleware/Write/TransientIdempotencyStore.php",
+          "src/Middleware/Write/StoredResponseCodec.php"
         ]
       },
       "resources": [],
@@ -982,16 +927,16 @@
       "has_examples": false,
       "has_scripts": false,
       "skill_md": {
-        "bytes": 16807,
-        "lines": 322,
-        "sha256": "c17e4093010765d5d36322fcf2127cdce3b705173a7d0b5d608b84d54ccb02a5"
+        "bytes": 5208,
+        "lines": 104,
+        "sha256": "16a6586c52773f9a52478885b488ac5978c23b1257adf984373a072bfde2d5b1"
       }
     },
     {
       "slug": "br-install-and-migrate",
       "name": "br-install-and-migrate",
       "domain": "better-route",
-      "description": "Install better-route into a WordPress project and migrate to v1.0.0 — on Packagist since 1.0.0 (plain composer require), PHP 8.1+ requirement, all route registration inside rest_api_init. Important — v0.4.0 raw Router write methods (POST / PUT / PATCH / DELETE) DENY by default at the WP permission layer; every write route now needs an explicit intent declaration via ->permission(callable), ->protectedByMiddleware($security), or ->publicRoute(). GET is unchanged. Older v0.3.0 breaking changes still apply when jumping from <0.3 — OpenAPI doc defaults to manage_options, custom-table resources are deny-by-default, JWT exp claim required, identity-aware default keys for cache / idempotency / rate-limit. v0.6.0 adds JWKS JWT verification, Crypto helpers, HMAC signatures, trusted-proxy IP/CIDR allowlists, single-use token stores, and opt-in OAuth error format. v1.0.0 is the first stable release and hardens those defaults (WpClaimsUserMapper email/login mapping off by default, XFF spoof-resistant client IP, CORS wildcard+credentials rejected, granted-scope wildcards opt-in) plus WooCommerce fixes (money as strings, HPOS 503, product price read-only) — see the v1.0.0 behavior-change checklist. Use when adding better-route to a project, bumping the constraint to ^1.0, or triaging unintended 403s on writes after upgrade. Triggers on composer require better-route, ->permission, ->protectedByMiddleware, ->publicRoute, \"better-route 403 on POST\".",
+      "description": "Install better-route from Packagist or migrate a WordPress integration to better-route 1.1. Use when adding better-route/better-route, changing the Composer constraint to ^1.1, upgrading from 1.0 or pre-1.0 releases, diagnosing new 403 route responses, migrating atomic idempotency schema, or reviewing 1.1 behavior changes in routing, Resource CRUD, CORS, ETag, rate limiting, JWT/JWKS, OpenAPI, and WooCommerce routes.",
       "path": "better-route/br-install-and-migrate",
       "skill_path": "better-route/br-install-and-migrate/SKILL.md",
       "url": "https://raw.githubusercontent.com/Lonsdale201/wp-agent-skills/main/better-route/br-install-and-migrate/SKILL.md",
@@ -1002,26 +947,19 @@
         "author": "Soczó Kristóf",
         "contact": "mailto:lonsdale201@hotmail.com",
         "plugin": "better-route",
-        "plugin-version-tested": "1.0.0",
+        "plugin-version-tested": "1.1.0",
         "php-min": "8.1",
-        "last-updated": "2026-07-12",
+        "last-updated": "2026-07-13",
         "docs": [
           "https://lonsdale201.github.io/better-docs/docs/better-route/agents",
           "https://github.com/Lonsdale201/better-route"
         ],
         "source-refs": [
-          "src/Router/RouteBuilder.php",
-          "src/Resource/ResourcePolicy.php",
-          "src/Middleware/Jwt/Hs256JwtVerifier.php",
-          "src/Middleware/Jwt/Rs256JwksJwtVerifier.php",
-          "src/Middleware/Auth/HmacSignatureMiddleware.php",
-          "src/Middleware/Network/IpAllowlistMiddleware.php",
-          "src/Middleware/Write/SingleUseTokenMiddleware.php",
-          "src/Support/Crypto.php",
-          "src/Middleware/Auth/WpClaimsUserMapper.php",
-          "src/OpenApi/OpenApiRouteRegistrar.php",
-          "src/BetterRoute.php",
-          "composer.json"
+          "README.md",
+          "composer.json",
+          "src/Router/Router.php",
+          "src/Middleware/Write/WpdbAtomicIdempotencyStore.php",
+          "src/Integration/Woo/WooRouteRegistrar.php"
         ]
       },
       "resources": [
@@ -1029,24 +967,24 @@
           "path": "agents/openai.yaml",
           "repo_path": "better-route/br-install-and-migrate/agents/openai.yaml",
           "type": "resource",
-          "bytes": 222,
-          "sha256": "a1d43100a6601cd9075985896f47548dde4e4ac2d5a2c24a9a76a50c6bb2d671"
+          "bytes": 229,
+          "sha256": "3a339f22f819e1ed2f4d681185613e0ce306349a37963fb8334582aafe29f28c"
         }
       ],
       "has_reference": false,
       "has_examples": false,
       "has_scripts": false,
       "skill_md": {
-        "bytes": 17652,
-        "lines": 302,
-        "sha256": "d4b585c5e75288f4994008aed1115939667e6077c0135056cebec8a5717b67ec"
+        "bytes": 9069,
+        "lines": 148,
+        "sha256": "ceb3ff22dc0c8eff716080ab5ec7549baa87dd482e50e650f477a1c19fd4823b"
       }
     },
     {
       "slug": "br-jwks-jwt-auth",
       "name": "br-jwks-jwt-auth",
       "domain": "better-route",
-      "description": "Configure better-route 1.0.0 RS256/ES256 JWT verification from JWKS. Use when adding Rs256JwksJwtVerifier, JwksProviderInterface, HttpJwksProvider, StaticJwksProvider, JwtBearerTokenVerifierAdapter, strict JOSE kid matching, issuer/audience checks, JWKS transient cache, better_route/jwks_refresh, or OIDC/OAuth bearer token verification. Rejects none and HS* algorithms. Updated 2026-07-12.",
+      "description": "Configure Better Route 1.1 RS256 or ES256 JWT verification from a local or HTTPS JWKS. Use when integrating OIDC/OAuth bearer tokens, selecting keys by kid, validating issuer/audience/lifetime, or operating JWKS caching and refresh behavior safely.",
       "path": "better-route/br-jwks-jwt-auth",
       "skill_path": "better-route/br-jwks-jwt-auth/SKILL.md",
       "url": "https://raw.githubusercontent.com/Lonsdale201/wp-agent-skills/main/better-route/br-jwks-jwt-auth/SKILL.md",
@@ -1057,23 +995,10 @@
         "author": "Soczó Kristóf",
         "contact": "mailto:lonsdale201@hotmail.com",
         "plugin": "better-route",
-        "plugin-version-tested": "1.0.0",
+        "plugin-version-tested": "1.1.0",
         "php-min": "8.1",
-        "last-updated": "2026-07-12",
-        "docs": [
-          "https://lonsdale201.github.io/better-docs/docs/better-route/agents"
-        ],
-        "source-refs": [
-          "src/Middleware/Jwt/Rs256JwksJwtVerifier.php",
-          "src/Middleware/Jwt/JwksProviderInterface.php",
-          "src/Middleware/Jwt/HttpJwksProvider.php",
-          "src/Middleware/Jwt/StaticJwksProvider.php",
-          "src/Middleware/Jwt/JwksKeySanitizer.php",
-          "src/Middleware/Jwt/JwtVerifierInterface.php",
-          "src/Middleware/Auth/JwtBearerTokenVerifierAdapter.php",
-          "src/Middleware/Auth/BearerTokenAuthMiddleware.php",
-          "tests/SecurityPrimitivesTest.php"
-        ]
+        "last-updated": "2026-07-13",
+        "docs": "https://lonsdale201.github.io/better-docs/docs/better-route/agents"
       },
       "resources": [
         {
@@ -1081,23 +1006,23 @@
           "repo_path": "better-route/br-jwks-jwt-auth/agents/openai.yaml",
           "type": "resource",
           "bytes": 216,
-          "sha256": "3077b07f9f70a24deb11db7b1819202eed78912348cc649ee70e802afa39d630"
+          "sha256": "11afb47c3c74f4588fbf80181af644ed51b0e6e437fc8197f63793c373d9aeea"
         }
       ],
       "has_reference": false,
       "has_examples": false,
       "has_scripts": false,
       "skill_md": {
-        "bytes": 4343,
-        "lines": 99,
-        "sha256": "5918584a9bf1a12143a92f848a3e9c22254dd265e24102d58ebd11ccc1723f8d"
+        "bytes": 3618,
+        "lines": 77,
+        "sha256": "9c6b43e37a9176bfbd613746c4a416f8665b0b07f13293949f8a3f1e4e88c536"
       }
     },
     {
       "slug": "br-network-security",
       "name": "br-network-security",
       "domain": "better-route",
-      "description": "Use better-route 1.0.0 network security middleware for trusted-proxy client IP resolution and CIDR allowlists. Triggers on TrustedProxyClientIpResolver, ClientIpResolverInterface, CidrMatcher, IpAllowlistMiddleware, CF-Connecting-IP, X-Forwarded-For, REMOTE_ADDR, trusted proxy CIDRs, IP allowlist, webhook IP pinning, or replacing direct forwarded-header reads. Updated 2026-07-12.",
+      "description": "Configure Better Route 1.1 trusted-proxy client IP resolution and CIDR allowlists. Use behind Cloudflare, nginx, load balancers, or reverse proxies when authorization, rate limiting, or audit data depends on the real client IP.",
       "path": "better-route/br-network-security",
       "skill_path": "better-route/br-network-security/SKILL.md",
       "url": "https://raw.githubusercontent.com/Lonsdale201/wp-agent-skills/main/better-route/br-network-security/SKILL.md",
@@ -1108,21 +1033,10 @@
         "author": "Soczó Kristóf",
         "contact": "mailto:lonsdale201@hotmail.com",
         "plugin": "better-route",
-        "plugin-version-tested": "1.0.0",
+        "plugin-version-tested": "1.1.0",
         "php-min": "8.1",
-        "last-updated": "2026-07-12",
-        "docs": [
-          "https://lonsdale201.github.io/better-docs/docs/better-route/agents"
-        ],
-        "source-refs": [
-          "src/Middleware/Network/TrustedProxyClientIpResolver.php",
-          "src/Middleware/Network/ClientIpResolverInterface.php",
-          "src/Middleware/Network/CidrMatcher.php",
-          "src/Middleware/Network/IpAllowlistMiddleware.php",
-          "src/Http/ClientIpResolver.php",
-          "src/Middleware/RateLimit/RateLimitMiddleware.php",
-          "tests/SecurityPrimitivesTest.php"
-        ]
+        "last-updated": "2026-07-13",
+        "docs": "https://lonsdale201.github.io/better-docs/docs/better-route/agents"
       },
       "resources": [
         {
@@ -1137,16 +1051,16 @@
       "has_examples": false,
       "has_scripts": false,
       "skill_md": {
-        "bytes": 3974,
-        "lines": 89,
-        "sha256": "c645e9914529f7562d4691526cc6cf7d7c7fc0712cbd35799a0f280f1eb89978"
+        "bytes": 2840,
+        "lines": 56,
+        "sha256": "c91472a20af5a5df0da2460dffb4fb559f3a38d976c3e5b7ce6e2f23053b78de"
       }
     },
     {
       "slug": "br-openapi",
       "name": "br-openapi",
       "domain": "better-route",
-      "description": "Generate and serve OpenAPI 3.1.0 documentation for a better-route API — collect contracts via $router->contracts(), pass to BetterRoute::openApiExporter()->export($contracts, $options) for the document, OR use OpenApiRouteRegistrar::register() to publish it as a live /openapi.json endpoint. Critical v0.3.0 default — OpenApiRouteRegistrar's permission is current_user_can( 'manage_options'); the doc is admin-only by default. To make it public, pass 'permissionCallback' => static fn (): bool => true. strictSchemas: true throws InvalidArgumentException on unknown $ref components instead of substituting the v0.2.0 forgiving default ({type: object, additionalProperties: true}); strictSchemas: false preserves backwards-compat. Compose with WooCommerce schemas via BetterRoute::wooOpenApiComponents() and DTO schemas via BetterData\\Route\\BetterRouteBridge::openApiComponents(). Use when exporting OpenAPI docs. Triggers on OpenApiExporter, openApiExporter, OpenApiRouteRegistrar, openapi.json.",
+      "description": "Generate or serve better-route 1.1 OpenAPI 3.1 documents from Router/Resource/Woo contracts. Use for OpenApiExporter, OpenApiRouteRegistrar, contracts, contractsFromSources, route args to parameters, explicit parameter overrides, custom responses, OPTIONS 204, strictSchemas, components, securitySchemes, globalSecurity, publicRoute security, Resource response envelopes, Woo schemas, or openapi.json permissions.",
       "path": "better-route/br-openapi",
       "skill_path": "better-route/br-openapi/SKILL.md",
       "url": "https://raw.githubusercontent.com/Lonsdale201/wp-agent-skills/main/better-route/br-openapi/SKILL.md",
@@ -1157,20 +1071,15 @@
         "author": "Soczó Kristóf",
         "contact": "mailto:lonsdale201@hotmail.com",
         "plugin": "better-route",
-        "plugin-version-tested": "1.0.0",
+        "plugin-version-tested": "1.1.0",
         "php-min": "8.1",
-        "last-updated": "2026-07-12",
-        "docs": [
-          "https://lonsdale201.github.io/better-docs/docs/better-route/agents"
-        ],
+        "last-updated": "2026-07-13",
         "source-refs": [
           "src/OpenApi/OpenApiExporter.php",
           "src/OpenApi/OpenApiRouteRegistrar.php",
           "src/Router/Router.php",
-          "src/Router/RouteBuilder.php",
           "src/Resource/Resource.php",
-          "src/Integration/Woo/WooOpenApiComponents.php",
-          "src/BetterRoute.php"
+          "src/Integration/Woo/WooOpenApiComponents.php"
         ]
       },
       "resources": [],
@@ -1178,16 +1087,54 @@
       "has_examples": false,
       "has_scripts": false,
       "skill_md": {
-        "bytes": 16315,
-        "lines": 359,
-        "sha256": "175acfc7e4e4ff658d5f3b224142975bfbc4235f19623319fa28b1db9d3cf528"
+        "bytes": 6420,
+        "lines": 184,
+        "sha256": "bf6b1d33d5884186fd1124b28072c34dce051baeb094a76d2ee197c05de279d3"
+      }
+    },
+    {
+      "slug": "br-optimistic-locking",
+      "name": "br-optimistic-locking",
+      "domain": "better-route",
+      "description": "Configure Better Route 1.1 optimistic locking for REST writes with If-Match or version parameters and an atomic per-resource critical section. Use when preventing stale updates, lost writes, or two cooperating Better Route requests from passing the same version check concurrently.",
+      "path": "better-route/br-optimistic-locking",
+      "skill_path": "better-route/br-optimistic-locking/SKILL.md",
+      "url": "https://raw.githubusercontent.com/Lonsdale201/wp-agent-skills/main/better-route/br-optimistic-locking/SKILL.md",
+      "raw_url": "https://raw.githubusercontent.com/Lonsdale201/wp-agent-skills/main/better-route/br-optimistic-locking/SKILL.md",
+      "html_url": "https://github.com/Lonsdale201/wp-agent-skills/blob/main/better-route/br-optimistic-locking/SKILL.md",
+      "directory_url": "https://github.com/Lonsdale201/wp-agent-skills/tree/main/better-route/br-optimistic-locking",
+      "metadata": {
+        "author": "Soczó Kristóf",
+        "contact": "mailto:lonsdale201@hotmail.com",
+        "plugin": "better-route",
+        "plugin-version-tested": "1.1.0",
+        "php-min": "8.1",
+        "last-updated": "2026-07-13",
+        "docs": "https://lonsdale201.github.io/better-docs/docs/better-route/agents"
+      },
+      "resources": [
+        {
+          "path": "agents/openai.yaml",
+          "repo_path": "better-route/br-optimistic-locking/agents/openai.yaml",
+          "type": "resource",
+          "bytes": 249,
+          "sha256": "a4f24a6bbcda9b352127bb484619084dc953cadf45d374e653d4d976b6bdbcdd"
+        }
+      ],
+      "has_reference": false,
+      "has_examples": false,
+      "has_scripts": false,
+      "skill_md": {
+        "bytes": 4141,
+        "lines": 72,
+        "sha256": "320cc9b0ebffa9850a68c3505038aa2092a0e1adc62935a637546008701abb0e"
       }
     },
     {
       "slug": "br-owned-resource-guards",
       "name": "br-owned-resource-guards",
       "domain": "better-route",
-      "description": "Add better-route 0.5.0 ownership checks for user-owned REST resources. Use when a route or Resource DSL endpoint must ensure the authenticated user owns the order, record, token, subscription, membership, profile object, or other per-user object. Triggers on OwnershipGuardMiddleware, OwnedResourcePolicy, currentUserOwns, ownerResolver, bypassCapability, and customer-owned or user-owned API routes.",
+      "description": "Add Better Route 1.1 ownership authorization to raw routes and Resource DSL endpoints. Use when authenticated users may access only their own records, orders, profiles, memberships, tokens, or subscriptions.",
       "path": "better-route/br-owned-resource-guards",
       "skill_path": "better-route/br-owned-resource-guards/SKILL.md",
       "url": "https://raw.githubusercontent.com/Lonsdale201/wp-agent-skills/main/better-route/br-owned-resource-guards/SKILL.md",
@@ -1198,11 +1145,10 @@
         "author": "Soczó Kristóf",
         "contact": "mailto:lonsdale201@hotmail.com",
         "plugin": "better-route",
-        "plugin-version-tested": "0.5.0",
+        "plugin-version-tested": "1.1.0",
         "php-min": "8.1",
-        "docs": [
-          "https://lonsdale201.github.io/better-docs/docs/better-route/agents"
-        ]
+        "last-updated": "2026-07-13",
+        "docs": "https://lonsdale201.github.io/better-docs/docs/better-route/agents"
       },
       "resources": [
         {
@@ -1217,16 +1163,16 @@
       "has_examples": false,
       "has_scripts": false,
       "skill_md": {
-        "bytes": 2693,
-        "lines": 65,
-        "sha256": "774715a6ce653cc81eb783a5706774e077fda9a4b727faa5395e6325acb426e5"
+        "bytes": 2766,
+        "lines": 64,
+        "sha256": "5b2e320502d07f2827eb6fb1350a25896ccb1015dfe22f7232c5ea9b92c1eea0"
       }
     },
     {
       "slug": "br-rate-limiting",
       "name": "br-rate-limiting",
       "domain": "better-route",
-      "description": "Throttle better-route endpoints via RateLimitMiddleware with two backend choices — WpObjectCacheRateLimiter (preferred, needs persistent object cache like Redis or Memcached; throws RuntimeException at construction if wp_cache_* functions are unavailable) and TransientRateLimiter (fallback, uses WP transients; works without object cache but has higher write latency). Critical v0.3.0 default key is identity-aware — {provider}:user:{userId} → {provider}:sub:{subject} → 'guest', so authenticated users get a per-user limit and anonymous traffic keys on 'guest'. Pre-v0.3 default was IP-based; pass an explicit keyResolver to preserve old keys. In 0.6.0 RateLimitMiddleware can use either legacy Http\\ClientIpResolver or new TrustedProxyClientIpResolver / ClientIpResolverInterface with IPv4/IPv6 CIDRs. REMOTE_ADDR must be in trusted proxy CIDRs before any X-Forwarded-For / CF-Connecting-IP header is consulted. Use when adding throttling. Triggers on RateLimitMiddleware, WpObjectCacheRateLimiter, TransientRateLimiter, ClientIpResolver, TrustedProxyClientIpResolver.",
+      "description": "Configure better-route 1.1 RateLimitMiddleware with atomic fixed-window storage. Use for WpObjectCacheRateLimiter, TransientRateLimiter, persistent external object cache checks, wp_cache_incr, MySQL named locks, identity/native WordPress/IP keys, trusted proxies, Retry-After and X-RateLimit headers, custom key resolvers, or diagnosing shared guest buckets and race-prone rate limiting.",
       "path": "better-route/br-rate-limiting",
       "skill_path": "better-route/br-rate-limiting/SKILL.md",
       "url": "https://raw.githubusercontent.com/Lonsdale201/wp-agent-skills/main/better-route/br-rate-limiting/SKILL.md",
@@ -1237,23 +1183,15 @@
         "author": "Soczó Kristóf",
         "contact": "mailto:lonsdale201@hotmail.com",
         "plugin": "better-route",
-        "plugin-version-tested": "0.6.0",
+        "plugin-version-tested": "1.1.0",
         "php-min": "8.1",
-        "last-updated": "2026-05-02",
-        "docs": [
-          "https://lonsdale201.github.io/better-docs/docs/better-route/agents"
-        ],
+        "last-updated": "2026-07-13",
         "source-refs": [
           "src/Middleware/RateLimit/RateLimitMiddleware.php",
-          "src/Middleware/RateLimit/RateLimiterInterface.php",
-          "src/Middleware/RateLimit/RateLimitResult.php",
           "src/Middleware/RateLimit/WpObjectCacheRateLimiter.php",
           "src/Middleware/RateLimit/TransientRateLimiter.php",
-          "src/Http/ClientIpResolver.php",
-          "src/Middleware/Network/TrustedProxyClientIpResolver.php",
-          "src/Middleware/Network/ClientIpResolverInterface.php",
-          "src/Middleware/Network/CidrMatcher.php",
-          "src/Http/ApiException.php"
+          "src/Support/RequestIdentity.php",
+          "src/Middleware/Network/TrustedProxyClientIpResolver.php"
         ]
       },
       "resources": [
@@ -1269,16 +1207,16 @@
       "has_examples": false,
       "has_scripts": false,
       "skill_md": {
-        "bytes": 17387,
-        "lines": 357,
-        "sha256": "d0c6ba3951d3cf1f4db60453966eb6fee0dbec81807341dffc10cca573fd8407"
+        "bytes": 5560,
+        "lines": 151,
+        "sha256": "4bc68782b593e459d6f488dd3a153218d907cbed42c04212d3b6c1b664adca10"
       }
     },
     {
       "slug": "br-resource-cpt",
       "name": "br-resource-cpt",
       "domain": "better-route",
-      "description": "Create CRUD endpoints over a custom post type via better-route's Resource API — Resource::make('books')->sourceCpt( 'book')->fields([...])->register($router) generates list / get / create / update / delete routes automatically. Important — the source-verified visibility method is ->cptVisibleStatuses(['publish', 'draft']) (the agents.md doc lists ->allowedStatuses but the code at src/Resource/Resource.php:235 is named cptVisibleStatuses; same semantics, different name). Other Resource builder methods — restNamespace, fields, filters, sort, policy, writeSchema (alias payloadSchema), fieldPolicy, deleteMode ('force' or 'trash'), defaultPerPage, maxPerPage, maxOffset, uniformEnvelope, cptVisibilityPolicy, filterSchema. Use when generating CRUD over a CPT. Triggers on Resource::make, ->sourceCpt, \"REST CRUD over post type\" with better-route.",
+      "description": "Build better-route 1.1 CRUD endpoints over a WordPress custom post type with Resource::make, restNamespace, sourceCpt, allow, fields, filters, sort, filterSchema, writeSchema, policy, fieldPolicy, cptVisibleStatuses, cptVisibilityPolicy, pagination, deleteMode, uniformEnvelope, or a custom CPT repository. Use when exposing CPT records safely, reviewing visibility and pagination, or generating Resource OpenAPI contracts.",
       "path": "better-route/br-resource-cpt",
       "skill_path": "better-route/br-resource-cpt/SKILL.md",
       "url": "https://raw.githubusercontent.com/Lonsdale201/wp-agent-skills/main/better-route/br-resource-cpt/SKILL.md",
@@ -1289,20 +1227,14 @@
         "author": "Soczó Kristóf",
         "contact": "mailto:lonsdale201@hotmail.com",
         "plugin": "better-route",
-        "plugin-version-tested": "0.4.0",
+        "plugin-version-tested": "1.1.0",
         "php-min": "8.1",
-        "last-updated": "2026-04-29",
-        "docs": [
-          "https://lonsdale201.github.io/better-docs/docs/better-route/agents"
-        ],
+        "last-updated": "2026-07-13",
         "source-refs": [
           "src/Resource/Resource.php",
-          "src/Resource/ResourcePolicy.php",
           "src/Resource/Cpt/WordPressCptRepository.php",
-          "src/Resource/Cpt/CptRepositoryInterface.php",
-          "src/Resource/Cpt/CptListQuery.php",
           "src/Resource/Cpt/CptListQueryParser.php",
-          "src/Router/Router.php"
+          "src/Resource/ResourcePolicy.php"
         ]
       },
       "resources": [],
@@ -1310,16 +1242,16 @@
       "has_examples": false,
       "has_scripts": false,
       "skill_md": {
-        "bytes": 15087,
-        "lines": 335,
-        "sha256": "fb8721c74592d5fa560f6e5874cc0cab083a51e86c0b89b129292059ce7a3c06"
+        "bytes": 6486,
+        "lines": 157,
+        "sha256": "7b2540d0b8dfc4e8d99e1287ab581247990c67bd3ae48add4124b9119773c485"
       }
     },
     {
       "slug": "br-resource-policy",
       "name": "br-resource-policy",
       "domain": "better-route",
-      "description": "Configure permission policies on a better-route Resource — use a ResourcePolicy preset (publicReadPrivateWrite, adminOnly, capabilities, callbacks) for per-action authorization, or ->fieldPolicy([...]) for per-field write authorization. The four presets all return ['permissions' => [...]] with different configurations — publicReadPrivateWrite opens list/get and gates writes on a capability, adminOnly gates everything on a single capability (default manage_options), capabilities wraps any per-action map (action keys: list, get, create, update, delete, *), callbacks does the same with callable values. Important — denied fields under fieldPolicy are stripped silently from the payload, NOT rejected with an error; combine with response-side validation if consumers need to know. Use when configuring a Resource's permissions or per-field writes. Triggers on ResourcePolicy::, ->policy([), ->fieldPolicy([ in better-route Resources.",
+      "description": "Configure better-route 1.1 Resource action and field authorization. Use for ResourcePolicy::publicReadPrivateWrite, adminOnly, capabilities, callbacks, Resource::policy, permissionCallback, per-action rules, wildcard rules, fieldPolicy, public Resource OpenAPI security, ownership policies, or reviewing CPT/table CRUD permissions. In 1.1 denied fields are rejected rather than silently stripped.",
       "path": "better-route/br-resource-policy",
       "skill_path": "better-route/br-resource-policy/SKILL.md",
       "url": "https://raw.githubusercontent.com/Lonsdale201/wp-agent-skills/main/better-route/br-resource-policy/SKILL.md",
@@ -1330,15 +1262,13 @@
         "author": "Soczó Kristóf",
         "contact": "mailto:lonsdale201@hotmail.com",
         "plugin": "better-route",
-        "plugin-version-tested": "0.4.0",
+        "plugin-version-tested": "1.1.0",
         "php-min": "8.1",
-        "last-updated": "2026-04-29",
-        "docs": [
-          "https://lonsdale201.github.io/better-docs/docs/better-route/agents"
-        ],
+        "last-updated": "2026-07-13",
         "source-refs": [
           "src/Resource/ResourcePolicy.php",
-          "src/Resource/Resource.php"
+          "src/Resource/Resource.php",
+          "src/Resource/OwnedResourcePolicy.php"
         ]
       },
       "resources": [],
@@ -1346,16 +1276,16 @@
       "has_examples": false,
       "has_scripts": false,
       "skill_md": {
-        "bytes": 14928,
-        "lines": 313,
-        "sha256": "af266180ab64acc9657c7fb23fc7af475dc33a6fbbd676e81a39516cd7aef20e"
+        "bytes": 4942,
+        "lines": 114,
+        "sha256": "31679a5830be6b4b9f1f59492b53e8b3474fadb7b44c2d81564e6695f2900c9e"
       }
     },
     {
       "slug": "br-resource-table",
       "name": "br-resource-table",
       "domain": "better-route",
-      "description": "Create CRUD endpoints over a custom database table via better-route's Resource API — Resource::make('audit')->sourceTable( 'wp_myapp_events')->fields([...])->policy(...)->register($router). Critical v0.3.0 rule — custom-table resources are deny-by-default for ALL actions including list and get (CPT sources still allow reads, but raw tables don't have WP's visibility model). Without an explicit ->policy() declaration the resource returns 403 on every call. fields() is also REQUIRED — throws InvalidArgumentException if empty (CPT sources have implicit fields from post columns; tables do not). Other Resource builder methods carry over from CPT — filters, sort, writeSchema, fieldPolicy, deleteMode, defaultPerPage. Use when generating CRUD over a custom DB table. Triggers on Resource::make + ->sourceTable, \"REST CRUD over custom table\" with better-route, \"$wpdb->prefix . 'myapp_*'\".",
+      "description": "Build better-route 1.1 CRUD endpoints over a custom WordPress database table with Resource::make, restNamespace, sourceTable, primary key, fields, filters, sort, filterSchema, writeSchema, policy, pagination, allow, SQL NULL writes, stable ordering, or a custom TableRepositoryInterface. Use when exposing plugin tables safely or reviewing deny-by-default table permissions and SQL behavior.",
       "path": "better-route/br-resource-table",
       "skill_path": "better-route/br-resource-table/SKILL.md",
       "url": "https://raw.githubusercontent.com/Lonsdale201/wp-agent-skills/main/better-route/br-resource-table/SKILL.md",
@@ -1366,19 +1296,14 @@
         "author": "Soczó Kristóf",
         "contact": "mailto:lonsdale201@hotmail.com",
         "plugin": "better-route",
-        "plugin-version-tested": "0.4.0",
+        "plugin-version-tested": "1.1.0",
         "php-min": "8.1",
-        "last-updated": "2026-04-29",
-        "docs": [
-          "https://lonsdale201.github.io/better-docs/docs/better-route/agents"
-        ],
+        "last-updated": "2026-07-13",
         "source-refs": [
           "src/Resource/Resource.php",
-          "src/Resource/ResourcePolicy.php",
           "src/Resource/Table/WordPressTableRepository.php",
-          "src/Resource/Table/TableRepositoryInterface.php",
-          "src/Resource/Table/TableListQuery.php",
-          "src/Resource/Table/TableListQueryParser.php"
+          "src/Resource/Table/TableListQueryParser.php",
+          "src/Storage/WpdbAdapter.php"
         ]
       },
       "resources": [],
@@ -1386,16 +1311,16 @@
       "has_examples": false,
       "has_scripts": false,
       "skill_md": {
-        "bytes": 14135,
-        "lines": 298,
-        "sha256": "7e61d70db5cf567354db0cc15946d133b9c07fd89e3599d04fd710e12acff95f"
+        "bytes": 5682,
+        "lines": 125,
+        "sha256": "29ee9f5bae7e759e3fa8870cbd8d9af65b480653440811328c1e70968685c5d3"
       }
     },
     {
       "slug": "br-routes",
       "name": "br-routes",
       "domain": "better-route",
-      "description": "Register custom REST routes via better-route's fluent Router — BetterRoute::router('vendor', 'v1') gives a Router with ->get / ->post / ->put / ->patch / ->delete / ->options returning a RouteBuilder for fluent options (->permission, ->protectedByMiddleware, ->publicRoute, ->meta, ->middleware). Critical v0.4.0 rule — POST / PUT / PATCH / DELETE without an explicit permission declaration deny by default at the WP layer (return 403 before the handler runs); GET and OPTIONS are public by default. Use ->permission(callable) for WP capability checks, ->protectedByMiddleware($security) when an auth middleware handles authentication, ->publicRoute() for intentionally public endpoints. Route handlers receive ID from URL route params first (query / body ID is consulted only when URL doesn't supply one). Inbound X-Request-ID is accepted only if it matches ^[A-Za-z0-9._:-]{1,128}$. Use when registering custom (non-WooCommerce) REST routes. Triggers on BetterRoute::router, $router->get/post/put/patch/delete/options, RouteBuilder.",
+      "description": "Register custom WordPress REST routes with better-route 1.1 Router and RouteBuilder. Use for Router::make or BetterRoute::router, get/post/put/patch/delete/options, permission, protectedByMiddleware, publicRoute, args, route middleware, groups, handler signatures, RequestContext, WP_REST_Request, route registration, or unexpected 403 responses. In 1.1 every raw route, including GET and OPTIONS, denies by default until its access intent is explicit.",
       "path": "better-route/br-routes",
       "skill_path": "better-route/br-routes/SKILL.md",
       "url": "https://raw.githubusercontent.com/Lonsdale201/wp-agent-skills/main/better-route/br-routes/SKILL.md",
@@ -1406,23 +1331,18 @@
         "author": "Soczó Kristóf",
         "contact": "mailto:lonsdale201@hotmail.com",
         "plugin": "better-route",
-        "plugin-version-tested": "0.5.0",
+        "plugin-version-tested": "1.1.0",
         "php-min": "8.1",
-        "last-updated": "2026-05-01",
+        "last-updated": "2026-07-13",
         "docs": [
           "https://lonsdale201.github.io/better-docs/docs/better-route/agents"
         ],
         "source-refs": [
           "src/Router/Router.php",
           "src/Router/RouteBuilder.php",
-          "src/Router/RouteDefinition.php",
-          "src/Router/RouteMeta.php",
           "src/Router/WordPressRestDispatcher.php",
           "src/Router/ArgumentResolver.php",
-          "src/Http/Response.php",
-          "src/Http/RequestContext.php",
-          "src/Http/ApiException.php",
-          "src/BetterRoute.php"
+          "src/Http/RequestContext.php"
         ]
       },
       "resources": [],
@@ -1430,16 +1350,16 @@
       "has_examples": false,
       "has_scripts": false,
       "skill_md": {
-        "bytes": 15662,
-        "lines": 320,
-        "sha256": "40bb05ca1bec837353d56e99721bbb991aa9d192da36e7d8f15bc1fd2b38223c"
+        "bytes": 6484,
+        "lines": 164,
+        "sha256": "d919cd40d178319a94d551607dd7090aba166c6457b1cc337c86eed0f81a97ca"
       }
     },
     {
       "slug": "br-single-use-token",
       "name": "br-single-use-token",
       "domain": "better-route",
-      "description": "Use better-route 1.0.0 SingleUseTokenMiddleware and stores for auth codes, reset links, magic links, email confirmation tokens, or any token that must be consumed exactly once. Triggers on SingleUseTokenMiddleware, SingleUseTokenStoreInterface, WpdbSingleUseTokenStore, WpCacheSingleUseTokenStore, ArraySingleUseTokenStore, token replay, single-use code, one-time token, or auth-code TOCTOU fixes. Updated 2026-07-12.",
+      "description": "Configure Better Route 1.1 atomic single-use tokens for authorization codes, password resets, magic links, invitations, and email confirmation. Use when a token must be stored hashed and consumed no more than once across concurrent requests.",
       "path": "better-route/br-single-use-token",
       "skill_path": "better-route/br-single-use-token/SKILL.md",
       "url": "https://raw.githubusercontent.com/Lonsdale201/wp-agent-skills/main/better-route/br-single-use-token/SKILL.md",
@@ -1450,20 +1370,10 @@
         "author": "Soczó Kristóf",
         "contact": "mailto:lonsdale201@hotmail.com",
         "plugin": "better-route",
-        "plugin-version-tested": "1.0.0",
+        "plugin-version-tested": "1.1.0",
         "php-min": "8.1",
-        "last-updated": "2026-07-12",
-        "docs": [
-          "https://lonsdale201.github.io/better-docs/docs/better-route/agents"
-        ],
-        "source-refs": [
-          "src/Middleware/Write/SingleUseTokenMiddleware.php",
-          "src/Middleware/Write/SingleUseTokenStoreInterface.php",
-          "src/Middleware/Write/WpdbSingleUseTokenStore.php",
-          "src/Middleware/Write/WpCacheSingleUseTokenStore.php",
-          "src/Middleware/Write/ArraySingleUseTokenStore.php",
-          "tests/SecurityPrimitivesTest.php"
-        ]
+        "last-updated": "2026-07-13",
+        "docs": "https://lonsdale201.github.io/better-docs/docs/better-route/agents"
       },
       "resources": [
         {
@@ -1478,16 +1388,16 @@
       "has_examples": false,
       "has_scripts": false,
       "skill_md": {
-        "bytes": 3674,
-        "lines": 77,
-        "sha256": "4018634aa3b701f58f5bebc1d3402cf7061df9f1965b8d2628bc05304fbd8512"
+        "bytes": 3115,
+        "lines": 57,
+        "sha256": "f82d9d0efb420e311a8f09dcc6e1687b89af56c2c5c356f7dbe2c4cef235cfbc"
       }
     },
     {
       "slug": "br-woo-routes",
       "name": "br-woo-routes",
       "domain": "better-route",
-      "description": "Expose WooCommerce data (orders, products, customers, coupons) via REST using BetterRoute::wooRouteRegistrar()->register( $namespace, $options). Critical v0.3.0 behavior — customer endpoints return ONLY users with the customer role; create / update / delete additionally require WP capabilities create_users / edit_user / delete_user. Meta keys starting with _ (underscore) are NOT writable or returned by default — pass $allowProtected = true on MetaDataHelper calls only when intentional. Order list query patterns — ?status=processing&sort=-date_created&page=1&per_page=50; fields= is comma-separated; sort prefix - = DESC; per_page capped at maxPerPage (default 100); pagination via X-WP-Total / X-WP-TotalPages headers. WooRouteRegistrar options — basePath, requireHpos (default true), defaultPerPage, maxPerPage, deleteMode, actions, permissions, idempotency. Use when exposing WC data over REST. Triggers on BetterRoute::wooRouteRegistrar, MetaDataHelper, /woo/ in better-route.",
+      "description": "Expose WooCommerce 10.x orders, products, customers, and coupons with better-route 1.1 WooRouteRegistrar. Use for BetterRoute::wooRouteRegistrar, HPOS guards, actions, permissions, strict list/body validation, pagination meta, stable sorting, protected metadata, atomic idempotency, transactional order writes, product price rules, customer role/capability rules, coupon uniqueness, or Woo OpenAPI components.",
       "path": "better-route/br-woo-routes",
       "skill_path": "better-route/br-woo-routes/SKILL.md",
       "url": "https://raw.githubusercontent.com/Lonsdale201/wp-agent-skills/main/better-route/br-woo-routes/SKILL.md",
@@ -1498,26 +1408,16 @@
         "author": "Soczó Kristóf",
         "contact": "mailto:lonsdale201@hotmail.com",
         "plugin": "better-route",
-        "plugin-version-tested": "1.0.0",
+        "plugin-version-tested": "1.1.0",
         "php-min": "8.1",
-        "last-updated": "2026-07-12",
-        "docs": [
-          "https://lonsdale201.github.io/better-docs/docs/better-route/agents"
-        ],
+        "last-updated": "2026-07-13",
         "source-refs": [
           "src/Integration/Woo/WooRouteRegistrar.php",
           "src/Integration/Woo/WooOrderService.php",
           "src/Integration/Woo/WooProductService.php",
           "src/Integration/Woo/WooCustomerService.php",
           "src/Integration/Woo/WooCouponService.php",
-          "src/Integration/Woo/MetaDataHelper.php",
-          "src/Integration/Woo/HposGuard.php",
-          "src/Integration/Woo/OrderListQueryParser.php",
-          "src/Integration/Woo/ProductListQueryParser.php",
-          "src/Integration/Woo/CustomerListQueryParser.php",
-          "src/Integration/Woo/CouponListQueryParser.php",
-          "src/Integration/Woo/WooOpenApiComponents.php",
-          "src/BetterRoute.php"
+          "src/Integration/Woo/WooOpenApiComponents.php"
         ]
       },
       "resources": [],
@@ -1525,16 +1425,16 @@
       "has_examples": false,
       "has_scripts": false,
       "skill_md": {
-        "bytes": 19871,
-        "lines": 368,
-        "sha256": "86769eeae9939ca365e5a858005f6c31bd2215d4eaf181ae6f67b5321e70f8b6"
+        "bytes": 7708,
+        "lines": 189,
+        "sha256": "6cc43241e74a03b4aed64781566a58d7d31a86fbcc2050daf7341e5ac1dbdc68"
       }
     },
     {
       "slug": "br-write-schema",
       "name": "br-write-schema",
       "domain": "better-route",
-      "description": "Validate POST / PUT / PATCH bodies on a better-route Resource via ->writeSchema([...]) (alias ->payloadSchema([...])). Maps each field to a rule array with type / required / nullable / min / max / minLength / maxLength / regex / enum-values / sanitize. Important — the source-verified shape for enum is {type: 'enum', 'values': [...]} (FLAT), NOT {type: 'enum', 'enum': {'values': [...]}} (the agents.md doc nests it). Verified at src/Resource/Resource.php: 1366 — assertValueConstraints reads $rule['values'] directly. Other shape rules — sanitize values are 'text'|'email'|'key'|'url'|callable; type values are int|integer / float|number / bool|boolean / string / date / email / url / enum / array / object / mixed (the integer / number / boolean variants are aliases). Validation failures throw ApiException with code validation_failed and details.fieldErrors. Use when adding payload validation to a Resource. Triggers on ->writeSchema(, ->payloadSchema(, fieldErrors, validation_failed.",
+      "description": "Configure Better Route 1.1 Resource writeSchema or payloadSchema validation for create and update payloads. Use when defining writable fields, coercion, sanitization, required and nullable values, lengths, ranges, regexes, enums, or structured fieldErrors.",
       "path": "better-route/br-write-schema",
       "skill_path": "better-route/br-write-schema/SKILL.md",
       "url": "https://raw.githubusercontent.com/Lonsdale201/wp-agent-skills/main/better-route/br-write-schema/SKILL.md",
@@ -1545,25 +1445,19 @@
         "author": "Soczó Kristóf",
         "contact": "mailto:lonsdale201@hotmail.com",
         "plugin": "better-route",
-        "plugin-version-tested": "0.4.0",
+        "plugin-version-tested": "1.1.0",
         "php-min": "8.1",
-        "last-updated": "2026-04-29",
-        "docs": [
-          "https://lonsdale201.github.io/better-docs/docs/better-route/agents"
-        ],
-        "source-refs": [
-          "src/Resource/Resource.php",
-          "src/Http/ApiException.php"
-        ]
+        "last-updated": "2026-07-13",
+        "docs": "https://lonsdale201.github.io/better-docs/docs/better-route/agents"
       },
       "resources": [],
       "has_reference": false,
       "has_examples": false,
       "has_scripts": false,
       "skill_md": {
-        "bytes": 15482,
-        "lines": 309,
-        "sha256": "be90c47f1e753738f2a1a78ce7f6cea3737f4cacd828112f5227b7abd0367f4f"
+        "bytes": 3557,
+        "lines": 64,
+        "sha256": "3058ddfd70c53ec5599e7fce2e2bb94127ea99f05b5ca3580a0fc1ec62659907"
       }
     },
     {

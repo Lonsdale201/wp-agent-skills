@@ -1,31 +1,18 @@
 ---
 name: br-jwks-jwt-auth
-description: Configure better-route 1.0.0 RS256/ES256 JWT verification from JWKS. Use when adding Rs256JwksJwtVerifier, JwksProviderInterface, HttpJwksProvider, StaticJwksProvider, JwtBearerTokenVerifierAdapter, strict JOSE kid matching, issuer/audience checks, JWKS transient cache, better_route/jwks_refresh, or OIDC/OAuth bearer token verification. Rejects none and HS* algorithms. Updated 2026-07-12.
+description: Configure Better Route 1.1 RS256 or ES256 JWT verification from a local or HTTPS JWKS. Use when integrating OIDC/OAuth bearer tokens, selecting keys by kid, validating issuer/audience/lifetime, or operating JWKS caching and refresh behavior safely.
 author: Soczó Kristóf
 contact: mailto:lonsdale201@hotmail.com
 plugin: better-route
-plugin-version-tested: "1.0.0"
+plugin-version-tested: "1.1.0"
 php-min: "8.1"
-last-updated: "2026-07-12"
-docs:
-  - https://lonsdale201.github.io/better-docs/docs/better-route/agents
-source-refs:
-  - src/Middleware/Jwt/Rs256JwksJwtVerifier.php
-  - src/Middleware/Jwt/JwksProviderInterface.php
-  - src/Middleware/Jwt/HttpJwksProvider.php
-  - src/Middleware/Jwt/StaticJwksProvider.php
-  - src/Middleware/Jwt/JwksKeySanitizer.php
-  - src/Middleware/Jwt/JwtVerifierInterface.php
-  - src/Middleware/Auth/JwtBearerTokenVerifierAdapter.php
-  - src/Middleware/Auth/BearerTokenAuthMiddleware.php
-  - tests/SecurityPrimitivesTest.php
+last-updated: "2026-07-13"
+docs: https://lonsdale201.github.io/better-docs/docs/better-route/agents
 ---
 
-# better-route: JWKS JWT auth
+# Better Route JWKS JWT authentication
 
-Use this for OIDC/OAuth-style bearer JWTs signed with asymmetric keys. In better-route 0.6.0 the library ships `Rs256JwksJwtVerifier`, so do not write a custom verifier for normal `RS256` or `ES256` JWKS use cases.
-
-## Pattern
+Use `Rs256JwksJwtVerifier` for asymmetric bearer JWTs and adapt it to the generic bearer middleware.
 
 ```php
 use BetterRoute\Middleware\Auth\BearerTokenAuthMiddleware;
@@ -34,65 +21,56 @@ use BetterRoute\Middleware\Jwt\HttpJwksProvider;
 use BetterRoute\Middleware\Jwt\Rs256JwksJwtVerifier;
 
 $jwks = new HttpJwksProvider(
-    jwksUri: 'https://issuer.example.com/.well-known/jwks.json',
+    jwksUri: 'https://issuer.example/.well-known/jwks.json',
     ttlSeconds: 3600,
-    issuer: 'https://issuer.example.com'
+    issuer: 'https://issuer.example',
+    minimumRefreshIntervalSeconds: 30
 );
 
 $verifier = new Rs256JwksJwtVerifier(
     jwks: $jwks,
     leewaySeconds: 60,
-    expectedIssuer: 'https://issuer.example.com',
+    expectedIssuer: 'https://issuer.example',
     expectedAudience: 'my-api',
     requireExpiration: true,
     maxLifetimeSeconds: 3600,
-    allowedAlgorithms: ['RS256']
+    allowedAlgorithms: ['RS256'],
+    kidMissRefreshCooldownSeconds: 30
 );
 
 $auth = new BearerTokenAuthMiddleware(
     verifier: new JwtBearerTokenVerifierAdapter($verifier),
     requiredScopes: ['orders:read']
 );
+
+$router->get('/orders', $handler)
+    ->middleware([$auth])
+    ->protectedByMiddleware('bearerAuth');
 ```
 
-For write routes, still call `->protectedByMiddleware('bearerAuth')` so WordPress dispatches to the middleware pipeline.
+## Verification contract
 
-## Critical rules
+- Require a non-empty JOSE `alg` and `kid`.
+- Allow only explicitly configured `RS256` and/or `ES256`; `none`, `HS*`, and other algorithms are rejected.
+- Match `kid` to exactly one usable signing key. Ambiguous, incompatible, or absent matches fail closed.
+- Require `exp` by default. Setting `maxLifetimeSeconds` also requires `iat` and bounds `exp - iat`.
+- Pin both `expectedIssuer` and `expectedAudience` for production integrations.
+- Keep token size, clock leeway, and key-refresh cooldown bounded.
 
-- `kid` in the JOSE header is required and must match exactly one usable JWKS key.
-- On `kid` miss, the verifier calls `JwksProviderInterface::refresh()` once, then fails closed.
-- Never fall back to "try every public key"; that accepts stale or unrelated keys.
-- `allowedAlgorithms` supports `RS256` and `ES256`; `none` and `HS*` are rejected even if accidentally configured.
-- `HttpJwksProvider` requires an `https` URI and uses `sslverify => true`.
-- **(1.0.0) `HttpJwksProvider` fetches via `wp_safe_remote_get()`** (WordPress SSRF protection — blocks internal/loopback hosts) with bounded `redirection => 1` and a `limit_response_size` cap, in addition to the existing HTTPS + `sslverify` enforcement. This hardens against a hostile or misbehaving issuer redirecting internally or returning an unbounded body.
-- Private JWK fields are stripped by `JwksKeySanitizer`; JWKS should contain public keys only.
-- **(1.0.0) When pairing with `WpClaimsUserMapper`**, note that email/login claim mapping is now off by default and requires a verified email — see `br-auth-middleware`. Third-party OIDC `email` claims must not be trusted for account resolution unless `email_verified` is set.
-- Set `expectedIssuer` and `expectedAudience` in production.
-- Keep `requireExpiration: true`; disabling it is a migration-only decision.
+## Remote JWKS behavior
 
-## JWKS cache invalidation
+`HttpJwksProvider` accepts HTTPS URLs only and rejects URL credentials. Its WordPress transport uses `wp_safe_remote_get()`, TLS verification, a ten-second timeout, at most one redirect, and a 256 KiB response limit.
 
-`HttpJwksProvider` listens for:
+It caches sanitized public keys in memory and a transient. Refreshes use a persistent cooldown and, when `$wpdb` is available, a bounded MySQL named lock. A failed refresh preserves the last known-good cached key set. A `kid` miss can trigger a refresh, but the verifier has its own cooldown to prevent attacker-driven fetch storms.
 
-```php
-do_action('better_route/jwks_refresh', 'https://issuer.example.com');
-```
+The `better_route/jwks_refresh` action clears matching caches. Supply the provider `issuer` so a targeted action does not flush unrelated providers. `StaticJwksProvider` is appropriate for pinned or test keys.
 
-Use this from admin tooling after key rotation or when forcing a cache clear.
+## Operational checks
 
-## Tests
+- Confirm WordPress HTTP SSRF protection is not bypassed with a custom `httpGet` callback.
+- Exercise signing-key rotation: cached old key, new `kid`, refresh, then successful verification.
+- Exercise refresh failure and verify the last known-good set remains usable.
+- Test duplicate `kid`, wrong `kty`/`crv`, mismatched key `alg`/`use`, invalid signature, and stale token.
+- Never fetch a JWKS URL selected by an untrusted request.
 
-Use `StaticJwksProvider` for unit tests:
-
-```php
-$verifier = new Rs256JwksJwtVerifier(
-    new StaticJwksProvider([$publicJwk]),
-    now: static fn (): int => 1700000000
-);
-```
-
-## Cross-references
-
-- Use `br-auth-middleware` for generic auth middleware choice and `protectedByMiddleware()` route intent.
-- Use `br-error-contract` for the `401 invalid_token` response shape.
-- Use `br-crypto` when generating nonces, state, PKCE values, or doing token-bound string compares.
+Source references: `src/Middleware/Jwt/HttpJwksProvider.php`, `src/Middleware/Jwt/Rs256JwksJwtVerifier.php`, `src/Middleware/Jwt/JwksKeySanitizer.php`, `src/Middleware/Auth/JwtBearerTokenVerifierAdapter.php`.

@@ -1,40 +1,40 @@
 ---
 name: br-owned-resource-guards
-description: Add better-route 0.5.0 ownership checks for user-owned REST resources. Use when a route or Resource DSL endpoint must ensure the authenticated user owns the order, record, token, subscription, membership, profile object, or other per-user object. Triggers on OwnershipGuardMiddleware, OwnedResourcePolicy, currentUserOwns, ownerResolver, bypassCapability, and customer-owned or user-owned API routes.
+description: Add Better Route 1.1 ownership authorization to raw routes and Resource DSL endpoints. Use when authenticated users may access only their own records, orders, profiles, memberships, tokens, or subscriptions.
 author: Soczó Kristóf
 contact: mailto:lonsdale201@hotmail.com
 plugin: better-route
-plugin-version-tested: "0.5.0"
+plugin-version-tested: "1.1.0"
 php-min: "8.1"
-docs:
-  - https://lonsdale201.github.io/better-docs/docs/better-route/agents
+last-updated: "2026-07-13"
+docs: https://lonsdale201.github.io/better-docs/docs/better-route/agents
 ---
 
-# better-route: Owned resource guards
+# Better Route ownership guards
 
-Use ownership guards when authentication is not enough. A valid token proves identity; an ownership guard proves the requested object belongs to that identity.
+Authentication establishes identity; ownership authorization establishes whether that identity may access this object.
 
-## Route-level guard
+## Raw route
 
 ```php
 use BetterRoute\Middleware\Auth\OwnershipGuardMiddleware;
 
 $guard = new OwnershipGuardMiddleware(
     ownerResolver: static function ($context): ?int {
-        $id = (int) $context->request->get_param('id');
-        return my_resource_owner_id($id);
+        return my_resource_owner_id((int) $context->request->get_param('id'));
     },
-    bypassCapability: 'manage_options'
+    bypassCapability: 'manage_options',
+    deniedStatus: 404
 );
 
-$router->get('/account/records/(?P<id>\d+)', $handler)
-    ->middleware([$jwt, $guard])
+$router->get('/records/(?P<id>\d+)', $handler)
+    ->middleware([$auth, $guard])
     ->protectedByMiddleware('bearerAuth');
 ```
 
-`OwnershipGuardMiddleware` checks `RequestContext::$attributes['auth']['userId']`, then `subject`, then `get_current_user_id()`. It returns `404 not_found` by default on denial to avoid disclosing object existence.
+Run authentication before the guard. It resolves identity from the normalized `auth.userId`, then `auth.subject`, then the native WordPress current user. The owner resolver must load ownership server-side from the route resource; never trust a submitted owner ID.
 
-## Resource DSL policy
+## Resource DSL
 
 ```php
 use BetterRoute\Resource\OwnedResourcePolicy;
@@ -42,23 +42,22 @@ use BetterRoute\Resource\OwnedResourcePolicy;
 Resource::make('records')
     ->policy(OwnedResourcePolicy::currentUserOwns(
         ownerResolver: static fn (int $id): ?int => my_resource_owner_id($id),
-        bypassCapability: 'manage_options'
+        ownedActions: ['get', 'update', 'delete'],
+        bypassCapability: 'manage_options',
+        allowListForAuthenticatedUsers: true
     ));
 ```
 
-Use this when Resource-generated `get`, `update`, or `delete` routes need owner checks. For list routes, also filter the query itself by current user; list permission alone is not a data filter.
+`allowListForAuthenticatedUsers: true` grants list permission to logged-in WordPress users; it does not filter the result. Apply an owner predicate in the repository/query, or disable the generated list permission, before exposing user-owned collections.
 
 ## Rules
 
-- Run auth middleware before the ownership guard.
-- Never rely on client-sent owner/customer/user IDs.
-- Resolve ownership server-side from the resource ID.
-- Use a bypass capability only for real admin/integration routes.
-- Prefer `404` for customer/user routes, `403` only when the API intentionally exposes resource existence.
-- For write routes, combine with optimistic lock or atomic idempotency when the operation has side effects.
+- Prefer denial as `404` when revealing object existence would leak data. Use `403` only for an intentionally discoverable object.
+- Use narrowly scoped, reviewed bypass capabilities.
+- Check ownership against the current stored record during writes, not a stale client copy.
+- Cover `get`, `update`, and `delete` independently; list filtering is a separate control.
+- Combine write authorization with optimistic locking and atomic idempotency when concurrency or duplicate side effects matter.
 
-## Source refs
+Test another user's ID, absent object, anonymous access, subject-only identity, native WordPress identity, admin bypass, and list-result isolation.
 
-- `libraries/better-route/src/Middleware/Auth/OwnershipGuardMiddleware.php`
-- `libraries/better-route/src/Resource/OwnedResourcePolicy.php`
-- `libraries/better-route/src/Resource/ResourcePolicy.php`
+Source references: `src/Middleware/Auth/OwnershipGuardMiddleware.php`, `src/Resource/OwnedResourcePolicy.php`.

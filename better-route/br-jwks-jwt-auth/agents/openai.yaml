@@ -1,4 +1,4 @@
 interface:
   display_name: "Better Route JWKS JWT Auth"
   short_description: "Verify RS256/ES256 bearer JWTs from JWKS."
-  default_prompt: "Use better-route 0.6 JWKS JWT verification for an OIDC/OAuth bearer route."
+  default_prompt: "Use Better Route 1.1 JWKS JWT verification for an OIDC/OAuth bearer route."

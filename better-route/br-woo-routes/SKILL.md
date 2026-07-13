@@ -1,367 +1,188 @@
 ---
 name: br-woo-routes
-description: Expose WooCommerce data (orders, products, customers,
-  coupons) via REST using BetterRoute::wooRouteRegistrar()->register(
-  $namespace, $options). Critical v0.3.0 behavior — customer endpoints
-  return ONLY users with the customer role; create / update / delete
-  additionally require WP capabilities create_users / edit_user /
-  delete_user. Meta keys starting with _ (underscore) are NOT writable
-  or returned by default — pass $allowProtected = true on
-  MetaDataHelper calls only when intentional. Order list query
-  patterns — ?status=processing&sort=-date_created&page=1&per_page=50;
-  fields= is comma-separated; sort prefix - = DESC; per_page capped at
-  maxPerPage (default 100); pagination via X-WP-Total / X-WP-TotalPages
-  headers. WooRouteRegistrar options — basePath, requireHpos (default
-  true), defaultPerPage, maxPerPage, deleteMode, actions, permissions,
-  idempotency. Use when exposing WC data over REST. Triggers on
-  BetterRoute::wooRouteRegistrar, MetaDataHelper, /woo/ in better-route.
+description: Expose WooCommerce 10.x orders, products, customers, and coupons with better-route 1.1 WooRouteRegistrar. Use for BetterRoute::wooRouteRegistrar, HPOS guards, actions, permissions, strict list/body validation, pagination meta, stable sorting, protected metadata, atomic idempotency, transactional order writes, product price rules, customer role/capability rules, coupon uniqueness, or Woo OpenAPI components.
 author: Soczó Kristóf
 contact: mailto:lonsdale201@hotmail.com
 plugin: better-route
-plugin-version-tested: "1.0.0"
+plugin-version-tested: "1.1.0"
 php-min: "8.1"
-last-updated: "2026-07-12"
-docs:
-  - https://lonsdale201.github.io/better-docs/docs/better-route/agents
+last-updated: "2026-07-13"
 source-refs:
   - src/Integration/Woo/WooRouteRegistrar.php
   - src/Integration/Woo/WooOrderService.php
   - src/Integration/Woo/WooProductService.php
   - src/Integration/Woo/WooCustomerService.php
   - src/Integration/Woo/WooCouponService.php
-  - src/Integration/Woo/MetaDataHelper.php
-  - src/Integration/Woo/HposGuard.php
-  - src/Integration/Woo/OrderListQueryParser.php
-  - src/Integration/Woo/ProductListQueryParser.php
-  - src/Integration/Woo/CustomerListQueryParser.php
-  - src/Integration/Woo/CouponListQueryParser.php
   - src/Integration/Woo/WooOpenApiComponents.php
-  - src/BetterRoute.php
 ---
 
-# better-route: WooCommerce route registration
+# better-route: WooCommerce routes
 
-For developers exposing WooCommerce data — orders, products, customers, coupons — over REST using `BetterRoute::wooRouteRegistrar()`. The registrar generates a CRUD route set per resource type, wires HPOS-aware queries, and applies the v0.3.0 capability defaults that lock down customer endpoints.
-
-## Misconception this skill corrects
-
-> "I'll register Woo routes with `wooRouteRegistrar()` and customers with `manage_options` will see all WP users."
-
-Wrong. Verified via the WooCustomerService — customer list / get / create / update / delete are restricted to users with the `customer` role only, AND the write actions require WP capabilities `create_users` / `edit_user` / `delete_user` ON TOP of any registrar-level permission. So even an admin without the right capability gets 403 on customer writes.
-
-The reasoning: customer endpoints expose PII (email, addresses, order history); locking them to the explicit `customer` role prevents accidental "list all WP users" leaks that would happen with an open user-list endpoint. The capability layer prevents support-tier admins from mass-modifying customer accounts.
-
-Other AI-prone misconceptions:
-
-- "Meta keys are read/write by default like normal WP fields." Wrong — keys starting with `_` (underscore) are NOT writable and NOT returned. `MetaDataHelper` strips them. To read or write them, pass `$allowProtected = true` to the helper. Verified by error responses at [MetaDataHelper.php:137-139](MetaDataHelper.php) (`'protected meta keys are not writable'`).
-- "I'll use the registrar without `requireHpos: true` for backwards compatibility." Wrong direction — `requireHpos` defaults to `true`, which forces HPOS to be active and emits a clear `503 hpos_required` error if not. Setting it to `false` makes routes run against legacy postmeta storage on installs that haven't migrated, which produces inconsistent results (some queries hit HPOS, others hit postmeta). **Since 1.0.0** `requireHpos` gates ONLY the **order** routes — products, coupons, and customers are not moved by HPOS, so they only require WooCommerce to be available and never return `hpos_required`.
-- "DELETE force-deletes orders by default — I need to set `deleteMode: 'trash'`." The default `deleteMode` is in fact `'force'` (permanent delete) per the agents.md doc — but this is consequential for live sites. Always set `'trash'` explicitly for customer-facing APIs.
-
-## When to use this skill
-
-Trigger when ANY of the following is true:
-
-- The diff calls `BetterRoute::wooRouteRegistrar()->register(...)`.
-- The user asks "how do I expose WooCommerce orders / products / customers over REST".
-- A diff queries WooCommerce data directly via `wc_get_orders()` / `wc_get_products()` and the right move is to delegate to better-route's registrar.
-- Investigating "my customer endpoint returns empty even though there are users".
-- Triaging "my POST /products with `_my_meta_key` doesn't store the meta value".
-
-## Workflow
-
-### 1. Minimal registration
+Register Woo routes during `rest_api_init` and retain the returned Router when contracts are needed.
 
 ```php
-add_action('rest_api_init', function () {
-    \BetterRoute\BetterRoute::wooRouteRegistrar()
-        ->register('myapp/v1', [
-            'basePath'    => '/shop',         // default 'woo'
-            'requireHpos' => true,             // default true
-            'deleteMode'  => 'trash',          // 'force' (default) or 'trash'
-        ]);
+use BetterRoute\BetterRoute;
+
+add_action('rest_api_init', static function (): void {
+    $woo = BetterRoute::wooRouteRegistrar()->register('myapp/v1', [
+        'basePath' => 'woo',
+        'requireHpos' => true,
+        'deleteMode' => 'trash',
+        'actions' => [
+            'customers' => ['list', 'get'],
+            'coupons' => [],
+        ],
+        'permissions' => [
+            'orders.list' => 'manage_woocommerce',
+            'orders.create' => 'manage_woocommerce',
+        ],
+    ]);
 });
 ```
 
-This generates routes under `/wp-json/myapp/v1/shop/`:
+Routes cover orders, products, customers, and coupons under `/wp-json/myapp/v1/woo` by default.
 
-- `/orders` (list/get/create/update/delete)
-- `/products`
-- `/customers`
-- `/coupons`
+## Actions and permissions
 
-Each follows REST conventions (`GET /orders`, `GET /orders/{id}`, `POST /orders`, etc.). For default `basePath: 'woo'`, routes mount at `/wp-json/myapp/v1/woo/orders`.
+Each resource supports `list`, `get`, `create`, `update`, and `delete`; update registers both PUT and PATCH.
 
-### 2. Restrict actions per resource
+- Omit `actions.<resource>` for full CRUD.
+- Pass `[]` to disable that resource.
+- Invalid action names or a non-array value throw.
 
-```php
-->register('myapp/v1', [
-    'actions' => [
-        'orders'    => ['list', 'get'],                               // read-only orders
-        'products'  => ['list', 'get', 'create', 'update'],           // no delete
-        'customers' => ['list', 'get'],                                // read-only customers
-        'coupons'   => ['list', 'get', 'create', 'update', 'delete'], // full CRUD
-    ],
-]);
-```
+Permission keys use `<resource>.<action>`. A value may be bool, capability string, any-of capability list, or callable receiving the request and optionally the registrar. Unrecognized/empty rules deny. Defaults are `manage_woocommerce`.
 
-Resources without an `actions` key get all five (list, get, create, update, delete). Pass an empty array `[]` to disable the resource entirely.
+Customer writes also enforce native user capabilities inside the service:
 
-### 3. Resource-level permissions
+- create: `create_users`;
+- update: `edit_user` for the target;
+- delete: `delete_user` for the target.
 
-```php
-'permissions' => [
-    'orders.create' => 'manage_woocommerce',
-    'orders.delete' => 'manage_woocommerce',
-    'products.create' => 'edit_products',
-    'products.update' => 'edit_products',
-],
-```
+Customer list/get expose users with the `customer` role only; a general WordPress user directory is intentionally not provided.
 
-Format: `'{resource}.{action}'`. Values: cap string, cap-list (any-of), or callable. Defaults vary by resource — orders default to `manage_woocommerce` for writes; customers have the additional capability gate (`create_users` / `edit_user` / `delete_user`) ON TOP of whatever you set here.
-
-### 4. Pagination + sorting + filtering
+## Lists
 
 ```http
-GET /wp-json/myapp/v1/woo/orders?status=processing&sort=-date_created&page=1&per_page=50
+GET /wp-json/myapp/v1/woo/orders?status=processing&sort=-date_created&page=1&per_page=50&fields=id,total,status
 ```
 
-| Query param | Behavior |
-|---|---|
-| `status=processing` | Filter (per resource) |
-| `sort=-date_created` | DESC sort; no prefix = ASC |
-| `page=1` | 1-indexed page |
-| `per_page=50` | Page size; capped at `maxPerPage` (default 100) |
-| `fields=id,name,price` | Comma-separated field list |
-
-Response includes pagination headers:
-
-```
-X-WP-Total: 1234
-X-WP-TotalPages: 25
-```
-
-Unknown query parameters return `400 unknown_parameter` — keeps the API surface tight.
-
-### 5. Resource-specific list patterns
-
-```http
-# Orders
-GET /woo/orders?status=processing&sort=-date_created&fields=id,total,status
-
-# Products
-GET /woo/products?type=simple&stock_status=instock&fields=id,name,price
-
-# Customers (only customer-role users returned)
-GET /woo/customers?role=customer&search=john&sort=email
-
-# Coupons
-GET /woo/coupons?code=SUMMER25&fields=id,code,amount,discount_type
-```
-
-Each resource has its own filter/sort allowlist — declared in the corresponding `*ListQueryParser` ([src/Integration/Woo/](Woo/)). Unknown params return 400.
-
-### 6. Metadata read/write
-
-Standard meta payload for create/update on any resource:
+Lists return pagination in the JSON envelope:
 
 ```json
-{
-  "meta_data": [
-    {"key": "custom_field", "value": "custom_value"},
-    {"key": "another_field", "value": 42}
-  ]
-}
+{"data": [], "meta": {"page": 1, "perPage": 50, "total": 0}}
 ```
 
-Rules verified at [src/Integration/Woo/MetaDataHelper.php:21-49](MetaDataHelper.php):
+Do not expect `X-WP-Total` or `X-WP-TotalPages`; Better Route Woo pagination is in `meta`.
 
-- `key` must be a non-empty string.
-- `value` can be any JSON-serializable type.
-- Keys starting with `_` are stripped on write and excluded on read **unless `$allowProtected = true`**.
-- On update, `meta_data` entries call `update_meta_data()` — existing keys are overwritten, new keys added.
-- Response meta entries include an `id` field (the meta entry's auto-generated ID).
+`per_page > maxPerPage` returns `400 validation_failed`; it is not clamped. `sort=-field` means DESC. Services add an ID tie-breaker so equal primary sort values paginate deterministically.
 
-To bypass the protected-meta filter (e.g. for an internal admin tool that needs to read `_billing_first_name`):
+Strict parsers reject unknown parameters but accept WordPress globals `_locale`, `_fields`, `_embed`, `_envelope`, and `_jsonp`, including `wp.apiFetch`'s `_locale=user`.
+
+Resource filters/sorts differ:
+
+- orders: status, customer_id, search; stable order/date/total options supported by parser;
+- products: status, type, sku, search, stock_status; derived price sorting is not supported;
+- customers: role, email, search;
+- coupons: code, search.
+
+Use each parser's allowlist rather than forwarding arbitrary Woo query vars.
+
+## Strict write payloads in 1.1
+
+All services reject unknown top-level fields and enforce field types before setters/save.
+
+Orders:
+
+- validate the complete payload before persistence;
+- reject unknown billing/shipping/line-item keys;
+- require `product_id` for line items and validate product/variation existence and relationship;
+- require non-negative finite quantities/totals where applicable;
+- refuse line-item replacement after stock reduction with `409 woo_line_items_locked`;
+- run create/update inside `wc_transaction_query('start'/'commit'/'rollback')`.
+
+Products:
+
+- treat `price` as read-only;
+- write `regular_price` and `sale_price` instead;
+- validate all fields before applying setters/save.
+
+Customers:
+
+- require `email` on create;
+- reject `username` on update because WordPress usernames are immutable through this API;
+- reject unknown address keys and non-string address values;
+- omit expensive `orders_count` and `total_spent` from list defaults to avoid N+1 work; request them explicitly when needed.
+
+Coupons:
+
+- require `code` on create;
+- strictly validate monetary, boolean, list, date, and metadata fields;
+- enforce normalized code uniqueness on create and update under a MySQL named lock;
+- exclude the current coupon ID when checking an update; conflicts return `409 coupon_exists`.
+
+Money response fields are decimal strings, not JSON floats.
+
+## Metadata
+
+Use the actual helper APIs:
 
 ```php
-// In your handler:
-\BetterRoute\Integration\Woo\MetaDataHelper::extract($order, $allowProtected: true);
-\BetterRoute\Integration\Woo\MetaDataHelper::apply($order, $payload, $allowProtected: true);
+$meta = MetaDataHelper::normalizeIncoming($payload['meta_data'] ?? null);
+MetaDataHelper::applyToTarget($object, $meta);
+$serialized = MetaDataHelper::serialize($object->get_meta_data());
 ```
 
-### 7. Customer endpoints — capability + role gates
+Incoming metadata may be a key/value map or a list of `{key,value}` entries. Underscore-prefixed protected keys are rejected on write and omitted on serialization by default. Opt in with `allowProtected/includeProtected` only on tightly protected internal code paths.
 
-Customer endpoints have two additional gates beyond standard registrar permissions:
-
-1. **Role filter:** Only users with the `customer` role appear in `GET /customers` / `GET /customers/{id}`. Even if a user has admin + customer role, they ONLY appear when the role filter passes.
-2. **Cap requirements for writes:**
-   - `POST /customers` → `current_user_can('create_users')`
-   - `PUT/PATCH /customers/{id}` → `current_user_can('edit_user', $userId)`
-   - `DELETE /customers/{id}` → `current_user_can('delete_user', $userId)`
-
-These caps run BEFORE your registrar-level `permissions` callback. Both must pass.
-
-**Since 1.0.0:**
-
-- `DELETE /customers/{id}` now works in a normal REST request — the library loads `wp-admin/includes/user.php` before `wp_delete_user()` (previously the guard silently failed, so delete never happened).
-- `orders_count` and `total_spent` are **no longer in the default `GET /customers` list fields** — each is a per-customer order query and made list an N+1. They remain available on `GET /customers/{id}` and on the list when requested explicitly via `?fields=orders_count,total_spent`. `total_spent` is serialized as a decimal string.
-
-### 8. Idempotency on Woo writes
+## Atomic idempotency
 
 ```php
-->register('myapp/v1', [
-    'idempotency' => [
-        'enabled'    => true,
-        'requireKey' => true,
-        'ttlSeconds' => 600,
-    ],
-]);
-```
-
-Enables `IdempotencyMiddleware` on every write route. Clients send `Idempotency-Key: <uuid>` header; duplicates within 10 minutes return the cached response. See **`br-idempotency`** for the store choice (production needs `WpdbIdempotencyStore`).
-
-### 9. HPOS requirement
-
-```php
-'requireHpos' => true,   // default
-```
-
-Verified at [WooRouteRegistrar.php:63](WooRouteRegistrar.php). When true, the registrar checks that HPOS is active (via `OrderUtil::custom_orders_table_usage_is_enabled()`); if not, every **order** route returns `503 hpos_required`. Always leave true on production sites — it surfaces the migration debt.
-
-**Since 1.0.0** the HPOS gate applies to **order routes only**. Products, coupons, and customers are not moved by HPOS, so their routes only require WooCommerce to be available (they never emit `hpos_required`).
-
-For dev / staging where you're testing both stores: set `false` and live with the inconsistency, OR migrate to HPOS first.
-
-#### Declaring HPOS compatibility (host plugin)
-
-A library cannot declare HPOS compatibility on behalf of the plugin that embeds it. **Since 1.0.0** call the helper from your host plugin's main file so WooCommerce doesn't flag it incompatible (which would block HPOS enablement):
-
-```php
-\BetterRoute\Integration\Woo\HposGuard::declareCompatibility(__FILE__);
-```
-
-It hooks `before_woocommerce_init` and declares `custom_order_tables` compatibility via `FeaturesUtil`. The runtime `requireHpos` check does not remove this obligation.
-
-### 10. What changed in 1.0.0
-
-Behavior changes in the Woo layer that consumers must know:
-
-- **Money is serialized as decimal strings.** Order `total`/`total_tax`, line-item `subtotal`/`total`, coupon `amount`/`minimum_amount`/`maximum_amount`, and customer `total_spent` are now JSON strings (were floats) — matching WooCommerce's own REST API and avoiding float drift.
-- **Order/product `search` works.** `?search=` on orders and products now uses the supported `s` query var (previously an unsupported var that WooCommerce silently ignored, returning unfiltered results). Customer search (WP_User_Query) is unchanged.
-- **Variation line items are priced from the variation.** An order line item with `variation_id` is built from the actual variation product (validated to belong to `product_id`; `400` on mismatch), not the parent — correct price/name/attributes.
-- **Line-item edits are locked on stock-reduced orders.** `PUT/PATCH /orders/{id}` with `line_items` returns `409 woo_line_items_locked` once the order has reduced stock (replacing items would silently corrupt inventory). Edit items before stock reduction or adjust via status transitions.
-- **Product `price` is read-only.** It's a derived field — send `regular_price`/`sale_price`; sending `price` returns `400`. `sort=price` is removed (also `400`). Order `total` sort is retained (verified on HPOS).
-- **Coupon code resolution.** The `?code=` filter and create resolve through `wc_get_coupon_id_by_code()` (normalization + cache); create rejects a duplicate code with `409 coupon_exists`.
-- **Woo CRUD validation errors are `400`.** `WC_Data_Exception` thrown by WooCommerce setters (invalid email, discount type, etc.) maps to `400`, not `500`.
-
-## Critical rules
-
-- **Customer endpoints filter to `customer` role only.** Even admins don't appear in customer lists.
-- **Customer writes need WP caps** — `create_users` for POST, `edit_user` for PUT/PATCH, `delete_user` for DELETE — ON TOP of registrar permissions.
-- **Meta keys starting with `_` are stripped** on write AND read by default. Use `$allowProtected = true` only when intentional.
-- **`requireHpos: true` (default)** — emits `503 hpos_required` if HPOS not active. Don't disable on production.
-- **`deleteMode: 'force'` is the default** — destructive. Use `'trash'` for customer-facing APIs unless permanent delete is intentional.
-- **`per_page` capped at `maxPerPage`** (default 100). Requests for `per_page=999` are clamped silently.
-- **Unknown query parameters return 400** — strict validation.
-- **`fields=` is comma-separated.** No JSON-array syntax for the filter list.
-- **Sort prefix `-` = DESC; no prefix = ASC.** Multiple sorts not supported in v0.4.0.
-- **Pagination headers:** `X-WP-Total`, `X-WP-TotalPages`.
-- **Resource-level permissions format:** `'{resource}.{action}'` (e.g. `'orders.create'`).
-- **Idempotency-Key header rejects duplicates.** Combine with `requireKey: true` for high-stakes writes.
-
-## Common mistakes
-
-```php
-// WRONG — exposing customer endpoints with default permissions and forgetting the customer-role filter
-->register('myapp/v1', [
-    'actions' => ['customers' => ['list']],
-]);
-// Devs assume "list all users". Actually only customer-role users appear.
-// Test with non-customer admin → expect them to be invisible.
-
-// WRONG — requireHpos: false on production
-->register('myapp/v1', ['requireHpos' => false]);
-// Some queries hit HPOS, others hit postmeta. Inconsistent results.
-
-// RIGHT — leave true; force-migrate to HPOS first if needed.
-
-// WRONG — deleteMode default ('force') in customer-facing API
-->register('myapp/v1');   // deleteMode defaults to 'force'
-// User deletes an order → permanent. No recovery.
-
-// RIGHT
-->register('myapp/v1', ['deleteMode' => 'trash'])
-
-// WRONG — protected meta read attempt without allowProtected
-GET /woo/orders/123
-// Response meta_data is missing _billing_first_name etc. Caller writes their own helper to query postmeta.
-
-// RIGHT — for an internal admin tool that needs underscore-prefixed meta:
-// Write a custom route that calls MetaDataHelper::extract($order, allowProtected: true)
-// (don't expose this endpoint publicly — it bypasses the default protection)
-
-// WRONG — assuming idempotency is on by default
-->register('myapp/v1', ['idempotency' => ['enabled' => true]]);
-// Yes, this enables it. Default is OFF.
-
-// RIGHT — explicit when needed for write-heavy flows
 'idempotency' => [
     'enabled' => true,
     'requireKey' => true,
-    'ttlSeconds' => 600,
-]
-
-// WRONG — providing per_page beyond maxPerPage
-GET /woo/orders?per_page=10000
-// Silently clamped to 100. No error; consumer thinks they got "all" when they got 100.
-
-// RIGHT — paginate with X-WP-TotalPages
-
-// WRONG — fields with JSON array syntax
-GET /woo/orders?fields=["id","total","status"]
-// Returns 400 because the parser expects comma-separated.
-
-// RIGHT
-GET /woo/orders?fields=id,total,status
-
-// WRONG — multi-sort
-GET /woo/orders?sort=-date_created,total
-// Behavior depends on parser; usually only the first sort is honored.
-
-// RIGHT — single sort
-
-// WRONG — hand-rolling order pagination via wc_get_orders inside a custom handler
-$orders = wc_get_orders(['paged' => $page, 'limit' => $perPage]);
-return rest_response($orders);
-// Bypasses the registrar; lose HPOS-awareness, error normalization, capability gates.
-
-// RIGHT — let the registrar handle it
-->register('myapp/v1', ['actions' => ['orders' => ['list', 'get']]]);
+    'ttlSeconds' => 86400,
+    'resources' => [
+        'orders' => true,
+        'products' => true,
+        'customers' => true,
+        'coupons' => true,
+    ],
+],
 ```
 
-## Cross-references
+1.1 uses `AtomicIdempotencyMiddleware` and requires a custom store to implement `AtomicIdempotencyStoreInterface`. Under WordPress, the default is a lease-aware wpdb store whose schema is installed/migrated once per version option; failure is surfaced rather than silently falling back.
 
-- Run **`br-routes`** for raw routes alongside Woo routes (e.g. custom `/store-info` endpoint that's not WC-data).
-- Run **`br-idempotency`** for the idempotency store config (`WpdbIdempotencyStore::installSchema()` on activation).
-- Run **`br-resource-policy`** for the cap-string/array/callable patterns used in `permissions`.
-- Run **`br-error-contract`** for the standard error envelope — `503 hpos_required`, `409 customer_exists`, `409 coupon_exists`, `409 woo_line_items_locked`, `503 woo_unavailable` shapes.
-- Run **`wc-hpos-compatibility`** (in the woocommerce/ folder) for HPOS migration mechanics.
+The current 1.1 registrar attaches idempotency to create and update routes. DELETE routes are not wrapped by the registrar's idempotency configuration; add a custom raw route/middleware if idempotent delete replay is a requirement.
 
-## What this skill does NOT cover
+## HPOS
 
-- Migrating from WooCommerce's own `wc/v3` REST API to better-route's wooRouteRegistrar. Different namespaces; both can coexist.
-- Block-editor / Gutenberg integration with the registered routes. Routes expose REST; consumer apps decide UI.
-- WC subscriptions / memberships — the registrar covers core WC entities only. For subscriptions, use the `wcs-subscription-hooks` skill plus custom routes.
-- Custom WC stores (custom CPTs registered as WC products via `Custom_Product_Type` plugin). Out of scope.
-- WC payment gateway endpoints. Use `wc-payment-gateway` skill (custom hand-rolled gateway) or expose payment gateway data via custom raw routes.
-- Localization of error messages.
+`requireHpos` defaults to true and gates order routes only. When HPOS is unavailable, order routes return `503 hpos_required`; products/customers/coupons are not HPOS data stores.
 
-## References
+The host plugin must also declare compatibility from its main file:
 
-- WooRouteRegistrar: [libraries/better-route/src/Integration/Woo/WooRouteRegistrar.php:30-50](WooRouteRegistrar.php) — `register(string $namespace, array $options): void`. Options at lines 33-46.
-- HPOS check: [WooRouteRegistrar.php:63](WooRouteRegistrar.php) — `requireHpos` default true.
-- Pagination defaults: [WooRouteRegistrar.php:64-65](WooRouteRegistrar.php) — `defaultPerPage: 20`, `maxPerPage: 100`.
-- MetaDataHelper: [libraries/better-route/src/Integration/Woo/MetaDataHelper.php](MetaDataHelper.php) — `extract`, `apply` with `$allowProtected` flag (default false). Underscore-key rejection at line 137.
-- Resource services: [libraries/better-route/src/Integration/Woo/](Woo/) — `WooOrderService`, `WooProductService`, `WooCustomerService` (with role filter and cap gates), `WooCouponService`.
-- List query parsers: [libraries/better-route/src/Integration/Woo/](Woo/) — `OrderListQueryParser`, `ProductListQueryParser`, `CustomerListQueryParser`, `CouponListQueryParser`.
-- HposGuard: [libraries/better-route/src/Integration/Woo/HposGuard.php](HposGuard.php) — emits `503 hpos_required` when HPOS not active.
+```php
+BetterRoute\Integration\Woo\HposGuard::declareCompatibility(__FILE__);
+```
+
+The runtime guard does not replace Woo's feature compatibility declaration.
+
+## OpenAPI
+
+Use the returned Router's contracts and `BetterRoute::wooOpenApiComponents()`. In 1.1 input schemas match strict runtime behavior: customer create requires email, coupon create requires code, product input excludes derived price, order line input requires product ID, and nested addresses disallow additional properties.
+
+## Review checklist
+
+- Set `deleteMode` explicitly; default `force` is destructive.
+- Keep HPOS required for production order APIs and declare host compatibility.
+- Verify action omission versus explicit `[]`.
+- Test customer role plus native capabilities.
+- Assert oversized `per_page` is 400 and read totals from JSON `meta`.
+- Test unknown nested keys and exact scalar types for every write entity.
+- Concurrency-test duplicate idempotent create/update and duplicate coupon codes.
+- Request expensive customer aggregate fields only when necessary.
+
+## Related skills
+
+- Use `br-atomic-idempotency` for reservation semantics.
+- Use `br-openapi` for document generation.
+- Use WooCommerce HPOS skills for migration/operational setup.
