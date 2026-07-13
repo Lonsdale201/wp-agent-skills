@@ -2,6 +2,26 @@
 
 This collection is continuously evolving — entries are date-based, not version-tagged. New skills land when they're ready; updates go in when they cover real ground (a new release of an upstream plugin, a verified misconception, a corrected example).
 
+## 2026-07-13 (second batch — api-fetch)
+
+### New skill — `wordpress/wp-api-fetch-client`
+
+- **`wordpress/wp-api-fetch-client`** — Implement and audit browser-side WordPress REST clients with the bundled `wp-api-fetch` script handle, `wp.apiFetch`, and `@wordpress/api-fetch`: runtime identification (WordPress-configured global vs externalized npm import vs privately bundled copy), PHP enqueue dependencies, `path`/`url`/`data`/`body`/`parse`/`signal` option contracts, cookie auth + `X-WP-Nonce` (nonce is CSRF protection, not authorization), parsed REST error shapes vs `AbortError` / `fetch_error` / `invalid_json`, `parse: false` for headers and `X-WP-Total` pagination, `AbortController` cancellation and stale-response races, write-retry ambiguity, page-global middleware side effects (`X-HTTP-Method-Override` transport, the `per_page=-1` fetch-all trap, locale and nonce-refresh middleware), media uploads, and request mocks. Ships `reference.md` + `agents/openai.yaml`. `plugin: wordpress`, `plugin-version-tested: "7.0.1"`, `php-min: "7.4"`.
+
+### Updated — `wordpress/wp-rest-api` rewritten (+ new `reference.md`)
+
+- Re-grounded against core source (`rest-api.php`, `class-wp-rest-server.php`, `class-wp-rest-request.php`, `class-wp-rest-controller.php`) and rewritten in the false-positive-guard style: explicit core execution order (auth → route match → validate/sanitize → `permission_callback` → `callback`), review workflow with route matrix and identifier tracing, request-source precedence, `WP_REST_Controller` guidance, bounded pagination, explicit output shaping, cookie-auth notes covering the `wp-api-fetch` nonce middleware, and a new "False-positive guards" section (`__return_true` needs proof of intended privacy, nonce ≠ capability, validation-before-permission is not an auth bypass, core 401 vs 403 semantics). Split per progressive disclosure: `SKILL.md` + new `reference.md` (dispatch/auth debugging, controllers, collections, `register_rest_field()`). Scope boundary sharpened — inbound routes only; outbound `wp_remote_*` stays in `wp-http-api-client`, browser calls in the new `wp-api-fetch-client`.
+
+### Fixed — validator/PR scripts missed the new `rankmath` domain
+
+- `rankmath` added to the hardcoded `ALLOWED_DOMAINS` lists in `.github/scripts/validate-skill.js` and `.github/scripts/build-skill-pr.js` — the morning batch created the domain folder without registering it, so any PR touching `rankmath/**` would have failed the path-scope check with "changes outside permitted paths".
+
+### Repo / docs (api-fetch batch)
+
+- `wordpress/README.md`: `wp-rest-api` row rewritten; `wp-api-fetch-client` row added.
+- Root `README.md` coverage line: **195 → 196 skills** (plugins unchanged at 29 — the new skill is `plugin: wordpress`).
+- `skills-index.json` regenerated (`skill_count` 195 → 196).
+
 ## 2026-07-13
 
 ### New domain — Rank Math SEO (`rankmath/`)

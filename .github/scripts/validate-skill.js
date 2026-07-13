@@ -29,6 +29,7 @@ const ALLOWED_DOMAINS = new Set([
   'polylang',
   'wpml',
   'learndash',
+  'rankmath',
 ]);
 
 const REQUIRED_FRONTMATTER = ['name', 'description', 'author', 'plugin', 'plugin-version-tested', 'php-min'];
