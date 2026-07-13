@@ -8,8 +8,8 @@ scope: global
 globs:
   - "**/*.php"
 always-apply: false
-version: "1.0.0"
-last-updated: "2026-07-01"
+version: "1.1.0"
+last-updated: "2026-07-14"
 ---
 
 # WooCommerce baseline (always-on)
@@ -40,6 +40,11 @@ Invariants for every WooCommerce plugin/theme PHP task. Builds on `wp-core-basel
 - Normalize amounts with `wc_format_decimal()` and `wc_get_price_decimals()`. Never trust a client-submitted price — recalculate totals server-side.
 - Change stock through `wc_update_product_stock()` or product setters, not raw `_stock` meta.
 
+## Background work
+
+- Never run slow work (remote API calls, imports, bulk recalculation) inline in checkout, order-status, or webhook hooks — queue it with Action Scheduler and pass scalar IDs, not objects.
+- Job callbacks must be replay-safe: there is no exactly-once guarantee (crashes, retries, manual CLI runs). Idempotency lives in the callback / remote system, not in the scheduler.
+
 ## Templates & hooks
 
 - Prefer WooCommerce hooks/filters over overriding templates.
@@ -49,6 +54,8 @@ Invariants for every WooCommerce plugin/theme PHP task. Builds on `wp-core-basel
 
 - HPOS → `wc-hpos-compatibility`
 - Store API / block checkout → `wc-store-api`
+- Background jobs → `wc-action-scheduler-jobs`
+- Logging → `wc-logging`
 - REST → `wc-rest-api-v4`
 - Emails → `wc-emails-classic`
 - Product variations → `wc-variations-data`
