@@ -12,7 +12,7 @@
     "skill_file": "SKILL.md"
   },
   "domain_count": 20,
-  "skill_count": 195,
+  "skill_count": 196,
   "domains": [
     {
       "slug": "better-data",
@@ -120,7 +120,7 @@
       "slug": "wordpress",
       "path": "wordpress",
       "readme_path": "wordpress/README.md",
-      "skill_count": 31
+      "skill_count": 32
     },
     {
       "slug": "wp-rocket",
@@ -7570,6 +7570,60 @@
       }
     },
     {
+      "slug": "wp-api-fetch-client",
+      "name": "wp-api-fetch-client",
+      "domain": "wordpress",
+      "description": "Implement and audit browser-side WordPress REST clients with the bundled wp-api-fetch script handle, wp.apiFetch, and @wordpress/api-fetch. Covers PHP enqueue dependencies, WordPress-global versus bundled npm initialization, path/url/data/body/parse/signal options, cookie authentication and X-WP-Nonce, parsed REST errors, raw response headers and pagination, cancellation, stale-response protection, middleware side effects, media uploads, and request mocks. Use when plugin or theme JavaScript calls core or custom REST endpoints, replaces fetch or jQuery.ajax, or debugs nonce, 401/403, invalid_json, pagination, duplicate requests, or REST races. Trigger on wp-api-fetch, wp.apiFetch, @wordpress/api-fetch, apiFetch.use, createNonceMiddleware, createRootURLMiddleware, setFetchHandler, or parse:false; do not use for server-side wp_remote_* calls.",
+      "path": "wordpress/wp-api-fetch-client",
+      "skill_path": "wordpress/wp-api-fetch-client/SKILL.md",
+      "url": "https://raw.githubusercontent.com/Lonsdale201/wp-agent-skills/main/wordpress/wp-api-fetch-client/SKILL.md",
+      "raw_url": "https://raw.githubusercontent.com/Lonsdale201/wp-agent-skills/main/wordpress/wp-api-fetch-client/SKILL.md",
+      "html_url": "https://github.com/Lonsdale201/wp-agent-skills/blob/main/wordpress/wp-api-fetch-client/SKILL.md",
+      "directory_url": "https://github.com/Lonsdale201/wp-agent-skills/tree/main/wordpress/wp-api-fetch-client",
+      "metadata": {
+        "author": "Soczó Kristóf",
+        "contact": "mailto:lonsdale201@hotmail.com",
+        "plugin": "wordpress",
+        "plugin-version-tested": "7.0.1",
+        "php-min": "7.4",
+        "last-updated": "2026-07-13",
+        "docs": [
+          "https://developer.wordpress.org/block-editor/reference-guides/packages/packages-api-fetch/",
+          "https://developer.wordpress.org/rest-api/using-the-rest-api/authentication/",
+          "https://developer.wordpress.org/reference/functions/wp_enqueue_script/"
+        ],
+        "source-refs": [
+          "wp-includes/script-loader.php",
+          "wp-includes/js/dist/api-fetch.js",
+          "wp-includes/assets/script-loader-packages.php"
+        ]
+      },
+      "resources": [
+        {
+          "path": "agents/openai.yaml",
+          "repo_path": "wordpress/wp-api-fetch-client/agents/openai.yaml",
+          "type": "resource",
+          "bytes": 230,
+          "sha256": "4637eeffcb841acda45d2d604d2f366ed2dd14d9c58f2ef9c4bf7b468822fb52"
+        },
+        {
+          "path": "reference.md",
+          "repo_path": "wordpress/wp-api-fetch-client/reference.md",
+          "type": "reference",
+          "bytes": 15110,
+          "sha256": "55f93508a9a681ad2b9c3d87a9f8f97f17198c3584bc07d0ab923113fec345a3"
+        }
+      ],
+      "has_reference": true,
+      "has_examples": false,
+      "has_scripts": false,
+      "skill_md": {
+        "bytes": 11962,
+        "lines": 287,
+        "sha256": "1e272edb85df19e859ada35cbf29dc7aff775e475b16d663acd7b84598f2c0a5"
+      }
+    },
+    {
       "slug": "wp-batch-mutation-audit",
       "name": "wp-batch-mutation-audit",
       "domain": "wordpress",
@@ -8121,7 +8175,7 @@
       "slug": "wp-rest-api",
       "name": "wp-rest-api",
       "domain": "wordpress",
-      "description": "Scaffolds and reviews custom WordPress REST API endpoints registered via register_rest_route on rest_api_init — namespace and version slug, permission_callback authorization (no unconditional public access for privileged writes), args schema with validate_callback / sanitize_callback / type / enum, object-level capability checks via current_user_can with object ID, responses with WP_REST_Response and WP_Error carrying an HTTP status, no raw DB rows / sensitive columns in responses, cookie auth via X-WP-Nonce, and REST vs admin-ajax decisions. Use when scaffolding or reviewing a REST endpoint, or migrating from admin-ajax. Triggers on register_rest_route, rest_api_init, permission_callback, WP_REST_Request, WP_REST_Response, WP_Error, X-WP-Nonce, rest_ensure_response, register_rest_field, or any file path containing /rest/ or /api/ in a WP plugin or theme.",
+      "description": "Scaffold and audit inbound custom WordPress REST API endpoints registered with register_rest_route on rest_api_init. Covers explicit permission_callback intent, public-route review, object-level authorization, request-source precedence, args/JSON Schema validation and sanitization, WP_REST_Controller resources, bounded pagination and filters, WP_REST_Response/WP_Error contracts, register_rest_field, cookie auth with X-WP-Nonce, and REST vs admin-ajax decisions. Use for endpoint implementation, security review, 401/403 debugging, headless APIs, or admin-ajax migration. Trigger on register_rest_route, permission_callback, WP_REST_Request, WP_REST_Controller, register_rest_field, rest_ensure_response, or X-WP-Nonce; do not trigger merely for outbound wp_remote_* integrations.",
       "path": "wordpress/wp-rest-api",
       "skill_path": "wordpress/wp-rest-api/SKILL.md",
       "url": "https://raw.githubusercontent.com/Lonsdale201/wp-agent-skills/main/wordpress/wp-rest-api/SKILL.md",
@@ -8134,21 +8188,39 @@
         "plugin": "wordpress",
         "plugin-version-tested": "6.0 - 7.0.1",
         "php-min": "7.4",
-        "last-updated": "2026-07-10",
+        "last-updated": "2026-07-13",
         "docs": [
           "https://developer.wordpress.org/rest-api/extending-the-rest-api/adding-custom-endpoints/",
           "https://developer.wordpress.org/reference/functions/register_rest_route/",
+          "https://developer.wordpress.org/rest-api/extending-the-rest-api/controller-classes/",
+          "https://developer.wordpress.org/rest-api/extending-the-rest-api/schema/",
           "https://developer.wordpress.org/rest-api/using-the-rest-api/authentication/"
+        ],
+        "source-refs": [
+          "wp-includes/rest-api.php",
+          "wp-includes/rest-api/class-wp-rest-server.php",
+          "wp-includes/rest-api/class-wp-rest-request.php",
+          "wp-includes/rest-api/endpoints/class-wp-rest-controller.php",
+          "wp-includes/script-loader.php",
+          "wp-includes/capabilities.php"
         ]
       },
-      "resources": [],
-      "has_reference": false,
+      "resources": [
+        {
+          "path": "reference.md",
+          "repo_path": "wordpress/wp-rest-api/reference.md",
+          "type": "reference",
+          "bytes": 13109,
+          "sha256": "2fc9ccb8337a928e4b187135b02633e825685103f2a78abc158b01f4a27fb7a7"
+        }
+      ],
+      "has_reference": true,
       "has_examples": false,
       "has_scripts": false,
       "skill_md": {
-        "bytes": 15367,
-        "lines": 283,
-        "sha256": "3ddce66fde98c55ff6aef2cd668473844d70d378228b43c7b9f4f2096fc388fd"
+        "bytes": 12873,
+        "lines": 300,
+        "sha256": "16601a5b0191f329ff37e56fe859b40139167d6a197b814b10d3ebb1abdf13ca"
       }
     },
     {
