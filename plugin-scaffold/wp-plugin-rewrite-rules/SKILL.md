@@ -263,7 +263,7 @@ Multisite caveat: this skill's authoring environment is single-site. The pattern
 // WRONG — flush on every request, .htaccess rewritten constantly
 add_action( 'init', function () {
     add_rewrite_rule( '^api/v1/items/?$', 'index.php?myplugin_endpoint=items', 'top' );
-    flush_rewrite_rules(); // 🔥 disaster
+    flush_rewrite_rules(); // disaster
 } );
 
 // WRONG — registers a CPT but never flushes; permalinks 404

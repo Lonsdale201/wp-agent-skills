@@ -2,6 +2,32 @@
 
 This collection is continuously evolving — entries are date-based, not version-tagged. New skills land when they're ready; updates go in when they cover real ground (a new release of an upstream plugin, a verified misconception, a corrected example).
 
+## 2026-07-13
+
+### New domain — Rank Math SEO (`rankmath/`)
+
+Three compatibility skills for [Rank Math SEO](https://rankmath.com), all grounded against the free plugin source (`plugin: seo-by-rank-math`, `plugin-version-tested: "1.0.273"`, `wp-version-tested: "7.0.1"`, `php-min: "7.4"`), each shipping an `agents/openai.yaml` interface file:
+
+- **`rankmath/rankmath-plugin-compatibility`** — Base compatibility layer: safe bootstrap around `rank_math/loaded` (fires during plugin file load, before `plugins_loaded:14` init and `after_setup_theme:2` module load), CPT/taxonomy discoverability, the narrowest frontend metadata filters (`rank_math/frontend/title` / `/description` / `/robots` associative array / `/canonical`, `rank_math/opengraph/*`), replacement variables via `rank_math_register_var_replacement()`, content-analysis integration via the `rank_math_content` JS filter, metadata persistence rules, and headless `getHead` support. Source-verified notes: the Schema module ID is `rich-snippet` (not `schema`), and the documented `rank_math_title` JS filter was not verifiable in the distributed 1.0.273 build.
+- **`rankmath/rankmath-schema-integration`** — Extend the single JSON-LD `@graph` instead of printing a competing script: `rank_math/json_ld` at priority 100 (entity connector at 99), type-specific entity hooks, breadcrumb control, graph-integrity rules (no `array_values()` — later callbacks rely on associative keys; stored-schema keys derive from `meta_id`; `@type` may be an array; stable canonical-derived `@id`s), persistence traps around `rank_math_schema_*` postmeta, and security/privacy boundaries.
+- **`rankmath/rankmath-sitemap-integration`** — XML sitemap inclusion: built-in providers first, entry/URL/exclusion filters, symmetric `get_posts`/`post_count` join+where SQL contracts (one-sided filtering yields sparse or truncated pages), custom provider design (`handles_type` / `get_index_links` / `get_sitemap_links`, one-based paging, stable ordering tiebreaker, no `implements` of the Rank Math interface in always-loaded files), and cache invalidation via the Cache Watcher, `rank_math/sitemap/invalidate_object_type`, or guarded `Cache::invalidate_storage()`. Documents the misspelled `rank_math/sitemap/exlude_posts_with_canonical_urls` hook as a narrow compatibility filter, not a general API.
+
+### Updated
+
+- `better-route/README.md`: `br-install-and-migrate` row caught up with the skill body — better-route is on Packagist since 1.0.0 (plain `composer require`), the "Composer VCS repo, NOT yet on Packagist" wording was stale.
+
+### Intake notes
+
+- Emoji cleanup, completing the 2026-07-12 pass (which only covered better-route): 7 leftover markers dating from earlier commits replaced with ASCII doc-signals — 5 `// 🔴` in `better-data/bd-security` (now `// INSECURE —` / `// BUG —`), 1 `// 💥` in `plugin-scaffold/wp-plugin-hooks` (now `// BUG — breaks existing listeners`), 1 `// 🔥 disaster` in `plugin-scaffold/wp-plugin-rewrite-rules` (now `// disaster`). `validate-skill.js` is back to 0 errors repo-wide.
+- The rankmath batch itself validated clean on arrival: no emoji, YAML frontmatter parses (including the `agents/openai.yaml` files), no private-infra references, and all cross-references (`wp-security-audit`, `wp-metadata-api`, `wp-database-performance-audit`) resolve.
+- The two parent-folder drops left over from 2026-07-12 (`plugin-scaffold/`, `wordpress/`) remain stale copies — the only diff is the known intentional `wp-html-api` ASCII-escape divergence; no action.
+
+### Repo / docs
+
+- New `rankmath/README.md` domain README with the three skill rows.
+- Root `README.md`: `rankmath/` row added to the domain table; coverage line **192 → 195 skills**, **28 → 29 plugins** (`seo-by-rank-math` is a new distinct plugin).
+- `skills-index.json` regenerated (`skill_count` 192 → 195; `domain_count` 19 → 20).
+
 ## 2026-07-12
 
 ### Updated — better-route re-grounded to v1.0.0 (first stable release)
