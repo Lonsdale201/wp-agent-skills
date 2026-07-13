@@ -9,16 +9,13 @@ description: Open the standard WordPress Media Library picker from plugin
   frame caching, pre-selecting existing attachments, and saving attachment
   IDs instead of URLs. Use for image, file, gallery, logo, avatar, cover,
   or per-row icon pickers in settings pages, metaboxes, and repeaters.
-author: Soczó Kristóf
-contact: mailto:lonsdale201@hotmail.com
-plugin: wordpress
-plugin-version-tested: "6.0 - 7.0.1"
-php-min: "7.4"
-last-updated: "2026-07-10"
-docs:
-  - https://developer.wordpress.org/reference/functions/wp_enqueue_media/
-  - https://developer.wordpress.org/reference/functions/wp_prepare_attachment_for_js/
-  - https://codex.wordpress.org/Javascript_Reference/wp.media
+metadata:
+  wp-skills-author: "Soczó Kristóf"
+  wp-skills-contact: "mailto:lonsdale201@hotmail.com"
+  wp-skills-plugin: "wordpress"
+  wp-skills-plugin-version-tested: "6.0 - 7.0.1"
+  wp-skills-php-min: "7.4"
+  wp-skills-last-updated: "2026-07-10"
 ---
 
 # WordPress Admin Media Picker (`wp.media`)
@@ -289,3 +286,6 @@ Use one cached frame, but track the active row before opening it. On `select`, w
 - `wp-includes/js/media-views.js` — the Backbone views; useful when you actually need to subclass.
 - `wp-includes/script-loader.php` — `media-editor`, `media-views`, `media-models` handle registrations.
 - `reference.md` — server render snippets, event table, per-row picker, and common mistakes.
+- Official documentation: <https://developer.wordpress.org/reference/functions/wp_enqueue_media/>
+- Official documentation: <https://developer.wordpress.org/reference/functions/wp_prepare_attachment_for_js/>
+- Official documentation: <https://codex.wordpress.org/Javascript_Reference/wp.media>

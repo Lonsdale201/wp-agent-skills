@@ -27,45 +27,69 @@ It guarantees frontmatter shape, runs pre-checks (kebab-case name, ≤1024-char 
 - One skill = one folder. Folder name = skill name = kebab-case.
 - The SKILL.md filename is **uppercase** (`SKILL.md`), not `skill.md`. The runtime is case-sensitive on Linux.
 
-## Required frontmatter
+## Required frontmatter (open Agent Skills format)
+
+This collection follows the open [Agent Skills specification](https://agentskills.io/specification), so the skills work in Claude, Codex, and any other Agent Skills-compatible client. Only these top-level frontmatter keys are allowed:
+
+`name`, `description` (required) · `license`, `compatibility`, `metadata`, `allowed-tools` (optional)
+
+Everything collection-specific lives under `metadata` as **string → string** pairs in the `wp-skills-*` namespace. No other top-level key is accepted — CI rejects it.
 
 Every `SKILL.md` starts with this block:
 
 ```yaml
 ---
 name: kebab-case-name
-description: One paragraph (max ~1024 chars). Two things must be answered —
-  WHAT the skill does, and WHEN Claude should use it. List concrete trigger
-  signals (function names, file patterns, user phrasings) so the model
-  picks it up without being asked by name.
-author: Your Name
-contact: https://github.com/<your-handle>   # or mailto:you@example.com
-plugin: wordpress | woocommerce | jetformbuilder | <slug>
-plugin-version-tested: "X.Y - X.Y"
-php-min: "7.4"
-last-updated: "YYYY-MM-DD"
-docs:
-  - https://...
+description: >-
+  One paragraph (max 1024 chars, hard limit). Two things must be answered —
+  WHAT the skill does, and WHEN the agent should use it. List concrete
+  trigger signals (function names, file patterns, user phrasings) so the
+  model picks it up without being asked by name. No XML/HTML-tag-like
+  angle-bracket sequences.
+metadata:
+  wp-skills-author: "Your Name"
+  wp-skills-contact: "https://github.com/your-handle"
+  wp-skills-plugin: "wordpress"
+  wp-skills-plugin-version-tested: "X.Y - X.Y"
+  wp-skills-php-min: "7.4"
+  wp-skills-last-updated: "YYYY-MM-DD"
 ---
 ```
 
 ### Field rules
 
-- **`name`** — `[a-z0-9-]`, max 64 chars, MUST equal the folder name.
+- **`name`** — 1-64 chars of `[a-z0-9-]`, no leading/trailing/consecutive hyphens, MUST equal the folder name, and must not contain the reserved words "anthropic" or "claude".
 - **`description`** — the single most important field. See [Writing the description](#writing-the-description) below.
-- **`author`** — required. Your real name or a stable handle you want associated with the skill. The Claude runtime ignores this field, but human readers (and PR reviewers) need to know who owns the content. Use the same form across your skills so a glance at the repo shows authorship continuity.
-- **`contact`** *(optional, recommended)* — a single URL or `mailto:` where humans can reach the author with skill-specific issues. GitHub profile (`https://github.com/<handle>`) is the most useful form because issues / DMs / PRs are all reachable from one place. The Claude runtime ignores this field — it's purely a courtesy for human readers who want to flag a bug in your skill without filing a PR. If omitted, readers fall back to the repo's issue tracker.
-- **`plugin`** — the WP slug or `wordpress` for core. Lowercase.
-- **`plugin-version-tested`** — versions you actually ran the skill end-to-end against. Range or single. **This is NOT a "supported range" claim** — most WP/plugin APIs are stable for years and the skill almost certainly works on older and newer versions too. The field records "at least this works" so future maintainers know what's been verified. Update whenever you re-test.
-- **`api-stable-since`** *(optional)* — if you know the underlying API has been stable since an earlier version, record it here. Saves users from worrying about version pinning when the API hasn't changed in five years. If you add this, also include a short "API stability note" paragraph at the top of the SKILL.md body explaining the situation.
-- **`php-min`** — minimum PHP version the code samples support.
-- **`last-updated`** *(optional, strongly recommended)* — ISO date `YYYY-MM-DD` of the last meaningful edit to the skill content. Bump this whenever you touch the workflow, the trigger list, or the code samples; do NOT bump for typo fixes alone. The Claude runtime ignores it; it exists so a future maintainer (or a user comparing two competing skills) can tell at a glance whether this one has been kept up to date. Skills older than ~12 months without a bump are candidates for re-verification — flag them in PR review rather than silently trusting.
-- **`docs`** — optional list of URLs the skill links into. Useful for the model and for human readers.
+- **`license`** *(optional, top-level — standard field)* — a short license name (`GPLv2-or-later`, `MIT`) or a reference to a bundled license file. Don't invent one; omit it to inherit the repo default.
+- **`compatibility`** *(optional, top-level — standard field, max 500 chars)* — only for real runtime requirements (PHP version, system binaries, network access). Do NOT restate `wp-skills-plugin-version-tested` here; a tested version is not a minimum requirement. Most skills don't need this.
+- **`allowed-tools`** *(optional, experimental)* — a single space-separated string of pre-approved tools. Don't add it unless the skill genuinely needs it.
 
-Optional but supported by the WP-skills convention:
-- **`wp-version-tested`**, **`source-refs`** (list of source paths inside the target plugin), **`license`**.
+### The `metadata` block (wp-skills-* namespace)
 
-The Claude runtime ignores unknown keys, so add what you need for human discoverability — but keep it tidy.
+The spec defines `metadata` as a map from string keys to string values — **every value must be a quoted string** (including versions and dates), and lists or nested mappings are invalid. Keys are namespaced `wp-skills-*` so they can't collide with other skill collections.
+
+- **`wp-skills-author`** — required. Your real name or a stable handle. Runtimes ignore it, but reviewers and human readers need to know who owns the content.
+- **`wp-skills-contact`** *(optional, recommended)* — a single URL or `mailto:` where humans can reach the author. GitHub profile is the most useful form. If omitted, readers fall back to the repo's issue tracker.
+- **`wp-skills-plugin`** — required. The WP plugin slug or `wordpress` for core. Lowercase.
+- **`wp-skills-plugin-version-tested`** — required. Versions you actually ran the skill end-to-end against. Range or single. **This is NOT a "supported range" claim** — it records "at least this works". Update whenever you re-test.
+- **`wp-skills-wp-version-tested`** *(optional)* — the WordPress core version verified against, when it matters separately from the plugin version.
+- **`wp-skills-php-min`** — required. Minimum PHP version the code samples support.
+- **`wp-skills-api-stable-since`** *(optional)* — if the underlying API has been stable since an earlier version, record it, and add a short "API stability note" paragraph in the body.
+- **`wp-skills-last-updated`** *(strongly recommended)* — ISO date `YYYY-MM-DD` of the last meaningful edit. Bump when the workflow, triggers, or code samples change; not for typo fixes. Skills older than ~12 months without a bump are candidates for re-verification.
+
+### Where did `docs:` and `source-refs:` go?
+
+They are **body content now**, because the portable `metadata` mapping only holds strings, not lists. Put documentation URLs and the source paths you verified the skill against in the `## References` section at the bottom of the body:
+
+```markdown
+## References
+
+- Official documentation: <https://developer.wordpress.org/...>
+- Verified source paths:
+  - `wp-content/plugins/<plugin>/includes/example.php`
+```
+
+Merge into the existing References section if the skill already has one — don't create a duplicate heading, and don't repeat URLs or paths already listed there.
 
 ## Writing the description
 
@@ -93,7 +117,9 @@ Rules:
 2. List trigger signals: function names, file patterns, user phrasings.
 3. Be specific enough that a sibling skill in the same area doesn't also match. If two skills both say "WordPress security", neither will be picked correctly.
 4. Don't reference the body ("see below"). The body is not loaded at selection time.
-5. Stay under ~1024 characters. Long descriptions get truncated and waste the router's attention.
+5. Stay under 1024 characters — this is a hard limit in the Agent Skills spec, not a style preference.
+6. No XML/HTML-tag-like `<...>` sequences — descriptions get embedded in XML prompt blocks by Agent Skills clients. Write `` `img` `` element instead of an angle-bracketed tag. PHP arrows (`->`, `=>`) are fine.
+7. Write in third person ("Audits...", "Registers..."), imperative trigger clauses ("Use when...").
 
 ## Skill body structure
 
@@ -172,7 +198,17 @@ Before opening a PR:
 1. **Trigger test.** Drop the skill into your `~/.claude/skills/`. Open a fresh Claude Code session in a real plugin you didn't write. Ask a vague question that should match. Did the skill activate? Did the right one activate (and not a sibling)?
 2. **Outcome test.** Run the skill on at least two real plugins (different sizes, different authors). Did the output match the report format you defined? Were there false positives? Misses?
 3. **Cross-reference test.** If you added cross-references, verify the named skills exist with that exact name.
-4. **Frontmatter validation.** Run `php -r 'require "vendor/autoload.php"; var_dump(\Symfony\Component\Yaml\Yaml::parse(file_get_contents("SKILL.md")));'` or any YAML linter. The frontmatter must parse.
+4. **Frontmatter validation.** The official reference validator is the primary check — install [`skills-ref`](https://github.com/agentskills/agentskills/tree/main/skills-ref) (Python: `pip install <path-to>/agentskills/skills-ref`) and run:
+
+   ```bash
+   skills-ref validate path/to/your-skill
+   ```
+
+   (On Windows set `PYTHONUTF8=1` — the reference tool reads files with the locale encoding.) Then run the repo validator, which layers the collection's own rules (wp-skills-* metadata, emoji-free, secrets scan) on top:
+
+   ```bash
+   node .github/scripts/validate-skill.js --all
+   ```
 5. **Re-read your description out of context.** If you didn't know what the skill did, would the description tell you?
 
 ## Pull request checklist
@@ -180,9 +216,12 @@ Before opening a PR:
 Copy this into your PR body:
 
 - [ ] Skill folder name matches `name` in frontmatter.
-- [ ] `author` field is set.
-- [ ] `description` lists concrete triggers (functions, files, phrasings).
-- [ ] `plugin-version-tested` reflects versions actually verified.
+- [ ] No non-standard top-level frontmatter keys (only name, description, license, compatibility, metadata, allowed-tools).
+- [ ] `metadata.wp-skills-author` is set; all metadata values are quoted strings.
+- [ ] `description` lists concrete triggers (functions, files, phrasings), is ≤1024 chars, and has no `<...>` tag-like sequences.
+- [ ] `metadata.wp-skills-plugin-version-tested` reflects versions actually verified.
+- [ ] Documentation URLs / verified source paths are in the body `## References` section, not the frontmatter.
+- [ ] `skills-ref validate` passes on the skill folder.
 - [ ] SKILL.md is < 300 lines, or split with reference.md.
 - [ ] Tested trigger activation in a fresh Claude Code session.
 - [ ] Tested skill output on at least two real plugins.
@@ -194,8 +233,8 @@ Copy this into your PR body:
 
 When you update an existing skill:
 
-- Bump `plugin-version-tested` only if you actually re-tested.
-- Bump `last-updated` whenever the workflow, triggers, or code samples meaningfully change. Don't bump for typo / link fixes.
+- Bump `wp-skills-plugin-version-tested` only if you actually re-tested.
+- Bump `wp-skills-last-updated` whenever the workflow, triggers, or code samples meaningfully change. Don't bump for typo / link fixes.
 - Add a one-line entry to the skill's `CHANGELOG.md` if the file exists. If not, the git log is sufficient.
 - Avoid breaking changes to the skill `name` — that breaks every user's symlinks.
 

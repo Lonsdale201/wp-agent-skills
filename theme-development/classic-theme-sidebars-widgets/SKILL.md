@@ -1,25 +1,13 @@
 ---
 name: classic-theme-sidebars-widgets
 description: Build or audit classic theme widget areas and sidebars for WP 7.0. Covers `widgets_init`, `register_sidebar()`, stable sidebar IDs, `before_widget` and `before_title` wrappers, `dynamic_sidebar()`, `is_active_sidebar()`, `get_sidebar()`, `sidebar-{name}.php`, `show_in_rest`, semantic aside/footer/header widget areas, block-widget era compatibility, and common mistakes such as missing IDs, changing IDs after release, hardcoded widgets, bad wrapper placeholders, and rendering empty sidebars.
-author: Soczó Kristóf
-contact: mailto:lonsdale201@hotmail.com
-plugin: wordpress
-plugin-version-tested: "7.0"
-php-min: "7.4"
-last-updated: "2026-06-04"
-docs:
-  - https://developer.wordpress.org/themes/classic-themes/functionality/sidebars/
-  - https://developer.wordpress.org/themes/classic-themes/functionality/widgets/
-  - https://developer.wordpress.org/reference/functions/register_sidebar/
-  - https://developer.wordpress.org/reference/functions/dynamic_sidebar/
-source-refs:
-  - wp-includes/widgets.php
-  - wp-includes/theme.php
-  - wp-includes/general-template.php
-  - wp-content/themes/storefront/sidebar.php
-  - wp-content/themes/storefront/inc/class-storefront.php
-  - wp-content/themes/generatepress/sidebar.php
-  - wp-content/themes/generatepress/inc/general.php
+metadata:
+  wp-skills-author: "Soczó Kristóf"
+  wp-skills-contact: "mailto:lonsdale201@hotmail.com"
+  wp-skills-plugin: "wordpress"
+  wp-skills-plugin-version-tested: "7.0"
+  wp-skills-php-min: "7.4"
+  wp-skills-last-updated: "2026-06-04"
 ---
 
 # Classic Theme Sidebars and Widgets
@@ -200,3 +188,18 @@ Bad theme-owned functionality:
 - Rendering empty `<aside>` containers on every page.
 - Registering sidebars from template files.
 - Using widget areas as plugin data storage.
+
+## References
+
+- Official documentation: <https://developer.wordpress.org/themes/classic-themes/functionality/sidebars/>
+- Official documentation: <https://developer.wordpress.org/themes/classic-themes/functionality/widgets/>
+- Official documentation: <https://developer.wordpress.org/reference/functions/register_sidebar/>
+- Official documentation: <https://developer.wordpress.org/reference/functions/dynamic_sidebar/>
+- Verified source paths:
+  - `wp-includes/widgets.php`
+  - `wp-includes/theme.php`
+  - `wp-includes/general-template.php`
+  - `wp-content/themes/storefront/sidebar.php`
+  - `wp-content/themes/storefront/inc/class-storefront.php`
+  - `wp-content/themes/generatepress/sidebar.php`
+  - `wp-content/themes/generatepress/inc/general.php`

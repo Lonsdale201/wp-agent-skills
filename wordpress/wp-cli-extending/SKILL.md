@@ -1,28 +1,13 @@
 ---
 name: wp-cli-extending
-description: Add custom WP-CLI commands to a WordPress plugin via
-  `WP_CLI::add_command( $name, $callable, $args )`. Covers the
-  class-based command pattern with PHPDoc-driven synopsis, positional
-  vs `--flag` args, I/O helpers (`success` / `log` / `warning` /
-  `error` / `confirm` / `debug`), formatted output via
-  `WP_CLI\Utils\format_items()` + `--format=table|csv|json|yaml|count`,
-  progress bars with `WP_CLI\Utils\make_progress_bar()`,
-  `WP_CLI::runcommand()` for invoking other commands, lifecycle hooks
-  (`before_wp_load`, `before_invoke:<cmd>`, `after_invoke:<cmd>`),
-  and the `defined( 'WP_CLI' ) && WP_CLI` registration guard. Use for
-  plugin bulk import, data migration, queue dispatch, debug
-  introspection, or any CLI surface.
-author: Soczó Kristóf
-contact: mailto:lonsdale201@hotmail.com
-plugin: wordpress
-plugin-version-tested: "WP-CLI 2.10 - 2.11; WP 6.0 - 7.0.1"
-php-min: "7.4"
-last-updated: "2026-07-10"
-docs:
-  - https://make.wordpress.org/cli/handbook/references/internal-api/wp-cli-add-command/
-  - https://make.wordpress.org/cli/handbook/references/internal-api/
-  - https://make.wordpress.org/cli/handbook/guides/commands-cookbook/
-  - https://make.wordpress.org/cli/handbook/guides/hook-system/
+description: Add custom WP-CLI commands to a WordPress plugin via `WP_CLI::add_command( $name, $callable, $args )`. Covers the class-based command pattern with PHPDoc-driven synopsis, positional vs `--flag` args, I/O helpers (`success` / `log` / `warning` / `error` / `confirm` / `debug`), formatted output via `WP_CLI\Utils\format_items()` + `--format=table|csv|json|yaml|count`, progress bars with `WP_CLI\Utils\make_progress_bar()`, `WP_CLI::runcommand()` for invoking other commands, lifecycle hooks (`before_wp_load`, `before_invoke:{cmd}`, `after_invoke:{cmd}`), and the `defined( 'WP_CLI' ) && WP_CLI` registration guard. Use for plugin bulk import, data migration, queue dispatch, debug introspection, or any CLI surface.
+metadata:
+  wp-skills-author: "Soczó Kristóf"
+  wp-skills-contact: "mailto:lonsdale201@hotmail.com"
+  wp-skills-plugin: "wordpress"
+  wp-skills-plugin-version-tested: "WP-CLI 2.10 - 2.11; WP 6.0 - 7.0.1"
+  wp-skills-php-min: "7.4"
+  wp-skills-last-updated: "2026-07-10"
 ---
 
 # WP-CLI: Extending with Custom Commands
@@ -251,3 +236,5 @@ See `reference.md` for before/after snippets covering: missing `defined('WP_CLI'
 - `WP_CLI\Utils\get_flag_value()` — `get_flag_value( $assoc_args, $flag, $default = null )`.
 - WP-CLI handbook (canonical docs): https://make.wordpress.org/cli/handbook/references/internal-api/
 - WP-CLI hook system: https://make.wordpress.org/cli/handbook/guides/hook-system/
+- Official documentation: <https://make.wordpress.org/cli/handbook/references/internal-api/wp-cli-add-command/>
+- Official documentation: <https://make.wordpress.org/cli/handbook/guides/commands-cookbook/>

@@ -1,29 +1,14 @@
 ---
 name: fluentcrm-smartcodes-segments
 description: Add and parse FluentCRM 3.x SmartCodes and build Pro dynamic contact segments. Covers FluentCrmApi('extender')->addSmartCode, parser syntax, fallback/default values, transformers, funnel context smart codes, dynamic segment filters, and ContactsQuery advanced filter providers. Use when a plugin exposes custom merge tags, parses personalized text, adds automation context values, registers dynamic segments, or extends advanced contact filtering. Triggers on addSmartCode, fluent_crm/extended_smart_codes, fluent_crm/smartcode_group_callback_, Parser::parse, fluent_crm_funnel_context_smart_codes, fluentcrm_dynamic_segments, fluentcrm_dynamic_segment_, fluentcrm_contacts_filter_.
-author: Soczó Kristóf
-contact: mailto:lonsdale201@hotmail.com
-plugin: fluent-crm
-plugin-version-tested: "FluentCRM 3.1.8 + FluentCRM Pro 3.1.8"
-wp-version-tested: "7.0"
-php-min: "7.4"
-last-updated: "2026-07-09"
-docs:
-  - https://developers.fluentcrm.com/modules/smart-code
-  - https://developers.fluentcrm.com/helpers/parser
-  - https://developers.fluentcrm.com/database/orm/
-source-refs:
-  - wp-content/plugins/fluent-crm/app/Api/config.php
-  - wp-content/plugins/fluent-crm/app/Api/Classes/Extender.php
-  - wp-content/plugins/fluent-crm/app/Hooks/filters.php
-  - wp-content/plugins/fluent-crm/app/Services/Helper.php
-  - wp-content/plugins/fluent-crm/app/Services/Libs/Parser/Parser.php
-  - wp-content/plugins/fluent-crm/app/Services/Libs/Parser/ShortcodeParser.php
-  - wp-content/plugins/fluent-crm/app/Http/Controllers/FunnelController.php
-  - wp-content/plugins/fluent-crm/app/Services/ContactsQuery.php
-  - wp-content/plugins/fluentcampaign-pro/app/Http/Controllers/DynamicSegmentController.php
-  - wp-content/plugins/fluentcampaign-pro/app/Services/DynamicSegments/BaseSegment.php
-  - wp-content/plugins/fluentcampaign-pro/app/Services/DynamicSegments/CustomSegment.php
+metadata:
+  wp-skills-author: "Soczó Kristóf"
+  wp-skills-contact: "mailto:lonsdale201@hotmail.com"
+  wp-skills-plugin: "fluent-crm"
+  wp-skills-plugin-version-tested: "FluentCRM 3.1.8 + FluentCRM Pro 3.1.8"
+  wp-skills-wp-version-tested: "7.0"
+  wp-skills-php-min: "7.4"
+  wp-skills-last-updated: "2026-07-09"
 ---
 
 # FluentCRM: SmartCodes and dynamic segments
@@ -253,3 +238,11 @@ Keep provider SQL bounded and allowlist every property/operator. Do not interpol
 
 - Local source: `Extender.php`, `ShortcodeParser.php`, `FunnelController.php`, `DynamicSegmentController.php`, `CustomSegment.php`, and `ContactsQuery.php`.
 - FluentCRM docs: Smart Codes, Parser, and Fluent ORM.
+- Official documentation: <https://developers.fluentcrm.com/modules/smart-code>
+- Official documentation: <https://developers.fluentcrm.com/helpers/parser>
+- Official documentation: <https://developers.fluentcrm.com/database/orm/>
+- Verified source paths:
+  - `wp-content/plugins/fluent-crm/app/Api/config.php`
+  - `wp-content/plugins/fluent-crm/app/Hooks/filters.php`
+  - `wp-content/plugins/fluent-crm/app/Services/Helper.php`
+  - `wp-content/plugins/fluentcampaign-pro/app/Services/DynamicSegments/BaseSegment.php`

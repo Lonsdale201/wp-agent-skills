@@ -12,17 +12,13 @@ description: Read, write, copy, delete, chmod files from a WordPress
   `wp-content/uploads`, generated CSS/cache files outside uploads, log
   output, bundled-asset extraction, and any FS op that must work on
   FTP-only shared hosts.
-author: Soczó Kristóf
-contact: mailto:lonsdale201@hotmail.com
-plugin: wordpress
-plugin-version-tested: "6.0 - 7.0.1"
-php-min: "7.4"
-last-updated: "2026-07-10"
-docs:
-  - https://developer.wordpress.org/reference/classes/wp_filesystem_base/
-  - https://developer.wordpress.org/reference/functions/wp_filesystem/
-  - https://developer.wordpress.org/reference/functions/request_filesystem_credentials/
-  - https://developer.wordpress.org/advanced-administration/wordpress/wp-config/
+metadata:
+  wp-skills-author: "Soczó Kristóf"
+  wp-skills-contact: "mailto:lonsdale201@hotmail.com"
+  wp-skills-plugin: "wordpress"
+  wp-skills-plugin-version-tested: "6.0 - 7.0.1"
+  wp-skills-php-min: "7.4"
+  wp-skills-last-updated: "2026-07-10"
 ---
 
 # WordPress Filesystem API
@@ -293,3 +289,7 @@ if ( ! WP_Filesystem() ) {
 - `wp-admin/includes/file.php:2364` — `request_filesystem_credentials()` (returns `true|false|array`, echoes form when needed).
 - `wp-admin/includes/class-wp-filesystem-base.php` — the base class method surface (lines 487-861 cover the public methods listed above).
 - `wp-admin/includes/file.php:1097` — `wp_handle_upload()` for the uploads/ pipeline.
+- Official documentation: <https://developer.wordpress.org/reference/classes/wp_filesystem_base/>
+- Official documentation: <https://developer.wordpress.org/reference/functions/wp_filesystem/>
+- Official documentation: <https://developer.wordpress.org/reference/functions/request_filesystem_credentials/>
+- Official documentation: <https://developer.wordpress.org/advanced-administration/wordpress/wp-config/>

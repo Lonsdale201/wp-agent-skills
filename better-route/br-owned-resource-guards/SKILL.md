@@ -1,13 +1,13 @@
 ---
 name: br-owned-resource-guards
 description: Add Better Route 1.1 ownership authorization to raw routes and Resource DSL endpoints. Use when authenticated users may access only their own records, orders, profiles, memberships, tokens, or subscriptions.
-author: Soczó Kristóf
-contact: mailto:lonsdale201@hotmail.com
-plugin: better-route
-plugin-version-tested: "1.1.0"
-php-min: "8.1"
-last-updated: "2026-07-13"
-docs: https://lonsdale201.github.io/better-docs/docs/better-route/agents
+metadata:
+  wp-skills-author: "Soczó Kristóf"
+  wp-skills-contact: "mailto:lonsdale201@hotmail.com"
+  wp-skills-plugin: "better-route"
+  wp-skills-plugin-version-tested: "1.1.0"
+  wp-skills-php-min: "8.1"
+  wp-skills-last-updated: "2026-07-13"
 ---
 
 # Better Route ownership guards
@@ -61,3 +61,7 @@ Resource::make('records')
 Test another user's ID, absent object, anonymous access, subject-only identity, native WordPress identity, admin bypass, and list-result isolation.
 
 Source references: `src/Middleware/Auth/OwnershipGuardMiddleware.php`, `src/Resource/OwnedResourcePolicy.php`.
+
+## References
+
+- Official documentation: <https://lonsdale201.github.io/better-docs/docs/better-route/agents>

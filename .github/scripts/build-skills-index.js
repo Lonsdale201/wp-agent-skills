@@ -258,9 +258,23 @@ function loadSkill(domain, slug) {
     throw new Error(`${skillRepoPath}: skill body is empty.`);
   }
 
-  const metadata = { ...data };
-  delete metadata.name;
-  delete metadata.description;
+  // Open Agent Skills format: collection fields live under frontmatter
+  // `metadata` as wp-skills-* string pairs. The index flattens them and
+  // strips the namespace prefix so index consumers keep seeing the
+  // pre-migration keys (author, plugin, plugin-version-tested, ...).
+  // docs/source-refs moved into the body References section and are no
+  // longer part of the index metadata.
+  const metadata = {};
+  if (data.metadata && typeof data.metadata === 'object' && !Array.isArray(data.metadata)) {
+    for (const [key, value] of Object.entries(data.metadata)) {
+      metadata[key.replace(/^wp-skills-/, '')] = String(value);
+    }
+  }
+  for (const key of ['license', 'compatibility', 'allowed-tools']) {
+    if (data[key] !== undefined && data[key] !== null) {
+      metadata[key] = String(data[key]);
+    }
+  }
 
   const resources = walkFiles(skillDir)
     .filter((filePath) => path.basename(filePath) !== 'SKILL.md')

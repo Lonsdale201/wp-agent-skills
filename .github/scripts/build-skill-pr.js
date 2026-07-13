@@ -86,26 +86,24 @@ function humanizeName(slug) {
     .join(' ');
 }
 
-function indentList(items) {
-  return items.map((u) => `  - ${u}`).join('\n');
-}
-
 function buildFrontmatter(fields) {
+  // Open Agent Skills format (https://agentskills.io/specification):
+  // only name/description/license/compatibility/metadata/allowed-tools may be
+  // top-level. Collection-specific fields live under metadata as string->string
+  // pairs in the wp-skills-* namespace. docs URLs go into the body References
+  // section, not the frontmatter.
   const lines = ['---'];
   lines.push(`name: ${fields.name}`);
   // YAML block scalar for description to avoid quoting headaches
   lines.push('description: |');
   for (const l of fields.description.split('\n')) lines.push(`  ${l}`);
-  lines.push(`author: ${fields.author}`);
-  if (fields.contact) lines.push(`contact: ${fields.contact}`);
-  lines.push(`plugin: ${fields.plugin}`);
-  lines.push(`plugin-version-tested: "${fields.plugin_version_tested}"`);
-  lines.push(`php-min: "${fields.php_min}"`);
-  lines.push(`last-updated: "${new Date().toISOString().slice(0, 10)}"`);
-  if (fields.docs.length) {
-    lines.push('docs:');
-    lines.push(indentList(fields.docs));
-  }
+  lines.push('metadata:');
+  lines.push(`  wp-skills-author: ${JSON.stringify(fields.author)}`);
+  if (fields.contact) lines.push(`  wp-skills-contact: ${JSON.stringify(fields.contact)}`);
+  lines.push(`  wp-skills-plugin: ${JSON.stringify(fields.plugin)}`);
+  lines.push(`  wp-skills-plugin-version-tested: ${JSON.stringify(fields.plugin_version_tested)}`);
+  lines.push(`  wp-skills-php-min: ${JSON.stringify(fields.php_min)}`);
+  lines.push(`  wp-skills-last-updated: ${JSON.stringify(new Date().toISOString().slice(0, 10))}`);
   lines.push('---');
   return lines.join('\n');
 }
@@ -191,6 +189,9 @@ function main() {
   if (description && description.length > 1024) {
     errors.push(`Description is ${description.length} chars; max 1024.`);
   }
+  if (description && /<[A-Za-z!\/][^<>]*>/.test(description)) {
+    errors.push('Description must not contain XML/HTML-tag-like `<...>` sequences (descriptions are embedded in XML prompt blocks). Spell out the element name instead, e.g. `img` element rather than an angle-bracketed tag.');
+  }
   if (description && /\bsee below\b/i.test(description)) {
     errors.push('Description must not say "see below" — the body is not loaded at selection time.');
   }
@@ -263,7 +264,18 @@ function main() {
     docs,
   });
 
-  const skillBody = body.replace(/^# .+\n+/, '').trimEnd() + '\n';
+  let skillBody = body.replace(/^# .+\n+/, '').trimEnd() + '\n';
+  // docs URLs belong in the body References section under the open format.
+  const missingDocs = docs.filter((u) => !skillBody.includes(u));
+  if (missingDocs.length) {
+    const bullets = missingDocs.map((u) => `- Official documentation: <${u}>`).join('\n');
+    if (/^## References[ \t]*$/m.test(skillBody)) {
+      // The template keeps References as the last section; append at the end.
+      skillBody = skillBody.trimEnd() + '\n' + bullets + '\n';
+    } else {
+      skillBody = skillBody.trimEnd() + '\n\n## References\n\n' + bullets + '\n';
+    }
+  }
   const skillMd = `${fm}\n\n# ${titleResolved}\n\n${skillBody}`;
 
   const skillDir = path.join(OUT_ROOT, resolvedDomain, name);

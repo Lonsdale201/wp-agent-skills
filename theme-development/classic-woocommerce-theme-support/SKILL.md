@@ -1,27 +1,14 @@
 ---
 name: classic-woocommerce-theme-support
 description: Build or audit WooCommerce support in a classic PHP WordPress theme. Covers `add_theme_support( 'woocommerce' )`, `wc_current_theme_supports_woocommerce_or_fse()`, supported vs unsupported theme rendering, shop/single wrappers, `woocommerce_before_main_content` and `woocommerce_after_main_content`, product image widths, `product_grid`, gallery zoom/lightbox/slider support, Woo body/post classes, conditional asset loading with `is_woocommerce()`/`is_shop()`/`is_product()`, and the classic-theme boundary versus Woo block templates.
-author: Soczó Kristóf
-contact: mailto:lonsdale201@hotmail.com
-plugin: woocommerce
-plugin-version-tested: "10.8.1"
-wp-version-tested: "7.0"
-php-min: "7.4"
-last-updated: "2026-06-14"
-docs:
-  - https://developer.woocommerce.com/docs/theming/theme-development/classic-theme-developer-handbook/
-  - https://developer.woocommerce.com/docs/theming/theme-development/template-structure/
-  - https://developer.woocommerce.com/docs/theming/theme-development/image-sizes/
-  - https://developer.woocommerce.com/docs/theming/theme-development/conditional-tags/
-source-refs:
-  - wp-content/plugins/woocommerce/woocommerce.php
-  - wp-content/plugins/woocommerce/includes/class-wc-template-loader.php
-  - wp-content/plugins/woocommerce/includes/wc-conditional-functions.php
-  - wp-content/plugins/woocommerce/includes/wc-core-functions.php
-  - wp-content/plugins/woocommerce/includes/wc-template-functions.php
-  - wp-content/plugins/woocommerce/includes/wc-template-hooks.php
-  - wp-content/plugins/woocommerce/templates/global/wrapper-start.php
-  - wp-content/plugins/woocommerce/templates/global/wrapper-end.php
+metadata:
+  wp-skills-author: "Soczó Kristóf"
+  wp-skills-contact: "mailto:lonsdale201@hotmail.com"
+  wp-skills-plugin: "woocommerce"
+  wp-skills-plugin-version-tested: "10.8.1"
+  wp-skills-wp-version-tested: "7.0"
+  wp-skills-php-min: "7.4"
+  wp-skills-last-updated: "2026-06-14"
 ---
 
 # Classic WooCommerce Theme Support
@@ -225,3 +212,19 @@ This skill is for classic PHP templates. Still be aware:
 - Replacing `wc_product_class()` with plain `post_class()`.
 - Hardcoding `full` product images in archives.
 - Declaring gallery slider/lightbox support without keyboard/focus testing.
+
+## References
+
+- Official documentation: <https://developer.woocommerce.com/docs/theming/theme-development/classic-theme-developer-handbook/>
+- Official documentation: <https://developer.woocommerce.com/docs/theming/theme-development/template-structure/>
+- Official documentation: <https://developer.woocommerce.com/docs/theming/theme-development/image-sizes/>
+- Official documentation: <https://developer.woocommerce.com/docs/theming/theme-development/conditional-tags/>
+- Verified source paths:
+  - `wp-content/plugins/woocommerce/woocommerce.php`
+  - `wp-content/plugins/woocommerce/includes/class-wc-template-loader.php`
+  - `wp-content/plugins/woocommerce/includes/wc-conditional-functions.php`
+  - `wp-content/plugins/woocommerce/includes/wc-core-functions.php`
+  - `wp-content/plugins/woocommerce/includes/wc-template-functions.php`
+  - `wp-content/plugins/woocommerce/includes/wc-template-hooks.php`
+  - `wp-content/plugins/woocommerce/templates/global/wrapper-start.php`
+  - `wp-content/plugins/woocommerce/templates/global/wrapper-end.php`

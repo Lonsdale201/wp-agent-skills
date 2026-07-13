@@ -15,22 +15,14 @@ description: Build a custom FluentCRM funnel trigger by extending
   fluentcrm_funnel_triggers, fluentcrm_funnel_start_,
   fluentcrm_funnel_arg_num_, FunnelProcessor, FunnelHelper,
   fluentcrm_funnel_settings, source_trigger_name.
-author: Soczó Kristóf
-contact: mailto:lonsdale201@hotmail.com
-plugin: fluent-crm
-plugin-version-tested: "FluentCRM 3.1.8 + FluentCRM Pro 3.1.8"
-api-stable-since: "2.7"
-php-min: "7.4"
-last-updated: "2026-07-09"
-docs:
-  - https://developers.fluentcrm.com/funnel-builder/custom-trigger/
-source-refs:
-  - app/Services/Funnel/BaseTrigger.php
-  - app/Services/Funnel/FunnelProcessor.php
-  - app/Services/Funnel/FunnelHelper.php
-  - app/Hooks/Handlers/FunnelHandler.php
-  - app/Hooks/actions.php
-  - boot/app.php
+metadata:
+  wp-skills-author: "Soczó Kristóf"
+  wp-skills-contact: "mailto:lonsdale201@hotmail.com"
+  wp-skills-plugin: "fluent-crm"
+  wp-skills-plugin-version-tested: "FluentCRM 3.1.8 + FluentCRM Pro 3.1.8"
+  wp-skills-php-min: "7.4"
+  wp-skills-api-stable-since: "2.7"
+  wp-skills-last-updated: "2026-07-09"
 ---
 
 # FluentCRM: register a custom funnel trigger

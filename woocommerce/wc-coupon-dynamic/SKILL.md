@@ -1,18 +1,13 @@
 ---
 name: wc-coupon-dynamic
 description: Implement dynamic or virtual WooCommerce coupons without creating `shop_coupon` posts. Covers `woocommerce_get_shop_coupon_data`, the `read_manual_coupon` field contract, precedence, validation, custom discount types, exact usage-limit behavior, idempotent usage accounting, performance, and security. Use for generated loyalty, partner, campaign, or entitlement codes resolved from an owned table or service.
-author: Soczó Kristóf
-contact: mailto:lonsdale201@hotmail.com
-plugin: woocommerce
-plugin-version-tested: "10.9.4"
-php-min: "7.4"
-last-updated: "2026-07-10"
-docs:
-  - https://woocommerce.github.io/code-reference/classes/WC-Coupon.html
-source-refs:
-  - wp-content/plugins/woocommerce/includes/class-wc-coupon.php
-  - wp-content/plugins/woocommerce/includes/class-wc-discounts.php
-  - wp-content/plugins/woocommerce/includes/wc-coupon-functions.php
+metadata:
+  wp-skills-author: "Soczó Kristóf"
+  wp-skills-contact: "mailto:lonsdale201@hotmail.com"
+  wp-skills-plugin: "woocommerce"
+  wp-skills-plugin-version-tested: "10.9.4"
+  wp-skills-php-min: "7.4"
+  wp-skills-last-updated: "2026-07-10"
 ---
 
 # WooCommerce dynamic coupons
@@ -205,3 +200,4 @@ if ( ! is_string( $input ) || 0 !== strpos( $input, 'LOYALTY-' ) ) {
 - Resolution and `read_manual_coupon()`: `includes/class-wc-coupon.php`.
 - Usage and product/cart validation: `includes/class-wc-discounts.php`.
 - Core discount type registry: `includes/wc-coupon-functions.php`.
+- Official documentation: <https://woocommerce.github.io/code-reference/classes/WC-Coupon.html>

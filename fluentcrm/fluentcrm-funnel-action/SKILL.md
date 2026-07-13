@@ -15,21 +15,14 @@ description: Build a custom FluentCRM funnel action — a per-contact sequence s
   integration actions. Triggers on BaseAction, fluentcrm_funnel_blocks,
   fluentcrm_funnel_block_fields, fluentcrm_funnel_sequence_handle_,
   changeFunnelSubSequenceStatus, funnelMetric, getBlockFields.
-author: Soczó Kristóf
-contact: mailto:lonsdale201@hotmail.com
-plugin: fluent-crm
-plugin-version-tested: "FluentCRM 3.1.8 + FluentCRM Pro 3.1.8"
-api-stable-since: "2.7"
-php-min: "7.4"
-last-updated: "2026-07-09"
-docs:
-  - https://developers.fluentcrm.com/funnel-builder/custom-action/
-source-refs:
-  - app/Services/Funnel/BaseAction.php
-  - app/Services/Funnel/FunnelProcessor.php
-  - app/Services/Funnel/FunnelHelper.php
-  - app/Models/FunnelMetric.php
-  - database/migrations/FunnelMetrics.php
+metadata:
+  wp-skills-author: "Soczó Kristóf"
+  wp-skills-contact: "mailto:lonsdale201@hotmail.com"
+  wp-skills-plugin: "fluent-crm"
+  wp-skills-plugin-version-tested: "FluentCRM 3.1.8 + FluentCRM Pro 3.1.8"
+  wp-skills-php-min: "7.4"
+  wp-skills-api-stable-since: "2.7"
+  wp-skills-last-updated: "2026-07-09"
 ---
 
 # FluentCRM: register a custom funnel action

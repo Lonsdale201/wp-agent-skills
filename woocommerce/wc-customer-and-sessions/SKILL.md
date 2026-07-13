@@ -1,21 +1,13 @@
 ---
 name: wc-customer-and-sessions
 description: Use WooCommerce customer objects and sessions without confusing checkout-session state with persistent account data. Covers `WC()->customer`, `WC_Customer( $user_id )`, `WC()->session`, cookie creation, shutdown persistence, guest-to-user migration, Cart-Token sessions, safe session values, and the experimental empty-session cleanup. Use when storing cart-flow state, changing billing or shipping data, creating guest sessions, or debugging values that disappear or unexpectedly alter checkout only.
-author: Soczó Kristóf
-contact: mailto:lonsdale201@hotmail.com
-plugin: woocommerce
-plugin-version-tested: "10.9.4"
-php-min: "7.4"
-last-updated: "2026-07-10"
-docs:
-  - https://woocommerce.github.io/code-reference/classes/WC-Customer.html
-source-refs:
-  - wp-content/plugins/woocommerce/includes/class-wc-customer.php
-  - wp-content/plugins/woocommerce/includes/abstracts/abstract-wc-session.php
-  - wp-content/plugins/woocommerce/includes/class-wc-session-handler.php
-  - wp-content/plugins/woocommerce/includes/data-stores/class-wc-customer-data-store-session.php
-  - wp-content/plugins/woocommerce/src/StoreApi/SessionHandler.php
-  - wp-content/plugins/woocommerce/src/Internal/Features/FeaturesController.php
+metadata:
+  wp-skills-author: "Soczó Kristóf"
+  wp-skills-contact: "mailto:lonsdale201@hotmail.com"
+  wp-skills-plugin: "woocommerce"
+  wp-skills-plugin-version-tested: "10.9.4"
+  wp-skills-php-min: "7.4"
+  wp-skills-last-updated: "2026-07-10"
 ---
 
 # WooCommerce customers and sessions
@@ -190,3 +182,7 @@ WC()->session->set_customer_session_cookie( true );
 - Session-only customer data store: `includes/data-stores/class-wc-customer-data-store-session.php`.
 - Cookie, dirty-write, Cart-Token clone, and empty cleanup behavior: `includes/class-wc-session-handler.php`.
 - Header-based Store API handler: `src/StoreApi/SessionHandler.php`.
+- Official documentation: <https://woocommerce.github.io/code-reference/classes/WC-Customer.html>
+- Verified source paths:
+  - `wp-content/plugins/woocommerce/includes/abstracts/abstract-wc-session.php`
+  - `wp-content/plugins/woocommerce/src/Internal/Features/FeaturesController.php`

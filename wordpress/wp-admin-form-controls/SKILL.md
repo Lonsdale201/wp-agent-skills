@@ -9,17 +9,13 @@ description: Use WordPress admin form-control widgets that ship in core,
   and `wp-pointer` dismissal through `dismiss-wp-pointer`. Use when adding
   color, date, typeahead, or first-run pointer controls to settings pages,
   metaboxes, or repeater rows.
-author: Soczó Kristóf
-contact: mailto:lonsdale201@hotmail.com
-plugin: wordpress
-plugin-version-tested: "6.0 - 7.0.1"
-php-min: "7.4"
-last-updated: "2026-07-10"
-docs:
-  - https://developer.wordpress.org/reference/functions/wp_enqueue_script/
-  - https://api.jqueryui.com/datepicker/
-  - https://api.jqueryui.com/autocomplete/
-  - https://automattic.github.io/Iris/
+metadata:
+  wp-skills-author: "Soczó Kristóf"
+  wp-skills-contact: "mailto:lonsdale201@hotmail.com"
+  wp-skills-plugin: "wordpress"
+  wp-skills-plugin-version-tested: "6.0 - 7.0.1"
+  wp-skills-php-min: "7.4"
+  wp-skills-last-updated: "2026-07-10"
 ---
 
 # WordPress Admin Form Controls
@@ -290,3 +286,7 @@ See `reference.md` for before/after snippets: script without stylesheet, unstyle
 - `wp-includes/script-loader.php:937-939` — `jquery-ui-autocomplete` (deps `jquery-ui-menu`, `wp-a11y`) and `jquery-ui-datepicker` (deps `jquery-ui-core`).
 - `wp-admin/js/user-suggest.js`, `wp-admin/js/tags-suggest.js` — reference autocomplete implementations for users/tags.
 - `reference.md` — autocomplete source shapes, pointer dismissal example, and common mistakes.
+- Official documentation: <https://developer.wordpress.org/reference/functions/wp_enqueue_script/>
+- Official documentation: <https://api.jqueryui.com/datepicker/>
+- Official documentation: <https://api.jqueryui.com/autocomplete/>
+- Official documentation: <https://automattic.github.io/Iris/>

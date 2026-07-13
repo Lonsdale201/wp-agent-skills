@@ -1,22 +1,14 @@
 ---
 name: wc-stripe-webhooks
 description: Build or audit integrations around WooCommerce Stripe Gateway webhooks and asynchronous payment settlement. Covers the canonical wc-api endpoint, Stripe-Signature validation, order resolution, PaymentIntent and Checkout Session deferral, Action Scheduler, order locks, idempotency, safe extension hooks, Adaptive Pricing dependence, unexpected-charge detection, logging, and deprecated Stripe hooks/classes. Use for wc_stripe_webhook_received, payment_intent events, checkout.session events, pending Stripe orders, duplicate settlement, custom webhook observers, or Stripe reconciliation.
-author: Soczo Kristof
-contact: mailto:lonsdale201@hotmail.com
-plugin: woocommerce-gateway-stripe
-plugin-version-tested: "10.8.3"
-woocommerce-version-tested: "10.9.4"
-php-min: "7.4"
-last-updated: "2026-07-10"
-source-refs:
-  - wp-content/plugins/woocommerce-gateway-stripe/includes/class-wc-stripe-webhook-handler.php
-  - wp-content/plugins/woocommerce-gateway-stripe/includes/class-wc-stripe-webhook-state.php
-  - wp-content/plugins/woocommerce-gateway-stripe/includes/class-wc-stripe-order-handler.php
-  - wp-content/plugins/woocommerce-gateway-stripe/includes/class-wc-stripe-order-helper.php
-  - wp-content/plugins/woocommerce-gateway-stripe/includes/class-wc-stripe-api.php
-  - wp-content/plugins/woocommerce-gateway-stripe/includes/class-wc-stripe-helper.php
-  - wp-content/plugins/woocommerce-gateway-stripe/includes/class-wc-stripe-logger.php
-  - wp-content/plugins/woocommerce-gateway-stripe/includes/abilities/class-wc-stripe-abilities-registrar.php
+metadata:
+  wp-skills-author: "Soczo Kristof"
+  wp-skills-contact: "mailto:lonsdale201@hotmail.com"
+  wp-skills-plugin: "woocommerce-gateway-stripe"
+  wp-skills-plugin-version-tested: "10.8.3"
+  wp-skills-woocommerce-version-tested: "10.9.4"
+  wp-skills-php-min: "7.4"
+  wp-skills-last-updated: "2026-07-10"
 ---
 
 # WooCommerce Stripe webhooks
@@ -190,3 +182,15 @@ Stripe 10.8 contains read-only Stripe abilities, but registration is gated by `w
 - Use `wc-stripe-add-payment-method` for SetupIntent token creation in My Account.
 - Use `wc-stripe-subscriptions` for Stripe renewal and subscription change-payment behavior.
 - Use `wc-logging` and `wc-action-scheduler-jobs` for general diagnostics.
+
+## References
+
+- Verified source paths:
+  - `wp-content/plugins/woocommerce-gateway-stripe/includes/class-wc-stripe-webhook-handler.php`
+  - `wp-content/plugins/woocommerce-gateway-stripe/includes/class-wc-stripe-webhook-state.php`
+  - `wp-content/plugins/woocommerce-gateway-stripe/includes/class-wc-stripe-order-handler.php`
+  - `wp-content/plugins/woocommerce-gateway-stripe/includes/class-wc-stripe-order-helper.php`
+  - `wp-content/plugins/woocommerce-gateway-stripe/includes/class-wc-stripe-api.php`
+  - `wp-content/plugins/woocommerce-gateway-stripe/includes/class-wc-stripe-helper.php`
+  - `wp-content/plugins/woocommerce-gateway-stripe/includes/class-wc-stripe-logger.php`
+  - `wp-content/plugins/woocommerce-gateway-stripe/includes/abilities/class-wc-stripe-abilities-registrar.php`

@@ -9,17 +9,13 @@ description: Wire up WordPress postboxes on custom plugin admin pages with
   collapsible admin boxes, draggable metabox layouts, or Screen Options
   show/hide behavior to a custom plugin admin screen; use raw
   `jquery-ui-sortable` instead for non-postbox repeater rows.
-author: Soczó Kristóf
-contact: mailto:lonsdale201@hotmail.com
-plugin: wordpress
-plugin-version-tested: "6.0 - 7.0.1"
-php-min: "7.4"
-last-updated: "2026-07-10"
-docs:
-  - https://developer.wordpress.org/reference/functions/add_meta_box/
-  - https://developer.wordpress.org/reference/functions/do_meta_boxes/
-  - https://developer.wordpress.org/reference/functions/wp_nonce_field/
-  - https://api.jqueryui.com/sortable/
+metadata:
+  wp-skills-author: "Soczó Kristóf"
+  wp-skills-contact: "mailto:lonsdale201@hotmail.com"
+  wp-skills-plugin: "wordpress"
+  wp-skills-plugin-version-tested: "6.0 - 7.0.1"
+  wp-skills-php-min: "7.4"
+  wp-skills-last-updated: "2026-07-10"
 ---
 
 # WordPress Admin Postboxes & Sortable
@@ -285,3 +281,7 @@ add_action( 'admin_enqueue_scripts', static function ( string $hook_suffix ): vo
 - `wp-admin/includes/ajax-actions.php` — `wp_ajax_closed_postboxes()` at line 1803 and `wp_ajax_meta_box_order()` at line 1988.
 - `wp-admin/includes/template.php` — `add_meta_box()` at line 1080, `do_meta_boxes()` at line 1304.
 - `wp-includes/script-loader.php:1439` — the `postbox` script registration with its dep array.
+- Official documentation: <https://developer.wordpress.org/reference/functions/add_meta_box/>
+- Official documentation: <https://developer.wordpress.org/reference/functions/do_meta_boxes/>
+- Official documentation: <https://developer.wordpress.org/reference/functions/wp_nonce_field/>
+- Official documentation: <https://api.jqueryui.com/sortable/>

@@ -1,17 +1,13 @@
 ---
 name: br-resource-cpt
 description: Build better-route 1.1 CRUD endpoints over a WordPress custom post type with Resource::make, restNamespace, sourceCpt, allow, fields, filters, sort, filterSchema, writeSchema, policy, fieldPolicy, cptVisibleStatuses, cptVisibilityPolicy, pagination, deleteMode, uniformEnvelope, or a custom CPT repository. Use when exposing CPT records safely, reviewing visibility and pagination, or generating Resource OpenAPI contracts.
-author: Soczó Kristóf
-contact: mailto:lonsdale201@hotmail.com
-plugin: better-route
-plugin-version-tested: "1.1.0"
-php-min: "8.1"
-last-updated: "2026-07-13"
-source-refs:
-  - src/Resource/Resource.php
-  - src/Resource/Cpt/WordPressCptRepository.php
-  - src/Resource/Cpt/CptListQueryParser.php
-  - src/Resource/ResourcePolicy.php
+metadata:
+  wp-skills-author: "Soczó Kristóf"
+  wp-skills-contact: "mailto:lonsdale201@hotmail.com"
+  wp-skills-plugin: "better-route"
+  wp-skills-plugin-version-tested: "1.1.0"
+  wp-skills-php-min: "8.1"
+  wp-skills-last-updated: "2026-07-13"
 ---
 
 # better-route: CPT Resource CRUD
@@ -154,3 +150,11 @@ After `register()`, call `contracts()` to export generated contracts. Provide `<
 - Use `br-resource-policy` for action and field authorization.
 - Use `br-write-schema` for payload validation.
 - Use `br-openapi` for generated schemas/contracts.
+
+## References
+
+- Verified source paths:
+  - `src/Resource/Resource.php`
+  - `src/Resource/Cpt/WordPressCptRepository.php`
+  - `src/Resource/Cpt/CptListQueryParser.php`
+  - `src/Resource/ResourcePolicy.php`

@@ -1,17 +1,13 @@
 ---
 name: br-idempotency
 description: Configure better-route 1.1 replay-cache idempotency with IdempotencyMiddleware and Idempotency-Key. Use for ArrayIdempotencyStore, TransientIdempotencyStore, WpdbIdempotencyStore, installSchema, identity-aware canonical keys, body fingerprints, key conflicts, replay headers, key validation, custom methods/resolvers, or choosing between classic and atomic idempotency. Use AtomicIdempotencyMiddleware instead when concurrent duplicate side effects must be prevented.
-author: Soczó Kristóf
-contact: mailto:lonsdale201@hotmail.com
-plugin: better-route
-plugin-version-tested: "1.1.0"
-php-min: "8.1"
-last-updated: "2026-07-13"
-source-refs:
-  - src/Middleware/Write/IdempotencyMiddleware.php
-  - src/Middleware/Write/WpdbIdempotencyStore.php
-  - src/Middleware/Write/TransientIdempotencyStore.php
-  - src/Middleware/Write/StoredResponseCodec.php
+metadata:
+  wp-skills-author: "Soczó Kristóf"
+  wp-skills-contact: "mailto:lonsdale201@hotmail.com"
+  wp-skills-plugin: "better-route"
+  wp-skills-plugin-version-tested: "1.1.0"
+  wp-skills-php-min: "8.1"
+  wp-skills-last-updated: "2026-07-13"
 ---
 
 # better-route: replay-cache idempotency
@@ -101,3 +97,11 @@ Custom resolvers own collision resistance and canonicalization. Include every se
 - Use `br-atomic-idempotency` for reservation-before-handler semantics.
 - Use `br-routes` for access intent and middleware ordering.
 - Use `br-error-contract` for idempotency error codes.
+
+## References
+
+- Verified source paths:
+  - `src/Middleware/Write/IdempotencyMiddleware.php`
+  - `src/Middleware/Write/WpdbIdempotencyStore.php`
+  - `src/Middleware/Write/TransientIdempotencyStore.php`
+  - `src/Middleware/Write/StoredResponseCodec.php`

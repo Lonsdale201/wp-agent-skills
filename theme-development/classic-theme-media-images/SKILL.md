@@ -1,22 +1,13 @@
 ---
 name: classic-theme-media-images
-description: Build or audit media and image output in classic WordPress themes on WP 7.0. Covers `add_theme_support( 'post-thumbnails' )`, `add_image_size()`, `set_post_thumbnail_size()`, `has_post_thumbnail()`, `the_post_thumbnail()`, `get_the_post_thumbnail()`, `wp_get_attachment_image()`, responsive `srcset` and `sizes`, `loading`/`decoding`/`fetchpriority`, attachment alt text, decorative images, theme asset images, regeneration requirements, and common mistakes such as hand-built `<img>` tags, full-size archive images, removed dimensions, and broken CLS.
-author: Soczó Kristóf
-contact: mailto:lonsdale201@hotmail.com
-plugin: wordpress
-plugin-version-tested: "7.0"
-php-min: "7.4"
-last-updated: "2026-06-04"
-docs:
-  - https://developer.wordpress.org/themes/functionality/featured-images-post-thumbnails/
-  - https://developer.wordpress.org/themes/classic-themes/functionality/media/images/
-  - https://developer.wordpress.org/reference/functions/the_post_thumbnail/
-source-refs:
-  - wp-includes/media.php
-  - wp-includes/post-thumbnail-template.php
-  - wp-includes/theme.php
-  - wp-content/themes/storefront/inc/storefront-template-functions.php
-  - wp-content/themes/generatepress/inc/structure/featured-images.php
+description: Build or audit media and image output in classic WordPress themes on WP 7.0. Covers `add_theme_support( 'post-thumbnails' )`, `add_image_size()`, `set_post_thumbnail_size()`, `has_post_thumbnail()`, `the_post_thumbnail()`, `get_the_post_thumbnail()`, `wp_get_attachment_image()`, responsive `srcset` and `sizes`, `loading`/`decoding`/`fetchpriority`, attachment alt text, decorative images, theme asset images, regeneration requirements, and common mistakes such as hand-built `img` tags, full-size archive images, removed dimensions, and broken CLS.
+metadata:
+  wp-skills-author: "Soczó Kristóf"
+  wp-skills-contact: "mailto:lonsdale201@hotmail.com"
+  wp-skills-plugin: "wordpress"
+  wp-skills-plugin-version-tested: "7.0"
+  wp-skills-php-min: "7.4"
+  wp-skills-last-updated: "2026-06-04"
 ---
 
 # Classic Theme Media and Images
@@ -226,3 +217,15 @@ Rules:
 - Registering a new image size and forgetting existing uploads need regeneration.
 - Setting every thumbnail to `loading="eager"` or `fetchpriority="high"`.
 - Reusing post titles as alt text even when the adjacent title already names the link.
+
+## References
+
+- Official documentation: <https://developer.wordpress.org/themes/functionality/featured-images-post-thumbnails/>
+- Official documentation: <https://developer.wordpress.org/themes/classic-themes/functionality/media/images/>
+- Official documentation: <https://developer.wordpress.org/reference/functions/the_post_thumbnail/>
+- Verified source paths:
+  - `wp-includes/media.php`
+  - `wp-includes/post-thumbnail-template.php`
+  - `wp-includes/theme.php`
+  - `wp-content/themes/storefront/inc/storefront-template-functions.php`
+  - `wp-content/themes/generatepress/inc/structure/featured-images.php`

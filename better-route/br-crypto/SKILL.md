@@ -1,13 +1,13 @@
 ---
 name: br-crypto
 description: Use Better Route 1.1 cryptographic helpers for secure random tokens, Hex/Base64/Base64URL encoding, strict Base64URL decoding, and constant-time secret comparison. Use when implementing nonces, state, PKCE, opaque tokens, or signature comparisons.
-author: Soczó Kristóf
-contact: mailto:lonsdale201@hotmail.com
-plugin: better-route
-plugin-version-tested: "1.1.0"
-php-min: "8.1"
-last-updated: "2026-07-13"
-docs: https://lonsdale201.github.io/better-docs/docs/better-route/agents
+metadata:
+  wp-skills-author: "Soczó Kristóf"
+  wp-skills-contact: "mailto:lonsdale201@hotmail.com"
+  wp-skills-plugin: "better-route"
+  wp-skills-plugin-version-tested: "1.1.0"
+  wp-skills-php-min: "8.1"
+  wp-skills-last-updated: "2026-07-13"
 ---
 
 # Better Route crypto helpers
@@ -41,3 +41,7 @@ if (!Crypto::equals($expected, $provided)) {
 Do not use these helpers as password hashing, encryption, key derivation, or a substitute for a protocol-specific verifier.
 
 Source references: `src/Support/Crypto.php`, `src/Support/CryptoEncoding.php`.
+
+## References
+
+- Official documentation: <https://lonsdale201.github.io/better-docs/docs/better-route/agents>

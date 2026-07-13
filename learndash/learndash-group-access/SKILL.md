@@ -8,21 +8,13 @@ description: >-
   learndash_group_enrolled_courses, learndash_user_group_enrolled_to_course,
   learndash_is_user_in_group, learndash_group_users_*,
   learndash_group_enrolled_*, group_*_access_from, or group leader access.
-author: Soczó Kristóf
-contact: mailto:lonsdale201@hotmail.com
-plugin: sfwd-lms
-plugin-version-tested: "5.1.6.1"
-php-min: "7.4"
-last-updated: "2026-07-07"
-docs:
-  - https://developers.learndash.com/
-source-refs:
-  - wp-content/plugins/sfwd-lms/includes/ld-groups.php
-  - wp-content/plugins/sfwd-lms/includes/course/ld-course-user-functions.php
-  - wp-content/plugins/sfwd-lms/src/Core/Models/Product.php
-  - wp-content/plugins/sfwd-lms/includes/rest-api/v2/class-ld-rest-groups-courses-controller.php
-  - wp-content/plugins/sfwd-lms/includes/rest-api/v2/class-ld-rest-groups-users-controller.php
-  - wp-content/plugins/sfwd-lms/includes/rest-api/v2/class-ld-rest-users-groups-controller.php
+metadata:
+  wp-skills-author: "Soczó Kristóf"
+  wp-skills-contact: "mailto:lonsdale201@hotmail.com"
+  wp-skills-plugin: "sfwd-lms"
+  wp-skills-plugin-version-tested: "5.1.6.1"
+  wp-skills-php-min: "7.4"
+  wp-skills-last-updated: "2026-07-07"
 ---
 
 # LearnDash group access
@@ -219,3 +211,4 @@ Validated against LearnDash LMS 5.1.6.1 local source:
 - `includes/rest-api/v2/class-ld-rest-groups-courses-controller.php`
 - `includes/rest-api/v2/class-ld-rest-groups-users-controller.php`
 - `includes/rest-api/v2/class-ld-rest-users-groups-controller.php`
+- Official documentation: <https://developers.learndash.com/>

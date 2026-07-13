@@ -1,29 +1,15 @@
 ---
 name: szamlazzhu-document-xml-compatibility
 description: Integrate another WooCommerce plugin with Integration for Szamlazz.hu & WooCommerce document generation. Covers `WC_Szamlazz()->generate_invoice()`, `wc_szamlazz_xml`, `wc_szamlazz_invoice_line_item`, `wc_szamlazz_before_generate_invoice_check`, document meta, Action Scheduler deferral, Pro webhooks/IPN including HPOS-safe custom order-number mapping, PDF links, HUF rounding, VAT labels, multilingual line text, and HPOS-safe order access. Use when a plugin must add invoice notes/lines/accounting data, block or trigger invoices, react after document creation, expose Szamlazz.hu documents, or avoid breaking invoices from custom products, fees, discounts, subscriptions, bundles, shipping, order numbers, or payment workflows.
-author: Soczó Kristóf
-contact: mailto:lonsdale201@hotmail.com
-plugin: integration-for-szamlazzhu-woocommerce
-plugin-version-tested: "6.2.2 on WooCommerce 10.9.4"
-wp-version-tested: "7.0"
-php-min: "7.4"
-last-updated: "2026-07-09"
-docs:
-  - https://wordpress.org/plugins/integration-for-szamlazzhu-woocommerce/
-  - https://docs.szamlazz.hu/hu/agent/generating_invoice/xml
-  - https://docs.szamlazz.hu/hu/agent/generating_invoice/rounding
-  - https://docs.szamlazz.hu/hu/agent/generating_invoice/vat-rates
-source-refs:
-  - wp-content/plugins/integration-for-szamlazzhu-woocommerce/index.php
-  - wp-content/plugins/integration-for-szamlazzhu-woocommerce/includes/class-xml-generator.php
-  - wp-content/plugins/integration-for-szamlazzhu-woocommerce/includes/class-helpers.php
-  - wp-content/plugins/integration-for-szamlazzhu-woocommerce/includes/class-automations.php
-  - wp-content/plugins/integration-for-szamlazzhu-woocommerce/includes/class-ipn.php
-  - wp-content/plugins/integration-for-szamlazzhu-woocommerce/includes/class-webhooks.php
-  - wp-content/plugins/integration-for-szamlazzhu-woocommerce/includes/compatibility/class-compatibility.php
-  - wp-content/plugins/integration-for-szamlazzhu-woocommerce/includes/compatibility/modules/class-wc-szamlazz-custom-order-numbers.php
-  - wp-content/plugins/integration-for-szamlazzhu-woocommerce/includes/compatibility/modules/class-wc-szamlazz-translatepress.php
 license: GPLv3
+metadata:
+  wp-skills-author: "Soczó Kristóf"
+  wp-skills-contact: "mailto:lonsdale201@hotmail.com"
+  wp-skills-plugin: "integration-for-szamlazzhu-woocommerce"
+  wp-skills-plugin-version-tested: "6.2.2 on WooCommerce 10.9.4"
+  wp-skills-wp-version-tested: "7.0"
+  wp-skills-php-min: "7.4"
+  wp-skills-last-updated: "2026-07-09"
 ---
 
 # Szamlazz.hu Document/XML Compatibility
@@ -312,3 +298,20 @@ Do not translate invoice numbers, tax numbers, order IDs, SKU identifiers, or Sz
 - Use `wc-order-lifecycle-and-items` when invoice timing depends on status, payment, refunds, or item totals.
 - Use `wc-store-api` for Checkout Block/headless checkout flows that must provide data before invoice generation.
 - Use `translatepress-output-compatibility` when invoice language or translated line names depend on TranslatePress state.
+
+## References
+
+- Official documentation: <https://wordpress.org/plugins/integration-for-szamlazzhu-woocommerce/>
+- Official documentation: <https://docs.szamlazz.hu/hu/agent/generating_invoice/xml>
+- Official documentation: <https://docs.szamlazz.hu/hu/agent/generating_invoice/rounding>
+- Official documentation: <https://docs.szamlazz.hu/hu/agent/generating_invoice/vat-rates>
+- Verified source paths:
+  - `wp-content/plugins/integration-for-szamlazzhu-woocommerce/index.php`
+  - `wp-content/plugins/integration-for-szamlazzhu-woocommerce/includes/class-xml-generator.php`
+  - `wp-content/plugins/integration-for-szamlazzhu-woocommerce/includes/class-helpers.php`
+  - `wp-content/plugins/integration-for-szamlazzhu-woocommerce/includes/class-automations.php`
+  - `wp-content/plugins/integration-for-szamlazzhu-woocommerce/includes/class-ipn.php`
+  - `wp-content/plugins/integration-for-szamlazzhu-woocommerce/includes/class-webhooks.php`
+  - `wp-content/plugins/integration-for-szamlazzhu-woocommerce/includes/compatibility/class-compatibility.php`
+  - `wp-content/plugins/integration-for-szamlazzhu-woocommerce/includes/compatibility/modules/class-wc-szamlazz-custom-order-numbers.php`
+  - `wp-content/plugins/integration-for-szamlazzhu-woocommerce/includes/compatibility/modules/class-wc-szamlazz-translatepress.php`

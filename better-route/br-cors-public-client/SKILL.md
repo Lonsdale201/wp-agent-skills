@@ -1,17 +1,13 @@
 ---
 name: br-cors-public-client
 description: Configure better-route 1.1 CORS for browser, mobile, and embedded WordPress REST clients. Use for CorsPolicy, CorsMiddleware, WordPressCorsBridge, allowed origins/methods/headers, credentials, OPTIONS preflight, Authorization, X-WP-Nonce, Idempotency-Key, If-Match, If-None-Match, X-Request-ID, core WordPress CORS conflicts, or cors_origin_denied errors. In 1.1 matched routes get authoritative bridge headers and every explicit OPTIONS route needs publicRoute or another permission intent.
-author: Soczó Kristóf
-contact: mailto:lonsdale201@hotmail.com
-plugin: better-route
-plugin-version-tested: "1.1.0"
-php-min: "8.1"
-last-updated: "2026-07-13"
-source-refs:
-  - src/Middleware/Cors/CorsMiddleware.php
-  - src/Middleware/Cors/CorsPolicy.php
-  - src/Middleware/Cors/WordPressCorsBridge.php
-  - src/Middleware/WordPressRouteMiddlewareInterface.php
+metadata:
+  wp-skills-author: "Soczó Kristóf"
+  wp-skills-contact: "mailto:lonsdale201@hotmail.com"
+  wp-skills-plugin: "better-route"
+  wp-skills-plugin-version-tested: "1.1.0"
+  wp-skills-php-min: "8.1"
+  wp-skills-last-updated: "2026-07-13"
 ---
 
 # better-route: CORS and preflight
@@ -111,3 +107,11 @@ Verify:
 - Use `br-routes` for raw OPTIONS access intent.
 - Use `br-auth-middleware` for identity; CORS does not authenticate.
 - Use `br-etag-cache` and `br-rate-limiting` when exposing their headers to browser code.
+
+## References
+
+- Verified source paths:
+  - `src/Middleware/Cors/CorsMiddleware.php`
+  - `src/Middleware/Cors/CorsPolicy.php`
+  - `src/Middleware/Cors/WordPressCorsBridge.php`
+  - `src/Middleware/WordPressRouteMiddlewareInterface.php`

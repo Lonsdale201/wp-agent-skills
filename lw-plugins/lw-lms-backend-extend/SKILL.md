@@ -1,45 +1,13 @@
 ---
 name: lw-lms-backend-extend
 description: Backend extension contract for LW LMS v1.5.1. Use when extending enrollment, access, progress, certificates, automation, analytics, settings tabs, companion-plugin logic, `lw_lms_after_grant`, `lw_lms_after_revoke`, `lw_lms_pre_grant`, `AccessChecker`, `AccessRepository`, `AccessQueries`, `ProgressRepository`, `ProgressQueries`, `CompletionTracker`, `wp_lms_progress`, `wp_lms_access`, `_lw_lms_*` meta, or WooCommerce Memberships/Subscriptions access.
-author: Soczó Kristóf
-contact: mailto:lonsdale201@hotmail.com
-plugin: lw-lms
-plugin-version-tested: "1.5.1"
-php-min: "8.1"
-last-updated: "2026-06-15"
-docs:
-  - https://github.com/lwplugins/lw-lms
-source-refs:
-  - wp-content/plugins/lw-lms/lw-lms.php
-  - wp-content/plugins/lw-lms/includes/Plugin.php
-  - wp-content/plugins/lw-lms/includes/Activator.php
-  - wp-content/plugins/lw-lms/includes/Options.php
-  - wp-content/plugins/lw-lms/includes/Admin/SettingsPage.php
-  - wp-content/plugins/lw-lms/includes/Admin/Settings/TabInterface.php
-  - wp-content/plugins/lw-lms/includes/Admin/UserProfile.php
-  - wp-content/plugins/lw-lms/includes/Admin/UserProfile/EnrollmentHandler.php
-  - wp-content/plugins/lw-lms/includes/Meta/CourseMeta.php
-  - wp-content/plugins/lw-lms/includes/Meta/LessonMeta.php
-  - wp-content/plugins/lw-lms/includes/Meta/SubscriptionVariationMeta.php
-  - wp-content/plugins/lw-lms/includes/Access/AccessChecker.php
-  - wp-content/plugins/lw-lms/includes/Access/AccessRepository.php
-  - wp-content/plugins/lw-lms/includes/Access/AccessQueries.php
-  - wp-content/plugins/lw-lms/includes/Access/AccessGranter.php
-  - wp-content/plugins/lw-lms/includes/Access/AccessTable.php
-  - wp-content/plugins/lw-lms/includes/Access/WooCommerceChecker.php
-  - wp-content/plugins/lw-lms/includes/Access/SubscriptionVariationChecker.php
-  - wp-content/plugins/lw-lms/includes/Access/MembershipChecker.php
-  - wp-content/plugins/lw-lms/includes/Progress/ProgressRepository.php
-  - wp-content/plugins/lw-lms/includes/Progress/ProgressQueries.php
-  - wp-content/plugins/lw-lms/includes/Progress/ProgressCalculator.php
-  - wp-content/plugins/lw-lms/includes/Progress/CompletionTracker.php
-  - wp-content/plugins/lw-lms/includes/Progress/ProgressSnapshotRepository.php
-  - wp-content/plugins/lw-lms/includes/Progress/ProgressSnapshotTable.php
-  - wp-content/plugins/lw-lms/includes/Progress/ProgressSnapshotMigration.php
-  - wp-content/plugins/lw-lms/includes/Api/Controllers/ProgressController.php
-  - wp-content/plugins/lw-lms/includes/Api/Controllers/DownloadController.php
-  - wp-content/plugins/lw-lms/includes/SiteManager/Integration.php
-  - wp-content/plugins/lw-lms/CHANGELOG.md
+metadata:
+  wp-skills-author: "Soczó Kristóf"
+  wp-skills-contact: "mailto:lonsdale201@hotmail.com"
+  wp-skills-plugin: "lw-lms"
+  wp-skills-plugin-version-tested: "1.5.1"
+  wp-skills-php-min: "8.1"
+  wp-skills-last-updated: "2026-06-15"
 ---
 
 # LW LMS: backend extension contract
@@ -446,3 +414,19 @@ AccessRepository::grant( $user_id, $course_id, 'manual', null, null );
 - Progress writes and hooks: `includes/Progress/ProgressRepository.php`, `CompletionTracker.php`.
 - Settings extension: `includes/Admin/SettingsPage.php`, `includes/Admin/Settings/TabInterface.php`.
 - Changelog source of version deltas: `CHANGELOG.md`.
+- Official documentation: <https://github.com/lwplugins/lw-lms>
+- Verified source paths:
+  - `wp-content/plugins/lw-lms/includes/Options.php`
+  - `wp-content/plugins/lw-lms/includes/Admin/UserProfile.php`
+  - `wp-content/plugins/lw-lms/includes/Admin/UserProfile/EnrollmentHandler.php`
+  - `wp-content/plugins/lw-lms/includes/Meta/CourseMeta.php`
+  - `wp-content/plugins/lw-lms/includes/Meta/LessonMeta.php`
+  - `wp-content/plugins/lw-lms/includes/Meta/SubscriptionVariationMeta.php`
+  - `wp-content/plugins/lw-lms/includes/Progress/ProgressQueries.php`
+  - `wp-content/plugins/lw-lms/includes/Progress/ProgressCalculator.php`
+  - `wp-content/plugins/lw-lms/includes/Progress/ProgressSnapshotRepository.php`
+  - `wp-content/plugins/lw-lms/includes/Progress/ProgressSnapshotTable.php`
+  - `wp-content/plugins/lw-lms/includes/Progress/ProgressSnapshotMigration.php`
+  - `wp-content/plugins/lw-lms/includes/Api/Controllers/ProgressController.php`
+  - `wp-content/plugins/lw-lms/includes/Api/Controllers/DownloadController.php`
+  - `wp-content/plugins/lw-lms/includes/SiteManager/Integration.php`

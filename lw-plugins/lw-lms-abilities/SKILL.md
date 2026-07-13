@@ -1,25 +1,13 @@
 ---
 name: lw-lms-abilities
 description: Consumer and reviewer reference for LW LMS Abilities API registrations in lw-lms v1.5.1. Use when calling or auditing `lw-lms/list-courses`, `lw-lms/get-course`, `lw-lms/get-progress`, `lw-lms/set-progress`, `lw-lms/get-options`, `/wp-json/wp-abilities/v1/abilities/lw-lms/.../run`, Site Manager bridge integration, standalone WP 6.9+ Abilities API fallback, ability `input_schema` / `output_schema`, or AI-agent access to LMS course/progress data.
-author: Soczó Kristóf
-contact: mailto:lonsdale201@hotmail.com
-plugin: lw-lms
-plugin-version-tested: "1.5.1"
-php-min: "8.1"
-last-updated: "2026-06-15"
-docs:
-  - https://github.com/lwplugins/lw-lms
-  - https://developer.wordpress.org/apis/abilities-api/
-source-refs:
-  - wp-content/plugins/lw-lms/includes/SiteManager/Integration.php
-  - wp-content/plugins/lw-lms/includes/SiteManager/Abilities/CourseAbilities.php
-  - wp-content/plugins/lw-lms/includes/SiteManager/Abilities/ProgressAbilities.php
-  - wp-content/plugins/lw-lms/includes/SiteManager/Abilities/OptionsAbilities.php
-  - wp-content/plugins/lw-lms/includes/SiteManager/Abilities/AbilityPermissions.php
-  - wp-content/plugins/lw-lms/includes/SiteManager/Abilities/AbilityMeta.php
-  - wp-content/plugins/lw-lms/includes/SiteManager/Schema/OutputSchemas.php
-  - wp-content/plugins/lw-lms/includes/SiteManager/Service/
-  - wp-content/plugins/lw-lms/docs/site-manager-abilities.md
+metadata:
+  wp-skills-author: "Soczó Kristóf"
+  wp-skills-contact: "mailto:lonsdale201@hotmail.com"
+  wp-skills-plugin: "lw-lms"
+  wp-skills-plugin-version-tested: "1.5.1"
+  wp-skills-php-min: "8.1"
+  wp-skills-last-updated: "2026-06-15"
 ---
 
 # LW LMS Abilities API
@@ -133,3 +121,8 @@ if ( function_exists( 'wp_get_ability' ) && wp_get_ability( 'lw-lms/list-courses
 - Permission fallback: `includes/SiteManager/Abilities/AbilityPermissions.php`.
 - Output schemas: `includes/SiteManager/Schema/OutputSchemas.php`.
 - Service behavior and `WP_Error` codes: `includes/SiteManager/Service/`.
+- Official documentation: <https://github.com/lwplugins/lw-lms>
+- Official documentation: <https://developer.wordpress.org/apis/abilities-api/>
+- Verified source paths:
+  - `wp-content/plugins/lw-lms/includes/SiteManager/Abilities/AbilityMeta.php`
+  - `wp-content/plugins/lw-lms/docs/site-manager-abilities.md`

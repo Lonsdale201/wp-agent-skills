@@ -16,23 +16,13 @@ description: Design Elementor addons / widgets / dynamic tags to survive
   icons or reads the DOM.
   Triggers on is_feature_active, e_optimized_markup, e_font_icon_svg,
   has_widget_inner_wrapper, Icons_Manager render_icon, Optimized Markup.
-author: Soczó Kristóf
-contact: mailto:lonsdale201@hotmail.com
-plugin: elementor
-plugin-version-tested: "4.1.4 (free) / 4.1.2 (pro)"
-php-min: "7.4"
-last-updated: "2026-07-09"
-docs:
-  - https://developers.elementor.com/docs/
-  - https://go.elementor.com/wp-dash-inline-font-awesome/
-  - https://go.elementor.com/wp-dash-flex-container/
-source-refs:
-  - wp-content/plugins/elementor/core/experiments/manager.php
-  - wp-content/plugins/elementor/includes/base/element-base.php
-  - wp-content/plugins/elementor/includes/base/widget-base.php
-  - wp-content/plugins/elementor/includes/managers/icons.php
-  - wp-content/plugins/elementor/includes/widgets/button.php
-  - wp-content/plugins/elementor-pro/modules/forms/widgets/form.php
+metadata:
+  wp-skills-author: "Soczó Kristóf"
+  wp-skills-contact: "mailto:lonsdale201@hotmail.com"
+  wp-skills-plugin: "elementor"
+  wp-skills-plugin-version-tested: "4.1.4 (free) / 4.1.2 (pro)"
+  wp-skills-php-min: "7.4"
+  wp-skills-last-updated: "2026-07-09"
 ---
 
 # Elementor: experiments and markup-changing features
@@ -187,3 +177,6 @@ public function has_widget_inner_wrapper(): bool {
 - `has_widget_inner_wrapper()` default `true`: [includes/base/element-base.php:1588](element-base.php); wrapper print + script group: [includes/base/widget-base.php:201,427](widget-base.php).
 - Core override example: [includes/widgets/button.php:85](button.php); Pro override example: [elementor-pro/modules/forms/widgets/form.php:45](form.php).
 - Icons manager: inline-SVG gate [includes/managers/icons.php:186,258](icons.php); `render_icon` [icons.php:354](icons.php); `get_icon_html` [icons.php:67](icons.php); `render_font_icon` (SVG vs `<i>`) [icons.php:309](icons.php); `enqueue_shim` [icons.php:206](icons.php).
+- Official documentation: <https://developers.elementor.com/docs/>
+- Official documentation: <https://go.elementor.com/wp-dash-inline-font-awesome/>
+- Official documentation: <https://go.elementor.com/wp-dash-flex-container/>

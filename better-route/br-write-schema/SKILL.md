@@ -1,13 +1,13 @@
 ---
 name: br-write-schema
 description: Configure Better Route 1.1 Resource writeSchema or payloadSchema validation for create and update payloads. Use when defining writable fields, coercion, sanitization, required and nullable values, lengths, ranges, regexes, enums, or structured fieldErrors.
-author: Soczó Kristóf
-contact: mailto:lonsdale201@hotmail.com
-plugin: better-route
-plugin-version-tested: "1.1.0"
-php-min: "8.1"
-last-updated: "2026-07-13"
-docs: https://lonsdale201.github.io/better-docs/docs/better-route/agents
+metadata:
+  wp-skills-author: "Soczó Kristóf"
+  wp-skills-contact: "mailto:lonsdale201@hotmail.com"
+  wp-skills-plugin: "better-route"
+  wp-skills-plugin-version-tested: "1.1.0"
+  wp-skills-php-min: "8.1"
+  wp-skills-last-updated: "2026-07-13"
 ---
 
 # Better Route Resource write schema
@@ -61,3 +61,7 @@ Validation errors use the standard error envelope with `details.fieldErrors`. Bo
 - Do not add `patch` to `allow()`; the Resource action name is `update`, even though its route handles update semantics.
 
 Source reference: `src/Resource/Resource.php` (`readPayload`, `coercePayloadValue`, `assertValueConstraints`, `validationError`).
+
+## References
+
+- Official documentation: <https://lonsdale201.github.io/better-docs/docs/better-route/agents>

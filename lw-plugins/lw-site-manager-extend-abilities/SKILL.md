@@ -1,48 +1,13 @@
 ---
 name: lw-site-manager-extend-abilities
-description: Add custom abilities to the LW Site Manager hub via its
-  extension contract — two action hooks (lw_site_manager_register_categories
-  for category labels, lw_site_manager_register_abilities for the
-  abilities themselves; the second receives the central PermissionManager
-  instance so external abilities reuse the typed cap-check methods).
-  Critical pattern — extend AbstractAbilitiesRegistrar to inherit the
-  meta builders (readOnlyMeta / writeMeta / destructiveMeta) and schema
-  builders (paginationSchema / orderingSchema / idSchema /
-  listOutputSchema / entityOutputSchema / successOutputSchema /
-  bulkResultSchema / updateResultSchema). Don't bypass — meta
-  annotations (readonly / destructive / idempotent) are how AI agents
-  reason about ability safety, and inconsistent helpers make the hub
-  surface heterogeneously. The plugin emits NO filters; it's additively
-  extensible only. Use when shipping a companion plugin that adds
-  site-manager/* abilities. Triggers on lw_site_manager_register_abilities,
-  lw_site_manager_register_categories, AbstractAbilitiesRegistrar.
-author: Soczó Kristóf
-contact: mailto:lonsdale201@hotmail.com
-plugin: lw-site-manager
-plugin-version-tested: "1.1.22"
-php-min: "8.2"
-last-updated: "2026-04-29"
-docs:
-  - https://github.com/lwplugins/lw-site-manager
-  - https://developer.wordpress.org/apis/abilities-api/
-source-refs:
-  - wp-content/plugins/lw-site-manager/lw-site-manager.php
-  - wp-content/plugins/lw-site-manager/src/Abilities/Registrar.php
-  - wp-content/plugins/lw-site-manager/src/Abilities/PermissionManager.php
-  - wp-content/plugins/lw-site-manager/src/Abilities/Registrars/AbstractAbilitiesRegistrar.php
-  - wp-content/plugins/lw-site-manager/src/Abilities/Registrars/UpdateAbilitiesRegistrar.php
-  - wp-content/plugins/lw-site-manager/src/Abilities/Registrars/MaintenanceAbilitiesRegistrar.php
-  - wp-content/plugins/lw-site-manager/src/Abilities/Registrars/UserAbilitiesRegistrar.php
-  - wp-content/plugins/lw-site-manager/src/Abilities/Registrars/ContentAbilitiesRegistrar.php
-  - wp-content/plugins/lw-site-manager/src/Abilities/Definitions/PostAbilities.php
-  - wp-content/plugins/lw-site-manager/src/Abilities/Definitions/PageAbilities.php
-  - wp-content/plugins/lw-site-manager/src/Abilities/Definitions/CommentAbilities.php
-  - wp-content/plugins/lw-site-manager/src/Abilities/Definitions/MediaAbilities.php
-  - wp-content/plugins/lw-site-manager/src/Abilities/Definitions/MetaAbilities.php
-  - wp-content/plugins/lw-site-manager/src/Abilities/Definitions/SettingsAbilities.php
-  - wp-content/plugins/lw-site-manager/src/Abilities/Definitions/TaxonomyAbilities.php
-  - wp-content/plugins/lw-site-manager/src/Abilities/Definitions/WooCommerceAbilities.php
-  - wp-content/plugins/lw-site-manager/src/Services/
+description: Add custom abilities to the LW Site Manager hub via its extension contract — two action hooks (lw_site_manager_register_categories for category labels, lw_site_manager_register_abilities for the abilities themselves; the second receives the PermissionManager so external abilities reuse the typed cap-check methods). Pattern — extend AbstractAbilitiesRegistrar to inherit the meta builders (readOnlyMeta / writeMeta / destructiveMeta) and schema builders (paginationSchema/orderingSchema/idSchema/listOutputSchema/entityOutputSchema/successOutputSchema/bulkResultSchema/updateResultSchema). Don't bypass — meta annotations (readonly / destructive / idempotent) are how AI agents reason about ability safety; inconsistent helpers make the hub surface heterogeneous. The plugin emits NO filters; it's additively extensible only. Use when shipping a companion plugin that adds site-manager/* abilities. Triggers on lw_site_manager_register_abilities, lw_site_manager_register_categories, AbstractAbilitiesRegistrar.
+metadata:
+  wp-skills-author: "Soczó Kristóf"
+  wp-skills-contact: "mailto:lonsdale201@hotmail.com"
+  wp-skills-plugin: "lw-site-manager"
+  wp-skills-plugin-version-tested: "1.1.22"
+  wp-skills-php-min: "8.2"
+  wp-skills-last-updated: "2026-04-29"
 ---
 
 # LW Site Manager: extending with custom abilities
@@ -425,7 +390,7 @@ add_action( 'lw_site_manager_register_abilities', function ( $permissions ) {
 
 // WRONG — registering category in register_abilities action
 add_action( 'lw_site_manager_register_abilities', function () {
-    wp_register_ability_category( 'mycompanion-newsletter', [/* ... */] );  // 🔴 wrong hook
+    wp_register_ability_category( 'mycompanion-newsletter', [/* ... */] );  // WRONG: wrong hook
     // category-init has already passed; this fails or fires too late.
 } );
 
@@ -510,3 +475,13 @@ function my_register( \LightweightPlugins\SiteManager\Abilities\PermissionManage
 - Reference definition (per-topic ability sets): [src/Abilities/Definitions/](Definitions/) — `PostAbilities`, `PageAbilities`, `CommentAbilities`, `MediaAbilities`, `MetaAbilities`, `SettingsAbilities`, `TaxonomyAbilities`, `WooCommerceAbilities`.
 - Service layer pattern: [src/Services/](Services/) — `UpdateManager`, `BackupManager`, `CacheManager`, etc., each implementing one or more `execute_callback` static methods.
 - Plugin GitHub: <https://github.com/lwplugins/lw-site-manager>.
+- Official documentation: <https://developer.wordpress.org/apis/abilities-api/>
+- Verified source paths:
+  - `wp-content/plugins/lw-site-manager/src/Abilities/Definitions/PostAbilities.php`
+  - `wp-content/plugins/lw-site-manager/src/Abilities/Definitions/PageAbilities.php`
+  - `wp-content/plugins/lw-site-manager/src/Abilities/Definitions/CommentAbilities.php`
+  - `wp-content/plugins/lw-site-manager/src/Abilities/Definitions/MediaAbilities.php`
+  - `wp-content/plugins/lw-site-manager/src/Abilities/Definitions/MetaAbilities.php`
+  - `wp-content/plugins/lw-site-manager/src/Abilities/Definitions/SettingsAbilities.php`
+  - `wp-content/plugins/lw-site-manager/src/Abilities/Definitions/TaxonomyAbilities.php`
+  - `wp-content/plugins/lw-site-manager/src/Abilities/Definitions/WooCommerceAbilities.php`

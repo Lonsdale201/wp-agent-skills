@@ -2,11 +2,11 @@
 
 **197 skills · 29 plugins**
 
-A community-maintained collection of **agent skills** for WordPress plugin and theme development.
+A community-maintained collection of **portable Agent Skills** for WordPress plugin and theme development.
 
 These skills give an AI coding assistant a concrete, version-tested playbook for common WordPress development tasks — security audits, scaffolding, REST API patterns, plugin-specific helpers (WooCommerce, JetEngine, JetFormBuilder, etc.) — so you spend less time re-explaining "the WordPress way" on every project.
 
-> **Tool compatibility.** Plain Markdown + YAML frontmatter (the [Anthropic Skills](https://docs.anthropic.com/claude/docs/skills) shape). Primarily tested with **Claude Code** and **claude.ai**, but any agent runtime that consumes a `SKILL.md` (Cursor rules, Aider conventions, custom Agent SDK apps, etc.) can use the same files directly or with a thin adapter.
+> **Format.** Every skill follows the open [Agent Skills specification](https://agentskills.io/specification) (plain Markdown + YAML frontmatter with the standard `name` / `description` / `metadata` fields), so the collection works with **Claude Code**, **claude.ai**, **Codex**, and any other Agent Skills-compatible client — directly or with a thin adapter (Cursor rules, Aider conventions, custom Agent SDK apps). The format is an open standard, not tied to a single vendor. Validate any skill with the official [`skills-ref`](https://github.com/agentskills/agentskills/tree/main/skills-ref) reference tool: `skills-ref validate <skill-dir>`.
 
 ## What's a skill?
 
@@ -94,7 +94,7 @@ Upload the skill folder via the UI or SDK as documented in [Anthropic's skills d
 
 ### Other agent runtimes
 
-The format is markdown + YAML frontmatter, so most agent tools can consume it directly or with a thin adapter (e.g. symlink as a Cursor rule under `.cursor/rules/`, or include in an Aider read-list). The `name`, `description`, and body conventions are stable; only the host runtime's loading mechanism differs.
+The format is the open [Agent Skills specification](https://agentskills.io/specification), so any Agent Skills-compatible client (Codex and others) loads these folders natively, and most other agent tools can consume them directly or with a thin adapter (e.g. symlink as a Cursor rule under `.cursor/rules/`, or include in an Aider read-list). The `name`, `description`, and body conventions are standardized; only the host runtime's loading mechanism differs. Collection-specific metadata (author, tested plugin versions, last-updated) travels in the spec's `metadata` map under the `wp-skills-*` namespace.
 
 ### Triggering a skill
 

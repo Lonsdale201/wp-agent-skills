@@ -1,21 +1,13 @@
 ---
 name: wc-variations-data
 description: Read, query, and write WooCommerce product variations through `WC_Product_Variation` and `WC_Product_Variable`. Covers parent/child storage, cached variation prices, CRUD creation, WooCommerce 10.9 deferred parent synchronization, stock inheritance, frontend variation data, and raw versus display-tax price reads. Use when creating, importing, querying, or debugging stale variation data.
-author: Soczó Kristóf
-contact: mailto:lonsdale201@hotmail.com
-plugin: woocommerce
-plugin-version-tested: "10.9.4"
-php-min: "7.4"
-last-updated: "2026-07-10"
-docs:
-  - https://github.com/woocommerce/woocommerce/wiki/Product-Variations
-  - https://woocommerce.com/document/managing-product-variations/
-source-refs:
-  - wp-content/plugins/woocommerce/includes/class-wc-product-variable.php
-  - wp-content/plugins/woocommerce/includes/class-wc-product-variation.php
-  - wp-content/plugins/woocommerce/includes/data-stores/class-wc-product-variable-data-store-cpt.php
-  - wp-content/plugins/woocommerce/includes/data-stores/class-wc-product-variation-data-store-cpt.php
-  - wp-content/plugins/woocommerce/includes/wc-product-functions.php
+metadata:
+  wp-skills-author: "Soczó Kristóf"
+  wp-skills-contact: "mailto:lonsdale201@hotmail.com"
+  wp-skills-plugin: "woocommerce"
+  wp-skills-plugin-version-tested: "10.9.4"
+  wp-skills-php-min: "7.4"
+  wp-skills-last-updated: "2026-07-10"
 ---
 
 # WooCommerce: variations data layer (CRUD + cache)
@@ -269,3 +261,7 @@ Also avoid: assuming parent stock applies to variation-managed stock, and queryi
 - Variation data store, transient name `wc_var_prices_`, price hash inputs: [wp-content/plugins/woocommerce/includes/data-stores/class-wc-product-variable-data-store-cpt.php](class-wc-product-variable-data-store-cpt.php).
 - `WC_Product_Variation`: [wp-content/plugins/woocommerce/includes/class-wc-product-variation.php](class-wc-product-variation.php).
 - `wc_delete_product_transients()` for cache invalidation: [wp-content/plugins/woocommerce/includes/wc-product-functions.php](wc-product-functions.php).
+- Official documentation: <https://github.com/woocommerce/woocommerce/wiki/Product-Variations>
+- Official documentation: <https://woocommerce.com/document/managing-product-variations/>
+- Verified source paths:
+  - `wp-content/plugins/woocommerce/includes/data-stores/class-wc-product-variation-data-store-cpt.php`

@@ -1,27 +1,14 @@
 ---
 name: fluentcrm-event-tracking
 description: Track and consume FluentCRM 3.x contact events from companion plugins. Covers the experimental event_tracking flag, FluentCrmApi('event_tracker')->track(), fc_event_tracking, repeatable counter semantics, subscriber resolution by subscriber/email/user/current contact, fluent_crm/event_tracked, the fluent_crm/track_event_activity action bridge, event_tracking advanced contact filters, event_tracking_keys option source, and FluentCampaign Pro's Tracking Event Recorded trigger / Add Event Tracking action. Use when a plugin records user activity, builds event-based automations, filters contacts by tracked events, or audits code touching EventTracker, Tracker, fluent_crm/event_tracked, or fc_event_tracking.
-author: Soczó Kristóf
-contact: mailto:lonsdale201@hotmail.com
-plugin: fluent-crm
-plugin-version-tested: "FluentCRM 3.1.8 + FluentCRM Pro 3.1.8"
-wp-version-tested: "7.0"
-php-min: "7.4"
-last-updated: "2026-07-09"
-docs:
-  - https://developers.fluentcrm.com/database/orm/
-source-refs:
-  - wp-content/plugins/fluent-crm/app/Api/config.php
-  - wp-content/plugins/fluent-crm/app/Api/Classes/Tracker.php
-  - wp-content/plugins/fluent-crm/app/Models/EventTracker.php
-  - wp-content/plugins/fluent-crm/app/Models/Subscriber.php
-  - wp-content/plugins/fluent-crm/app/Hooks/Handlers/EventTrackingHandler.php
-  - wp-content/plugins/fluent-crm/app/Hooks/Handlers/Integrations.php
-  - wp-content/plugins/fluent-crm/app/Services/Helper.php
-  - wp-content/plugins/fluent-crm/database/migrations/SubscriberEventTracking.php
-  - wp-content/plugins/fluentcampaign-pro/app/Services/Funnel/Triggers/TrackingEventRecordedTrigger.php
-  - wp-content/plugins/fluentcampaign-pro/app/Services/Funnel/Actions/AddEventTrackerAction.php
-  - wp-content/plugins/fluentcampaign-pro/app/Services/Funnel/Conditions/FunnelConditionHelper.php
+metadata:
+  wp-skills-author: "Soczó Kristóf"
+  wp-skills-contact: "mailto:lonsdale201@hotmail.com"
+  wp-skills-plugin: "fluent-crm"
+  wp-skills-plugin-version-tested: "FluentCRM 3.1.8 + FluentCRM Pro 3.1.8"
+  wp-skills-wp-version-tested: "7.0"
+  wp-skills-php-min: "7.4"
+  wp-skills-last-updated: "2026-07-09"
 ---
 
 # FluentCRM: event tracking
@@ -185,3 +172,19 @@ Bad event shape:
 - Use `fluentcrm-funnel-trigger` for custom event-driven automation triggers.
 - Use `fluentcrm-funnel-action` for custom automation actions that write tracked events.
 - Use `fluentcrm-smartcodes-segments` when event values appear in SmartCodes or Pro dynamic segments.
+
+## References
+
+- Official documentation: <https://developers.fluentcrm.com/database/orm/>
+- Verified source paths:
+  - `wp-content/plugins/fluent-crm/app/Api/config.php`
+  - `wp-content/plugins/fluent-crm/app/Api/Classes/Tracker.php`
+  - `wp-content/plugins/fluent-crm/app/Models/EventTracker.php`
+  - `wp-content/plugins/fluent-crm/app/Models/Subscriber.php`
+  - `wp-content/plugins/fluent-crm/app/Hooks/Handlers/EventTrackingHandler.php`
+  - `wp-content/plugins/fluent-crm/app/Hooks/Handlers/Integrations.php`
+  - `wp-content/plugins/fluent-crm/app/Services/Helper.php`
+  - `wp-content/plugins/fluent-crm/database/migrations/SubscriberEventTracking.php`
+  - `wp-content/plugins/fluentcampaign-pro/app/Services/Funnel/Triggers/TrackingEventRecordedTrigger.php`
+  - `wp-content/plugins/fluentcampaign-pro/app/Services/Funnel/Actions/AddEventTrackerAction.php`
+  - `wp-content/plugins/fluentcampaign-pro/app/Services/Funnel/Conditions/FunnelConditionHelper.php`

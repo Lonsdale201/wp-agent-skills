@@ -16,25 +16,13 @@ description: Expose, scope, or secure WP Rocket settings for AI / MCP
   reviewing AI-facing code. Triggers on rocket_mcp_,
   rocket_enable_abilities, wp-rocket/get-options, wp-rocket/set-option,
   "/oauth/" MCP server.
-author: Soczó Kristóf
-contact: mailto:lonsdale201@hotmail.com
-plugin: wp-rocket
-plugin-version-tested: "3.23"
-php-min: "7.4"
-last-updated: "2026-07-09"
-docs:
-  - https://docs.wp-rocket.me/article/92-plugin-compatibility-with-wp-rocket
-  - https://docs.wp-rocket.me/article/2-getting-started
-source-refs:
-  - wp-content/plugins/wp-rocket/inc/Engine/Abilities/Context.php
-  - wp-content/plugins/wp-rocket/inc/Engine/Abilities/Options/AllowedOptions.php
-  - wp-content/plugins/wp-rocket/inc/Engine/Abilities/Options/GetOptions.php
-  - wp-content/plugins/wp-rocket/inc/Engine/Abilities/Options/SetOption.php
-  - wp-content/plugins/wp-rocket/inc/Engine/MCP/Context.php
-  - wp-content/plugins/wp-rocket/inc/Engine/MCP/Transport/Server.php
-  - wp-content/plugins/wp-rocket/inc/Engine/MCP/Auth/ClaudeClientVerifier.php
-  - wp-content/plugins/wp-rocket/inc/Engine/MCP/Auth/Rewrite.php
-  - wp-content/plugins/wp-rocket/inc/Engine/MCP/Auth/Discovery/Endpoints.php
+metadata:
+  wp-skills-author: "Soczó Kristóf"
+  wp-skills-contact: "mailto:lonsdale201@hotmail.com"
+  wp-skills-plugin: "wp-rocket"
+  wp-skills-plugin-version-tested: "3.23"
+  wp-skills-php-min: "7.4"
+  wp-skills-last-updated: "2026-07-09"
 ---
 
 # WP Rocket: MCP server and AI Abilities
@@ -283,3 +271,5 @@ add_filter( 'rocket_mcp_trusted_publishers', function ( $p ) {
 - Discovery: [inc/Engine/MCP/Auth/Discovery/Endpoints.php:44](Endpoints.php) — `/.well-known/oauth-protected-resource`, `/.well-known/oauth-authorization-server`.
 - Trusted publishers (Claude): [inc/Engine/MCP/Auth/ClaudeClientVerifier.php:100](ClaudeClientVerifier.php) — `rocket_mcp_trusted_publishers`.
 - Bundled deps (composer.json): `wordpress/mcp-adapter ^0.4.1`, `wp-media/apply-filters-typed ^1.0` (the `wpm_apply_filters_typed` helper), `wp-media/wp-mixpanel` (telemetry).
+- Official documentation: <https://docs.wp-rocket.me/article/92-plugin-compatibility-with-wp-rocket>
+- Official documentation: <https://docs.wp-rocket.me/article/2-getting-started>

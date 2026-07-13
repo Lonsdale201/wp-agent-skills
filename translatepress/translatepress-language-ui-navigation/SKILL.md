@@ -1,34 +1,15 @@
 ---
 name: translatepress-language-ui-navigation
 description: Build or audit TranslatePress language UI compatibility for WordPress themes/plugins. Use for custom language switchers, `[language-switcher]`, `trp_custom_language_switcher()`, `[language-include]`, `[language-exclude]`, legacy `[trp_language]`, per-language menus, Navigation Based on Language, conditional language content, Automatic User Language Detection popup/hello bar, translator accounts, Browse as User Role previews, admin bar visibility, and role-specific or logged-in/logged-out translated content.
-author: Soczó Kristóf
-contact: mailto:lonsdale201@hotmail.com
-plugin: translatepress-multilingual + translatepress-business
-plugin-version-tested: "TranslatePress Multilingual 3.2.1 + Business 1.8.2"
-wp-version-tested: "7.0"
-php-min: "7.4"
-last-updated: "2026-06-17"
-docs:
-  - https://translatepress.com/docs/developers/custom-language-switcher/
-  - https://translatepress.com/docs/addons/navigate-based-language/
-  - https://translatepress.com/docs/addons/automatic-user-language-detection/
-  - https://translatepress.com/docs/addons/browse-as-role/
-source-refs:
-  - wp-content/plugins/translatepress-multilingual/index.php
-  - wp-content/plugins/translatepress-multilingual/readme.txt
-  - wp-content/plugins/translatepress-multilingual/includes/functions.php
-  - wp-content/plugins/translatepress-multilingual/includes/shortcodes.php
-  - wp-content/plugins/translatepress-multilingual/includes/class-language-switcher.php
-  - wp-content/plugins/translatepress-multilingual/includes/class-language-switcher-v2.php
-  - wp-content/plugins/translatepress-business/readme.txt
-  - wp-content/plugins/translatepress-business/add-ons-pro/navigation-based-on-language/class-navigation-based-on-language.php
-  - wp-content/plugins/translatepress-business/add-ons-pro/navigation-based-on-language/includes/class-tp-nbl-walker-nav-menu.php
-  - wp-content/plugins/translatepress-business/add-ons-pro/automatic-language-detection/class-automatic-language-detection.php
-  - wp-content/plugins/translatepress-business/add-ons-pro/automatic-language-detection/includes/class-determine-language.php
-  - wp-content/plugins/translatepress-business/add-ons-pro/translator-accounts/includes/class-translator-accounts.php
-  - wp-content/plugins/translatepress-business/add-ons-pro/translator-accounts/includes/class-translator-accounts-activator.php
-  - wp-content/plugins/translatepress-business/add-ons-pro/browse-as-other-roles/class-browse-as-other-role.php
 license: GPLv2-or-later
+metadata:
+  wp-skills-author: "Soczó Kristóf"
+  wp-skills-contact: "mailto:lonsdale201@hotmail.com"
+  wp-skills-plugin: "translatepress-multilingual + translatepress-business"
+  wp-skills-plugin-version-tested: "TranslatePress Multilingual 3.2.1 + Business 1.8.2"
+  wp-skills-wp-version-tested: "7.0"
+  wp-skills-php-min: "7.4"
+  wp-skills-last-updated: "2026-06-17"
 ---
 
 # TranslatePress Language UI And Navigation
@@ -203,3 +184,14 @@ Run UI checks across:
 - Navigation add-on source: `add-ons-pro/navigation-based-on-language/class-navigation-based-on-language.php`
 - Translator Accounts source: `add-ons-pro/translator-accounts/includes/class-translator-accounts.php`
 - Browse as Role source: `add-ons-pro/browse-as-other-roles/class-browse-as-other-role.php`
+- Official documentation: <https://translatepress.com/docs/addons/browse-as-role/>
+- Verified source paths:
+  - `wp-content/plugins/translatepress-multilingual/index.php`
+  - `wp-content/plugins/translatepress-multilingual/readme.txt`
+  - `wp-content/plugins/translatepress-multilingual/includes/class-language-switcher.php`
+  - `wp-content/plugins/translatepress-multilingual/includes/class-language-switcher-v2.php`
+  - `wp-content/plugins/translatepress-business/readme.txt`
+  - `wp-content/plugins/translatepress-business/add-ons-pro/navigation-based-on-language/includes/class-tp-nbl-walker-nav-menu.php`
+  - `wp-content/plugins/translatepress-business/add-ons-pro/automatic-language-detection/class-automatic-language-detection.php`
+  - `wp-content/plugins/translatepress-business/add-ons-pro/automatic-language-detection/includes/class-determine-language.php`
+  - `wp-content/plugins/translatepress-business/add-ons-pro/translator-accounts/includes/class-translator-accounts-activator.php`

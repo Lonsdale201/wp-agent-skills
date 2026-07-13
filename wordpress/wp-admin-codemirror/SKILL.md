@@ -10,17 +10,13 @@ description: Embed WordPress's bundled CodeMirror editor in admin pages via
   handles such as `csslint`, `htmlhint`, `htmlhint-kses`, and `jsonlint`.
   Use for custom CSS, snippets, JSON schemas, webhook previews, regex fields,
   or any plugin settings textarea that needs syntax highlighting.
-author: Soczó Kristóf
-contact: mailto:lonsdale201@hotmail.com
-plugin: wordpress
-plugin-version-tested: "6.0 - 7.0.1"
-php-min: "7.4"
-last-updated: "2026-07-10"
-docs:
-  - https://developer.wordpress.org/reference/functions/wp_enqueue_code_editor/
-  - https://developer.wordpress.org/reference/functions/wp_get_code_editor_settings/
-  - https://developer.wordpress.org/reference/hooks/wp_code_editor_settings/
-  - https://codemirror.net/5/doc/manual.html
+metadata:
+  wp-skills-author: "Soczó Kristóf"
+  wp-skills-contact: "mailto:lonsdale201@hotmail.com"
+  wp-skills-plugin: "wordpress"
+  wp-skills-plugin-version-tested: "6.0 - 7.0.1"
+  wp-skills-php-min: "7.4"
+  wp-skills-last-updated: "2026-07-10"
 ---
 
 # WordPress Admin CodeMirror (`wp.codeEditor`)
@@ -296,3 +292,7 @@ $settings['codemirror']['lint'] = false;
 - `wp-includes/general-template.php:4128` — `wp_get_code_editor_settings()`; the default CodeMirror options + per-MIME mode mapping. Filter point at line 4478.
 - `wp-admin/js/code-editor.js:416` — `wp.codeEditor.initialize()` definition; the DOMContentLoaded warning is line 417.
 - `wp-includes/js/codemirror/` — the actual CodeMirror 5 distribution bundled with core.
+- Official documentation: <https://developer.wordpress.org/reference/functions/wp_enqueue_code_editor/>
+- Official documentation: <https://developer.wordpress.org/reference/functions/wp_get_code_editor_settings/>
+- Official documentation: <https://developer.wordpress.org/reference/hooks/wp_code_editor_settings/>
+- Official documentation: <https://codemirror.net/5/doc/manual.html>

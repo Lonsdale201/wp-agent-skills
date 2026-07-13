@@ -15,24 +15,13 @@ description: >-
   Constant-time comparison — hash_equals, never == or ===. Use when
   any of those primitives is in the diff. Triggers on EncryptionEngine,
   Secret, Sensitive, Encrypted, RequestSource, BETTER_DATA_ENCRYPTION_KEY.
-author: Soczó Kristóf
-contact: mailto:lonsdale201@hotmail.com
-plugin: better-data
-plugin-version-tested: "phase-9"
-php-min: "8.3"
-last-updated: "2026-04-29"
-docs:
-  - https://github.com/lonsdale201/better-data
-source-refs:
-  - src/Secret.php
-  - src/Encryption/EncryptionEngine.php
-  - src/Attribute/Encrypted.php
-  - src/Attribute/Sensitive.php
-  - src/Registration/MetaKeyRegistry.php
-  - src/Source/RequestSource.php
-  - src/DataObject.php
-  - src/Exception/DecryptionFailedException.php
-  - src/Exception/SecretSerializationException.php
+metadata:
+  wp-skills-author: "Soczó Kristóf"
+  wp-skills-contact: "mailto:lonsdale201@hotmail.com"
+  wp-skills-plugin: "better-data"
+  wp-skills-plugin-version-tested: "phase-9"
+  wp-skills-php-min: "8.3"
+  wp-skills-last-updated: "2026-04-29"
 ---
 
 # better-data: Security-sensitive changes
@@ -324,3 +313,8 @@ class AttributeDrivenHydrator {
 - `#[Sensitive]` attribute: [libraries/better-data/src/Attribute/Sensitive.php](Sensitive.php) — read by `Presenter::sensitiveFieldNames`.
 - Idempotent decrypt: [libraries/better-data/src/DataObject.php:173-184](DataObject.php) — `looksEncrypted` + `Encrypted` attribute check.
 - `MetaKeyRegistry`: [libraries/better-data/src/Registration/MetaKeyRegistry.php](MetaKeyRegistry.php) — collision throws.
+- Official documentation: <https://github.com/lonsdale201/better-data>
+- Verified source paths:
+  - `src/Source/RequestSource.php`
+  - `src/Exception/DecryptionFailedException.php`
+  - `src/Exception/SecretSerializationException.php`

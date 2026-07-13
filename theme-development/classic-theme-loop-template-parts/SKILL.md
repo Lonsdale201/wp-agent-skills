@@ -1,23 +1,13 @@
 ---
 name: classic-theme-loop-template-parts
 description: Build or audit classic theme loops and PHP template parts for WP 7.0 without block/FSE assumptions. Covers the main Loop with `have_posts()` and `the_post()`, archive/search/single/page content choices, `get_template_part()` with `$args`, `content-none.php`, `post_class()`, secondary `WP_Query` loops with `wp_reset_postdata()`, `rewind_posts()`, pagination, single post navigation, and common bugs such as `query_posts()`, nested loops without reset, raw globals in template parts, and missing no-results states.
-author: Soczó Kristóf
-contact: mailto:lonsdale201@hotmail.com
-plugin: wordpress
-plugin-version-tested: "7.0"
-php-min: "7.4"
-last-updated: "2026-06-04"
-docs:
-  - https://developer.wordpress.org/themes/classic-themes/basics/the-loop/
-  - https://developer.wordpress.org/themes/classic-themes/basics/template-tags/
-source-refs:
-  - wp-includes/query.php
-  - wp-includes/class-wp-query.php
-  - wp-includes/template.php
-  - wp-includes/post-template.php
-  - wp-includes/link-template.php
-  - wp-content/themes/storefront/
-  - wp-content/themes/generatepress/
+metadata:
+  wp-skills-author: "Soczó Kristóf"
+  wp-skills-contact: "mailto:lonsdale201@hotmail.com"
+  wp-skills-plugin: "wordpress"
+  wp-skills-plugin-version-tested: "7.0"
+  wp-skills-php-min: "7.4"
+  wp-skills-last-updated: "2026-06-04"
 ---
 
 # Classic Theme Loop and Template Parts
@@ -227,3 +217,16 @@ Inside loop template parts:
 - Passing unescaped HTML through `$args` and echoing it blindly.
 - Nesting a custom query inside the main loop without restoring post data.
 - Building archive pagination from `$_GET['paged']` manually instead of using WordPress query state.
+
+## References
+
+- Official documentation: <https://developer.wordpress.org/themes/classic-themes/basics/the-loop/>
+- Official documentation: <https://developer.wordpress.org/themes/classic-themes/basics/template-tags/>
+- Verified source paths:
+  - `wp-includes/query.php`
+  - `wp-includes/class-wp-query.php`
+  - `wp-includes/template.php`
+  - `wp-includes/post-template.php`
+  - `wp-includes/link-template.php`
+  - `wp-content/themes/storefront/`
+  - `wp-content/themes/generatepress/`

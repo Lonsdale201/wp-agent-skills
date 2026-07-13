@@ -1,26 +1,13 @@
 ---
 name: wc-variation-gallery
 description: Build or audit WooCommerce 10.9+ native variation gallery integrations. Covers the experimental `variation_gallery` feature flag, variation `image` vs `gallery_image_ids`, `_product_image_gallery` storage, REST v3 variation payloads, classic product gallery replacement/reset behavior, theme override compatibility, and Additional Variation Images legacy migration. Use when code mentions variation galleries, multiple variation images, `set_gallery_image_ids`, `gallery_images_html`, `gallery_image_ids`, `wc_feature_woocommerce_additional_variation_images_enabled`, `_wc_additional_variation_images`, or `wc-product-gallery-before-destroy`.
-author: Soczó Kristóf
-contact: mailto:lonsdale201@hotmail.com
-plugin: woocommerce
-plugin-version-tested: "10.9.4"
-php-min: "7.4"
-last-updated: "2026-07-10"
-docs:
-  - https://woocommerce.com/document/managing-product-variations/
-source-refs:
-  - wp-content/plugins/woocommerce/src/Internal/VariationGallery/Package.php
-  - wp-content/plugins/woocommerce/src/Internal/VariationGallery/ClassicVariationGalleryAdmin.php
-  - wp-content/plugins/woocommerce/src/Internal/VariationGallery/LegacyVariationGalleryCompatibility.php
-  - wp-content/plugins/woocommerce/src/Internal/VariationGallery/Migration.php
-  - wp-content/plugins/woocommerce/src/Internal/Features/FeaturesController.php
-  - wp-content/plugins/woocommerce/includes/class-wc-product-variable.php
-  - wp-content/plugins/woocommerce/includes/rest-api/Controllers/Version3/class-wc-rest-product-variations-controller.php
-  - wp-content/plugins/woocommerce/includes/data-stores/class-wc-product-variation-data-store-cpt.php
-  - wp-content/plugins/woocommerce/includes/wc-template-functions.php
-  - wp-content/plugins/woocommerce/templates/single-product/add-to-cart/variable.php
-  - wp-content/plugins/woocommerce/assets/js/frontend/add-to-cart-variation.js
+metadata:
+  wp-skills-author: "Soczó Kristóf"
+  wp-skills-contact: "mailto:lonsdale201@hotmail.com"
+  wp-skills-plugin: "woocommerce"
+  wp-skills-plugin-version-tested: "10.9.4"
+  wp-skills-php-min: "7.4"
+  wp-skills-last-updated: "2026-07-10"
 ---
 
 # WooCommerce variation gallery
@@ -194,3 +181,19 @@ Do not delete legacy meta as part of your integration. If your plugin imports or
 ## Cross-references
 
 Use `wc-variations-data` for variation CRUD/sync, `wc-product-attribute-swatches` for color/image attribute swatches, and `wc-rest-api-v4` only when working with WooCommerce's newer admin REST surfaces rather than classic `wc/v3` variation endpoints.
+
+## References
+
+- Official documentation: <https://woocommerce.com/document/managing-product-variations/>
+- Verified source paths:
+  - `wp-content/plugins/woocommerce/src/Internal/VariationGallery/Package.php`
+  - `wp-content/plugins/woocommerce/src/Internal/VariationGallery/ClassicVariationGalleryAdmin.php`
+  - `wp-content/plugins/woocommerce/src/Internal/VariationGallery/LegacyVariationGalleryCompatibility.php`
+  - `wp-content/plugins/woocommerce/src/Internal/VariationGallery/Migration.php`
+  - `wp-content/plugins/woocommerce/src/Internal/Features/FeaturesController.php`
+  - `wp-content/plugins/woocommerce/includes/class-wc-product-variable.php`
+  - `wp-content/plugins/woocommerce/includes/rest-api/Controllers/Version3/class-wc-rest-product-variations-controller.php`
+  - `wp-content/plugins/woocommerce/includes/data-stores/class-wc-product-variation-data-store-cpt.php`
+  - `wp-content/plugins/woocommerce/includes/wc-template-functions.php`
+  - `wp-content/plugins/woocommerce/templates/single-product/add-to-cart/variable.php`
+  - `wp-content/plugins/woocommerce/assets/js/frontend/add-to-cart-variation.js`

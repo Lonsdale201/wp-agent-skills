@@ -1,30 +1,14 @@
 ---
 name: fluentcrm-contact-models
 description: Work with FluentCRM 3.x contact data through the public PHP API and ORM models. Covers Subscriber, Lists, Tag, User, ContactsQuery, createOrUpdate, list/tag attach and detach, custom fields, WP user linking, status protection, and contact hooks. Use when a plugin must create or update a contact, map a WP user, read or create lists/tags, apply tags/lists, query contacts or segments, or handle statuses such as subscribed, pending, transactional, unsubscribed, bounced, complained, and spammed. Triggers on FluentCrmApi('contacts'), Subscriber, Lists, Tag, User, ContactsQuery, attachLists, attachTags, updateStatus, fluent_crm/contact_.
-author: Soczó Kristóf
-contact: mailto:lonsdale201@hotmail.com
-plugin: fluent-crm
-plugin-version-tested: "FluentCRM 3.1.8"
-wp-version-tested: "7.0"
-php-min: "7.4"
-last-updated: "2026-07-09"
-docs:
-  - https://developers.fluentcrm.com/database/models/subscriber
-  - https://developers.fluentcrm.com/database/models/lists
-  - https://developers.fluentcrm.com/database/models/tag
-  - https://developers.fluentcrm.com/database/models/user
-  - https://developers.fluentcrm.com/database/orm/
-source-refs:
-  - wp-content/plugins/fluent-crm/app/Api/config.php
-  - wp-content/plugins/fluent-crm/app/Api/Classes/Contacts.php
-  - wp-content/plugins/fluent-crm/app/Api/Classes/Lists.php
-  - wp-content/plugins/fluent-crm/app/Api/Classes/Tags.php
-  - wp-content/plugins/fluent-crm/app/Functions/helpers.php
-  - wp-content/plugins/fluent-crm/app/Models/Subscriber.php
-  - wp-content/plugins/fluent-crm/app/Models/Lists.php
-  - wp-content/plugins/fluent-crm/app/Models/Tag.php
-  - wp-content/plugins/fluent-crm/app/Models/User.php
-  - wp-content/plugins/fluent-crm/app/Services/ContactsQuery.php
+metadata:
+  wp-skills-author: "Soczó Kristóf"
+  wp-skills-contact: "mailto:lonsdale201@hotmail.com"
+  wp-skills-plugin: "fluent-crm"
+  wp-skills-plugin-version-tested: "FluentCRM 3.1.8"
+  wp-skills-wp-version-tested: "7.0"
+  wp-skills-php-min: "7.4"
+  wp-skills-last-updated: "2026-07-09"
 ---
 
 # FluentCRM: contact, list, tag, and user models
@@ -230,3 +214,15 @@ When replacing direct writes, ensure these still fire where relevant:
 
 - FluentCRM docs: Subscriber, Lists, Tag, User, and Fluent ORM pages.
 - Local source: `app/Api/Classes/Contacts.php`, `app/Models/Subscriber.php`, `app/Services/ContactsQuery.php`, `app/Functions/helpers.php`.
+- Official documentation: <https://developers.fluentcrm.com/database/models/subscriber>
+- Official documentation: <https://developers.fluentcrm.com/database/models/lists>
+- Official documentation: <https://developers.fluentcrm.com/database/models/tag>
+- Official documentation: <https://developers.fluentcrm.com/database/models/user>
+- Official documentation: <https://developers.fluentcrm.com/database/orm/>
+- Verified source paths:
+  - `wp-content/plugins/fluent-crm/app/Api/config.php`
+  - `wp-content/plugins/fluent-crm/app/Api/Classes/Lists.php`
+  - `wp-content/plugins/fluent-crm/app/Api/Classes/Tags.php`
+  - `wp-content/plugins/fluent-crm/app/Models/Lists.php`
+  - `wp-content/plugins/fluent-crm/app/Models/Tag.php`
+  - `wp-content/plugins/fluent-crm/app/Models/User.php`

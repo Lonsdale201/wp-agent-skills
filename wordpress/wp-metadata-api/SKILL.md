@@ -8,21 +8,13 @@ description: Implements and audits WordPress post, user, term, comment, and
   add_*_meta, update_*_meta, delete_*_meta, register_meta,
   update_metadata_by_mid, get_metadata_by_mid, maybe_serialize,
   maybe_unserialize, or queries a *_meta table directly.
-author: Soczó Kristóf
-contact: mailto:lonsdale201@hotmail.com
-plugin: wordpress
-plugin-version-tested: "6.0 - 7.0.1"
-php-min: "7.4"
-last-updated: "2026-07-12"
-docs:
-  - https://developer.wordpress.org/apis/metadata/
-  - https://developer.wordpress.org/reference/functions/update_metadata/
-  - https://developer.wordpress.org/reference/functions/update_metadata_by_mid/
-source-refs:
-  - wp-includes/meta.php
-  - wp-includes/post.php
-  - wp-includes/functions.php
-  - wp-includes/revision.php
+metadata:
+  wp-skills-author: "Soczó Kristóf"
+  wp-skills-contact: "mailto:lonsdale201@hotmail.com"
+  wp-skills-plugin: "wordpress"
+  wp-skills-plugin-version-tested: "6.0 - 7.0.1"
+  wp-skills-php-min: "7.4"
+  wp-skills-last-updated: "2026-07-12"
 ---
 
 # WordPress Metadata API
@@ -222,3 +214,8 @@ conditional and state the required write primitive.
 - Core contracts: `wp-includes/meta.php`
 - Post wrapper revision behavior: `wp-includes/post.php`
 - Serialization compatibility: `wp-includes/functions.php`
+- Official documentation: <https://developer.wordpress.org/apis/metadata/>
+- Official documentation: <https://developer.wordpress.org/reference/functions/update_metadata/>
+- Official documentation: <https://developer.wordpress.org/reference/functions/update_metadata_by_mid/>
+- Verified source paths:
+  - `wp-includes/revision.php`

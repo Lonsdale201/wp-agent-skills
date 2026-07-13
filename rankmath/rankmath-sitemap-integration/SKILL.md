@@ -2,23 +2,14 @@
 name: rankmath-sitemap-integration
 description: >-
   Integrate third-party WordPress content with Rank Math XML and HTML sitemaps. Use when custom post types, taxonomies, virtual resources, external-table records, canonical overrides, images, authors, or custom statuses must be included or excluded; when code uses rank_math/sitemap/entry, rank_math/sitemap/providers, rank_math/sitemap/get_posts/*, rank_math/sitemap/post_count/*, rank_math/sitemap/xml_post_url, or sitemap cache invalidation; and when diagnosing empty pages, wrong counts, duplicate URLs, stale XML, pagination, query performance, or custom provider contracts. Covers standard content first, provider design, count/list parity, URL shape, and invalidation.
-author: Soczó Kristóf
-contact: mailto:lonsdale201@hotmail.com
-plugin: seo-by-rank-math
-plugin-version-tested: "1.0.273"
-wp-version-tested: "7.0.1"
-php-min: "7.4"
-last-updated: "2026-07-13"
-docs:
-  - https://rankmath.com/docs/filters-and-hooks/admin/sitemap/
-  - https://rankmath.com/kb/filters-hooks-api-developer/
-source-refs:
-  - includes/modules/sitemap/class-generator.php
-  - includes/modules/sitemap/class-cache.php
-  - includes/modules/sitemap/class-cache-watcher.php
-  - includes/modules/sitemap/providers/interface-provider.php
-  - includes/modules/sitemap/providers/class-post-type.php
-  - includes/modules/sitemap/providers/class-taxonomy.php
+metadata:
+  wp-skills-author: "Soczó Kristóf"
+  wp-skills-contact: "mailto:lonsdale201@hotmail.com"
+  wp-skills-plugin: "seo-by-rank-math"
+  wp-skills-plugin-version-tested: "1.0.273"
+  wp-skills-wp-version-tested: "7.0.1"
+  wp-skills-php-min: "7.4"
+  wp-skills-last-updated: "2026-07-13"
 ---
 
 # Rank Math sitemap integration
@@ -194,3 +185,15 @@ This clears all Rank Math sitemap storage, so debounce or defer it during bulk i
 - Rank Math PRO News/Video sitemap providers without installed source verification.
 - IndexNow submission, Search Console submission, or crawl guarantees.
 - General XML libraries unrelated to Rank Math's sitemap pipeline.
+
+## References
+
+- Official documentation: <https://rankmath.com/docs/filters-and-hooks/admin/sitemap/>
+- Official documentation: <https://rankmath.com/kb/filters-hooks-api-developer/>
+- Verified source paths:
+  - `includes/modules/sitemap/class-generator.php`
+  - `includes/modules/sitemap/class-cache.php`
+  - `includes/modules/sitemap/class-cache-watcher.php`
+  - `includes/modules/sitemap/providers/interface-provider.php`
+  - `includes/modules/sitemap/providers/class-post-type.php`
+  - `includes/modules/sitemap/providers/class-taxonomy.php`

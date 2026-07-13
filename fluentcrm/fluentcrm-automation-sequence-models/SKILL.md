@@ -1,29 +1,14 @@
 ---
 name: fluentcrm-automation-sequence-models
 description: Work with FluentCRM 3.x automation subscriber state and FluentCampaign Pro email sequences. Covers FunnelSubscriber, FunnelSequence, FunnelProcessor, FunnelHelper, FunnelMetric, Pro Sequence, SequenceMail, and SequenceTracker. Use when enrolling a contact into an automation funnel, resuming from a benchmark, reading funnel progress, subscribing or unsubscribing contacts from Pro email sequences, or avoiding confusion between automation steps and email sequences. Triggers on FunnelSubscriber, FunnelSequence, startFunnelSequence, startFunnelFromSequencePoint, Sequence::subscribe, SequenceTracker, fc_funnel_subscribers, fc_sequence_tracker.
-author: Soczó Kristóf
-contact: mailto:lonsdale201@hotmail.com
-plugin: fluent-crm
-plugin-version-tested: "FluentCRM 3.1.8 + FluentCRM Pro 3.1.8"
-wp-version-tested: "7.0"
-php-min: "7.4"
-last-updated: "2026-07-09"
-docs:
-  - https://developers.fluentcrm.com/database/models/funnelSubscriber
-  - https://developers.fluentcrm.com/database/models/funnelSequence
-  - https://developers.fluentcrm.com/database/orm/
-source-refs:
-  - wp-content/plugins/fluent-crm/app/Models/Funnel.php
-  - wp-content/plugins/fluent-crm/app/Models/FunnelSubscriber.php
-  - wp-content/plugins/fluent-crm/app/Models/FunnelSequence.php
-  - wp-content/plugins/fluent-crm/app/Models/FunnelMetric.php
-  - wp-content/plugins/fluent-crm/app/Services/Funnel/FunnelProcessor.php
-  - wp-content/plugins/fluent-crm/app/Services/Funnel/FunnelHelper.php
-  - wp-content/plugins/fluent-crm/app/Http/Controllers/SubscriberController.php
-  - wp-content/plugins/fluentcampaign-pro/app/Models/Sequence.php
-  - wp-content/plugins/fluentcampaign-pro/app/Models/SequenceMail.php
-  - wp-content/plugins/fluentcampaign-pro/app/Models/SequenceTracker.php
-  - wp-content/plugins/fluentcampaign-pro/app/Http/Controllers/SequenceController.php
+metadata:
+  wp-skills-author: "Soczó Kristóf"
+  wp-skills-contact: "mailto:lonsdale201@hotmail.com"
+  wp-skills-plugin: "fluent-crm"
+  wp-skills-plugin-version-tested: "FluentCRM 3.1.8 + FluentCRM Pro 3.1.8"
+  wp-skills-wp-version-tested: "7.0"
+  wp-skills-php-min: "7.4"
+  wp-skills-last-updated: "2026-07-09"
 ---
 
 # FluentCRM: automation and email sequence models
@@ -221,3 +206,12 @@ This marks the tracker `cancelled` and cancels scheduled sequence emails. Do not
 
 - Local source: `FunnelProcessor.php`, `FunnelHelper.php`, `FunnelSubscriber.php`, `FunnelSequence.php`, Pro `Sequence.php`, and `SequenceTracker.php`.
 - FluentCRM docs: FunnelSubscriber model, FunnelSequence model, and Fluent ORM.
+- Official documentation: <https://developers.fluentcrm.com/database/models/funnelSubscriber>
+- Official documentation: <https://developers.fluentcrm.com/database/models/funnelSequence>
+- Official documentation: <https://developers.fluentcrm.com/database/orm/>
+- Verified source paths:
+  - `wp-content/plugins/fluent-crm/app/Models/Funnel.php`
+  - `wp-content/plugins/fluent-crm/app/Models/FunnelMetric.php`
+  - `wp-content/plugins/fluent-crm/app/Http/Controllers/SubscriberController.php`
+  - `wp-content/plugins/fluentcampaign-pro/app/Models/SequenceMail.php`
+  - `wp-content/plugins/fluentcampaign-pro/app/Http/Controllers/SequenceController.php`

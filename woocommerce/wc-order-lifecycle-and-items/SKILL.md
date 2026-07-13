@@ -1,22 +1,13 @@
 ---
 name: wc-order-lifecycle-and-items
 description: Work safely with WooCommerce order statuses, payment completion, status hooks, order items, line-item meta, totals, and stock side effects. Covers `payment_complete()` vs `update_status()`, `woocommerce_order_status_*` hook ordering and args, `woocommerce_order_status_changed`, `woocommerce_order_payment_status_changed`, `WC_Order_Item_Product`, `add_item()`, `calculate_totals()`, stock reduction/restoration hooks, HPOS-safe CRUD, and why not to instantiate base `WC_Order_Item`. Use when reacting to orders, adding/editing items, changing statuses, provisioning, fulfillment, stock logic, or debugging paid orders that skipped lifecycle side effects.
-author: Soczó Kristóf
-contact: mailto:lonsdale201@hotmail.com
-plugin: woocommerce
-plugin-version-tested: "10.9.4"
-php-min: "7.4"
-last-updated: "2026-07-10"
-docs:
-  - https://woocommerce.github.io/code-reference/classes/WC-Order.html
-source-refs:
-  - wp-content/plugins/woocommerce/includes/class-wc-order.php
-  - wp-content/plugins/woocommerce/includes/abstracts/abstract-wc-order.php
-  - wp-content/plugins/woocommerce/includes/class-wc-order-item.php
-  - wp-content/plugins/woocommerce/includes/class-wc-order-item-product.php
-  - wp-content/plugins/woocommerce/includes/wc-order-functions.php
-  - wp-content/plugins/woocommerce/includes/wc-stock-functions.php
-  - wp-content/plugins/woocommerce/src/Internal/DataStores/Orders/OrdersTableDataStore.php
+metadata:
+  wp-skills-author: "Soczó Kristóf"
+  wp-skills-contact: "mailto:lonsdale201@hotmail.com"
+  wp-skills-plugin: "woocommerce"
+  wp-skills-plugin-version-tested: "10.9.4"
+  wp-skills-php-min: "7.4"
+  wp-skills-last-updated: "2026-07-10"
 ---
 
 # WooCommerce order lifecycle and items
@@ -200,3 +191,15 @@ Do not use `get_post_meta()`, `update_post_meta()`, `WP_Query` over `shop_order`
 - HPOS storage/query compatibility: `wc-hpos-compatibility`
 - Background work from order hooks: `wc-action-scheduler-jobs`
 - Cart/checkout line-item meta before order creation: `wc-cart-checkout-classic`
+
+## References
+
+- Official documentation: <https://woocommerce.github.io/code-reference/classes/WC-Order.html>
+- Verified source paths:
+  - `wp-content/plugins/woocommerce/includes/class-wc-order.php`
+  - `wp-content/plugins/woocommerce/includes/abstracts/abstract-wc-order.php`
+  - `wp-content/plugins/woocommerce/includes/class-wc-order-item.php`
+  - `wp-content/plugins/woocommerce/includes/class-wc-order-item-product.php`
+  - `wp-content/plugins/woocommerce/includes/wc-order-functions.php`
+  - `wp-content/plugins/woocommerce/includes/wc-stock-functions.php`
+  - `wp-content/plugins/woocommerce/src/Internal/DataStores/Orders/OrdersTableDataStore.php`

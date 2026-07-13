@@ -1,28 +1,14 @@
 ---
 name: fluentcrm-companies-model
 description: Work with FluentCRM 3.x Companies / account records from companion plugins. Covers the experimental company_module flag, FluentCrmApi('companies'), Company model fields, createOrUpdate, owner_id as Subscriber ID, custom company fields in meta.custom_values, primary company vs many-to-many company membership, attachContactsByIds / detachContactsByIds, company hooks, and company-aware contact filters. Use when a plugin must sync organizations/accounts, attach contacts to companies, read company segments, add automation company actions, or audit code touching fc_companies, company_id, attachCompanies, or fluent_crm/company_ hooks.
-author: Soczó Kristóf
-contact: mailto:lonsdale201@hotmail.com
-plugin: fluent-crm
-plugin-version-tested: "FluentCRM 3.1.8"
-wp-version-tested: "7.0"
-php-min: "7.4"
-last-updated: "2026-07-09"
-docs:
-  - https://developers.fluentcrm.com/database/orm/
-source-refs:
-  - wp-content/plugins/fluent-crm/app/Api/config.php
-  - wp-content/plugins/fluent-crm/app/Api/Classes/Companies.php
-  - wp-content/plugins/fluent-crm/app/Models/Company.php
-  - wp-content/plugins/fluent-crm/app/Models/CompanyNote.php
-  - wp-content/plugins/fluent-crm/app/Models/CustomCompanyField.php
-  - wp-content/plugins/fluent-crm/app/Models/Subscriber.php
-  - wp-content/plugins/fluent-crm/app/Services/Helper.php
-  - wp-content/plugins/fluent-crm/app/Http/Controllers/CompanyController.php
-  - wp-content/plugins/fluent-crm/app/Services/Funnel/Actions/ApplyCompanyAction.php
-  - wp-content/plugins/fluent-crm/app/Services/Funnel/Actions/DetachCompanyAction.php
-  - wp-content/plugins/fluent-crm/database/migrations/CompaniesMigrator.php
-  - wp-content/plugins/fluent-crm/database/migrations/Subscribers.php
+metadata:
+  wp-skills-author: "Soczó Kristóf"
+  wp-skills-contact: "mailto:lonsdale201@hotmail.com"
+  wp-skills-plugin: "fluent-crm"
+  wp-skills-plugin-version-tested: "FluentCRM 3.1.8"
+  wp-skills-wp-version-tested: "7.0"
+  wp-skills-php-min: "7.4"
+  wp-skills-last-updated: "2026-07-09"
 ---
 
 # FluentCRM: Companies model and contact-company relations
@@ -204,3 +190,20 @@ That option key is provided by `OptionsController::companies()` and returns `[{i
 - Use `fluentcrm-contact-models` for contact/list/tag basics.
 - Use `fluentcrm-funnel-action` when adding a custom company-aware automation action.
 - Use `fluentcrm-rest-options` when creating a custom company-like picker.
+
+## References
+
+- Official documentation: <https://developers.fluentcrm.com/database/orm/>
+- Verified source paths:
+  - `wp-content/plugins/fluent-crm/app/Api/config.php`
+  - `wp-content/plugins/fluent-crm/app/Api/Classes/Companies.php`
+  - `wp-content/plugins/fluent-crm/app/Models/Company.php`
+  - `wp-content/plugins/fluent-crm/app/Models/CompanyNote.php`
+  - `wp-content/plugins/fluent-crm/app/Models/CustomCompanyField.php`
+  - `wp-content/plugins/fluent-crm/app/Models/Subscriber.php`
+  - `wp-content/plugins/fluent-crm/app/Services/Helper.php`
+  - `wp-content/plugins/fluent-crm/app/Http/Controllers/CompanyController.php`
+  - `wp-content/plugins/fluent-crm/app/Services/Funnel/Actions/ApplyCompanyAction.php`
+  - `wp-content/plugins/fluent-crm/app/Services/Funnel/Actions/DetachCompanyAction.php`
+  - `wp-content/plugins/fluent-crm/database/migrations/CompaniesMigrator.php`
+  - `wp-content/plugins/fluent-crm/database/migrations/Subscribers.php`

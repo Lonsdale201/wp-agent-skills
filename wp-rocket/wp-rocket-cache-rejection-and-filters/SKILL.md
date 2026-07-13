@@ -13,21 +13,13 @@ description: Customize WP Rocket behavior from a third-party plugin /
   invalidation (see wp-rocket-cache-invalidation). Triggers on
   rocket_cache_reject_, rocket_cdn_, do_rocket_lazyload, rocket_buffer,
   rocket_capacity, "exclude from WP Rocket cache".
-author: Soczó Kristóf
-contact: mailto:lonsdale201@hotmail.com
-plugin: wp-rocket
-plugin-version-tested: "3.23"
-php-min: "7.4"
-last-updated: "2026-07-09"
-docs:
-  - https://docs.wp-rocket.me/article/92-plugin-compatibility-with-wp-rocket
-  - https://docs.wp-rocket.me/article/2-getting-started
-source-refs:
-  - wp-content/plugins/wp-rocket/wp-rocket.php
-  - wp-content/plugins/wp-rocket/inc/functions/options.php
-  - wp-content/plugins/wp-rocket/inc/Engine/Optimization/Buffer/Optimization.php
-  - wp-content/plugins/wp-rocket/inc/Engine/CDN/
-  - wp-content/plugins/wp-rocket/inc/Engine/Media/Lazyload/
+metadata:
+  wp-skills-author: "Soczó Kristóf"
+  wp-skills-contact: "mailto:lonsdale201@hotmail.com"
+  wp-skills-plugin: "wp-rocket"
+  wp-skills-plugin-version-tested: "3.23"
+  wp-skills-php-min: "7.4"
+  wp-skills-last-updated: "2026-07-09"
 ---
 
 # WP Rocket: cache rejection, filters, and behavior customization
@@ -499,3 +491,4 @@ register_activation_hook( __FILE__, function () {
 - Lazy load: [inc/Engine/Media/Lazyload/](Lazyload/) and [inc/Engine/Media/AboveTheFold/](AboveTheFold/) — `do_rocket_lazyload`, `do_rocket_lazyload_iframes`, `rocket_atf_*`.
 - Capability filter: current code uses `rocket_capacity`; `rocket_capability` appears only in legacy/deprecated code as the old typo.
 - WP Rocket plugin compatibility doc: [https://docs.wp-rocket.me/article/92-plugin-compatibility-with-wp-rocket](https://docs.wp-rocket.me/article/92-plugin-compatibility-with-wp-rocket).
+- Official documentation: <https://docs.wp-rocket.me/article/2-getting-started>

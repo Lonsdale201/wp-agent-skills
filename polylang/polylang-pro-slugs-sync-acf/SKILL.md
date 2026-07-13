@@ -1,28 +1,14 @@
 ---
 name: polylang-pro-slugs-sync-acf
 description: "Work with Polylang Pro 3.8.5 features that affect plugin/theme compatibility: translated slugs, shared slugs, duplicate/sync post workflows, ACF Pro integration, translated ACF labels, ACF field translation strategies, import/export/machine-translation hooks, and sync metadata filters. Use when code touches rewrite slugs, custom permalink structures, duplicated translations, synchronized custom fields, ACF fields containing post/term/media IDs, ACF field groups, or hooks such as pll_translated_slugs, pll_sync_post_fields, pll_copy_post_metas, pll_translate_post_meta, pll_post_synchronized, pll_created_sync_post, or pll_enable_acf_labels_translation."
-author: Soczo Kristof
-contact: mailto:lonsdale201@hotmail.com
-plugin: polylang-pro
-plugin-version-tested: "Polylang Pro 3.8.5"
-wp-version-tested: "7.0"
-php-min: "7.4"
-last-updated: "2026-07-01"
-docs:
-  - https://polylang.pro/doc/developpers-how-to/
-  - https://polylang.pro/doc/strings-translation/
-source-refs:
-  - wp-content/plugins/polylang-pro/src/pro.php
-  - wp-content/plugins/polylang-pro/src/modules/translate-slugs/translate-slugs-model.php
-  - wp-content/plugins/polylang-pro/src/modules/share-slug/share-post-slug.php
-  - wp-content/plugins/polylang-pro/src/modules/share-slug/share-term-slug.php
-  - wp-content/plugins/polylang-pro/src/modules/sync-post/sync-post-model.php
-  - wp-content/plugins/polylang-pro/src/modules/sync-post/sync-post.php
-  - wp-content/plugins/polylang-pro/src/integrations/ACF/README.md
-  - wp-content/plugins/polylang-pro/src/integrations/ACF/Main.php
-  - wp-content/plugins/polylang-pro/src/integrations/ACF/Field_Settings.php
-  - wp-content/plugins/polylang-pro/src/integrations/ACF/Dispatcher.php
-  - wp-content/plugins/polylang-pro/src/integrations/ACF/Labels/Field_Groups.php
+metadata:
+  wp-skills-author: "Soczo Kristof"
+  wp-skills-contact: "mailto:lonsdale201@hotmail.com"
+  wp-skills-plugin: "polylang-pro"
+  wp-skills-plugin-version-tested: "Polylang Pro 3.8.5"
+  wp-skills-wp-version-tested: "7.0"
+  wp-skills-php-min: "7.4"
+  wp-skills-last-updated: "2026-07-01"
 ---
 
 # Polylang Pro Slugs, Sync, and ACF
@@ -248,3 +234,20 @@ Local source checked against:
 - Shared slug query filters: `src/modules/share-slug/share-post-slug.php`
 - Pro sync model and hooks: `src/modules/sync-post/sync-post-model.php`
 - ACF integration README, field settings, dispatcher, and label filters: `src/integrations/ACF/*`
+
+## References
+
+- Official documentation: <https://polylang.pro/doc/developpers-how-to/>
+- Official documentation: <https://polylang.pro/doc/strings-translation/>
+- Verified source paths:
+  - `wp-content/plugins/polylang-pro/src/pro.php`
+  - `wp-content/plugins/polylang-pro/src/modules/translate-slugs/translate-slugs-model.php`
+  - `wp-content/plugins/polylang-pro/src/modules/share-slug/share-post-slug.php`
+  - `wp-content/plugins/polylang-pro/src/modules/share-slug/share-term-slug.php`
+  - `wp-content/plugins/polylang-pro/src/modules/sync-post/sync-post-model.php`
+  - `wp-content/plugins/polylang-pro/src/modules/sync-post/sync-post.php`
+  - `wp-content/plugins/polylang-pro/src/integrations/ACF/README.md`
+  - `wp-content/plugins/polylang-pro/src/integrations/ACF/Main.php`
+  - `wp-content/plugins/polylang-pro/src/integrations/ACF/Field_Settings.php`
+  - `wp-content/plugins/polylang-pro/src/integrations/ACF/Dispatcher.php`
+  - `wp-content/plugins/polylang-pro/src/integrations/ACF/Labels/Field_Groups.php`

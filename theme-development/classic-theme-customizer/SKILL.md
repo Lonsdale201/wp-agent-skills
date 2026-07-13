@@ -1,24 +1,13 @@
 ---
 name: classic-theme-customizer
 description: Add or audit WordPress Customizer options for classic PHP themes on WP 7.0. Covers `customize_register`, `WP_Customize_Manager`, settings, sections, controls, `theme_mod` vs `option`, option-backed Customizer autoload, multidimensional setting IDs, `sanitize_callback`, `validate_callback`, `WP_Customize_Color_Control`, allowlisted select values, `postMessage`, `customize_preview_init`, selective refresh partials, escaping `get_theme_mod()` output in templates, and common bugs such as raw Customizer values, missing sanitization, or `postMessage` without preview JavaScript.
-author: Soczó Kristóf
-contact: mailto:lonsdale201@hotmail.com
-plugin: wordpress
-plugin-version-tested: "7.0"
-php-min: "7.4"
-last-updated: "2026-07-09"
-docs:
-  - https://developer.wordpress.org/themes/customize-api/
-  - https://developer.wordpress.org/themes/customize-api/customizer-objects/
-  - https://developer.wordpress.org/themes/customize-api/the-customizer-javascript-api/
-source-refs:
-  - wp-includes/class-wp-customize-manager.php
-  - wp-includes/class-wp-customize-setting.php
-  - wp-includes/class-wp-customize-control.php
-  - wp-includes/customize/class-wp-customize-selective-refresh.php
-  - wp-includes/theme.php
-  - wp-content/themes/storefront/inc/customizer/
-  - wp-content/themes/generatepress/inc/customizer.php
+metadata:
+  wp-skills-author: "Soczó Kristóf"
+  wp-skills-contact: "mailto:lonsdale201@hotmail.com"
+  wp-skills-plugin: "wordpress"
+  wp-skills-plugin-version-tested: "7.0"
+  wp-skills-php-min: "7.4"
+  wp-skills-last-updated: "2026-07-09"
 ---
 
 # Classic Theme Customizer
@@ -289,3 +278,17 @@ Bad Customizer settings:
 
 - Use `wp-settings-storage-audit` to review the broader persistence contract: theme_mod vs option, array shape, defaults, autoload, REST exposure, and migration.
 - Use `wp-plugin-options-storage` when the value is plugin-owned or should survive theme switching.
+
+## References
+
+- Official documentation: <https://developer.wordpress.org/themes/customize-api/>
+- Official documentation: <https://developer.wordpress.org/themes/customize-api/customizer-objects/>
+- Official documentation: <https://developer.wordpress.org/themes/customize-api/the-customizer-javascript-api/>
+- Verified source paths:
+  - `wp-includes/class-wp-customize-manager.php`
+  - `wp-includes/class-wp-customize-setting.php`
+  - `wp-includes/class-wp-customize-control.php`
+  - `wp-includes/customize/class-wp-customize-selective-refresh.php`
+  - `wp-includes/theme.php`
+  - `wp-content/themes/storefront/inc/customizer/`
+  - `wp-content/themes/generatepress/inc/customizer.php`

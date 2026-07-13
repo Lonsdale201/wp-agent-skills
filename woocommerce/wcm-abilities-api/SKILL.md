@@ -12,23 +12,13 @@ description: WooCommerce Memberships 1.29+ WordPress Abilities API
   post-restriction-rules-get, post-restriction-rules-update,
   /wc-memberships/v1/post-restriction-rules, or privileged
   agent/headless/admin automation for WooCommerce Memberships.
-author: Soczó Kristóf
-contact: mailto:lonsdale201@hotmail.com
-plugin: woocommerce-memberships
-plugin-version-tested: "1.29.0"
-php-min: "7.4"
-last-updated: "2026-07-06"
-source-refs:
-  - wp-content/plugins/woocommerce-memberships/class-wc-memberships.php
-  - wp-content/plugins/woocommerce-memberships/src/Abilities/Provider.php
-  - wp-content/plugins/woocommerce-memberships/src/Plans/Abilities/
-  - wp-content/plugins/woocommerce-memberships/src/UserMemberships/Abilities/
-  - wp-content/plugins/woocommerce-memberships/src/Posts/Abilities/
-  - wp-content/plugins/woocommerce-memberships/src/Posts/Actions/SetPostRules.php
-  - wp-content/plugins/woocommerce-memberships/src/Posts/Adapters/JsonSerializers/PostRestrictionRulesSerializer.php
-  - wp-content/plugins/woocommerce-memberships/src/Posts/Traits/CanCheckRestrictablePostPermissionTrait.php
-  - wp-content/plugins/woocommerce-memberships/src/Blocks/BlockEditorSidebar.php
-  - wp-content/plugins/woocommerce-memberships/vendor/skyverge/wc-plugin-framework/woocommerce/Abilities/
+metadata:
+  wp-skills-author: "Soczó Kristóf"
+  wp-skills-contact: "mailto:lonsdale201@hotmail.com"
+  wp-skills-plugin: "woocommerce-memberships"
+  wp-skills-plugin-version-tested: "1.29.0"
+  wp-skills-php-min: "7.4"
+  wp-skills-last-updated: "2026-07-06"
 ---
 
 # WooCommerce Memberships: Abilities API
@@ -285,3 +275,17 @@ register_rest_route( 'my/v1', '/admin/membership', array(
 - Use `wcm-membership-hooks` for lifecycle hooks, REST/webhooks, profile fields, member directory, CSV, and Subscriptions-linked memberships.
 - Use `wcm-data-model-subscriptions-link` for CPT names, meta keys, rule storage, and Subscriptions relation storage.
 - Use `wcm-access-discounts` for access checks, restriction/drip behavior, and member discount APIs.
+
+## References
+
+- Verified source paths:
+  - `wp-content/plugins/woocommerce-memberships/class-wc-memberships.php`
+  - `wp-content/plugins/woocommerce-memberships/src/Abilities/Provider.php`
+  - `wp-content/plugins/woocommerce-memberships/src/Plans/Abilities/`
+  - `wp-content/plugins/woocommerce-memberships/src/UserMemberships/Abilities/`
+  - `wp-content/plugins/woocommerce-memberships/src/Posts/Abilities/`
+  - `wp-content/plugins/woocommerce-memberships/src/Posts/Actions/SetPostRules.php`
+  - `wp-content/plugins/woocommerce-memberships/src/Posts/Adapters/JsonSerializers/PostRestrictionRulesSerializer.php`
+  - `wp-content/plugins/woocommerce-memberships/src/Posts/Traits/CanCheckRestrictablePostPermissionTrait.php`
+  - `wp-content/plugins/woocommerce-memberships/src/Blocks/BlockEditorSidebar.php`
+  - `wp-content/plugins/woocommerce-memberships/vendor/skyverge/wc-plugin-framework/woocommerce/Abilities/`

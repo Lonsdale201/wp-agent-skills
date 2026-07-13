@@ -1,45 +1,13 @@
 ---
 name: bd-data-object
-description: Add or modify DataObject subclasses inside the better-data
-  library — the immutable, attribute-decorated DTOs that the whole
-  library is built around. Every DTO is final readonly class extends
-  DataObject with constructor-promoted typed parameters; sources hydrate
-  via ::fromArray, sinks project via SinkProjection, the Presenter
-  renders via HasPresenter trait. Important — every trailing constructor
-  parameter MUST have a default. Without it, PHP Reflection reports
-  isDefaultValueAvailable=false on earlier params too, and DataObject
-  throws MissingRequiredFieldException at hydration. Also Secret fields
-  default to ?Secret = null (never new Secret('')), encrypt requires the
-  Secret type, and DTOs never grow public mutators (use ->with([...])).
-  Use when adding a new DTO (UserProfileDto, OrderDto, plugin fixture),
-  adding fields to an existing DTO, or reviewing a PR that introduces a
-  new class extending DataObject. Triggers on extends DataObject,
-  DataObject::fromArray, ->with(), HasWpSources, HasWpSinks,
-  HasPresenter, MissingRequiredFieldException, "new DTO" in
-  better-data.
-author: Soczó Kristóf
-contact: mailto:lonsdale201@hotmail.com
-plugin: better-data
-plugin-version-tested: "phase-9"
-php-min: "8.3"
-last-updated: "2026-04-29"
-docs:
-  - https://github.com/lonsdale201/better-data
-source-refs:
-  - src/DataObject.php
-  - src/Internal/AttributeDrivenHydrator.php
-  - src/Source/HasWpSources.php
-  - src/Sink/HasWpSinks.php
-  - src/Presenter/HasPresenter.php
-  - src/Attribute/MetaKey.php
-  - src/Attribute/PostField.php
-  - src/Attribute/Encrypted.php
-  - src/Attribute/Sensitive.php
-  - src/Attribute/ListOf.php
-  - src/Attribute/DateFormat.php
-  - src/Validation/Rule/Required.php
-  - src/Secret.php
-  - src/Exception/MissingRequiredFieldException.php
+description: Add or modify DataObject subclasses inside the better-data library — the immutable, attribute-decorated DTOs the whole library is built around. Every DTO is final readonly class extends DataObject with constructor-promoted typed parameters; sources hydrate via ::fromArray, sinks project via SinkProjection, the Presenter renders via HasPresenter trait. Important — every trailing constructor parameter MUST have a default; otherwise PHP Reflection reports isDefaultValueAvailable=false on earlier params too and DataObject throws MissingRequiredFieldException at hydration. Also Secret fields default to ?Secret = null (never new Secret('')), encrypt requires the Secret type, and DTOs never grow public mutators (use ->with()). Use when adding a new DTO (e.g. UserProfileDto), adding fields to an existing DTO, or reviewing a PR introducing a class extending DataObject. Triggers on extends DataObject, DataObject::fromArray, ->with(), HasWpSources, HasWpSinks, HasPresenter, MissingRequiredFieldException in better-data.
+metadata:
+  wp-skills-author: "Soczó Kristóf"
+  wp-skills-contact: "mailto:lonsdale201@hotmail.com"
+  wp-skills-plugin: "better-data"
+  wp-skills-plugin-version-tested: "phase-9"
+  wp-skills-php-min: "8.3"
+  wp-skills-last-updated: "2026-04-29"
 ---
 
 # better-data: Adding a DataObject
@@ -307,3 +275,14 @@ ProductDto::fromArray(['published_at' => '...']);  // unmatched key — falls ba
 - Source/sink traits: [libraries/better-data/src/Source/HasWpSources.php:28](HasWpSources.php), [libraries/better-data/src/Sink/HasWpSinks.php:31](HasWpSinks.php), [libraries/better-data/src/Presenter/HasPresenter.php:15](HasPresenter.php).
 - Attribute carriers: [libraries/better-data/src/Attribute/](Attribute/) — `MetaKey`, `PostField`, `UserField`, `TermField`, `Column`, `Sensitive`, `Encrypted`, `ListOf`, `DateFormat`.
 - Built-in rules: [libraries/better-data/src/Validation/Rule/](Rule/) — `Required`, `Email`, `Url`, `Uuid`, `Min`, `Max`, `MinLength`, `MaxLength`, `Regex`, `OneOf`, `Callback`.
+- Official documentation: <https://github.com/lonsdale201/better-data>
+- Verified source paths:
+  - `src/Attribute/MetaKey.php`
+  - `src/Attribute/PostField.php`
+  - `src/Attribute/Encrypted.php`
+  - `src/Attribute/Sensitive.php`
+  - `src/Attribute/ListOf.php`
+  - `src/Attribute/DateFormat.php`
+  - `src/Validation/Rule/Required.php`
+  - `src/Secret.php`
+  - `src/Exception/MissingRequiredFieldException.php`

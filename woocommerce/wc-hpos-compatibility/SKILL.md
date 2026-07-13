@@ -1,20 +1,13 @@
 ---
 name: wc-hpos-compatibility
 description: Make WooCommerce order integrations compatible with High-Performance Order Storage. Covers compatibility declaration, order CRUD and queries, authoritative storage, sync mode, HPOS-aware admin list/meta-box hooks, cache-safe metadata access, migrations, and dual-mode testing. Use when a plugin reads or writes orders, queries order metadata, adds order admin UI, runs SQL, or declares `custom_order_tables` compatibility.
-author: Soczó Kristóf
-contact: mailto:lonsdale201@hotmail.com
-plugin: woocommerce
-plugin-version-tested: "10.9.4"
-php-min: "7.4"
-last-updated: "2026-07-10"
-docs:
-  - https://developer.woocommerce.com/docs/features/high-performance-order-storage/extension-recipe-book/
-source-refs:
-  - wp-content/plugins/woocommerce/src/Utilities/FeaturesUtil.php
-  - wp-content/plugins/woocommerce/src/Utilities/OrderUtil.php
-  - wp-content/plugins/woocommerce/src/Internal/DataStores/Orders/OrdersTableDataStore.php
-  - wp-content/plugins/woocommerce/src/Internal/DataStores/Orders/CustomOrdersTableController.php
-  - wp-content/plugins/woocommerce/includes/wc-order-functions.php
+metadata:
+  wp-skills-author: "Soczó Kristóf"
+  wp-skills-contact: "mailto:lonsdale201@hotmail.com"
+  wp-skills-plugin: "woocommerce"
+  wp-skills-plugin-version-tested: "10.9.4"
+  wp-skills-php-min: "7.4"
+  wp-skills-last-updated: "2026-07-10"
 ---
 
 # WooCommerce HPOS compatibility
@@ -212,3 +205,7 @@ Every hit is not automatically wrong, but every order-related hit requires revie
 - Compatibility declaration: `src/Utilities/FeaturesUtil.php`.
 - Runtime/admin helpers: `src/Utilities/OrderUtil.php`.
 - HPOS data store: `src/Internal/DataStores/Orders/OrdersTableDataStore.php`.
+- Official documentation: <https://developer.woocommerce.com/docs/features/high-performance-order-storage/extension-recipe-book/>
+- Verified source paths:
+  - `wp-content/plugins/woocommerce/src/Internal/DataStores/Orders/CustomOrdersTableController.php`
+  - `wp-content/plugins/woocommerce/includes/wc-order-functions.php`

@@ -1,24 +1,13 @@
 ---
 name: lw-firewall-registration-guard
 description: Integrate custom WordPress registration forms with LW Firewall's registration spam protection. Use when code renders or validates custom signup forms, AJAX/REST registration endpoints, Woo/CRM/LMS registration flows, or files referencing `RegisterGuard::render_fields`, `RegisterGuard::validate`, `RegisterToken::issue`, `RegisterToken::verify`, `lw_fw_reg_token`, `lw_fw_url`, `registration_errors`, honeypot fields, proof-of-render tokens, single-use tokens, or spam auto-ban behavior.
-author: Soczó Kristóf
-contact: mailto:lonsdale201@hotmail.com
-plugin: lw-firewall
-plugin-version-tested: "1.3.2"
-php-min: "8.1"
-last-updated: "2026-07-09"
-docs:
-  - https://github.com/lwplugins/lw-firewall
-source-refs:
-  - wp-content/plugins/lw-firewall/includes/Plugin.php
-  - wp-content/plugins/lw-firewall/includes/Rules/RegisterGuard.php
-  - wp-content/plugins/lw-firewall/includes/Rules/RegisterToken.php
-  - wp-content/plugins/lw-firewall/includes/Rules/RegisterTracker.php
-  - wp-content/plugins/lw-firewall/includes/Rules/AutoBanner.php
-  - wp-content/plugins/lw-firewall/includes/Options.php
-  - wp-content/plugins/lw-firewall/includes/helpers.php
-  - wp-content/plugins/lw-firewall/tests/register-token-test.php
-  - wp-content/plugins/lw-firewall/CHANGELOG.md
+metadata:
+  wp-skills-author: "Soczó Kristóf"
+  wp-skills-contact: "mailto:lonsdale201@hotmail.com"
+  wp-skills-plugin: "lw-firewall"
+  wp-skills-plugin-version-tested: "1.3.2"
+  wp-skills-php-min: "8.1"
+  wp-skills-last-updated: "2026-07-09"
 ---
 
 # LW Firewall: registration spam guard
@@ -186,3 +175,17 @@ single-use check failed.
 - Captcha provider integration.
 - Non-registration contact-form spam.
 - Editing LW Firewall internals or the MU-plugin worker.
+
+## References
+
+- Official documentation: <https://github.com/lwplugins/lw-firewall>
+- Verified source paths:
+  - `wp-content/plugins/lw-firewall/includes/Plugin.php`
+  - `wp-content/plugins/lw-firewall/includes/Rules/RegisterGuard.php`
+  - `wp-content/plugins/lw-firewall/includes/Rules/RegisterToken.php`
+  - `wp-content/plugins/lw-firewall/includes/Rules/RegisterTracker.php`
+  - `wp-content/plugins/lw-firewall/includes/Rules/AutoBanner.php`
+  - `wp-content/plugins/lw-firewall/includes/Options.php`
+  - `wp-content/plugins/lw-firewall/includes/helpers.php`
+  - `wp-content/plugins/lw-firewall/tests/register-token-test.php`
+  - `wp-content/plugins/lw-firewall/CHANGELOG.md`

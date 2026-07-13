@@ -1,15 +1,13 @@
 ---
 name: br-etag-cache
 description: Add better-route 1.1 ETag and If-None-Match handling to GET or HEAD routes. Use for ETagMiddleware, strong or weak validators, custom etagResolver, WP_REST_Response preservation, comma-separated validators, wildcard matching, 304 responses, Cache-Control, proxy-stripped ETag troubleshooting, or reviewing conditional HTTP caching. The middleware skips WP_Error, 204, redirects, and non-2xx responses.
-author: Soczó Kristóf
-contact: mailto:lonsdale201@hotmail.com
-plugin: better-route
-plugin-version-tested: "1.1.0"
-php-min: "8.1"
-last-updated: "2026-07-13"
-source-refs:
-  - src/Middleware/Cache/ETagMiddleware.php
-  - src/Http/Response.php
+metadata:
+  wp-skills-author: "Soczó Kristóf"
+  wp-skills-contact: "mailto:lonsdale201@hotmail.com"
+  wp-skills-plugin: "better-route"
+  wp-skills-plugin-version-tested: "1.1.0"
+  wp-skills-php-min: "8.1"
+  wp-skills-last-updated: "2026-07-13"
 ---
 
 # better-route: ETag conditional reads
@@ -113,3 +111,9 @@ Also test `If-None-Match: W/"copied-tag"`, a comma-separated list, and `*`.
 
 - Use `br-idempotency` or `br-atomic-idempotency` for write retries.
 - Use `br-cors-public-client` to expose `ETag` to browser JavaScript.
+
+## References
+
+- Verified source paths:
+  - `src/Middleware/Cache/ETagMiddleware.php`
+  - `src/Http/Response.php`

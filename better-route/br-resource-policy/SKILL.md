@@ -1,16 +1,13 @@
 ---
 name: br-resource-policy
 description: Configure better-route 1.1 Resource action and field authorization. Use for ResourcePolicy::publicReadPrivateWrite, adminOnly, capabilities, callbacks, Resource::policy, permissionCallback, per-action rules, wildcard rules, fieldPolicy, public Resource OpenAPI security, ownership policies, or reviewing CPT/table CRUD permissions. In 1.1 denied fields are rejected rather than silently stripped.
-author: Soczó Kristóf
-contact: mailto:lonsdale201@hotmail.com
-plugin: better-route
-plugin-version-tested: "1.1.0"
-php-min: "8.1"
-last-updated: "2026-07-13"
-source-refs:
-  - src/Resource/ResourcePolicy.php
-  - src/Resource/Resource.php
-  - src/Resource/OwnedResourcePolicy.php
+metadata:
+  wp-skills-author: "Soczó Kristóf"
+  wp-skills-contact: "mailto:lonsdale201@hotmail.com"
+  wp-skills-plugin: "better-route"
+  wp-skills-plugin-version-tested: "1.1.0"
+  wp-skills-php-min: "8.1"
+  wp-skills-last-updated: "2026-07-13"
 ---
 
 # better-route: Resource authorization
@@ -111,3 +108,10 @@ Use `OwnedResourcePolicy::currentUserOwns()` for get/update/delete ownership che
 - Use `br-resource-cpt` or `br-resource-table` for source behavior.
 - Use `br-owned-resource-guards` for ownership patterns.
 - Use `br-write-schema` for validation after field authorization.
+
+## References
+
+- Verified source paths:
+  - `src/Resource/ResourcePolicy.php`
+  - `src/Resource/Resource.php`
+  - `src/Resource/OwnedResourcePolicy.php`

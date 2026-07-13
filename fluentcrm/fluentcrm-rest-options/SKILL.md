@@ -1,29 +1,14 @@
 ---
 name: fluentcrm-rest-options
-description: Register a custom AJAX option list for FluentCRM trigger / action /
-  benchmark editor pickers. Pairs `'type' => 'rest_selector', 'option_key' => '<key>'`
-  in a settings field with a server-side `add_filter('fluentcrm_ajax_options_<key>',
-  $callback, 10, 3)` callback. Filter signature is ($options, $search,
-  $includedIds) — return an array of {id, title} pairs. The fallback
-  apply_filters call lives in OptionsController::getAjaxOptions which
-  the editor's REST hits as the user types or opens the picker.
-  Important — pre-selected ids must always be returned (regardless of
-  $search) or the editor renders saved values as raw IDs instead of
-  human labels. Use when scaffolding any FluentCRM trigger / action /
-  benchmark with a multi-select-like field. Triggers on fluentcrm_ajax_options_,
-  rest_selector, option_key, getAjaxOptions, OptionsController.
-author: Soczó Kristóf
-contact: mailto:lonsdale201@hotmail.com
-plugin: fluent-crm
-plugin-version-tested: "FluentCRM 3.1.8"
-api-stable-since: "2.5.9"
-php-min: "7.4"
-last-updated: "2026-07-09"
-docs:
-  - https://developers.fluentcrm.com/funnel-builder/custom-trigger/
-source-refs:
-  - app/Http/Controllers/OptionsController.php
-  - app/Services/ExternalIntegrations/FluentCart/FluentCart.php
+description: Register a custom AJAX option list for FluentCRM trigger / action / benchmark editor pickers. Pairs `'type' => 'rest_selector', 'option_key' => '...'` in a settings field with a server-side `add_filter('fluentcrm_ajax_options_{key}', $callback, 10, 3)` callback. Filter signature is ($options, $search, $includedIds) — return an array of {id, title} pairs. The fallback apply_filters call lives in OptionsController::getAjaxOptions which the editor's REST hits as the user types or opens the picker. Important — pre-selected ids must always be returned (regardless of $search) or the editor renders saved values as raw IDs instead of human labels. Use when scaffolding any FluentCRM trigger / action / benchmark with a multi-select-like field. Triggers on fluentcrm_ajax_options_, rest_selector, option_key, getAjaxOptions, OptionsController.
+metadata:
+  wp-skills-author: "Soczó Kristóf"
+  wp-skills-contact: "mailto:lonsdale201@hotmail.com"
+  wp-skills-plugin: "fluent-crm"
+  wp-skills-plugin-version-tested: "FluentCRM 3.1.8"
+  wp-skills-php-min: "7.4"
+  wp-skills-api-stable-since: "2.5.9"
+  wp-skills-last-updated: "2026-07-09"
 ---
 
 # FluentCRM: register a `rest_selector` option list
@@ -202,3 +187,4 @@ Instantiate `new CustomControllers()` from your plugin bootstrap on `plugins_loa
 - Filter dispatch site — `app/Http/Controllers/OptionsController.php:723`
 - Reference callback (FluentCart product picker) — `app/Services/ExternalIntegrations/FluentCart/FluentCart.php:70-75`
 - Built-in handlers for canonical keys (`woo_products`, `woo_categories`, `companies`, etc.) — `app/Http/Controllers/OptionsController.php`
+- Official documentation: <https://developers.fluentcrm.com/funnel-builder/custom-trigger/>

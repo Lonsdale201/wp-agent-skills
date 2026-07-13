@@ -11,18 +11,14 @@ description: How to read submitted JetFormBuilder form data from a custom
   Triggers on mentions of "jet_fb_context", "update_request", "has_field",
   "get_value", "wp_remote_post" with form data, "macro replacement", or
   "API call from action".
-author: Soczó Kristóf
-contact: mailto:lonsdale201@hotmail.com
-plugin: jetformbuilder
-plugin-version-tested: "3.5.6"
-api-stable-since: "3.0"
-php-min: "7.4"
-last-updated: "2026-04-28"
-docs:
-  - https://github.com/Crocoblock/developer-documentation/tree/main/03-jet-form-builder
-  - https://developer.wordpress.org/reference/functions/wp_remote_post/
-source-refs:
-  - includes/context/context.php
+metadata:
+  wp-skills-author: "Soczó Kristóf"
+  wp-skills-contact: "mailto:lonsdale201@hotmail.com"
+  wp-skills-plugin: "jetformbuilder"
+  wp-skills-plugin-version-tested: "3.5.6"
+  wp-skills-php-min: "7.4"
+  wp-skills-api-stable-since: "3.0"
+  wp-skills-last-updated: "2026-04-28"
 ---
 
 # JetFormBuilder: action — read form data, call external API, write result back
@@ -424,3 +420,4 @@ This shape — settings → macro → API → context write → event dispatch �
 - `chatgpt-for-jetformbuilder` plugin: production reference. See `includes/Actions/ChatgptDecisionAction.php` for the full pattern (`do_action`, `replace_macros`, `call_chatgpt`, `should_log`, settings tab integration).
 - WP HTTP API: https://developer.wordpress.org/reference/functions/wp_remote_post/
 - `jet_fb_context()` source: `wp-content/plugins/jetformbuilder/includes/context/context.php`
+- Official documentation: <https://github.com/Crocoblock/developer-documentation/tree/main/03-jet-form-builder>

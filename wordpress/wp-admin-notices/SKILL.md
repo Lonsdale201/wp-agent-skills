@@ -10,16 +10,13 @@ description: Render WordPress admin notices via the four core hooks
   after redirects, and the `wp_admin_notice_args` /
   `wp_admin_notice_markup` filters. Use for onboarding banners, post-save
   flashes, integration warnings, version-bump tours, or config nags.
-author: Soczó Kristóf
-contact: mailto:lonsdale201@hotmail.com
-plugin: wordpress
-plugin-version-tested: "6.4 - 7.0.1"
-php-min: "7.4"
-last-updated: "2026-07-10"
-docs:
-  - https://developer.wordpress.org/reference/functions/wp_admin_notice/
-  - https://developer.wordpress.org/reference/functions/wp_get_admin_notice/
-  - https://developer.wordpress.org/reference/hooks/admin_notices/
+metadata:
+  wp-skills-author: "Soczó Kristóf"
+  wp-skills-contact: "mailto:lonsdale201@hotmail.com"
+  wp-skills-plugin: "wordpress"
+  wp-skills-plugin-version-tested: "6.4 - 7.0.1"
+  wp-skills-php-min: "7.4"
+  wp-skills-last-updated: "2026-07-10"
 ---
 
 # WordPress Admin Notices
@@ -278,3 +275,6 @@ set_transient( 'myplugin_flash_' . get_current_user_id(), $msg, 60 );
 - `wp-includes/functions.php:9078` — `wp_get_admin_notice()` definition with full `$args` shape.
 - `wp-includes/functions.php:9189` — `wp_admin_notice()` echo helper (runs `wp_kses_post`, fires `wp_admin_notice` action before output).
 - `wp-admin/admin-header.php:290-321` — the `if/elseif/else` that picks ONE of `network_admin_notices` (line 299) / `user_admin_notices` (306) / `admin_notices` (313), then unconditional `all_admin_notices` at line 321.
+- Official documentation: <https://developer.wordpress.org/reference/functions/wp_admin_notice/>
+- Official documentation: <https://developer.wordpress.org/reference/functions/wp_get_admin_notice/>
+- Official documentation: <https://developer.wordpress.org/reference/hooks/admin_notices/>

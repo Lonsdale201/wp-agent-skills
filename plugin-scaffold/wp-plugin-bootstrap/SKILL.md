@@ -12,17 +12,13 @@ description: Scaffolds and reviews the main entry-point PHP file of a
   headers, register_activation_hook, Requires Plugins, spl_autoload_register,
   plugins_loaded, composer.json at the plugin root, `src/Plugin.php`, or legacy
   `includes/class-*.php` files.
-author: Soczó Kristóf
-contact: mailto:lonsdale201@hotmail.com
-plugin: wordpress
-plugin-version-tested: "6.5 - 7.0"
-php-min: "7.4"
-last-updated: "2026-07-09"
-docs:
-  - https://developer.wordpress.org/plugins/plugin-basics/header-requirements/
-  - https://developer.wordpress.org/plugins/plugin-basics/best-practices/
-  - https://developer.wordpress.org/reference/functions/register_activation_hook/
-  - https://make.wordpress.org/core/2024/03/05/introducing-plugin-dependencies-in-wordpress-6-5/
+metadata:
+  wp-skills-author: "Soczó Kristóf"
+  wp-skills-contact: "mailto:lonsdale201@hotmail.com"
+  wp-skills-plugin: "wordpress"
+  wp-skills-plugin-version-tested: "6.5 - 7.0"
+  wp-skills-php-min: "7.4"
+  wp-skills-last-updated: "2026-07-09"
 ---
 
 # WordPress plugin: bootstrap (main file)
@@ -363,3 +359,4 @@ spl_autoload_register( function ( $class ) {
 - `is_php_version_compatible` / `is_wp_version_compatible`: `wp-includes/functions.php`
 - `validate_plugin_requirements`: `wp-admin/includes/plugin.php` — what WP runs before activating your plugin.
 - Just-in-time translation loader (the `_doing_it_wrong` source): `wp-includes/l10n.php` `_load_textdomain_just_in_time()`.
+- Official documentation: <https://developer.wordpress.org/plugins/plugin-basics/best-practices/>

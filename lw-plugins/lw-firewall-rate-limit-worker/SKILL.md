@@ -1,27 +1,13 @@
 ---
 name: lw-firewall-rate-limit-worker
 description: Make plugins compatible with LW Firewall's MU-plugin worker, endpoint detection, rate limiting, IP rules, auto-ban, bot blocking, REST protection, and storage backends. Use when code touches custom REST/AJAX endpoints, query-string filters, Woo filters, `wp-login.php`, `wp-cron.php`, `xmlrpc.php`, `filter_params`, `ip_whitelist`, `ip_blacklist`, `LW_FIREWALL_*` constants, `RateLimiter`, `AutoBanner`, `IpDetector`, or worker install/outdated/fail-open behavior.
-author: Soczó Kristóf
-contact: mailto:lonsdale201@hotmail.com
-plugin: lw-firewall
-plugin-version-tested: "1.3.2"
-php-min: "8.1"
-last-updated: "2026-07-09"
-docs:
-  - https://github.com/lwplugins/lw-firewall
-source-refs:
-  - wp-content/plugins/lw-firewall/worker/lw-firewall-worker.php
-  - wp-content/plugins/lw-firewall/includes/Plugin.php
-  - wp-content/plugins/lw-firewall/includes/Activator.php
-  - wp-content/plugins/lw-firewall/includes/Options.php
-  - wp-content/plugins/lw-firewall/includes/IpDetector.php
-  - wp-content/plugins/lw-firewall/includes/Rules/RateLimiter.php
-  - wp-content/plugins/lw-firewall/includes/Rules/AutoBanner.php
-  - wp-content/plugins/lw-firewall/includes/Rules/IpMatcher.php
-  - wp-content/plugins/lw-firewall/includes/Storage/StorageInterface.php
-  - wp-content/plugins/lw-firewall/includes/Storage/FileStorage.php
-  - wp-content/plugins/lw-firewall/includes/helpers.php
-  - wp-content/plugins/lw-firewall/README.md
+metadata:
+  wp-skills-author: "Soczó Kristóf"
+  wp-skills-contact: "mailto:lonsdale201@hotmail.com"
+  wp-skills-plugin: "lw-firewall"
+  wp-skills-plugin-version-tested: "1.3.2"
+  wp-skills-php-min: "8.1"
+  wp-skills-last-updated: "2026-07-09"
 ---
 
 # LW Firewall: rate-limit worker compatibility
@@ -173,3 +159,20 @@ Never edit the installed worker directly; activation/update overwrites it.
 - Replacing a WAF/CDN firewall.
 - Editing Apache/Nginx server rules manually.
 - Captcha or bot-score provider integrations.
+
+## References
+
+- Official documentation: <https://github.com/lwplugins/lw-firewall>
+- Verified source paths:
+  - `wp-content/plugins/lw-firewall/worker/lw-firewall-worker.php`
+  - `wp-content/plugins/lw-firewall/includes/Plugin.php`
+  - `wp-content/plugins/lw-firewall/includes/Activator.php`
+  - `wp-content/plugins/lw-firewall/includes/Options.php`
+  - `wp-content/plugins/lw-firewall/includes/IpDetector.php`
+  - `wp-content/plugins/lw-firewall/includes/Rules/RateLimiter.php`
+  - `wp-content/plugins/lw-firewall/includes/Rules/AutoBanner.php`
+  - `wp-content/plugins/lw-firewall/includes/Rules/IpMatcher.php`
+  - `wp-content/plugins/lw-firewall/includes/Storage/StorageInterface.php`
+  - `wp-content/plugins/lw-firewall/includes/Storage/FileStorage.php`
+  - `wp-content/plugins/lw-firewall/includes/helpers.php`
+  - `wp-content/plugins/lw-firewall/README.md`

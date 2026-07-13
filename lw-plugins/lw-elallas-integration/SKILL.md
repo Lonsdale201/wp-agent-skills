@@ -9,37 +9,13 @@ description: Integrate with or extend "Elállás for WooCommerce"
   logging, and LW Site Manager abilities. Use when building withdrawal-case
   compatibility, syncing cases to CRM/invoicing, supporting custom order
   numbers, or customizing its PDF/emails without editing the plugin.
-author: Soczó Kristóf
-contact: mailto:lonsdale201@hotmail.com
-plugin: elallas-for-woo
-plugin-version-tested: "1.0.12"
-php-min: "8.0"
-last-updated: "2026-07-09"
-docs:
-  - https://developer.woocommerce.com/docs/features/high-performance-order-storage/
-source-refs:
-  - wp-content/plugins/elallas-for-woo/elallas-for-woo.php
-  - wp-content/plugins/elallas-for-woo/includes/Domain/EligibilityChecker.php
-  - wp-content/plugins/elallas-for-woo/includes/Domain/CaseService.php
-  - wp-content/plugins/elallas-for-woo/includes/Domain/B2BDetector.php
-  - wp-content/plugins/elallas-for-woo/includes/Domain/ProductExclusion.php
-  - wp-content/plugins/elallas-for-woo/includes/Domain/OrderSnapshotBuilder.php
-  - wp-content/plugins/elallas-for-woo/includes/Woo/OrderAdapter.php
-  - wp-content/plugins/elallas-for-woo/includes/Woo/Hooks.php
-  - wp-content/plugins/elallas-for-woo/includes/Admin/ProductFields.php
-  - wp-content/plugins/elallas-for-woo/includes/Admin/TermFields.php
-  - wp-content/plugins/elallas-for-woo/includes/Frontend/Shortcodes.php
-  - wp-content/plugins/elallas-for-woo/includes/Frontend/SubmissionContext.php
-  - wp-content/plugins/elallas-for-woo/includes/Integrations/Multilingual.php
-  - wp-content/plugins/elallas-for-woo/includes/Integrations/Invoicing.php
-  - wp-content/plugins/elallas-for-woo/includes/Pdf/PdfRenderer.php
-  - wp-content/plugins/elallas-for-woo/includes/Emails/EmailManager.php
-  - wp-content/plugins/elallas-for-woo/includes/Support/Logger.php
-  - wp-content/plugins/elallas-for-woo/includes/Plugin.php
-  - wp-content/plugins/elallas-for-woo/includes/Database/Schema.php
-  - wp-content/plugins/elallas-for-woo/includes/Models/CaseStatus.php
-  - wp-content/plugins/elallas-for-woo/includes/SiteManager/Integration.php
-  - wp-content/plugins/elallas-for-woo/wpml-config.xml
+metadata:
+  wp-skills-author: "Soczó Kristóf"
+  wp-skills-contact: "mailto:lonsdale201@hotmail.com"
+  wp-skills-plugin: "elallas-for-woo"
+  wp-skills-plugin-version-tested: "1.0.12"
+  wp-skills-php-min: "8.0"
+  wp-skills-last-updated: "2026-07-09"
 ---
 
 # Elállás for WooCommerce — integration & extension
@@ -245,3 +221,7 @@ add_filter( 'elallas_resolve_order_number', 'my_resolve_display_order_number', 1
 - Multilingual: [includes/Integrations/Multilingual.php](Multilingual.php), [wpml-config.xml](wpml-config.xml), [includes/Frontend/Shortcodes.php](Shortcodes.php), [includes/Frontend/SubmissionContext.php](SubmissionContext.php), [includes/Emails/EmailManager.php](EmailManager.php).
 - PDF filter/logging: [includes/Pdf/PdfRenderer.php:40](PdfRenderer.php), [includes/Support/Logger.php](Logger.php); invoicing: [includes/Integrations/Invoicing.php:63](Invoicing.php); boot: [includes/Plugin.php:64](Plugin.php).
 - Tables + Site Manager abilities: [includes/Database/Schema.php](Schema.php), [includes/SiteManager/Integration.php:34-39](Integration.php).
+- Official documentation: <https://developer.woocommerce.com/docs/features/high-performance-order-storage/>
+- Verified source paths:
+  - `wp-content/plugins/elallas-for-woo/elallas-for-woo.php`
+  - `wp-content/plugins/elallas-for-woo/includes/Woo/Hooks.php`

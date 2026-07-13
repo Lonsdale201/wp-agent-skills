@@ -8,18 +8,13 @@ description: >-
   per-blog cron, idempotent callbacks, chunking, and Action Scheduler
   graduation. Use when adding scheduled jobs, debugging late/duplicate
   cron events, or deciding between WP cron and Action Scheduler.
-author: Soczó Kristóf
-contact: mailto:lonsdale201@hotmail.com
-plugin: wordpress
-plugin-version-tested: "6.5 - 6.9"
-php-min: "7.4"
-last-updated: "2026-04-28"
-docs:
-  - https://developer.wordpress.org/plugins/cron/
-  - https://developer.wordpress.org/reference/functions/wp_schedule_event/
-  - https://developer.wordpress.org/reference/functions/wp_schedule_single_event/
-  - https://developer.wordpress.org/reference/hooks/cron_schedules/
-  - https://actionscheduler.org
+metadata:
+  wp-skills-author: "Soczó Kristóf"
+  wp-skills-contact: "mailto:lonsdale201@hotmail.com"
+  wp-skills-plugin: "wordpress"
+  wp-skills-plugin-version-tested: "6.5 - 6.9"
+  wp-skills-php-min: "7.4"
+  wp-skills-last-updated: "2026-04-28"
 ---
 
 # WordPress plugin: cron & background jobs
@@ -334,3 +329,5 @@ foreach ( $orders as $order ) {
 - `cron_schedules` filter: [developer.wordpress.org/reference/hooks/cron_schedules/](https://developer.wordpress.org/reference/hooks/cron_schedules/)
 - WP 6.9 cron change (`_wp_cron` moved to `shutdown`): `wp-includes/cron.php` `wp_cron()` docblock
 - Action Scheduler: [actionscheduler.org](https://actionscheduler.org), [bundled in WooCommerce](https://github.com/woocommerce/action-scheduler)
+- Official documentation: <https://developer.wordpress.org/reference/functions/wp_schedule_event/>
+- Official documentation: <https://developer.wordpress.org/reference/functions/wp_schedule_single_event/>

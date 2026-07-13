@@ -14,18 +14,13 @@ description: Designs and reviews the three lifecycle events of a WordPress
   Triggers on register_activation_hook, register_deactivation_hook,
   uninstall.php, WP_UNINSTALL_PLUGIN, dbDelta, wp_unschedule_hook,
   switch_to_blog.
-author: Soczó Kristóf
-contact: mailto:lonsdale201@hotmail.com
-plugin: wordpress
-plugin-version-tested: "6.5 - 7.0"
-php-min: "7.4"
-last-updated: "2026-07-06"
-docs:
-  - https://developer.wordpress.org/plugins/plugin-basics/uninstall-methods/
-  - https://developer.wordpress.org/reference/functions/register_activation_hook/
-  - https://developer.wordpress.org/reference/functions/register_deactivation_hook/
-  - https://developer.wordpress.org/reference/functions/wp_unschedule_hook/
-  - https://developer.wordpress.org/reference/functions/dbDelta/
+metadata:
+  wp-skills-author: "Soczó Kristóf"
+  wp-skills-contact: "mailto:lonsdale201@hotmail.com"
+  wp-skills-plugin: "wordpress"
+  wp-skills-plugin-version-tested: "6.5 - 7.0"
+  wp-skills-php-min: "7.4"
+  wp-skills-last-updated: "2026-07-06"
 ---
 
 # WordPress plugin: lifecycle (activate / deactivate / uninstall)
@@ -355,3 +350,7 @@ register_deactivation_hook( __FILE__, function () {
 - `wp_unschedule_hook` (since 4.9): `wp-includes/cron.php`
 - `dbDelta`: `wp-admin/includes/upgrade.php`
 - Multisite blog switching: `wp-includes/ms-blogs.php`
+- Official documentation: <https://developer.wordpress.org/reference/functions/register_activation_hook/>
+- Official documentation: <https://developer.wordpress.org/reference/functions/register_deactivation_hook/>
+- Official documentation: <https://developer.wordpress.org/reference/functions/wp_unschedule_hook/>
+- Official documentation: <https://developer.wordpress.org/reference/functions/dbDelta/>

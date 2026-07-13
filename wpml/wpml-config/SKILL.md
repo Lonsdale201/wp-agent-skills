@@ -1,34 +1,13 @@
 ---
 name: wpml-config
-description: Make a WordPress plugin/theme translatable with WPML by
-  shipping a wpml-config.xml file. Covers the sections WPML honors —
-  <custom-fields>/<custom-field action="translate|copy|copy-once|ignore">
-  (post meta), <custom-term-fields> (term meta), <custom-fields-texts>
-  (translatable sub-keys inside serialized/JSON meta), <custom-types>
-  /<custom-type translate="0|1"> with display-as-translated and automatic
-  attributes, <taxonomies>/<taxonomy translate="0|1">, <admin-texts>
-  /<key name> for options, <shortcode-list> (CSV) vs <shortcodes> (rich),
-  <built-with-page-builder>, and <gutenberg-blocks>. Explains file
-  discovery (plugin root, theme root, the wpml_config_array filter),
-  the exact 0/1 boolean and action-enum values, that a typo'd action
-  silently means "ignore", that the XSD is NOT enforced during normal
-  parsing, and that admin-texts needs the String Translation add-on
-  while gutenberg-blocks is handled by WPML's bundled page-builders
-  add-on. Use when adding, auditing, or debugging a wpml-config.xml.
-author: Soczó Kristóf
-contact: mailto:lonsdale201@hotmail.com
-plugin: sitepress-multilingual-cms
-plugin-version-tested: "4.9.5"
-php-min: "7.4"
-last-updated: "2026-07-03"
-docs:
-  - https://wpml.org/documentation/support/language-configuration-files/
-source-refs:
-  - wp-content/plugins/sitepress-multilingual-cms/wpml-config.xml
-  - wp-content/plugins/sitepress-multilingual-cms/res/xsd/wpml-config.xsd
-  - wp-content/plugins/sitepress-multilingual-cms/classes/xml-config/class-wpml-config.php
-  - wp-content/plugins/sitepress-multilingual-cms/classes/settings/class-wpml-custom-field-xml-settings-import.php
-  - wp-content/plugins/sitepress-multilingual-cms/classes/settings/class-wpml-tm-settings-update.php
+description: Make a WordPress plugin/theme translatable with WPML by shipping a wpml-config.xml file. Covers the sections WPML honors — custom-fields/custom-field action="translate|copy|copy-once|ignore" (post meta), custom-term-fields (term meta), custom-fields-texts (translatable sub-keys inside serialized/JSON meta), custom-types /custom-type translate="0|1" with display-as-translated and automatic attributes, taxonomies/taxonomy translate="0|1", admin-texts /key name for options, shortcode-list (CSV) vs shortcodes (rich), built-with-page-builder, and gutenberg-blocks. Explains file discovery (plugin root, theme root, the wpml_config_array filter), the exact 0/1 boolean and action-enum values, that a typo'd action silently means "ignore", that the XSD is NOT enforced during normal parsing, and that admin-texts needs the String Translation add-on while gutenberg-blocks is handled by WPML's bundled page-builders add-on. Use when adding, auditing, or debugging a wpml-config.xml.
+metadata:
+  wp-skills-author: "Soczó Kristóf"
+  wp-skills-contact: "mailto:lonsdale201@hotmail.com"
+  wp-skills-plugin: "sitepress-multilingual-cms"
+  wp-skills-plugin-version-tested: "4.9.5"
+  wp-skills-php-min: "7.4"
+  wp-skills-last-updated: "2026-07-03"
 ---
 
 # WPML: the `wpml-config.xml` compatibility file
@@ -202,3 +181,4 @@ Every parsed element has the `[ 'value' => ..., 'attr' => [...] ]` shape; a sing
 - Loader/discovery + filters: [classes/xml-config/class-wpml-config.php](class-wpml-config.php) — discovery (142-274), `wpml_config_array` (345), XSD-not-enforced (324), section merge (403-444).
 - Custom-field `action` parser: [classes/settings/class-wpml-custom-field-xml-settings-import.php:78-96](class-wpml-custom-field-xml-settings-import.php).
 - CPT/taxonomy `translate` parser: [classes/settings/class-wpml-tm-settings-update.php:60](class-wpml-tm-settings-update.php).
+- Official documentation: <https://wpml.org/documentation/support/language-configuration-files/>

@@ -9,30 +9,14 @@ description: >-
   emails/PDFs/background jobs, wpml_register_single_string,
   wpml_translate_single_string, wpml_object_id, wpml_permalink, or
   wpml_switch_language.
-author: Soczó Kristóf
-contact: mailto:lonsdale201@hotmail.com
-plugin: sitepress-multilingual-cms
-plugin-version-tested: "4.9.5"
-wpml-string-translation-version-tested: "3.5.3"
-php-min: "7.4"
-last-updated: "2026-07-07"
-docs:
-  - https://wpml.org/documentation/support/wpml-coding-api/
-  - https://wpml.org/documentation/support/language-configuration-files/
-  - https://wpml.org/documentation/getting-started-guide/string-translation/
-source-refs:
-  - wp-content/plugins/sitepress-multilingual-cms/sitepress.php
-  - wp-content/plugins/sitepress-multilingual-cms/sitepress.class.php
-  - wp-content/plugins/sitepress-multilingual-cms/inc/template-functions.php
-  - wp-content/plugins/sitepress-multilingual-cms/classes/xml-config/class-wpml-config.php
-  - wp-content/plugins/sitepress-multilingual-cms/classes/language-switcher/class-wpml-ls-settings-strings.php
-  - wp-content/plugins/sitepress-multilingual-cms/classes/url-handling/class-wpml-endpoints-support.php
-  - wp-content/plugins/sitepress-multilingual-cms/res/xsd/wpml-config.xsd
-  - wp-content/plugins/wpml-string-translation/plugin.php
-  - wp-content/plugins/wpml-string-translation/inc/functions.php
-  - wp-content/plugins/wpml-string-translation/inc/private-actions.php
-  - wp-content/plugins/wpml-string-translation/inc/admin-texts/wpml-admin-texts.class.php
-  - wp-content/plugins/wpml-string-translation/inc/admin-texts/wpml-admin-text-configuration.php
+metadata:
+  wp-skills-author: "Soczó Kristóf"
+  wp-skills-contact: "mailto:lonsdale201@hotmail.com"
+  wp-skills-plugin: "sitepress-multilingual-cms"
+  wp-skills-plugin-version-tested: "4.9.5"
+  wp-skills-wpml-string-translation-version-tested: "3.5.3"
+  wp-skills-php-min: "7.4"
+  wp-skills-last-updated: "2026-07-07"
 ---
 
 # WPML compatibility audit
@@ -241,3 +225,9 @@ local source:
 - Admin text config parsing and option filters:
   `wpml-string-translation/inc/private-actions.php` and
   `wpml-string-translation/inc/admin-texts/wpml-admin-texts.class.php`
+- Official documentation: <https://wpml.org/documentation/support/wpml-coding-api/>
+- Official documentation: <https://wpml.org/documentation/support/language-configuration-files/>
+- Official documentation: <https://wpml.org/documentation/getting-started-guide/string-translation/>
+- Verified source paths:
+  - `wp-content/plugins/sitepress-multilingual-cms/sitepress.php`
+  - `wp-content/plugins/wpml-string-translation/inc/admin-texts/wpml-admin-text-configuration.php`

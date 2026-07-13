@@ -1,34 +1,13 @@
 ---
 name: wp-admin-settings-api
-description: Build plugin admin settings pages with the WordPress Settings
-  API instead of custom form handlers. Covers `register_setting()`,
-  `add_settings_section()`, `add_settings_field()`, `settings_fields()`,
-  `do_settings_sections()`, `add_settings_error()`, `settings_errors()`,
-  `admin_init` registration, `<form method="post" action="options.php">`,
-  `sanitize_callback`, `$option_group` vs `$page`, single-array option
-  storage, keyed field names, tabbed pages, `show_in_rest` schemas including
-  object/array schemas, custom option capabilities via
-  `option_page_capability_{$option_group}`, deprecated settings groups, and
-  the mistake of POSTing to your own handler. Use for plugin settings screens,
-  integration config, feature toggles, or any options page that saves to
-  `wp_options`.
-author: Soczó Kristóf
-contact: mailto:lonsdale201@hotmail.com
-plugin: wordpress
-plugin-version-tested: "6.0 - 7.0.1"
-php-min: "7.4"
-last-updated: "2026-07-10"
-docs:
-  - https://developer.wordpress.org/reference/functions/register_setting/
-  - https://developer.wordpress.org/reference/functions/add_settings_section/
-  - https://developer.wordpress.org/reference/functions/add_settings_field/
-  - https://developer.wordpress.org/plugins/settings/settings-api/
-source-refs:
-  - wp-includes/option.php
-  - wp-admin/options.php
-  - wp-admin/includes/template.php
-  - wp-admin/includes/plugin.php
-  - wp-includes/rest-api/endpoints/class-wp-rest-settings-controller.php
+description: Build plugin admin settings pages with the WordPress Settings API instead of custom form handlers. Covers `register_setting()`, `add_settings_section()`, `add_settings_field()`, `settings_fields()`, `do_settings_sections()`, `add_settings_error()`, `settings_errors()`, `admin_init` registration, `form method="post" action="options.php"`, `sanitize_callback`, `$option_group` vs `$page`, single-array option storage, keyed field names, tabbed pages, `show_in_rest` schemas including object/array schemas, custom option capabilities via `option_page_capability_{$option_group}`, deprecated settings groups, and the mistake of POSTing to your own handler. Use for plugin settings screens, integration config, feature toggles, or any options page that saves to `wp_options`.
+metadata:
+  wp-skills-author: "Soczó Kristóf"
+  wp-skills-contact: "mailto:lonsdale201@hotmail.com"
+  wp-skills-plugin: "wordpress"
+  wp-skills-plugin-version-tested: "6.0 - 7.0.1"
+  wp-skills-php-min: "7.4"
+  wp-skills-last-updated: "2026-07-10"
 ---
 
 # WordPress Settings API
@@ -297,3 +276,11 @@ See `reference.md` for before/after snippets: posting to your own handler, regis
 - `wp-admin/includes/plugin.php:2347` — `settings_fields()` (emits the nonce + option_page + action hidden fields).
 - `wp-admin/options.php` — the core handler your form posts to; read it to understand what verification you get for free.
 - `reference.md` — tabs, REST schema, flash messages, one-option-per-field, and common mistakes.
+- Official documentation: <https://developer.wordpress.org/reference/functions/register_setting/>
+- Official documentation: <https://developer.wordpress.org/reference/functions/add_settings_section/>
+- Official documentation: <https://developer.wordpress.org/reference/functions/add_settings_field/>
+- Official documentation: <https://developer.wordpress.org/plugins/settings/settings-api/>
+- Verified source paths:
+  - `wp-includes/option.php`
+  - `wp-admin/includes/template.php`
+  - `wp-includes/rest-api/endpoints/class-wp-rest-settings-controller.php`

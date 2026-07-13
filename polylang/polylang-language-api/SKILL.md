@@ -1,24 +1,14 @@
 ---
 name: polylang-language-api
 description: "Use Polylang 3.8.5 safely from WordPress plugins or classic themes. Covers guards, current/default language lookup, language fields and objects, language lists, localized home URLs, language switchers, translated post type/taxonomy registration, and common mistakes such as reading $_GET['lang'], assuming a current language exists in admin/REST/CLI, or hardcoding language URL prefixes. Use when code calls pll_current_language, pll_default_language, pll_languages_list, pll_the_languages, pll_home_url, pll_is_translated_post_type, pll_is_translated_taxonomy, pll_get_post_types, or pll_get_taxonomies."
-author: Soczo Kristof
-contact: mailto:lonsdale201@hotmail.com
-plugin: polylang
-plugin-version-tested: "Polylang 3.8.5"
-wp-version-tested: "7.0"
-php-min: "7.4"
-last-updated: "2026-07-01"
-docs:
-  - https://polylang.pro/doc/function-reference/
-  - https://polylang.pro/doc/developpers-how-to/
-source-refs:
-  - wp-content/plugins/polylang/polylang.php
-  - wp-content/plugins/polylang/src/api.php
-  - wp-content/plugins/polylang/src/switcher.php
-  - wp-content/plugins/polylang/src/translated-post.php
-  - wp-content/plugins/polylang/src/translated-term.php
-  - wp-content/plugins/polylang/src/filter-rest-routes.php
-  - wp-content/plugins/polylang/src/frontend/choose-lang.php
+metadata:
+  wp-skills-author: "Soczo Kristof"
+  wp-skills-contact: "mailto:lonsdale201@hotmail.com"
+  wp-skills-plugin: "polylang"
+  wp-skills-plugin-version-tested: "Polylang 3.8.5"
+  wp-skills-wp-version-tested: "7.0"
+  wp-skills-php-min: "7.4"
+  wp-skills-last-updated: "2026-07-01"
 ---
 
 # Polylang Language API
@@ -204,3 +194,16 @@ Local source checked against:
 - Type opt-in filters: `wp-content/plugins/polylang/src/translated-post.php` and `translated-term.php`
 - Switcher filters and raw output: `wp-content/plugins/polylang/src/switcher.php`
 - REST language detection: `wp-content/plugins/polylang/src/rest-request.php`
+
+## References
+
+- Official documentation: <https://polylang.pro/doc/function-reference/>
+- Official documentation: <https://polylang.pro/doc/developpers-how-to/>
+- Verified source paths:
+  - `wp-content/plugins/polylang/polylang.php`
+  - `wp-content/plugins/polylang/src/api.php`
+  - `wp-content/plugins/polylang/src/switcher.php`
+  - `wp-content/plugins/polylang/src/translated-post.php`
+  - `wp-content/plugins/polylang/src/translated-term.php`
+  - `wp-content/plugins/polylang/src/filter-rest-routes.php`
+  - `wp-content/plugins/polylang/src/frontend/choose-lang.php`

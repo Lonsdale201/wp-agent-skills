@@ -7,14 +7,13 @@ description: Handle UTF-8 and text encoding safely in WordPress plugins,
   behavior; XML/JSON/feed/export boundaries; and avoiding data loss from
   premature replacement. Use when processing imported text, CSV, XML, feeds,
   email, REST payloads, AI prompts, logs, filenames, or external API data.
-author: Soczó Kristóf
-contact: mailto:lonsdale201@hotmail.com
-plugin: wordpress
-plugin-version-tested: "6.9 - 7.0.1"
-php-min: "7.4"
-last-updated: "2026-07-10"
-docs:
-  - https://make.wordpress.org/core/2025/11/18/modernizing-utf-8-support-in-wordpress-6-9/
+metadata:
+  wp-skills-author: "Soczó Kristóf"
+  wp-skills-contact: "mailto:lonsdale201@hotmail.com"
+  wp-skills-plugin: "wordpress"
+  wp-skills-plugin-version-tested: "6.9 - 7.0.1"
+  wp-skills-php-min: "7.4"
+  wp-skills-last-updated: "2026-07-10"
 ---
 
 # WordPress UTF-8 Text Handling

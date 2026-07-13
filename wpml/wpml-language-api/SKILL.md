@@ -15,18 +15,13 @@ description: Use WPML's runtime language hook API from plugin/theme code
   (icl_object_id, icl_get_current_language) are deprecated since 3.2.
   Use when code must behave per-language, show the right translation,
   run a query in a specific language, or link across translations.
-author: Soczó Kristóf
-contact: mailto:lonsdale201@hotmail.com
-plugin: sitepress-multilingual-cms
-plugin-version-tested: "4.9.5"
-php-min: "7.4"
-last-updated: "2026-07-03"
-docs:
-  - https://wpml.org/documentation/support/wpml-coding-api/
-source-refs:
-  - wp-content/plugins/sitepress-multilingual-cms/sitepress.class.php
-  - wp-content/plugins/sitepress-multilingual-cms/inc/template-functions.php
-  - wp-content/plugins/sitepress-multilingual-cms/classes/API/Hooks/class-wpml-api-hook-permalink.php
+metadata:
+  wp-skills-author: "Soczó Kristóf"
+  wp-skills-contact: "mailto:lonsdale201@hotmail.com"
+  wp-skills-plugin: "sitepress-multilingual-cms"
+  wp-skills-plugin-version-tested: "4.9.5"
+  wp-skills-php-min: "7.4"
+  wp-skills-last-updated: "2026-07-03"
 ---
 
 # WPML: the runtime language API
@@ -179,3 +174,4 @@ $lang = apply_filters( 'wpml_current_language', '' );
 - `ICL_LANGUAGE_CODE` define: [sitepress.class.php:485-487](sitepress.class.php).
 - Callbacks + deprecated `icl_*` wrappers: [inc/template-functions.php](template-functions.php).
 - `wpml_permalink` class action: [classes/API/Hooks/class-wpml-api-hook-permalink.php:17-40](class-wpml-api-hook-permalink.php).
+- Official documentation: <https://wpml.org/documentation/support/wpml-coding-api/>

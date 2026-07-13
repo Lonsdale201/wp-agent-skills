@@ -1,25 +1,13 @@
 ---
 name: classic-theme-assets-build
 description: Build or audit frontend asset loading for classic PHP WordPress themes on WP 7.0. Covers `wp_enqueue_scripts`, child-theme-safe `get_theme_file_uri()` and `get_theme_file_path()`, cache-busting with `filemtime()`, script args with `strategy` and `in_footer`, conditional enqueues, `comment-reply`, RTL style data, inline data with `wp_json_encode()` and `wp_add_inline_script()`, build output folders, preload/resource hints, and common mistakes such as hardcoded tags, enqueues inside templates, and invalid file paths.
-author: Soczó Kristóf
-contact: mailto:lonsdale201@hotmail.com
-plugin: wordpress
-plugin-version-tested: "7.0"
-php-min: "7.4"
-last-updated: "2026-06-04"
-docs:
-  - https://developer.wordpress.org/themes/core-concepts/including-assets/
-  - https://developer.wordpress.org/reference/hooks/wp_enqueue_scripts/
-source-refs:
-  - wp-includes/script-loader.php
-  - wp-includes/functions.wp-scripts.php
-  - wp-includes/functions.wp-styles.php
-  - wp-includes/class-wp-scripts.php
-  - wp-includes/class-wp-styles.php
-  - wp-includes/link-template.php
-  - wp-includes/general-template.php
-  - wp-content/themes/storefront/inc/class-storefront.php
-  - wp-content/themes/generatepress/inc/general.php
+metadata:
+  wp-skills-author: "Soczó Kristóf"
+  wp-skills-contact: "mailto:lonsdale201@hotmail.com"
+  wp-skills-plugin: "wordpress"
+  wp-skills-plugin-version-tested: "7.0"
+  wp-skills-php-min: "7.4"
+  wp-skills-last-updated: "2026-06-04"
 ---
 
 # Classic Theme Assets and Build Output
@@ -240,3 +228,18 @@ Rules:
 - Loading `comment-reply` on every page.
 - Forgetting that `get_template_directory_uri()` always points to the parent theme.
 - Breaking child theme overrides by using parent-only path helpers for overridable files.
+
+## References
+
+- Official documentation: <https://developer.wordpress.org/themes/core-concepts/including-assets/>
+- Official documentation: <https://developer.wordpress.org/reference/hooks/wp_enqueue_scripts/>
+- Verified source paths:
+  - `wp-includes/script-loader.php`
+  - `wp-includes/functions.wp-scripts.php`
+  - `wp-includes/functions.wp-styles.php`
+  - `wp-includes/class-wp-scripts.php`
+  - `wp-includes/class-wp-styles.php`
+  - `wp-includes/link-template.php`
+  - `wp-includes/general-template.php`
+  - `wp-content/themes/storefront/inc/class-storefront.php`
+  - `wp-content/themes/generatepress/inc/general.php`

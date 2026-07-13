@@ -1,13 +1,13 @@
 ---
 name: br-audit-enrichment
 description: Configure Better Route 1.1 audit events and safe enrichment. Use when logging route outcomes, authenticated identity, hashed idempotency keys, trusted client IPs, domain action metadata, or ensuring telemetry failures cannot change API behavior.
-author: Soczó Kristóf
-contact: mailto:lonsdale201@hotmail.com
-plugin: better-route
-plugin-version-tested: "1.1.0"
-php-min: "8.1"
-last-updated: "2026-07-13"
-docs: https://lonsdale201.github.io/better-docs/docs/better-route/agents
+metadata:
+  wp-skills-author: "Soczó Kristóf"
+  wp-skills-contact: "mailto:lonsdale201@hotmail.com"
+  wp-skills-plugin: "better-route"
+  wp-skills-plugin-version-tested: "1.1.0"
+  wp-skills-php-min: "8.1"
+  wp-skills-last-updated: "2026-07-13"
 ---
 
 # Better Route audit enrichment
@@ -45,3 +45,7 @@ $router->middleware([
 Test successful responses, `ApiException`, unexpected exceptions, logger failure, missing authentication context, and spoofed forwarded headers.
 
 Source references: `src/Middleware/Audit/AuditEnricherMiddleware.php`, `src/Middleware/Audit/AuditMiddleware.php`, `src/Observability/AuditEventFactory.php`.
+
+## References
+
+- Official documentation: <https://lonsdale201.github.io/better-docs/docs/better-route/agents>

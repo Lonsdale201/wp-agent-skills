@@ -1,25 +1,14 @@
 ---
 name: classic-woocommerce-single-product
 description: Build or audit WooCommerce single product templates in a classic PHP theme. Covers `single-product.php`, `content-single-product.php`, `woocommerce_before_single_product`, product gallery hooks, `woocommerce_single_product_summary`, add-to-cart templates for simple/variable/grouped/external products, variation form accessibility, tabs, upsells, related products, structured data hook preservation, `WC_Product` CRUD methods, image gallery support, reviews/comments, and avoiding fragile overrides of `product-image.php` and `variable.php`.
-author: Soczó Kristóf
-contact: mailto:lonsdale201@hotmail.com
-plugin: woocommerce
-plugin-version-tested: "10.8.1"
-wp-version-tested: "7.0"
-php-min: "7.4"
-last-updated: "2026-06-14"
-docs:
-  - https://developer.woocommerce.com/docs/theming/theme-development/template-structure/
-  - https://developer.woocommerce.com/docs/theming/theme-development/image-sizes/
-  - https://developer.woocommerce.com/docs/theming/theme-development/theme-design-ux-guidelines/
-source-refs:
-  - wp-content/plugins/woocommerce/templates/single-product.php
-  - wp-content/plugins/woocommerce/templates/content-single-product.php
-  - wp-content/plugins/woocommerce/templates/single-product/product-image.php
-  - wp-content/plugins/woocommerce/templates/single-product/add-to-cart/variable.php
-  - wp-content/plugins/woocommerce/includes/wc-template-hooks.php
-  - wp-content/plugins/woocommerce/includes/wc-template-functions.php
-  - wp-content/plugins/woocommerce/includes/wc-product-functions.php
+metadata:
+  wp-skills-author: "Soczó Kristóf"
+  wp-skills-contact: "mailto:lonsdale201@hotmail.com"
+  wp-skills-plugin: "woocommerce"
+  wp-skills-plugin-version-tested: "10.8.1"
+  wp-skills-wp-version-tested: "7.0"
+  wp-skills-php-min: "7.4"
+  wp-skills-last-updated: "2026-06-14"
 ---
 
 # Classic WooCommerce Single Product
@@ -222,3 +211,17 @@ Rules:
 - Deleting structured-data callbacks while reordering summary output.
 - Breaking variation image switching with gallery markup changes.
 - Hardcoding a simple product purchase flow for all product types.
+
+## References
+
+- Official documentation: <https://developer.woocommerce.com/docs/theming/theme-development/template-structure/>
+- Official documentation: <https://developer.woocommerce.com/docs/theming/theme-development/image-sizes/>
+- Official documentation: <https://developer.woocommerce.com/docs/theming/theme-development/theme-design-ux-guidelines/>
+- Verified source paths:
+  - `wp-content/plugins/woocommerce/templates/single-product.php`
+  - `wp-content/plugins/woocommerce/templates/content-single-product.php`
+  - `wp-content/plugins/woocommerce/templates/single-product/product-image.php`
+  - `wp-content/plugins/woocommerce/templates/single-product/add-to-cart/variable.php`
+  - `wp-content/plugins/woocommerce/includes/wc-template-hooks.php`
+  - `wp-content/plugins/woocommerce/includes/wc-template-functions.php`
+  - `wp-content/plugins/woocommerce/includes/wc-product-functions.php`

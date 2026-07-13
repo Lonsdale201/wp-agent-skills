@@ -11,14 +11,13 @@ description: Review and implement WordPress core query-cache usage on WP 6.9+,
   query groups/salts, duplicates WP_Query cache internals, or shows stale/miss
   behavior specifically after direct query-cache reads or writes; use the
   database-performance skill for general SQL, transient, OFFSET, or N+1 issues.
-author: Soczó Kristóf
-contact: mailto:lonsdale201@hotmail.com
-plugin: wordpress
-plugin-version-tested: "6.9 - 7.0.1"
-php-min: "7.4"
-last-updated: "2026-07-12"
-docs:
-  - https://make.wordpress.org/core/2025/11/17/consistent-cache-keys-for-query-groups-in-wordpress-6-9/
+metadata:
+  wp-skills-author: "Soczó Kristóf"
+  wp-skills-contact: "mailto:lonsdale201@hotmail.com"
+  wp-skills-plugin: "wordpress"
+  wp-skills-plugin-version-tested: "6.9 - 7.0.1"
+  wp-skills-php-min: "7.4"
+  wp-skills-last-updated: "2026-07-12"
 ---
 
 # WordPress Query Cache

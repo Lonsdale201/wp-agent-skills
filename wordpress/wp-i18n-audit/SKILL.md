@@ -10,16 +10,13 @@ description: Audits WordPress plugin or theme PHP code for
   plugin/theme header. Use before plugin/theme release, when reviewing
   contributor PRs, when adding new strings, when migrating to a new
   text domain, or when a translator reports issues with the .pot file.
-author: Soczó Kristóf
-contact: mailto:lonsdale201@hotmail.com
-plugin: wordpress
-plugin-version-tested: "6.0 - 7.0.1"
-php-min: "7.4"
-last-updated: "2026-07-10"
-docs:
-  - https://developer.wordpress.org/plugins/internationalization/
-  - https://developer.wordpress.org/plugins/internationalization/how-to-internationalize-your-plugin/
-  - https://developer.wordpress.org/themes/functionality/internationalization/
+metadata:
+  wp-skills-author: "Soczó Kristóf"
+  wp-skills-contact: "mailto:lonsdale201@hotmail.com"
+  wp-skills-plugin: "wordpress"
+  wp-skills-plugin-version-tested: "6.0 - 7.0.1"
+  wp-skills-php-min: "7.4"
+  wp-skills-last-updated: "2026-07-10"
 ---
 
 # WordPress i18n audit
@@ -295,3 +292,4 @@ Date: <YYYY-MM-DD>
 - WP Plugin i18n handbook: https://developer.wordpress.org/plugins/internationalization/
 - WP Theme i18n handbook: https://developer.wordpress.org/themes/functionality/internationalization/
 - `wp i18n make-pot`: https://developer.wordpress.org/cli/commands/i18n/make-pot/
+- Official documentation: <https://developer.wordpress.org/plugins/internationalization/how-to-internationalize-your-plugin/>

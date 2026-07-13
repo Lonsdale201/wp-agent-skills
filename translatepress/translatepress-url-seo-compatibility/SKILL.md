@@ -1,31 +1,15 @@
 ---
 name: translatepress-url-seo-compatibility
 description: Audit or implement TranslatePress-compatible URLs, routing, slugs, SEO metadata, sitemaps, hreflang, canonical links, redirects, AJAX URLs, REST routes, WooCommerce permalinks, and Different Domain per Language behavior. Use when plugin/theme code builds links, parses REQUEST_URI, registers CPT/taxonomy rewrites, emits SEO tags or sitemaps, caches absolute URLs, handles forms on translated URLs, or must work with the TranslatePress SEO Pack and Multiple Domains add-ons.
-author: Soczó Kristóf
-contact: mailto:lonsdale201@hotmail.com
-plugin: translatepress-multilingual + translatepress-business
-plugin-version-tested: "TranslatePress Multilingual 3.2.1 + Business 1.8.2"
-wp-version-tested: "7.0"
-php-min: "7.4"
-last-updated: "2026-06-17"
-docs:
-  - https://translatepress.com/docs/developers/translating-an-internal-url/
-  - https://translatepress.com/docs/developers/different-domain-per-language/
-  - https://translatepress.com/docs/addons/seo-pack/
-  - https://translatepress.com/docs/developers/excluding-translation-of-external-domain-links/
-source-refs:
-  - wp-content/plugins/translatepress-multilingual/index.php
-  - wp-content/plugins/translatepress-multilingual/readme.txt
-  - wp-content/plugins/translatepress-multilingual/includes/class-url-converter.php
-  - wp-content/plugins/translatepress-multilingual/includes/class-translation-render.php
-  - wp-content/plugins/translatepress-business/readme.txt
-  - wp-content/plugins/translatepress-business/add-ons-advanced/seo-pack/class-seo-pack.php
-  - wp-content/plugins/translatepress-business/add-ons-advanced/seo-pack/includes/class-slug-manager.php
-  - wp-content/plugins/translatepress-business/add-ons-advanced/seo-pack/includes/class-gettext-slugs.php
-  - wp-content/plugins/translatepress-business/add-ons-advanced/seo-pack/includes/class-slug-query.php
-  - wp-content/plugins/translatepress-business/add-ons-pro/multiple-domains/class-multiple-domains.php
-  - wp-content/plugins/translatepress-business/add-ons-pro/multiple-domains/class-trp-language-domains-sso.php
 license: GPLv2-or-later
+metadata:
+  wp-skills-author: "Soczó Kristóf"
+  wp-skills-contact: "mailto:lonsdale201@hotmail.com"
+  wp-skills-plugin: "translatepress-multilingual + translatepress-business"
+  wp-skills-plugin-version-tested: "TranslatePress Multilingual 3.2.1 + Business 1.8.2"
+  wp-skills-wp-version-tested: "7.0"
+  wp-skills-php-min: "7.4"
+  wp-skills-last-updated: "2026-06-17"
 ---
 
 # TranslatePress URL, SEO, And Domain Compatibility
@@ -205,3 +189,11 @@ If your plugin registers its own sitemap provider, test with SEO Pack active and
 - TranslatePress URL conversion docs: <https://translatepress.com/docs/developers/translating-an-internal-url/>
 - Different Domain per Language docs: <https://translatepress.com/docs/developers/different-domain-per-language/>
 - SEO Pack docs: <https://translatepress.com/docs/addons/seo-pack/>
+- Official documentation: <https://translatepress.com/docs/developers/excluding-translation-of-external-domain-links/>
+- Verified source paths:
+  - `wp-content/plugins/translatepress-multilingual/index.php`
+  - `wp-content/plugins/translatepress-multilingual/readme.txt`
+  - `wp-content/plugins/translatepress-multilingual/includes/class-translation-render.php`
+  - `wp-content/plugins/translatepress-business/readme.txt`
+  - `wp-content/plugins/translatepress-business/add-ons-advanced/seo-pack/includes/class-slug-query.php`
+  - `wp-content/plugins/translatepress-business/add-ons-pro/multiple-domains/class-trp-language-domains-sso.php`

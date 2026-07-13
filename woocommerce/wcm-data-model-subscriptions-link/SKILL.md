@@ -9,26 +9,13 @@ description: WooCommerce Memberships storage and relationship map for
   _free_trial_end_date, membership plan access meta, user membership
   dates, product/order grant meta, or when an agent needs exact Memberships
   CPT/meta names and the Memberships-Subscriptions relation.
-author: Soczo Kristof
-contact: mailto:lonsdale201@hotmail.com
-plugin: woocommerce-memberships
-plugin-version-tested: "1.29.0"
-php-min: "7.4"
-last-updated: "2026-07-06"
-source-refs:
-  - wp-content/plugins/woocommerce-memberships/src/class-wc-memberships-post-types.php
-  - wp-content/plugins/woocommerce-memberships/src/class-wc-memberships-membership-plan.php
-  - wp-content/plugins/woocommerce-memberships/src/class-wc-memberships-user-membership.php
-  - wp-content/plugins/woocommerce-memberships/src/class-wc-memberships-rules.php
-  - wp-content/plugins/woocommerce-memberships/src/functions/wc-memberships-functions-orders.php
-  - wp-content/plugins/woocommerce-memberships/src/Data_Stores/Profile_Field/User_Meta.php
-  - wp-content/plugins/woocommerce-memberships/src/Data_Stores/Profile_Field_Definition/Option.php
-  - wp-content/plugins/woocommerce-memberships/src/API/Controller/User_Memberships.php
-  - wp-content/plugins/woocommerce-memberships/src/Helpers/Directory_Block_Validator.php
-  - wp-content/plugins/woocommerce-memberships/src/Posts/Actions/SetPostRules.php
-  - wp-content/plugins/woocommerce-memberships/src/Posts/Adapters/JsonSerializers/PostRestrictionRulesSerializer.php
-  - wp-content/plugins/woocommerce-memberships/src/integrations/subscriptions/class-wc-memberships-integration-subscriptions-user-membership.php
-  - wp-content/plugins/woocommerce-memberships/src/integrations/subscriptions/class-wc-memberships-integration-subscriptions.php
+metadata:
+  wp-skills-author: "Soczo Kristof"
+  wp-skills-contact: "mailto:lonsdale201@hotmail.com"
+  wp-skills-plugin: "woocommerce-memberships"
+  wp-skills-plugin-version-tested: "1.29.0"
+  wp-skills-php-min: "7.4"
+  wp-skills-last-updated: "2026-07-06"
 ---
 
 # WooCommerce Memberships: data model and Subscriptions link
@@ -221,3 +208,20 @@ $membership->update_status( 'active' );
 - Use `wcm-access-discounts` for access checks, restrictions, drip timing, and member discounts.
 - Use `wcm-abilities-api` for Memberships 1.28+ WP Abilities API automation.
 - Use `wcs-data-model-switching-gifting` for Subscriptions order type, subscription meta, switch data, and gifting data.
+
+## References
+
+- Verified source paths:
+  - `wp-content/plugins/woocommerce-memberships/src/class-wc-memberships-post-types.php`
+  - `wp-content/plugins/woocommerce-memberships/src/class-wc-memberships-membership-plan.php`
+  - `wp-content/plugins/woocommerce-memberships/src/class-wc-memberships-user-membership.php`
+  - `wp-content/plugins/woocommerce-memberships/src/class-wc-memberships-rules.php`
+  - `wp-content/plugins/woocommerce-memberships/src/functions/wc-memberships-functions-orders.php`
+  - `wp-content/plugins/woocommerce-memberships/src/Data_Stores/Profile_Field/User_Meta.php`
+  - `wp-content/plugins/woocommerce-memberships/src/Data_Stores/Profile_Field_Definition/Option.php`
+  - `wp-content/plugins/woocommerce-memberships/src/API/Controller/User_Memberships.php`
+  - `wp-content/plugins/woocommerce-memberships/src/Helpers/Directory_Block_Validator.php`
+  - `wp-content/plugins/woocommerce-memberships/src/Posts/Actions/SetPostRules.php`
+  - `wp-content/plugins/woocommerce-memberships/src/Posts/Adapters/JsonSerializers/PostRestrictionRulesSerializer.php`
+  - `wp-content/plugins/woocommerce-memberships/src/integrations/subscriptions/class-wc-memberships-integration-subscriptions-user-membership.php`
+  - `wp-content/plugins/woocommerce-memberships/src/integrations/subscriptions/class-wc-memberships-integration-subscriptions.php`

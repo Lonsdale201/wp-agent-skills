@@ -1,26 +1,13 @@
 ---
 name: wp-settings-storage-audit
 description: "Audit how WordPress plugins and classic themes store settings and configuration. Use when reviewing get_option/update_option/add_option/register_setting/settings_fields/options.php, Customizer add_setting/get_theme_mod/set_theme_mod, theme_mod vs option decisions, associative-array option schemas, keyed settings forms, sanitize_callback/validate_callback/defaults, show_in_rest schemas, autoload choices, update_option hooks, multisite site options, deprecated settings groups, or code that saves plugin settings, theme settings, feature flags, secrets, API config, Customizer values, or admin form data."
-author: Soczó Kristóf
-contact: mailto:lonsdale201@hotmail.com
-plugin: wordpress
-plugin-version-tested: "7.0.1"
-php-min: "7.4"
-last-updated: "2026-07-12"
-docs:
-  - https://developer.wordpress.org/plugins/settings/settings-api/
-  - https://developer.wordpress.org/reference/functions/register_setting/
-  - https://developer.wordpress.org/reference/functions/add_option/
-  - https://developer.wordpress.org/reference/functions/update_option/
-  - https://developer.wordpress.org/themes/customize-api/
-source-refs:
-  - wp-includes/option.php
-  - wp-admin/options.php
-  - wp-admin/includes/template.php
-  - wp-includes/rest-api/endpoints/class-wp-rest-settings-controller.php
-  - wp-includes/class-wp-customize-setting.php
-  - wp-includes/class-wp-customize-manager.php
-  - wp-includes/theme.php
+metadata:
+  wp-skills-author: "Soczó Kristóf"
+  wp-skills-contact: "mailto:lonsdale201@hotmail.com"
+  wp-skills-plugin: "wordpress"
+  wp-skills-plugin-version-tested: "7.0.1"
+  wp-skills-php-min: "7.4"
+  wp-skills-last-updated: "2026-07-12"
 ---
 
 # WP Settings Storage Audit
@@ -282,3 +269,19 @@ Report findings in this shape:
 - Use `classic-theme-customizer` for Customizer UI, preview, controls, and theme boundary details.
 - Use `wp-security-secrets` when a setting stores API keys, tokens, or OAuth credentials.
 - Use `wp-plugin-update-migrations` when moving old scalar options into a grouped option or changing autoload.
+
+## References
+
+- Official documentation: <https://developer.wordpress.org/plugins/settings/settings-api/>
+- Official documentation: <https://developer.wordpress.org/reference/functions/register_setting/>
+- Official documentation: <https://developer.wordpress.org/reference/functions/add_option/>
+- Official documentation: <https://developer.wordpress.org/reference/functions/update_option/>
+- Official documentation: <https://developer.wordpress.org/themes/customize-api/>
+- Verified source paths:
+  - `wp-includes/option.php`
+  - `wp-admin/options.php`
+  - `wp-admin/includes/template.php`
+  - `wp-includes/rest-api/endpoints/class-wp-rest-settings-controller.php`
+  - `wp-includes/class-wp-customize-setting.php`
+  - `wp-includes/class-wp-customize-manager.php`
+  - `wp-includes/theme.php`

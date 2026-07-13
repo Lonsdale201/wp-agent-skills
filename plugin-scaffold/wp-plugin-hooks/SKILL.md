@@ -8,18 +8,13 @@ description: >-
   Triggers on do_action, apply_filters, apply_filters_deprecated,
   do_action_deprecated, apply_filters_ref_array, do_action_ref_array,
   did_action, did_filter, or hook @since docblocks.
-author: Soczó Kristóf
-contact: mailto:lonsdale201@hotmail.com
-plugin: wordpress
-plugin-version-tested: "6.5 - 6.9"
-php-min: "7.4"
-last-updated: "2026-04-28"
-docs:
-  - https://developer.wordpress.org/plugins/hooks/
-  - https://developer.wordpress.org/reference/functions/apply_filters/
-  - https://developer.wordpress.org/reference/functions/do_action/
-  - https://developer.wordpress.org/reference/functions/apply_filters_deprecated/
-  - https://developer.wordpress.org/reference/functions/do_action_deprecated/
+metadata:
+  wp-skills-author: "Soczó Kristóf"
+  wp-skills-contact: "mailto:lonsdale201@hotmail.com"
+  wp-skills-plugin: "wordpress"
+  wp-skills-plugin-version-tested: "6.5 - 6.9"
+  wp-skills-php-min: "7.4"
+  wp-skills-last-updated: "2026-04-28"
 ---
 
 # WordPress plugin: custom hooks (the ones YOU emit)
@@ -292,3 +287,7 @@ do_action( 'myplugin/before_request', $payload );
 - `apply_filters_deprecated` / `do_action_deprecated`: `wp-includes/plugin.php` (since WP 4.6)
 - `_deprecated_hook` (the underlying notice trigger): `wp-includes/functions.php`
 - `did_action` / `did_filter`: `wp-includes/plugin.php` — useful in tests / debugging to assert a hook fired.
+- Official documentation: <https://developer.wordpress.org/reference/functions/apply_filters/>
+- Official documentation: <https://developer.wordpress.org/reference/functions/do_action/>
+- Official documentation: <https://developer.wordpress.org/reference/functions/apply_filters_deprecated/>
+- Official documentation: <https://developer.wordpress.org/reference/functions/do_action_deprecated/>

@@ -8,16 +8,13 @@ description: Use WordPress' HTML API for structured server-side HTML inspection
   where attribute/text setters escape character references. Use when plugin
   code modifies rendered HTML, block output, shortcodes, content filters,
   widget markup, email fragments, or user-provided HTML.
-author: Soczó Kristóf
-contact: mailto:lonsdale201@hotmail.com
-plugin: wordpress
-plugin-version-tested: "6.2 - 7.0.1"
-php-min: "7.4"
-last-updated: "2026-07-10"
-docs:
-  - https://make.wordpress.org/core/2025/11/21/updates-to-the-html-api-in-6-9/
-  - https://developer.wordpress.org/reference/classes/wp_html_tag_processor/
-  - https://developer.wordpress.org/reference/classes/wp_html_processor/
+metadata:
+  wp-skills-author: "Soczó Kristóf"
+  wp-skills-contact: "mailto:lonsdale201@hotmail.com"
+  wp-skills-plugin: "wordpress"
+  wp-skills-plugin-version-tested: "6.2 - 7.0.1"
+  wp-skills-php-min: "7.4"
+  wp-skills-last-updated: "2026-07-10"
 ---
 
 # WordPress HTML API
@@ -188,3 +185,5 @@ $p->set_attribute( 'title', $title );
 - `WP_HTML_Tag_Processor`: `wp-includes/html-api/class-wp-html-tag-processor.php`
 - `WP_HTML_Processor`: `wp-includes/html-api/class-wp-html-processor.php`
 - Dataset helpers: `wp-includes/script-loader.php`
+- Official documentation: <https://developer.wordpress.org/reference/classes/wp_html_tag_processor/>
+- Official documentation: <https://developer.wordpress.org/reference/classes/wp_html_processor/>

@@ -1,21 +1,13 @@
 ---
 name: br-install-and-migrate
 description: Install better-route from Packagist or migrate a WordPress integration to better-route 1.1. Use when adding better-route/better-route, changing the Composer constraint to ^1.1, upgrading from 1.0 or pre-1.0 releases, diagnosing new 403 route responses, migrating atomic idempotency schema, or reviewing 1.1 behavior changes in routing, Resource CRUD, CORS, ETag, rate limiting, JWT/JWKS, OpenAPI, and WooCommerce routes.
-author: Soczó Kristóf
-contact: mailto:lonsdale201@hotmail.com
-plugin: better-route
-plugin-version-tested: "1.1.0"
-php-min: "8.1"
-last-updated: "2026-07-13"
-docs:
-  - https://lonsdale201.github.io/better-docs/docs/better-route/agents
-  - https://github.com/Lonsdale201/better-route
-source-refs:
-  - README.md
-  - composer.json
-  - src/Router/Router.php
-  - src/Middleware/Write/WpdbAtomicIdempotencyStore.php
-  - src/Integration/Woo/WooRouteRegistrar.php
+metadata:
+  wp-skills-author: "Soczó Kristóf"
+  wp-skills-contact: "mailto:lonsdale201@hotmail.com"
+  wp-skills-plugin: "better-route"
+  wp-skills-plugin-version-tested: "1.1.0"
+  wp-skills-php-min: "8.1"
+  wp-skills-last-updated: "2026-07-13"
 ---
 
 # better-route: install and migrate to 1.1
@@ -145,3 +137,14 @@ Smoke at minimum: anonymous/public and denied routes, authenticated reads/writes
 - Use `br-atomic-idempotency` and `br-optimistic-locking` for write safety.
 - Use `br-resource-cpt`, `br-resource-table`, and `br-woo-routes` for migration details by integration.
 - Use `br-cors-public-client`, `br-rate-limiting`, `br-openapi`, and `br-jwks-jwt-auth` for subsystem configuration.
+
+## References
+
+- Official documentation: <https://lonsdale201.github.io/better-docs/docs/better-route/agents>
+- Official documentation: <https://github.com/Lonsdale201/better-route>
+- Verified source paths:
+  - `README.md`
+  - `composer.json`
+  - `src/Router/Router.php`
+  - `src/Middleware/Write/WpdbAtomicIdempotencyStore.php`
+  - `src/Integration/Woo/WooRouteRegistrar.php`

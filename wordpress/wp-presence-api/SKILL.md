@@ -14,16 +14,13 @@ description: Awareness-only reference for the WordPress Presence API — an
   high-frequency ephemeral state. Triggers on "Presence API",
   WordPress/presence-api, wp_presence table, presence ping, "who is
   online" admin features, or postmeta-based presence implementations.
-author: Soczó Kristóf
-contact: mailto:lonsdale201@hotmail.com
-plugin: wordpress
-plugin-version-tested: "presence-api-v0.1.4"
-php-min: "7.4"
-last-updated: "2026-07-10"
-docs:
-  - https://github.com/WordPress/presence-api
-  - https://make.wordpress.org/core/2026/04/27/presence-api-feature-plugin/
-  - https://make.wordpress.org/core/tag/presence-api/
+metadata:
+  wp-skills-author: "Soczó Kristóf"
+  wp-skills-contact: "mailto:lonsdale201@hotmail.com"
+  wp-skills-plugin: "wordpress"
+  wp-skills-plugin-version-tested: "presence-api-v0.1.4"
+  wp-skills-php-min: "7.4"
+  wp-skills-last-updated: "2026-07-10"
 ---
 
 # WordPress Presence API (experimental — awareness reference)

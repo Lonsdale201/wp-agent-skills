@@ -1,20 +1,13 @@
 ---
 name: br-routes
 description: Register custom WordPress REST routes with better-route 1.1 Router and RouteBuilder. Use for Router::make or BetterRoute::router, get/post/put/patch/delete/options, permission, protectedByMiddleware, publicRoute, args, route middleware, groups, handler signatures, RequestContext, WP_REST_Request, route registration, or unexpected 403 responses. In 1.1 every raw route, including GET and OPTIONS, denies by default until its access intent is explicit.
-author: Soczó Kristóf
-contact: mailto:lonsdale201@hotmail.com
-plugin: better-route
-plugin-version-tested: "1.1.0"
-php-min: "8.1"
-last-updated: "2026-07-13"
-docs:
-  - https://lonsdale201.github.io/better-docs/docs/better-route/agents
-source-refs:
-  - src/Router/Router.php
-  - src/Router/RouteBuilder.php
-  - src/Router/WordPressRestDispatcher.php
-  - src/Router/ArgumentResolver.php
-  - src/Http/RequestContext.php
+metadata:
+  wp-skills-author: "Soczó Kristóf"
+  wp-skills-contact: "mailto:lonsdale201@hotmail.com"
+  wp-skills-plugin: "better-route"
+  wp-skills-plugin-version-tested: "1.1.0"
+  wp-skills-php-min: "8.1"
+  wp-skills-last-updated: "2026-07-13"
 ---
 
 # better-route: custom REST routes
@@ -161,3 +154,13 @@ Do not treat these as silent missing-route cases.
 - Use `br-cors-public-client` for browser preflight and authoritative CORS headers.
 - Use `br-openapi` for contract export.
 - Use `br-error-contract` for `ApiException` and normalized responses.
+
+## References
+
+- Official documentation: <https://lonsdale201.github.io/better-docs/docs/better-route/agents>
+- Verified source paths:
+  - `src/Router/Router.php`
+  - `src/Router/RouteBuilder.php`
+  - `src/Router/WordPressRestDispatcher.php`
+  - `src/Router/ArgumentResolver.php`
+  - `src/Http/RequestContext.php`

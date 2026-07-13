@@ -1,28 +1,13 @@
 ---
 name: lw-firewall-management-abilities
 description: Automate or audit LW Firewall management through WP-CLI, Site Manager abilities, config import/export, options, logs, worker status, IP blacklist changes, and wp-config overrides. Use when code or operational runbooks mention `wp lw-firewall`, `lw-firewall/get-options`, `lw-firewall/get-log`, `lw-firewall/block-ip`, `lw-firewall/unblock-ip`, `Options::save`, `LW_FIREWALL_*` constants, `log_enabled`, worker install/reinstall, config-items, or firewall settings migration.
-author: Soczó Kristóf
-contact: mailto:lonsdale201@hotmail.com
-plugin: lw-firewall
-plugin-version-tested: "1.3.2"
-php-min: "8.1"
-last-updated: "2026-07-09"
-docs:
-  - https://github.com/lwplugins/lw-firewall
-source-refs:
-  - wp-content/plugins/lw-firewall/lw-firewall.php
-  - wp-content/plugins/lw-firewall/includes/Options.php
-  - wp-content/plugins/lw-firewall/includes/Admin/SettingsSaver.php
-  - wp-content/plugins/lw-firewall/includes/Admin/ImportExportHandler.php
-  - wp-content/plugins/lw-firewall/includes/CLI/FirewallCommand.php
-  - wp-content/plugins/lw-firewall/includes/CLI/ConfigCommand.php
-  - wp-content/plugins/lw-firewall/includes/CLI/ConfigItemsCommand.php
-  - wp-content/plugins/lw-firewall/includes/CLI/IpCommand.php
-  - wp-content/plugins/lw-firewall/includes/SiteManager/Integration.php
-  - wp-content/plugins/lw-firewall/includes/SiteManager/FirewallAbilities.php
-  - wp-content/plugins/lw-firewall/includes/SiteManager/FirewallService.php
-  - wp-content/plugins/lw-firewall/docs/management.md
-  - wp-content/plugins/lw-firewall/docs/site-manager-abilities.md
+metadata:
+  wp-skills-author: "Soczó Kristóf"
+  wp-skills-contact: "mailto:lonsdale201@hotmail.com"
+  wp-skills-plugin: "lw-firewall"
+  wp-skills-plugin-version-tested: "1.3.2"
+  wp-skills-php-min: "8.1"
+  wp-skills-last-updated: "2026-07-09"
 ---
 
 # LW Firewall: management abilities and CLI
@@ -212,3 +197,21 @@ surface the failure; WP-CLI status reports worker state.
 - Building a new firewall rule engine.
 - Managing CDN/WAF provider rules.
 - Editing the MU-plugin worker directly.
+
+## References
+
+- Official documentation: <https://github.com/lwplugins/lw-firewall>
+- Verified source paths:
+  - `wp-content/plugins/lw-firewall/lw-firewall.php`
+  - `wp-content/plugins/lw-firewall/includes/Options.php`
+  - `wp-content/plugins/lw-firewall/includes/Admin/SettingsSaver.php`
+  - `wp-content/plugins/lw-firewall/includes/Admin/ImportExportHandler.php`
+  - `wp-content/plugins/lw-firewall/includes/CLI/FirewallCommand.php`
+  - `wp-content/plugins/lw-firewall/includes/CLI/ConfigCommand.php`
+  - `wp-content/plugins/lw-firewall/includes/CLI/ConfigItemsCommand.php`
+  - `wp-content/plugins/lw-firewall/includes/CLI/IpCommand.php`
+  - `wp-content/plugins/lw-firewall/includes/SiteManager/Integration.php`
+  - `wp-content/plugins/lw-firewall/includes/SiteManager/FirewallAbilities.php`
+  - `wp-content/plugins/lw-firewall/includes/SiteManager/FirewallService.php`
+  - `wp-content/plugins/lw-firewall/docs/management.md`
+  - `wp-content/plugins/lw-firewall/docs/site-manager-abilities.md`

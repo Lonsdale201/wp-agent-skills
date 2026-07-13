@@ -1,20 +1,13 @@
 ---
 name: classic-theme-navigation-menus
 description: Build or audit navigation menus in classic PHP WordPress themes on WP 7.0. Covers `register_nav_menus()` on `after_setup_theme`, rendering with `wp_nav_menu()`, `theme_location`, `container => nav`, `container_aria_label`, `fallback_cb => false`, `has_nav_menu()`, menu IDs/classes, mobile toggle buttons with `aria-controls` and `aria-expanded`, safe filters for menu attributes/classes, when to avoid custom walkers, and common accessibility/security mistakes around raw menu meta and anchor-based toggles.
-author: Soczó Kristóf
-contact: mailto:lonsdale201@hotmail.com
-plugin: wordpress
-plugin-version-tested: "7.0"
-php-min: "7.4"
-last-updated: "2026-06-04"
-docs:
-  - https://developer.wordpress.org/themes/functionality/navigation-menus/
-source-refs:
-  - wp-includes/nav-menu.php
-  - wp-includes/nav-menu-template.php
-  - wp-includes/class-walker-nav-menu.php
-  - wp-content/themes/storefront/inc/structure/header.php
-  - wp-content/themes/generatepress/inc/structure/navigation.php
+metadata:
+  wp-skills-author: "Soczó Kristóf"
+  wp-skills-contact: "mailto:lonsdale201@hotmail.com"
+  wp-skills-plugin: "wordpress"
+  wp-skills-plugin-version-tested: "7.0"
+  wp-skills-php-min: "7.4"
+  wp-skills-last-updated: "2026-06-04"
 ---
 
 # Classic Theme Navigation Menus
@@ -210,3 +203,13 @@ If a walker is necessary:
 - Replacing all menu item classes and losing current-menu state.
 - Echoing menu item custom fields without escaping.
 - Writing a custom walker for a simple class or data attribute.
+
+## References
+
+- Official documentation: <https://developer.wordpress.org/themes/functionality/navigation-menus/>
+- Verified source paths:
+  - `wp-includes/nav-menu.php`
+  - `wp-includes/nav-menu-template.php`
+  - `wp-includes/class-walker-nav-menu.php`
+  - `wp-content/themes/storefront/inc/structure/header.php`
+  - `wp-content/themes/generatepress/inc/structure/navigation.php`

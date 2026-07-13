@@ -8,16 +8,13 @@ description: Build WordPress admin drag-and-drop UI with core's bundled
   reorder controls. Use when plugin admin pages need repeater row order,
   builder blocks, rule priority, kanban moves, custom field arrangers,
   pricing tiers, taxonomy term sort, or any non-React draggable admin UI.
-author: Soczó Kristóf
-contact: mailto:lonsdale201@hotmail.com
-plugin: wordpress
-plugin-version-tested: "6.0 - 7.0.1"
-php-min: "7.4"
-last-updated: "2026-07-10"
-docs:
-  - https://api.jqueryui.com/sortable/
-  - https://api.jqueryui.com/draggable/
-  - https://api.jqueryui.com/droppable/
+metadata:
+  wp-skills-author: "Soczó Kristóf"
+  wp-skills-contact: "mailto:lonsdale201@hotmail.com"
+  wp-skills-plugin: "wordpress"
+  wp-skills-plugin-version-tested: "6.0 - 7.0.1"
+  wp-skills-php-min: "7.4"
+  wp-skills-last-updated: "2026-07-10"
 ---
 
 # WordPress Admin Drag-and-Drop
@@ -287,3 +284,9 @@ You don't need to read these to use the patterns above — they're listed for wh
 - `wp-admin/js/nav-menu.js:885` — hierarchical sortable with depth math.
 - `wp-includes/script-loader.php:955-959` — the `jquery-ui-draggable`, `jquery-ui-droppable`, `jquery-ui-sortable` registrations.
 - `reference.md` — hierarchical tree snippet, keyboard reorder snippet, and common mistakes.
+
+## References
+
+- Official documentation: <https://api.jqueryui.com/sortable/>
+- Official documentation: <https://api.jqueryui.com/draggable/>
+- Official documentation: <https://api.jqueryui.com/droppable/>

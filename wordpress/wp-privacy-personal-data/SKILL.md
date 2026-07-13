@@ -8,16 +8,13 @@ description: Implement or audit WordPress plugin privacy integration with
   custom tables/meta/remote systems, retention, and multisite scope. Use when
   a plugin stores email addresses, IPs, user identifiers, profiles, form
   submissions, logs, analytics, orders, messages, or other personal data.
-author: Soczó Kristóf
-contact: mailto:lonsdale201@hotmail.com
-plugin: wordpress
-plugin-version-tested: "4.9.6 - 7.0.1"
-php-min: "7.4"
-last-updated: "2026-07-10"
-docs:
-  - https://developer.wordpress.org/plugins/privacy/adding-the-personal-data-exporter-to-your-plugin/
-  - https://developer.wordpress.org/plugins/privacy/adding-the-personal-data-eraser-to-your-plugin/
-  - https://developer.wordpress.org/plugins/privacy/suggesting-text-for-the-site-privacy-policy/
+metadata:
+  wp-skills-author: "Soczó Kristóf"
+  wp-skills-contact: "mailto:lonsdale201@hotmail.com"
+  wp-skills-plugin: "wordpress"
+  wp-skills-plugin-version-tested: "4.9.6 - 7.0.1"
+  wp-skills-php-min: "7.4"
+  wp-skills-last-updated: "2026-07-10"
 ---
 
 # WordPress Personal Data Privacy Integration
@@ -213,3 +210,9 @@ Test at least:
 - `wp-admin/includes/ajax-actions.php`: exporter/eraser response validation.
 - `wp-includes/comment.php`: core paged exporter and eraser examples.
 - `wp-admin/includes/privacy-tools.php`: export/erasure processing pipeline.
+
+## References
+
+- Official documentation: <https://developer.wordpress.org/plugins/privacy/adding-the-personal-data-exporter-to-your-plugin/>
+- Official documentation: <https://developer.wordpress.org/plugins/privacy/adding-the-personal-data-eraser-to-your-plugin/>
+- Official documentation: <https://developer.wordpress.org/plugins/privacy/suggesting-text-for-the-site-privacy-policy/>

@@ -1,21 +1,13 @@
 ---
 name: wc-logging
 description: Add production-safe WooCommerce logs with `wc_get_logger()`. Covers stable sources, severity levels and thresholds, structured context, correlation IDs, sensitive-data redaction, handler and retention behavior, volume control, custom handlers, and why logs are not durable business state. Use when adding diagnostics to gateways, webhooks, background jobs, imports, REST endpoints, or order integrations.
-author: Soczó Kristóf
-contact: mailto:lonsdale201@hotmail.com
-plugin: woocommerce
-plugin-version-tested: "10.9.4"
-php-min: "7.4"
-last-updated: "2026-07-10"
-source-refs:
-  - wp-content/plugins/woocommerce/includes/wc-core-functions.php
-  - wp-content/plugins/woocommerce/includes/class-wc-logger.php
-  - wp-content/plugins/woocommerce/includes/class-wc-log-levels.php
-  - wp-content/plugins/woocommerce/includes/abstracts/abstract-wc-log-handler.php
-  - wp-content/plugins/woocommerce/includes/log-handlers/class-wc-log-handler-db.php
-  - wp-content/plugins/woocommerce/includes/log-handlers/class-wc-log-handler-file.php
-  - wp-content/plugins/woocommerce/src/Utilities/LoggingUtil.php
-  - wp-content/plugins/woocommerce/src/Internal/Admin/Logging/Settings.php
+metadata:
+  wp-skills-author: "Soczó Kristóf"
+  wp-skills-contact: "mailto:lonsdale201@hotmail.com"
+  wp-skills-plugin: "woocommerce"
+  wp-skills-plugin-version-tested: "10.9.4"
+  wp-skills-php-min: "7.4"
+  wp-skills-last-updated: "2026-07-10"
 ---
 
 # WooCommerce logging
@@ -182,3 +174,9 @@ The log can reference the durable record with an ID.
 - Shared logger and cleanup: `includes/wc-core-functions.php`.
 - levels, thresholds, handlers, and filters: `includes/class-wc-logger.php`.
 - default settings and retention: `src/Internal/Admin/Logging/Settings.php`.
+- Verified source paths:
+  - `wp-content/plugins/woocommerce/includes/class-wc-log-levels.php`
+  - `wp-content/plugins/woocommerce/includes/abstracts/abstract-wc-log-handler.php`
+  - `wp-content/plugins/woocommerce/includes/log-handlers/class-wc-log-handler-db.php`
+  - `wp-content/plugins/woocommerce/includes/log-handlers/class-wc-log-handler-file.php`
+  - `wp-content/plugins/woocommerce/src/Utilities/LoggingUtil.php`

@@ -15,21 +15,13 @@ description: Register a custom Elementor Dynamic Tag from a companion
   Use when scaffolding a plugin that adds dynamic tags, when a diff
   hooks elementor/dynamic_tags/register(_tags) or extends a
   DynamicTags base class, or when grouping tags in the editor.
-author: Soczó Kristóf
-contact: mailto:lonsdale201@hotmail.com
-plugin: elementor
-plugin-version-tested: "4.0.7 (free) / 4.0.4 (pro)"
-php-min: "7.4"
-last-updated: "2026-06-17"
-docs:
-  - https://developers.elementor.com/docs/dynamic-tags/
-  - https://developers.elementor.com/docs/dynamic-tags/register-tag/
-source-refs:
-  - wp-content/plugins/elementor/core/dynamic-tags/manager.php
-  - wp-content/plugins/elementor/core/dynamic-tags/base-tag.php
-  - wp-content/plugins/elementor/modules/dynamic-tags/module.php
-  - wp-content/plugins/elementor-pro/modules/dynamic-tags/module.php
-  - wp-content/plugins/dynamic-elementor-extension-main/dynamic-tags/TagManager.php
+metadata:
+  wp-skills-author: "Soczó Kristóf"
+  wp-skills-contact: "mailto:lonsdale201@hotmail.com"
+  wp-skills-plugin: "elementor"
+  wp-skills-plugin-version-tested: "4.0.7 (free) / 4.0.4 (pro)"
+  wp-skills-php-min: "7.4"
+  wp-skills-last-updated: "2026-06-17"
 ---
 
 # Elementor: register a Dynamic Tag
@@ -228,3 +220,4 @@ add_action( 'elementor/loaded', function () {
 - Pro module: [wp-content/plugins/elementor-pro/modules/dynamic-tags/module.php](module.php) — license gate (97), the 8 groups (144-171), tag list (98-134).
 - Reference plugin (legacy API, working): [wp-content/plugins/dynamic-elementor-extension-main/dynamic-tags/TagManager.php](TagManager.php) — `register_tags` action (45), `register_group()` calls (58-83), `register_tag()` (109).
 - Official: <https://developers.elementor.com/docs/dynamic-tags/>
+- Official documentation: <https://developers.elementor.com/docs/dynamic-tags/register-tag/>

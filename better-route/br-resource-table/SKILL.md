@@ -1,17 +1,13 @@
 ---
 name: br-resource-table
 description: Build better-route 1.1 CRUD endpoints over a custom WordPress database table with Resource::make, restNamespace, sourceTable, primary key, fields, filters, sort, filterSchema, writeSchema, policy, pagination, allow, SQL NULL writes, stable ordering, or a custom TableRepositoryInterface. Use when exposing plugin tables safely or reviewing deny-by-default table permissions and SQL behavior.
-author: Soczó Kristóf
-contact: mailto:lonsdale201@hotmail.com
-plugin: better-route
-plugin-version-tested: "1.1.0"
-php-min: "8.1"
-last-updated: "2026-07-13"
-source-refs:
-  - src/Resource/Resource.php
-  - src/Resource/Table/WordPressTableRepository.php
-  - src/Resource/Table/TableListQueryParser.php
-  - src/Storage/WpdbAdapter.php
+metadata:
+  wp-skills-author: "Soczó Kristóf"
+  wp-skills-contact: "mailto:lonsdale201@hotmail.com"
+  wp-skills-plugin: "better-route"
+  wp-skills-plugin-version-tested: "1.1.0"
+  wp-skills-php-min: "8.1"
+  wp-skills-last-updated: "2026-07-13"
 ---
 
 # better-route: custom-table Resource CRUD
@@ -122,3 +118,11 @@ Lists return `{data, meta}`; create/update return `{data}`; a single get is raw 
 - Use `br-resource-policy` for action and field authorization.
 - Use `br-write-schema` for payload rules.
 - Use `br-optimistic-locking` when concurrent updates need a version precondition.
+
+## References
+
+- Verified source paths:
+  - `src/Resource/Resource.php`
+  - `src/Resource/Table/WordPressTableRepository.php`
+  - `src/Resource/Table/TableListQueryParser.php`
+  - `src/Storage/WpdbAdapter.php`

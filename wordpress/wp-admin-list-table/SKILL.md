@@ -10,16 +10,13 @@ description: Build WordPress admin tables by extending `WP_List_Table`.
   calling `check_admin_referer( 'bulk-' . $this->_args['plural'] )` before
   acting on `current_action()`. Use for license keys, jobs, logs, audit
   records, subscriptions, or any plugin record list needing WP-native UI.
-author: Soczó Kristóf
-contact: mailto:lonsdale201@hotmail.com
-plugin: wordpress
-plugin-version-tested: "6.0 - 7.0.1"
-php-min: "7.4"
-last-updated: "2026-07-10"
-docs:
-  - https://developer.wordpress.org/reference/classes/wp_list_table/
-  - https://developer.wordpress.org/reference/functions/add_screen_option/
-  - https://developer.wordpress.org/reference/functions/check_admin_referer/
+metadata:
+  wp-skills-author: "Soczó Kristóf"
+  wp-skills-contact: "mailto:lonsdale201@hotmail.com"
+  wp-skills-plugin: "wordpress"
+  wp-skills-plugin-version-tested: "6.0 - 7.0.1"
+  wp-skills-php-min: "7.4"
+  wp-skills-last-updated: "2026-07-10"
 ---
 
 # WordPress Admin List Table (`WP_List_Table`)
@@ -259,3 +256,6 @@ See `reference.md` for before/after examples: missing `require_once`, missing bu
 - `wp-admin/includes/class-wp-list-table.php:655` — `row_actions()` for the hover-menu.
 - `wp-admin/includes/class-wp-list-table.php:978` — `get_items_per_page()`.
 - `reference.md` — complete subclass, view/filter snippets, and common mistakes.
+- Official documentation: <https://developer.wordpress.org/reference/classes/wp_list_table/>
+- Official documentation: <https://developer.wordpress.org/reference/functions/add_screen_option/>
+- Official documentation: <https://developer.wordpress.org/reference/functions/check_admin_referer/>

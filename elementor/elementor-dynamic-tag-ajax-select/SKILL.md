@@ -14,20 +14,13 @@ description: Let an Elementor control (in a Dynamic Tag or a widget)
   to a manual ID Controls_Manager::TEXT field when Pro is absent. Use
   when a tag/widget setting must reference a specific post/product, on
   large stores, or when the editor freezes opening a SELECT2.
-author: Soczó Kristóf
-contact: mailto:lonsdale201@hotmail.com
-plugin: elementor-pro
-plugin-version-tested: "4.0.7 (free) / 4.0.4 (pro)"
-php-min: "7.4"
-last-updated: "2026-06-17"
-docs:
-  - https://developers.elementor.com/docs/dynamic-tags/
-source-refs:
-  - wp-content/plugins/elementor-pro/modules/query-control/module.php
-  - wp-content/plugins/elementor-pro/modules/query-control/controls/query.php
-  - wp-content/plugins/elementor-pro/modules/dynamic-tags/tags/internal-url.php
-  - wp-content/plugins/dynamic-elementor-extension-main/modules/widgets/dynamic/DynamicAddToCartWidget.php
-  - wp-content/plugins/dynamic-elementor-extension-main/dynamic-tags/woo-tags/ProductAttributes.php
+metadata:
+  wp-skills-author: "Soczó Kristóf"
+  wp-skills-contact: "mailto:lonsdale201@hotmail.com"
+  wp-skills-plugin: "elementor-pro"
+  wp-skills-plugin-version-tested: "4.0.7 (free) / 4.0.4 (pro)"
+  wp-skills-php-min: "7.4"
+  wp-skills-last-updated: "2026-06-17"
 ---
 
 # Elementor: AJAX item picker for tags & widgets (large datasets)
@@ -195,3 +188,4 @@ $type = class_exists( QueryControlModule::class )
 - AJAX query control in a dynamic tag: [wp-content/plugins/elementor-pro/modules/dynamic-tags/tags/internal-url.php:72-142](internal-url.php).
 - Graceful-degradation widget: [wp-content/plugins/dynamic-elementor-extension-main/modules/widgets/dynamic/DynamicAddToCartWidget.php:43-53,181-198](DynamicAddToCartWidget.php).
 - Bounded preloaded SELECT2 (correct small-set use): [wp-content/plugins/dynamic-elementor-extension-main/dynamic-tags/woo-tags/ProductAttributes.php:62-74](ProductAttributes.php).
+- Official documentation: <https://developers.elementor.com/docs/dynamic-tags/>
