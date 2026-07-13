@@ -1,4 +1,4 @@
 interface:
   display_name: "Better Route CORS Public Client"
-  short_description: "Configure better-route CORS and OPTIONS preflight support."
-  default_prompt: "Use better-route CORS middleware and OPTIONS routes for a public REST client."
+  short_description: "Configure Better Route 1.1 CORS and preflight safely."
+  default_prompt: "Configure Better Route 1.1 CORS bridging and an explicit middleware-protected OPTIONS route."

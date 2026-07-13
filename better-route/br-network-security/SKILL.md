@@ -1,88 +1,55 @@
 ---
 name: br-network-security
-description: Use better-route 1.0.0 network security middleware for trusted-proxy client IP resolution and CIDR allowlists. Triggers on TrustedProxyClientIpResolver, ClientIpResolverInterface, CidrMatcher, IpAllowlistMiddleware, CF-Connecting-IP, X-Forwarded-For, REMOTE_ADDR, trusted proxy CIDRs, IP allowlist, webhook IP pinning, or replacing direct forwarded-header reads. Updated 2026-07-12.
+description: Configure Better Route 1.1 trusted-proxy client IP resolution and CIDR allowlists. Use behind Cloudflare, nginx, load balancers, or reverse proxies when authorization, rate limiting, or audit data depends on the real client IP.
 author: Soczó Kristóf
 contact: mailto:lonsdale201@hotmail.com
 plugin: better-route
-plugin-version-tested: "1.0.0"
+plugin-version-tested: "1.1.0"
 php-min: "8.1"
-last-updated: "2026-07-12"
-docs:
-  - https://lonsdale201.github.io/better-docs/docs/better-route/agents
-source-refs:
-  - src/Middleware/Network/TrustedProxyClientIpResolver.php
-  - src/Middleware/Network/ClientIpResolverInterface.php
-  - src/Middleware/Network/CidrMatcher.php
-  - src/Middleware/Network/IpAllowlistMiddleware.php
-  - src/Http/ClientIpResolver.php
-  - src/Middleware/RateLimit/RateLimitMiddleware.php
-  - tests/SecurityPrimitivesTest.php
+last-updated: "2026-07-13"
+docs: https://lonsdale201.github.io/better-docs/docs/better-route/agents
 ---
 
-# better-route: Network security and IP allowlists
+# Better Route network security
 
-Use this when an endpoint depends on client IP, especially behind Cloudflare, nginx, a load balancer, or any reverse proxy. Never read forwarded headers directly in handlers.
-
-## Trusted proxy resolver
-
-```php
-use BetterRoute\Middleware\Network\TrustedProxyClientIpResolver;
-
-$resolver = new TrustedProxyClientIpResolver(
-    trustedProxyCidrs: [
-        '10.0.0.0/24',
-        '2001:db8:1234::/48',
-    ],
-    forwardedHeaders: ['CF-Connecting-IP', 'X-Forwarded-For']
-);
-
-$ip = $resolver->resolve($request);
-```
-
-Forwarded headers are trusted only when the immediate `REMOTE_ADDR` matches `trustedProxyCidrs`.
-
-**Since 1.0.0:** the resolver walks `X-Forwarded-For` **right-to-left** and returns the first address that is **not** a trusted proxy (the closest untrusted hop), falling back to `REMOTE_ADDR` when every hop is trusted. Earlier versions returned the **left-most** entry, which a client can forge behind an *appending* proxy (nginx `proxy_add_x_forwarded_for` appends the real peer, leaving any client-supplied value to its left) — that let a caller spoof its IP and defeat `IpAllowlistMiddleware`, rate-limit buckets, and audit IPs. Single-value overwriting headers such as `CF-Connecting-IP` are unaffected.
-
-## IP allowlist middleware
+Never trust a forwarded-IP header merely because it exists. Configure every proxy hop that your infrastructure controls.
 
 ```php
 use BetterRoute\Middleware\Network\IpAllowlistMiddleware;
+use BetterRoute\Middleware\Network\TrustedProxyClientIpResolver;
+
+$resolver = new TrustedProxyClientIpResolver(
+    trustedProxyCidrs: ['10.0.0.0/24', '2001:db8:1234::/48'],
+    forwardedHeaders: ['CF-Connecting-IP', 'X-Forwarded-For']
+);
 
 $allowlist = new IpAllowlistMiddleware(
-    allowedCidrs: ['203.0.113.0/24', '2001:db8:feed::/48'],
+    allowedCidrs: ['203.0.113.0/24'],
     ipResolver: $resolver,
     failClosed: true
 );
 
-$router->post('/back-channel/logout', $handler)
+$router->post('/back-channel/event', $handler)
     ->middleware([$allowlist])
-    ->publicRoute();
+    ->protectedByMiddleware('ipAllowlist');
 ```
 
-## Rate limiter integration
+## Resolution contract
 
-`RateLimitMiddleware` accepts the new `ClientIpResolverInterface` in 0.6.0:
+- If `REMOTE_ADDR` is invalid or absent, resolution returns `null`.
+- If `REMOTE_ADDR` is not a trusted proxy, it is the client address and all forwarded headers are ignored.
+- If the immediate peer is trusted, the resolver checks configured headers in order.
+- For a comma-separated forwarding chain it walks right-to-left and returns the closest address that is not one of the configured trusted proxies. This avoids trusting a client-injected leftmost value behind an appending proxy.
+- When no usable untrusted forwarded address exists, it falls back to `REMOTE_ADDR`.
 
-```php
-$rateLimit = new RateLimitMiddleware(
-    limiter: $limiter,
-    limit: 60,
-    windowSeconds: 60,
-    clientIpResolver: $resolver
-);
-```
+The header order is a trust decision. Prefer a provider-specific, overwriting header only when the immediate trusted proxy is guaranteed to set and scrub it. Otherwise use the forwarding-chain semantics and document the proxy topology.
 
-## Critical rules
+## Rules
 
-- Single IP strings are accepted as CIDRs (`1.2.3.4` behaves like `/32`, IPv6 like `/128`).
-- Header order matters; put the most authoritative proxy header first.
-- `X-Forwarded-For` resolves to the closest **untrusted** hop (walked right-to-left, skipping `trustedProxyCidrs`), not the left-most entry — the left-most value is attacker-controllable behind an appending proxy. Falls back to `REMOTE_ADDR` when all hops are trusted. (Changed in 1.0.0; older versions took the left-most IP.)
-- If IP is unresolvable and `failClosed: true`, `IpAllowlistMiddleware` rejects.
-- Keep Cloudflare or provider CIDR lists current; stale proxy ranges cause false denials or unsafe trust.
-- IP allowlists are not a replacement for request authentication when IPs are broad or dynamic; combine with HMAC when needed.
+- Keep `failClosed: true` for access control.
+- Treat an IP allowlist as defense in depth, not the only proof for a sensitive webhook. Combine it with HMAC or another authentication method.
+- Use the same resolver for allowlisting, rate-limit identity, and audit enrichment to avoid contradictory client identities.
+- Update trusted proxy ranges through a controlled deployment process; never accept them from request input.
+- Test direct requests with spoofed headers, trusted and untrusted immediate peers, IPv4/IPv6 CIDRs, malformed chains, multiple trusted hops, and all-hops-trusted fallback.
 
-## Cross-references
-
-- Use `br-rate-limiting` for throttling semantics and fixed-window stores.
-- Use `br-hmac-signature` for signed requests when IP pinning is too brittle.
-- Use `br-audit-enrichment` if safe client IP should be added to audit events.
+Source references: `src/Middleware/Network/TrustedProxyClientIpResolver.php`, `src/Middleware/Network/CidrMatcher.php`, `src/Middleware/Network/IpAllowlistMiddleware.php`.

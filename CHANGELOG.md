@@ -2,6 +2,35 @@
 
 This collection is continuously evolving — entries are date-based, not version-tagged. New skills land when they're ready; updates go in when they cover real ground (a new release of an upstream plugin, a verified misconception, a corrected example).
 
+## 2026-07-13 (third batch — better-route 1.1)
+
+### Updated — the entire `better-route/` domain re-grounded to 1.1.0
+
+All 22 existing skills re-grounded against **better-route 1.1.0** (the 1.0 batch had left 10 at older baselines — the whole domain is now uniformly at `plugin-version-tested: "1.1.0"`), plus 4 refreshed `agents/openai.yaml` files. Headline consumer-visible 1.1 changes captured across the skills:
+
+- **Fail-closed routing everywhere** — omitted access intent now denies `GET` and `OPTIONS` too, not only writes; every raw route must declare `permission()`, `protectedByMiddleware()`, or `publicRoute()`. Registration outside `rest_api_init` (or a `false` from WordPress) throws.
+- **Identity & keys** — cache/idempotency/rate-limit keys default to the native logged-in WP user even without auth middleware; keys/fingerprints are structured and recursively canonicalized (old delimiter-concatenated strings gone). `TransientRateLimiter` now serializes read/modify/write under a MySQL named lock; `Retry-After` accompanies `X-RateLimit-*` on 429s.
+- **Atomic idempotency schema migration** — re-run `WpdbAtomicIdempotencyStore::installSchema()` on deploy (adds `reservation_token`, migrates in place); `releaseOnThrowable` defaults to `false`; responses stored data-only.
+- **Resource DSL strictness** — `allow([])` = no routes vs omitted = full CRUD, unsupported action names throw, `sourceCpt()` + `sourceTable()` on one Resource rejected, CPT reads fail closed on visibility, validation runs on final registration state, stable primary-key tie-break ordering, strict list parsers admit the WP global `_locale`/`_fields`/`_embed`/`_envelope`/`_jsonp` params.
+- **CORS / ETag / errors** — the WP bridge handles preflight before dispatch and replaces core CORS headers on matched routes; ETag matching supports weak validators, lists, and `*`; `ApiException(..., headers: [...])` with CR/LF-validated values; only the allowlisted core validation `params` map reaches client details; audit/metric sink failures no longer mask responses.
+- **JWT/JWKS** — configured `maxLifetimeSeconds` requires both `iat` and `exp`; JWKS over `wp_safe_remote_get()` HTTPS only; unknown-`kid` refreshes throttled with last-known-good fallback.
+- **Woo routes** — registrar installs/migrates the shared atomic idempotency schema (no silent in-memory fallback), strict payload types with unknown nested-key rejection, order writes in a Woo transaction, coupon-code uniqueness under a named lock, `per_page > maxPerPage` is a 400 (not clamped).
+
+### New skill — `better-route/br-optimistic-locking`
+
+- **`better-route/br-optimistic-locking`** — Optimistic locking for REST writes with `If-Match` or version parameters and an atomic per-resource critical section (`OptimisticLockMiddleware`, `CallbackOptimisticLockVersionResolver`, `WpdbOptimisticLockCriticalSection`) — preventing stale updates, lost writes, and two cooperating writers passing the same version check concurrently (MySQL advisory lock; external writers need the same protocol or storage-level conditional updates). `plugin: better-route`, `plugin-version-tested: "1.1.0"`, `php-min: "8.1"`.
+
+### Intake notes (better-route 1.1 batch)
+
+- The drop arrived with a NEW frontmatter shape — `author`/`plugin`/`plugin-version-tested`/`php-min`/etc. nested under a `metadata:` block. The repo's validator contract (and all other domains) require these top-level, so all 23 SKILL.md frontmatters were flattened back to the repo shape on intake; content untouched.
+- Otherwise clean: no emoji, YAML parses, no private-infra references.
+
+### Repo / docs (better-route 1.1 batch)
+
+- `better-route/README.md`: rewritten from the drop — 1.1.0 header (fail-closed default called out), skills re-grouped into sectioned tables (Core and migration / Resources / Authentication and network controls / Write and concurrency safety / HTTP behavior and public clients / Documentation, integrations, and support), `br-optimistic-locking` row added.
+- Root `README.md` coverage line: **196 → 197 skills** (plugins unchanged at 29).
+- `skills-index.json` regenerated (`skill_count` 196 → 197).
+
 ## 2026-07-13 (second batch — api-fetch)
 
 ### New skill — `wordpress/wp-api-fetch-client`
