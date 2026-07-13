@@ -1,22 +1,14 @@
 ---
 name: wcs-rest-api
 description: Integrate with WooCommerce Subscriptions REST API v3. Covers subscription CRUD, status versus transition_status, GMT schedule fields, payment_details validation, related-order and order-to-subscriptions routes, notes, batch operations, creating subscriptions from an order, HPOS-safe behavior, APFS plan route boundaries, authentication, idempotency, and Store API separation. Use for /wc/v3/subscriptions, headless subscription administration, external subscription sync, or code attempting to expose subscription writes through the Store API.
-author: Soczo Kristof
-contact: mailto:lonsdale201@hotmail.com
-plugin: woocommerce-subscriptions
-plugin-version-tested: "9.0.0"
-woocommerce-version-tested: "10.9.4"
-php-min: "7.4"
-last-updated: "2026-07-10"
-source-refs:
-  - wp-content/plugins/woocommerce-subscriptions/includes/class-wcs-api.php
-  - wp-content/plugins/woocommerce-subscriptions/includes/api/class-wc-rest-subscriptions-controller.php
-  - wp-content/plugins/woocommerce-subscriptions/includes/api/class-wc-rest-subscription-notes-controller.php
-  - wp-content/plugins/woocommerce-subscriptions/includes/api/v2/class-wc-rest-subscriptions-v2-controller.php
-  - wp-content/plugins/woocommerce-subscriptions/includes/core/class-wc-subscription.php
-  - wp-content/plugins/woocommerce-subscriptions/includes/core/class-wc-subscriptions-change-payment-gateway.php
-  - wp-content/plugins/woocommerce-subscriptions/includes/apfs/admin/class-wcs-att-rest-plans-controller.php
-  - wp-content/plugins/woocommerce-subscriptions/includes/apfs/admin/class-wcs-att-rest-product-plans-controller.php
+metadata:
+  wp-skills-author: "Soczo Kristof"
+  wp-skills-contact: "mailto:lonsdale201@hotmail.com"
+  wp-skills-plugin: "woocommerce-subscriptions"
+  wp-skills-plugin-version-tested: "9.0.0"
+  wp-skills-woocommerce-version-tested: "10.9.4"
+  wp-skills-php-min: "7.4"
+  wp-skills-last-updated: "2026-07-10"
 ---
 
 # WooCommerce Subscriptions REST API
@@ -204,3 +196,15 @@ The Woo WP-CLI resource name is `shop_subscription`. `--user` is a WordPress use
 - Use `wcs-subscription-plans-apfs` for plan management routes.
 - Use `wc-store-api` for shopper cart/checkout requests.
 - Use `wc-stripe-subscriptions` for Stripe automatic renewal/payment-method setup.
+
+## References
+
+- Verified source paths:
+  - `wp-content/plugins/woocommerce-subscriptions/includes/class-wcs-api.php`
+  - `wp-content/plugins/woocommerce-subscriptions/includes/api/class-wc-rest-subscriptions-controller.php`
+  - `wp-content/plugins/woocommerce-subscriptions/includes/api/class-wc-rest-subscription-notes-controller.php`
+  - `wp-content/plugins/woocommerce-subscriptions/includes/api/v2/class-wc-rest-subscriptions-v2-controller.php`
+  - `wp-content/plugins/woocommerce-subscriptions/includes/core/class-wc-subscription.php`
+  - `wp-content/plugins/woocommerce-subscriptions/includes/core/class-wc-subscriptions-change-payment-gateway.php`
+  - `wp-content/plugins/woocommerce-subscriptions/includes/apfs/admin/class-wcs-att-rest-plans-controller.php`
+  - `wp-content/plugins/woocommerce-subscriptions/includes/apfs/admin/class-wcs-att-rest-product-plans-controller.php`

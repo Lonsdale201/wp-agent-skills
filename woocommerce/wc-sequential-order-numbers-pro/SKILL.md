@@ -9,23 +9,15 @@ description: >-
   wc_sequential_order_numbers_formatted_order_number, HPOS order meta,
   REST-created orders, Checkout Block draft orders, free-order sequences, or
   WooCommerce Subscriptions renewal orders.
-author: Soczó Kristóf
-contact: mailto:lonsdale201@hotmail.com
-plugin: woocommerce-sequential-order-numbers-pro
-plugin-version-tested: "1.21.9"
-woocommerce-version-tested: "10.9.3"
-wp-version-tested: "7.0"
-php-min: "7.4"
-last-updated: "2026-07-07"
-docs:
-  - https://docs.woocommerce.com/document/sequential-order-numbers/
-  - https://woocommerce.com/products/sequential-order-numbers-pro/
-source-refs:
-  - wp-content/plugins/woocommerce-sequential-order-numbers-pro/woocommerce-sequential-order-numbers-pro.php
-  - wp-content/plugins/woocommerce-sequential-order-numbers-pro/class-wc-seq-order-number-pro.php
-  - wp-content/plugins/woocommerce-sequential-order-numbers-pro/src/REST_API.php
-  - wp-content/plugins/woocommerce-sequential-order-numbers-pro/src/Lifecycle.php
-  - wp-content/plugins/woocommerce-sequential-order-numbers-pro/changelog.txt
+metadata:
+  wp-skills-author: "Soczó Kristóf"
+  wp-skills-contact: "mailto:lonsdale201@hotmail.com"
+  wp-skills-plugin: "woocommerce-sequential-order-numbers-pro"
+  wp-skills-plugin-version-tested: "1.21.9"
+  wp-skills-wp-version-tested: "7.0"
+  wp-skills-woocommerce-version-tested: "10.9.3"
+  wp-skills-php-min: "7.4"
+  wp-skills-last-updated: "2026-07-07"
 ---
 
 # WooCommerce Sequential Order Numbers Pro compatibility
@@ -293,3 +285,14 @@ invoices, exports, webhooks, and sync retry paths.
   orders and order items.
 - Use `wcs-subscription-hooks` when subscription renewal/copy behavior matters.
 - Use `wc-rest-api-v4` when exposing order numbers through custom REST routes.
+
+## References
+
+- Official documentation: <https://docs.woocommerce.com/document/sequential-order-numbers/>
+- Official documentation: <https://woocommerce.com/products/sequential-order-numbers-pro/>
+- Verified source paths:
+  - `wp-content/plugins/woocommerce-sequential-order-numbers-pro/woocommerce-sequential-order-numbers-pro.php`
+  - `wp-content/plugins/woocommerce-sequential-order-numbers-pro/class-wc-seq-order-number-pro.php`
+  - `wp-content/plugins/woocommerce-sequential-order-numbers-pro/src/REST_API.php`
+  - `wp-content/plugins/woocommerce-sequential-order-numbers-pro/src/Lifecycle.php`
+  - `wp-content/plugins/woocommerce-sequential-order-numbers-pro/changelog.txt`

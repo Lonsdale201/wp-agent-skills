@@ -1,24 +1,13 @@
 ---
 name: wc-store-api
 description: Build shopper-facing WooCommerce integrations with the Store API. Covers `/wc/store/v1`, public product reads, cart Nonce and Cart-Token authentication, CORS, Store API sessions, endpoint data and cart update extensions, add-to-cart validation, payment requirements, checkout draft timing, and feature-gated routes. Use for headless carts, Checkout Block server integration, Store API response extensions, cart mutations, or debugging nonce/session/order timing.
-author: Soczó Kristóf
-contact: mailto:lonsdale201@hotmail.com
-plugin: woocommerce
-plugin-version-tested: "10.9.4"
-php-min: "7.4"
-last-updated: "2026-07-10"
-docs:
-  - https://developer.woocommerce.com/docs/apis/store-api/
-  - https://developer.woocommerce.com/docs/apis/store-api/nonce-tokens/
-  - https://developer.woocommerce.com/docs/apis/store-api/cart-tokens/
-source-refs:
-  - wp-content/plugins/woocommerce/src/StoreApi/RoutesController.php
-  - wp-content/plugins/woocommerce/src/StoreApi/Authentication.php
-  - wp-content/plugins/woocommerce/src/StoreApi/SessionHandler.php
-  - wp-content/plugins/woocommerce/src/StoreApi/Routes/V1/AbstractCartRoute.php
-  - wp-content/plugins/woocommerce/src/StoreApi/Routes/V1/Checkout.php
-  - wp-content/plugins/woocommerce/src/StoreApi/Schemas/ExtendSchema.php
-  - wp-content/plugins/woocommerce/src/StoreApi/functions.php
+metadata:
+  wp-skills-author: "Soczó Kristóf"
+  wp-skills-contact: "mailto:lonsdale201@hotmail.com"
+  wp-skills-plugin: "woocommerce"
+  wp-skills-plugin-version-tested: "10.9.4"
+  wp-skills-php-min: "7.4"
+  wp-skills-last-updated: "2026-07-10"
 ---
 
 # WooCommerce Store API
@@ -211,3 +200,8 @@ Requirements are compared with gateway `$supports`. This filters gateway eligibi
 - Nonce, token, and CORS behavior: `src/StoreApi/Authentication.php` and `Routes/V1/AbstractCartRoute.php`.
 - Deferred checkout lifecycle: `src/StoreApi/Routes/V1/Checkout.php`.
 - Public extension helpers: `src/StoreApi/functions.php` and `Schemas/ExtendSchema.php`.
+- Official documentation: <https://developer.woocommerce.com/docs/apis/store-api/>
+- Official documentation: <https://developer.woocommerce.com/docs/apis/store-api/nonce-tokens/>
+- Official documentation: <https://developer.woocommerce.com/docs/apis/store-api/cart-tokens/>
+- Verified source paths:
+  - `wp-content/plugins/woocommerce/src/StoreApi/SessionHandler.php`

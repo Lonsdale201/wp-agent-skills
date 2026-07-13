@@ -8,19 +8,13 @@ description: WooCommerce admin inline JavaScript and script-data migration
   wc_print_js, woocommerce_queued_js, admin_footer inline JavaScript,
   wp_add_inline_script in WooCommerce admin screens, or small Woo settings
   modal/product/order admin script glue.
-author: Soczó Kristóf
-contact: mailto:lonsdale201@hotmail.com
-plugin: woocommerce
-plugin-version-tested: "10.9.4"
-php-min: "7.4"
-last-updated: "2026-07-10"
-source-refs:
-  - wp-content/plugins/woocommerce/includes/wc-core-functions.php
-  - wp-content/plugins/woocommerce/includes/wc-template-hooks.php
-  - wp-content/plugins/woocommerce/includes/admin/class-wc-admin.php
-  - wp-content/plugins/woocommerce/includes/admin/class-wc-admin-assets.php
-  - wp-includes/functions.wp-scripts.php
-  - wp-includes/class-wp-scripts.php
+metadata:
+  wp-skills-author: "Soczó Kristóf"
+  wp-skills-contact: "mailto:lonsdale201@hotmail.com"
+  wp-skills-plugin: "woocommerce"
+  wp-skills-plugin-version-tested: "10.9.4"
+  wp-skills-php-min: "7.4"
+  wp-skills-last-updated: "2026-07-10"
 ---
 
 # WooCommerce: admin inline scripts
@@ -179,3 +173,13 @@ add_action( 'admin_enqueue_scripts', static function ( string $hook_suffix ): vo
 - Use `wc-product-search-select` when the inline/admin script initializes Woo product search selects.
 - Use `wc-shipping-method` when the JavaScript is supporting a custom shipping method settings UI.
 - Use `wp-admin-form-controls` for generic WordPress admin controls such as datepicker, color picker, autocomplete, and pointers.
+
+## References
+
+- Verified source paths:
+  - `wp-content/plugins/woocommerce/includes/wc-core-functions.php`
+  - `wp-content/plugins/woocommerce/includes/wc-template-hooks.php`
+  - `wp-content/plugins/woocommerce/includes/admin/class-wc-admin.php`
+  - `wp-content/plugins/woocommerce/includes/admin/class-wc-admin-assets.php`
+  - `wp-includes/functions.wp-scripts.php`
+  - `wp-includes/class-wp-scripts.php`

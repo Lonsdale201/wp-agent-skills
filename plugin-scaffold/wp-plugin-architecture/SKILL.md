@@ -9,16 +9,13 @@ description: Designs and reviews the internal architecture of a WordPress
   organization, migrating from `includes/class-*.php`, checking composer.json
   namespace mappings, asset enqueue code, repeated strings, or "should I make
   this a singleton" decisions.
-author: Soczó Kristóf
-contact: mailto:lonsdale201@hotmail.com
-plugin: wordpress
-plugin-version-tested: "6.3 - 7.0"
-php-min: "7.4"
-last-updated: "2026-07-09"
-docs:
-  - https://developer.wordpress.org/reference/functions/wp_enqueue_script/
-  - https://developer.wordpress.org/reference/functions/wp_add_inline_script/
-  - https://developer.wordpress.org/reference/hooks/admin_enqueue_scripts/
+metadata:
+  wp-skills-author: "Soczó Kristóf"
+  wp-skills-contact: "mailto:lonsdale201@hotmail.com"
+  wp-skills-plugin: "wordpress"
+  wp-skills-plugin-version-tested: "6.3 - 7.0"
+  wp-skills-php-min: "7.4"
+  wp-skills-last-updated: "2026-07-09"
 ---
 
 # WordPress plugin: internal architecture
@@ -358,3 +355,6 @@ final class FolderService {}
 - `admin_enqueue_scripts` action with `$hook_suffix`: `wp-admin/admin-header.php:123`.
 - `wp_enqueue_scripts` action: `wp-includes/script-loader.php:2311`.
 - PHP enums: [php.net/manual/en/language.enumerations.php](https://www.php.net/manual/en/language.enumerations.php).
+- Official documentation: <https://developer.wordpress.org/reference/functions/wp_enqueue_script/>
+- Official documentation: <https://developer.wordpress.org/reference/functions/wp_add_inline_script/>
+- Official documentation: <https://developer.wordpress.org/reference/hooks/admin_enqueue_scripts/>

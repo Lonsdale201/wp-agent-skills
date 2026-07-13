@@ -1,30 +1,13 @@
 ---
 name: lw-lms-wp-cli-operations
 description: Use the LW LMS v1.5.1 operational WP-CLI commands added in v1.4.0. Covers `wp lw-lms course create|list|delete|set-section`, `wp lw-lms lesson create|list|assign`, `wp lw-lms enroll`, `wp lw-lms revoke`, `wp lw-lms force-complete`, argument resolution by ID/slug/login/email, enrollment hook side effects, progress hook side effects, and common CLI footguns.
-author: Soczó Kristóf
-contact: mailto:lonsdale201@hotmail.com
-plugin: lw-lms
-plugin-version-tested: "1.5.1"
-php-min: "8.1"
-last-updated: "2026-06-15"
-docs:
-  - https://github.com/lwplugins/lw-lms
-source-refs:
-  - wp-content/plugins/lw-lms/includes/Plugin.php
-  - wp-content/plugins/lw-lms/includes/CLI/CliResolver.php
-  - wp-content/plugins/lw-lms/includes/CLI/CourseCreateCommand.php
-  - wp-content/plugins/lw-lms/includes/CLI/CourseListCommand.php
-  - wp-content/plugins/lw-lms/includes/CLI/CourseDeleteCommand.php
-  - wp-content/plugins/lw-lms/includes/CLI/CourseSetSectionCommand.php
-  - wp-content/plugins/lw-lms/includes/CLI/LessonCreateCommand.php
-  - wp-content/plugins/lw-lms/includes/CLI/LessonListCommand.php
-  - wp-content/plugins/lw-lms/includes/CLI/LessonAssignCommand.php
-  - wp-content/plugins/lw-lms/includes/CLI/EnrollCommand.php
-  - wp-content/plugins/lw-lms/includes/CLI/RevokeCommand.php
-  - wp-content/plugins/lw-lms/includes/CLI/ForceCompleteCommand.php
-  - wp-content/plugins/lw-lms/includes/Access/AccessRepository.php
-  - wp-content/plugins/lw-lms/includes/Progress/ProgressRepository.php
-  - wp-content/plugins/lw-lms/CHANGELOG.md
+metadata:
+  wp-skills-author: "Soczó Kristóf"
+  wp-skills-contact: "mailto:lonsdale201@hotmail.com"
+  wp-skills-plugin: "lw-lms"
+  wp-skills-plugin-version-tested: "1.5.1"
+  wp-skills-php-min: "8.1"
+  wp-skills-last-updated: "2026-06-15"
 ---
 
 # LW LMS: WP-CLI operations
@@ -277,3 +260,6 @@ wp lw-lms force-complete alice 42
 - Progress command: `ForceCompleteCommand.php`.
 - Access hook side effects: `includes/Access/AccessRepository.php`.
 - Progress hook side effects: `includes/Progress/ProgressRepository.php`.
+- Official documentation: <https://github.com/lwplugins/lw-lms>
+- Verified source paths:
+  - `wp-content/plugins/lw-lms/CHANGELOG.md`

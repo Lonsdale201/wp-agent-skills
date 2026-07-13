@@ -1,17 +1,13 @@
 ---
 name: wc-variations-pricing-filters
 description: Customize WooCommerce variation prices without stale or cross-user parent price caches. Covers direct variation getter filters, parent aggregation filters, the `woocommerce_get_variation_prices_hash` cache contract, bounded pricing contexts, role checks, tax/display separation, cache invalidation, and when stored CRUD prices are preferable. Use for B2B, role, segment, campaign, or context-dependent variation pricing.
-author: Soczó Kristóf
-contact: mailto:lonsdale201@hotmail.com
-plugin: woocommerce
-plugin-version-tested: "10.9.4"
-php-min: "7.4"
-last-updated: "2026-07-10"
-source-refs:
-  - wp-content/plugins/woocommerce/includes/class-wc-product-variable.php
-  - wp-content/plugins/woocommerce/includes/class-wc-product-variation.php
-  - wp-content/plugins/woocommerce/includes/data-stores/class-wc-product-variable-data-store-cpt.php
-  - wp-content/plugins/woocommerce/includes/abstracts/abstract-wc-data.php
+metadata:
+  wp-skills-author: "Soczó Kristóf"
+  wp-skills-contact: "mailto:lonsdale201@hotmail.com"
+  wp-skills-plugin: "woocommerce"
+  wp-skills-plugin-version-tested: "10.9.4"
+  wp-skills-php-min: "7.4"
+  wp-skills-last-updated: "2026-07-10"
 ---
 
 # WooCommerce variation pricing filters
@@ -193,3 +189,5 @@ $parent->get_variation_prices( true );
 
 - Parent aggregation/cache hash: `includes/data-stores/class-wc-product-variable-data-store-cpt.php`.
 - Variation getter prefix: `includes/class-wc-product-variation.php` and `includes/abstracts/abstract-wc-data.php`.
+- Verified source paths:
+  - `wp-content/plugins/woocommerce/includes/class-wc-product-variable.php`

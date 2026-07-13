@@ -1,21 +1,13 @@
 ---
 name: wc-payment-gateway
 description: Build a secure WooCommerce core payment gateway. Covers `WC_Payment_Gateway` registration/settings, synchronous captured versus authorized/pending outcomes, `payment_complete()` versus status updates, refunds, core support flags, customer-safe errors, logging, signed and idempotent webhooks, callback URLs, tokenization boundaries, and Checkout Block compatibility. Use when creating or auditing a gateway or debugging charged orders, stale carts, duplicate webhooks, or unsafe provider errors.
-author: Soczó Kristóf
-contact: mailto:lonsdale201@hotmail.com
-plugin: woocommerce
-plugin-version-tested: "10.9.4"
-php-min: "7.4"
-last-updated: "2026-07-10"
-docs:
-  - https://woocommerce.com/document/payment-gateway-api/
-source-refs:
-  - wp-content/plugins/woocommerce/includes/abstracts/abstract-wc-payment-gateway.php
-  - wp-content/plugins/woocommerce/includes/abstracts/abstract-wc-settings-api.php
-  - wp-content/plugins/woocommerce/includes/class-wc-payment-gateways.php
-  - wp-content/plugins/woocommerce/includes/class-wc-order.php
-  - wp-content/plugins/woocommerce/includes/class-woocommerce.php
-  - wp-content/plugins/woocommerce/src/Enums/PaymentGatewayFeature.php
+metadata:
+  wp-skills-author: "Soczó Kristóf"
+  wp-skills-contact: "mailto:lonsdale201@hotmail.com"
+  wp-skills-plugin: "woocommerce"
+  wp-skills-plugin-version-tested: "10.9.4"
+  wp-skills-php-min: "7.4"
+  wp-skills-last-updated: "2026-07-10"
 ---
 
 # WooCommerce payment gateway
@@ -215,3 +207,7 @@ A PHP `WC_Payment_Gateway` class supports classic checkout server behavior. Chec
 - Registration: `includes/class-wc-payment-gateways.php`.
 - Paid lifecycle: `includes/class-wc-order.php`.
 - Callback URL builder: `includes/class-woocommerce.php`.
+- Official documentation: <https://woocommerce.com/document/payment-gateway-api/>
+- Verified source paths:
+  - `wp-content/plugins/woocommerce/includes/abstracts/abstract-wc-settings-api.php`
+  - `wp-content/plugins/woocommerce/src/Enums/PaymentGatewayFeature.php`

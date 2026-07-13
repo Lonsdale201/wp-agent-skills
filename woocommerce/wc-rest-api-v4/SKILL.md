@@ -1,22 +1,13 @@
 ---
 name: wc-rest-api-v4
 description: Audit WooCommerce's source-gated `wc/v4` REST API. In WooCommerce 10.9.4 the core v4 controllers exist but the release build sets `rest-api-v4` false, so core routes are not registered by default. Covers runtime discovery, safe v3 fallback, latent v4 routes, settings paths, hook prefixes, authentication, fulfillments, and internal caching. Use when code targets `/wc/v4` or assumes source files mean a live public API.
-author: Soczó Kristóf
-contact: mailto:lonsdale201@hotmail.com
-plugin: woocommerce
-plugin-version-tested: "10.9.4"
-php-min: "7.4"
-last-updated: "2026-07-10"
-docs:
-  - https://woocommerce.com/document/woocommerce-rest-api/
-source-refs:
-  - wp-content/plugins/woocommerce/includes/rest-api/Server.php
-  - wp-content/plugins/woocommerce/includes/react-admin/feature-config.php
-  - wp-content/plugins/woocommerce/includes/rest-api/Controllers/Version4/class-wc-rest-settings-v4-controller.php
-  - wp-content/plugins/woocommerce/src/Internal/RestApi/Routes/V4/AbstractController.php
-  - wp-content/plugins/woocommerce/src/Internal/RestApi/Routes/V4
-  - wp-content/plugins/woocommerce/src/Internal/Traits/RestApiCache.php
-  - wp-content/plugins/woocommerce/src/Internal/Features/FeaturesController.php
+metadata:
+  wp-skills-author: "Soczó Kristóf"
+  wp-skills-contact: "mailto:lonsdale201@hotmail.com"
+  wp-skills-plugin: "woocommerce"
+  wp-skills-plugin-version-tested: "10.9.4"
+  wp-skills-php-min: "7.4"
+  wp-skills-last-updated: "2026-07-10"
 ---
 
 # WooCommerce REST API v4
@@ -224,3 +215,7 @@ The trait is internal; plugin routes should use stable WordPress cache APIs and 
 - Latent route registrations: `src/Internal/RestApi/Routes/V4/*/Controller.php`.
 - Hook prefix implementation: `src/Internal/RestApi/Routes/V4/AbstractController.php`.
 - Cache feature and wrapper: `src/Internal/Traits/RestApiCache.php`.
+- Official documentation: <https://woocommerce.com/document/woocommerce-rest-api/>
+- Verified source paths:
+  - `wp-content/plugins/woocommerce/includes/rest-api/Controllers/Version4/class-wc-rest-settings-v4-controller.php`
+  - `wp-content/plugins/woocommerce/src/Internal/Features/FeaturesController.php`

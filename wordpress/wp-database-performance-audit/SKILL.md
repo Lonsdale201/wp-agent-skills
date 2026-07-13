@@ -8,21 +8,13 @@ description: Audits WordPress PHP data access for slow or unbounded SQL,
   metadata loops, admin reports, imports, migrations, bulk tools, transients,
   object-cache behavior, EXPLAIN plans, or performance problems that grow with
   posts/users/orders/meta rows.
-author: Soczó Kristóf
-contact: mailto:lonsdale201@hotmail.com
-plugin: wordpress
-plugin-version-tested: "6.0 - 7.0.1"
-php-min: "7.4"
-last-updated: "2026-07-12"
-docs:
-  - https://developer.wordpress.org/reference/classes/wpdb/
-  - https://developer.wordpress.org/reference/classes/wp_query/
-  - https://developer.wordpress.org/reference/functions/update_meta_cache/
-source-refs:
-  - wp-admin/includes/schema.php
-  - wp-includes/class-wpdb.php
-  - wp-includes/meta.php
-  - wp-includes/class-wp-query.php
+metadata:
+  wp-skills-author: "Soczó Kristóf"
+  wp-skills-contact: "mailto:lonsdale201@hotmail.com"
+  wp-skills-plugin: "wordpress"
+  wp-skills-plugin-version-tested: "6.0 - 7.0.1"
+  wp-skills-php-min: "7.4"
+  wp-skills-last-updated: "2026-07-12"
 ---
 
 # WordPress database performance audit
@@ -206,4 +198,8 @@ fix that preserves semantics. Label unmeasured estimates as estimates.
 - Core schema and indexes: `wp-admin/includes/schema.php`
 - Query recording/error contracts: `wp-includes/class-wpdb.php`
 - Meta cache behavior: `wp-includes/meta.php`
-
+- Official documentation: <https://developer.wordpress.org/reference/classes/wpdb/>
+- Official documentation: <https://developer.wordpress.org/reference/classes/wp_query/>
+- Official documentation: <https://developer.wordpress.org/reference/functions/update_meta_cache/>
+- Verified source paths:
+  - `wp-includes/class-wp-query.php`

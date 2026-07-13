@@ -10,16 +10,13 @@ description: Design and review Action Scheduler jobs in WordPress plugins
   jobs with as_enqueue_async_action, as_schedule_single_action,
   as_schedule_recurring_action, as_schedule_cron_action,
   as_get_scheduled_actions, or integrates with WooCommerce background queues.
-author: Soczo Kristof
-contact: mailto:lonsdale201@hotmail.com
-plugin: action-scheduler
-plugin-version-tested: "3.9.3"
-php-min: "7.2"
-last-updated: "2026-04-29"
-docs:
-  - https://actionscheduler.org
-  - https://actionscheduler.org/api/
-  - https://github.com/woocommerce/action-scheduler
+metadata:
+  wp-skills-author: "Soczo Kristof"
+  wp-skills-contact: "mailto:lonsdale201@hotmail.com"
+  wp-skills-plugin: "action-scheduler"
+  wp-skills-plugin-version-tested: "3.9.3"
+  wp-skills-php-min: "7.2"
+  wp-skills-last-updated: "2026-04-29"
 ---
 
 # WordPress plugin: Action Scheduler
@@ -395,3 +392,9 @@ Validated against the local Action Scheduler 3.9.3 plugin installed at
 - `ActionScheduler_Store` statuses and DB store args length behavior.
 - `ActionScheduler_QueueRunner` runner hook and batch size.
 - WP-CLI command classes under `classes/WP_CLI`.
+
+## References
+
+- Official documentation: <https://actionscheduler.org>
+- Official documentation: <https://actionscheduler.org/api/>
+- Official documentation: <https://github.com/woocommerce/action-scheduler>

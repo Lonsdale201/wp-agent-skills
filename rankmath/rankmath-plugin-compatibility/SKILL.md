@@ -2,25 +2,14 @@
 name: rankmath-plugin-compatibility
 description: >-
   Build or review optional Rank Math compatibility in third-party WordPress plugins and themes: bootstrap safely around rank_math/loaded, expose public CPTs and taxonomies, filter SEO title, description, robots, canonical and social metadata, register replacement variables, feed custom editor fields into content analysis, and support headless output. Use for Rank Math integrations, compatibility layers, custom content models, SEO metadata imports, rank_math/frontend/* or rank_math/opengraph/* hooks, rank_math_register_var_replacement(), and rank_math_content JavaScript filters. Do not use for JSON-LD graph design or sitemap providers; use the focused sibling skills.
-author: Soczó Kristóf
-contact: mailto:lonsdale201@hotmail.com
-plugin: seo-by-rank-math
-plugin-version-tested: "1.0.273"
-wp-version-tested: "7.0.1"
-php-min: "7.4"
-last-updated: "2026-07-13"
-docs:
-  - https://rankmath.com/kb/filters-hooks-api-developer/
-  - https://rankmath.com/kb/content-analysis-api/
-  - https://rankmath.com/kb/make-theme-rank-math-compatible/
-source-refs:
-  - rank-math.php
-  - includes/frontend/paper/class-paper.php
-  - includes/opengraph/
-  - includes/replace-variables/class-manager.php
-  - includes/template-tags.php
-  - includes/rest/class-headless.php
-  - assets/admin/js/custom-fields.js
+metadata:
+  wp-skills-author: "Soczó Kristóf"
+  wp-skills-contact: "mailto:lonsdale201@hotmail.com"
+  wp-skills-plugin: "seo-by-rank-math"
+  wp-skills-plugin-version-tested: "1.0.273"
+  wp-skills-wp-version-tested: "7.0.1"
+  wp-skills-php-min: "7.4"
+  wp-skills-last-updated: "2026-07-13"
 ---
 
 # Rank Math plugin compatibility
@@ -182,3 +171,17 @@ When Rank Math headless support is enabled, `GET /wp-json/rankmath/v1/getHead?ur
 - Rank Math PRO-only APIs unless their source is also available and tested.
 - Search ranking guarantees, keyword strategy, or editorial SEO advice.
 - Direct modification of Rank Math internals, database tables, or settings UI.
+
+## References
+
+- Official documentation: <https://rankmath.com/kb/filters-hooks-api-developer/>
+- Official documentation: <https://rankmath.com/kb/content-analysis-api/>
+- Official documentation: <https://rankmath.com/kb/make-theme-rank-math-compatible/>
+- Verified source paths:
+  - `rank-math.php`
+  - `includes/frontend/paper/class-paper.php`
+  - `includes/opengraph/`
+  - `includes/replace-variables/class-manager.php`
+  - `includes/template-tags.php`
+  - `includes/rest/class-headless.php`
+  - `assets/admin/js/custom-fields.js`

@@ -1,19 +1,13 @@
 ---
 name: br-woo-routes
 description: Expose WooCommerce 10.x orders, products, customers, and coupons with better-route 1.1 WooRouteRegistrar. Use for BetterRoute::wooRouteRegistrar, HPOS guards, actions, permissions, strict list/body validation, pagination meta, stable sorting, protected metadata, atomic idempotency, transactional order writes, product price rules, customer role/capability rules, coupon uniqueness, or Woo OpenAPI components.
-author: Soczó Kristóf
-contact: mailto:lonsdale201@hotmail.com
-plugin: better-route
-plugin-version-tested: "1.1.0"
-php-min: "8.1"
-last-updated: "2026-07-13"
-source-refs:
-  - src/Integration/Woo/WooRouteRegistrar.php
-  - src/Integration/Woo/WooOrderService.php
-  - src/Integration/Woo/WooProductService.php
-  - src/Integration/Woo/WooCustomerService.php
-  - src/Integration/Woo/WooCouponService.php
-  - src/Integration/Woo/WooOpenApiComponents.php
+metadata:
+  wp-skills-author: "Soczó Kristóf"
+  wp-skills-contact: "mailto:lonsdale201@hotmail.com"
+  wp-skills-plugin: "better-route"
+  wp-skills-plugin-version-tested: "1.1.0"
+  wp-skills-php-min: "8.1"
+  wp-skills-last-updated: "2026-07-13"
 ---
 
 # better-route: WooCommerce routes
@@ -186,3 +180,13 @@ Use the returned Router's contracts and `BetterRoute::wooOpenApiComponents()`. I
 - Use `br-atomic-idempotency` for reservation semantics.
 - Use `br-openapi` for document generation.
 - Use WooCommerce HPOS skills for migration/operational setup.
+
+## References
+
+- Verified source paths:
+  - `src/Integration/Woo/WooRouteRegistrar.php`
+  - `src/Integration/Woo/WooOrderService.php`
+  - `src/Integration/Woo/WooProductService.php`
+  - `src/Integration/Woo/WooCustomerService.php`
+  - `src/Integration/Woo/WooCouponService.php`
+  - `src/Integration/Woo/WooOpenApiComponents.php`

@@ -12,26 +12,15 @@ description: >
   `wp-env` / `wp-phpunit/wp-phpunit` alternatives. Use when adding a test
   harness, wiring CI, or debugging install-wp-tests / bootstrap / PHPUnit-version
   problems. For writing the tests themselves see wp-phpunit-writing-tests.
-author: Soczó Kristóf
-contact: mailto:lonsdale201@hotmail.com
-plugin: wordpress
-plugin-version-tested: "WP-CLI scaffold-command 2.x; PHPUnit 9.x; phpunit-polyfills 1.1; WP 7.0"
-wp-version-tested: "7.0"
-php-min: "7.4"
-last-updated: "2026-06-17"
-docs:
-  - https://make.wordpress.org/core/handbook/testing/automated-testing/
-  - https://developer.wordpress.org/cli/commands/scaffold/plugin-tests/
-  - https://make.wordpress.org/core/handbook/references/phpunit-compatibility-and-wordpress-versions/
-  - https://github.com/Yoast/PHPUnit-Polyfills
-source-refs:
-  - https://github.com/wp-cli/scaffold-command
-  - https://github.com/wp-cli/scaffold-command/blob/main/templates/install-wp-tests.sh
-  - https://github.com/wp-cli/scaffold-command/blob/main/templates/plugin-github.mustache
-  - https://github.com/WordPress/wordpress-develop
-  - https://github.com/wp-phpunit/wp-phpunit
-  - https://developer.wordpress.org/block-editor/reference-guides/packages/packages-env/
 license: GPLv2-or-later
+metadata:
+  wp-skills-author: "Soczó Kristóf"
+  wp-skills-contact: "mailto:lonsdale201@hotmail.com"
+  wp-skills-plugin: "wordpress"
+  wp-skills-plugin-version-tested: "WP-CLI scaffold-command 2.x; PHPUnit 9.x; phpunit-polyfills 1.1; WP 7.0"
+  wp-skills-wp-version-tested: "7.0"
+  wp-skills-php-min: "7.4"
+  wp-skills-last-updated: "2026-06-17"
 ---
 
 # WordPress PHPUnit test setup
@@ -195,3 +184,5 @@ Both still run on the same PHPUnit 9.x ceiling. Pick the classic `install-wp-tes
 - PHPUnit Polyfills: <https://github.com/Yoast/PHPUnit-Polyfills>
 - `wp-phpunit/wp-phpunit`: <https://github.com/wp-phpunit/wp-phpunit>
 - `@wordpress/env`: <https://developer.wordpress.org/block-editor/reference-guides/packages/packages-env/>
+- Related documentation: <https://github.com/wp-cli/scaffold-command/blob/main/templates/plugin-github.mustache>
+- Related documentation: <https://github.com/WordPress/wordpress-develop>

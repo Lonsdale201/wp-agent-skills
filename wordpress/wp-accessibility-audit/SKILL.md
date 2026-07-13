@@ -1,26 +1,13 @@
 ---
 name: wp-accessibility-audit
 description: Audit or implement accessibility for WordPress plugins, admin screens, frontend plugin output, and classic themes against WCAG 2.2 A/AA and WordPress accessibility patterns. Use when the user asks for akadalymentesites/accessibility/a11y, form field labels, `aria-label`, `aria-describedby`, keyboard navigation, focus states, admin notices, live AJAX updates, modal/dialog UI, color contrast, font sizing, reduced motion, target size, screen-reader text, image alt text, or making a plugin/theme usable without a mouse or screen.
-author: Soczó Kristóf
-contact: mailto:lonsdale201@hotmail.com
-plugin: wordpress
-plugin-version-tested: "7.0.1"
-php-min: "7.4"
-last-updated: "2026-07-10"
-docs:
-  - https://developer.wordpress.org/coding-standards/wordpress-coding-standards/accessibility/
-  - https://www.w3.org/TR/WCAG22/
-  - https://www.w3.org/WAI/ARIA/apg/
-  - https://www.w3.org/WAI/ARIA/apg/practices/names-and-descriptions/
-  - https://www.section508.gov/develop/guide-accessible-web-design-development/
-source-refs:
-  - wp-admin/css/common.css
-  - wp-includes/js/dist/a11y.js
-  - wp-includes/script-loader.php
-  - wp-includes/comment-template.php
-  - wp-includes/media-template.php
-  - wp-includes/class-wp-customize-control.php
-  - wp-admin/js/common.js
+metadata:
+  wp-skills-author: "Soczó Kristóf"
+  wp-skills-contact: "mailto:lonsdale201@hotmail.com"
+  wp-skills-plugin: "wordpress"
+  wp-skills-plugin-version-tested: "7.0.1"
+  wp-skills-php-min: "7.4"
+  wp-skills-last-updated: "2026-07-10"
 ---
 
 # WordPress Accessibility Audit
@@ -297,3 +284,19 @@ Before building a custom widget, check whether native HTML or a WordPress compon
 - Pair with `wp-admin-settings-api`, `wp-admin-list-table`, or
   `wp-admin-media-frame` for those specific admin components.
 - Use `classic-theme-accessibility-semantics` for classic theme document structure and landmarks.
+
+## References
+
+- Official documentation: <https://developer.wordpress.org/coding-standards/wordpress-coding-standards/accessibility/>
+- Official documentation: <https://www.w3.org/TR/WCAG22/>
+- Official documentation: <https://www.w3.org/WAI/ARIA/apg/>
+- Official documentation: <https://www.w3.org/WAI/ARIA/apg/practices/names-and-descriptions/>
+- Official documentation: <https://www.section508.gov/develop/guide-accessible-web-design-development/>
+- Verified source paths:
+  - `wp-admin/css/common.css`
+  - `wp-includes/js/dist/a11y.js`
+  - `wp-includes/script-loader.php`
+  - `wp-includes/comment-template.php`
+  - `wp-includes/media-template.php`
+  - `wp-includes/class-wp-customize-control.php`
+  - `wp-admin/js/common.js`

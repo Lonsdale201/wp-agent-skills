@@ -1,20 +1,13 @@
 ---
 name: wc-shipping-method
 description: Build a zone-based WooCommerce shipping method with `WC_Shipping_Method`. Covers deferred class loading, registration, instance settings and modal support flags, package-based calculation, unique rate IDs, decimal/tax handling, availability, save behavior, caching, and testing. Use when adding carrier rates, custom shipping rules, a feature-only settings modal, or a method with no per-zone settings UI.
-author: Soczó Kristóf
-contact: mailto:lonsdale201@hotmail.com
-plugin: woocommerce
-plugin-version-tested: "10.9.4"
-php-min: "7.4"
-last-updated: "2026-07-10"
-docs:
-  - https://woocommerce.com/document/shipping-method-api/
-source-refs:
-  - wp-content/plugins/woocommerce/includes/abstracts/abstract-wc-shipping-method.php
-  - wp-content/plugins/woocommerce/includes/abstracts/abstract-wc-settings-api.php
-  - wp-content/plugins/woocommerce/includes/class-wc-shipping.php
-  - wp-content/plugins/woocommerce/includes/shipping/free-shipping/class-wc-shipping-free-shipping.php
-  - wp-content/plugins/woocommerce/includes/shipping/flat-rate/class-wc-shipping-flat-rate.php
+metadata:
+  wp-skills-author: "Soczó Kristóf"
+  wp-skills-contact: "mailto:lonsdale201@hotmail.com"
+  wp-skills-plugin: "woocommerce"
+  wp-skills-plugin-version-tested: "10.9.4"
+  wp-skills-php-min: "7.4"
+  wp-skills-last-updated: "2026-07-10"
 ---
 
 # WooCommerce shipping method
@@ -216,3 +209,9 @@ Test:
 
 - Base settings/rate contract: `includes/abstracts/abstract-wc-shipping-method.php`.
 - Zone method examples: `includes/shipping/free-shipping` and `includes/shipping/flat-rate`.
+- Official documentation: <https://woocommerce.com/document/shipping-method-api/>
+- Verified source paths:
+  - `wp-content/plugins/woocommerce/includes/abstracts/abstract-wc-settings-api.php`
+  - `wp-content/plugins/woocommerce/includes/class-wc-shipping.php`
+  - `wp-content/plugins/woocommerce/includes/shipping/free-shipping/class-wc-shipping-free-shipping.php`
+  - `wp-content/plugins/woocommerce/includes/shipping/flat-rate/class-wc-shipping-flat-rate.php`

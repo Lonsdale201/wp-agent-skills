@@ -1,34 +1,14 @@
 ---
 name: polylang-wc-compatibility
 description: "Build WooCommerce plugins and themes that are compatible with Polylang for WooCommerce 2.2.2. Covers product and variation language data stores, product/order translation groups, cart and Store API language behavior, HPOS order filtering, lang query behavior, SKU/global unique ID per-language checks, product property and attribute translation, stock/reserved stock sync, Woo REST lang/translations fields, batch create language queues, translated Woo strings/options, and hooks such as pllwc_copy_post_metas, pllwc_translate_product_meta, pllwc_translate_product_prop, pllwc_enable_cart_translation, pllwc_language_for_unique_sku, pllwc_get_order_types, and pllwc_copy_product. Use when extending Woo products, variations, orders, Store/REST integrations, stock, attributes, gateways, shipping, or emails on a Polylang multilingual shop."
-author: Soczo Kristof
-contact: mailto:lonsdale201@hotmail.com
-plugin: polylang-wc
-plugin-version-tested: "Polylang for WooCommerce 2.2.2 + Polylang 3.8.5 + WooCommerce 10.9.1"
-wp-version-tested: "7.0"
-php-min: "7.4"
-last-updated: "2026-07-01"
-docs:
-  - https://polylang.pro/doc/polylang-for-woocommerce/
-  - https://polylang.pro/doc/function-reference/
-source-refs:
-  - wp-content/plugins/polylang-wc/polylang-wc.php
-  - wp-content/plugins/polylang-wc/src/data-store.php
-  - wp-content/plugins/polylang-wc/src/object-language.php
-  - wp-content/plugins/polylang-wc/src/translated-object-language.php
-  - wp-content/plugins/polylang-wc/src/product-language-cpt.php
-  - wp-content/plugins/polylang-wc/src/order-language-cpt.php
-  - wp-content/plugins/polylang-wc/src/products.php
-  - wp-content/plugins/polylang-wc/src/frontend/frontend-cart.php
-  - wp-content/plugins/polylang-wc/src/store-blocks.php
-  - wp-content/plugins/polylang-wc/src/stock.php
-  - wp-content/plugins/polylang-wc/src/variation-data-store-cpt.php
-  - wp-content/plugins/polylang-wc/src/hpos-orders-query.php
-  - wp-content/plugins/polylang-wc/src/strings.php
-  - wp-content/plugins/polylang-wc/src/modules/REST/Module.php
-  - wp-content/plugins/polylang-wc/src/modules/REST/Translated/Product.php
-  - wp-content/plugins/polylang-wc/src/modules/REST/Translated/Batch.php
-  - wp-content/plugins/polylang-wc/src/modules/REST/Filtered/Order.php
+metadata:
+  wp-skills-author: "Soczo Kristof"
+  wp-skills-contact: "mailto:lonsdale201@hotmail.com"
+  wp-skills-plugin: "polylang-wc"
+  wp-skills-plugin-version-tested: "Polylang for WooCommerce 2.2.2 + Polylang 3.8.5 + WooCommerce 10.9.1"
+  wp-skills-wp-version-tested: "7.0"
+  wp-skills-php-min: "7.4"
+  wp-skills-last-updated: "2026-07-01"
 ---
 
 # Polylang for WooCommerce Compatibility
@@ -241,3 +221,26 @@ If your Woo extension stores customer-facing settings in a `WC_Settings_API` obj
 ## Verification
 
 Local source checked against `src/data-store.php`, `src/product-language-cpt.php`, `src/order-language-cpt.php`, `src/products.php`, `src/frontend/frontend-cart.php`, `src/store-blocks.php`, `src/variation-data-store-cpt.php`, `src/stock.php`, `src/hpos-orders-query.php`, and `src/modules/REST/*`.
+
+## References
+
+- Official documentation: <https://polylang.pro/doc/polylang-for-woocommerce/>
+- Official documentation: <https://polylang.pro/doc/function-reference/>
+- Verified source paths:
+  - `wp-content/plugins/polylang-wc/polylang-wc.php`
+  - `wp-content/plugins/polylang-wc/src/data-store.php`
+  - `wp-content/plugins/polylang-wc/src/object-language.php`
+  - `wp-content/plugins/polylang-wc/src/translated-object-language.php`
+  - `wp-content/plugins/polylang-wc/src/product-language-cpt.php`
+  - `wp-content/plugins/polylang-wc/src/order-language-cpt.php`
+  - `wp-content/plugins/polylang-wc/src/products.php`
+  - `wp-content/plugins/polylang-wc/src/frontend/frontend-cart.php`
+  - `wp-content/plugins/polylang-wc/src/store-blocks.php`
+  - `wp-content/plugins/polylang-wc/src/stock.php`
+  - `wp-content/plugins/polylang-wc/src/variation-data-store-cpt.php`
+  - `wp-content/plugins/polylang-wc/src/hpos-orders-query.php`
+  - `wp-content/plugins/polylang-wc/src/strings.php`
+  - `wp-content/plugins/polylang-wc/src/modules/REST/Module.php`
+  - `wp-content/plugins/polylang-wc/src/modules/REST/Translated/Product.php`
+  - `wp-content/plugins/polylang-wc/src/modules/REST/Translated/Batch.php`
+  - `wp-content/plugins/polylang-wc/src/modules/REST/Filtered/Order.php`

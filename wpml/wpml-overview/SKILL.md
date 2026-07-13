@@ -15,20 +15,13 @@ description: Orient a developer making a WordPress plugin or theme
   features need which add-on, plus a decision matrix mapping intent to
   mechanism. Use when starting WPML compatibility, deciding config vs
   API vs strings, or detecting WPML / its add-ons.
-author: Soczó Kristóf
-contact: mailto:lonsdale201@hotmail.com
-plugin: sitepress-multilingual-cms
-plugin-version-tested: "4.9.5"
-php-min: "7.4"
-last-updated: "2026-07-03"
-docs:
-  - https://wpml.org/documentation/support/wpml-coding-api/
-  - https://wpml.org/documentation/support/language-configuration-files/
-source-refs:
-  - wp-content/plugins/sitepress-multilingual-cms/sitepress.php
-  - wp-content/plugins/sitepress-multilingual-cms/sitepress.class.php
-  - wp-content/plugins/sitepress-multilingual-cms/inc/functions.php
-  - wp-content/plugins/sitepress-multilingual-cms/compatibility/
+metadata:
+  wp-skills-author: "Soczó Kristóf"
+  wp-skills-contact: "mailto:lonsdale201@hotmail.com"
+  wp-skills-plugin: "sitepress-multilingual-cms"
+  wp-skills-plugin-version-tested: "4.9.5"
+  wp-skills-php-min: "7.4"
+  wp-skills-last-updated: "2026-07-03"
 ---
 
 # WPML: compatibility overview (orient)
@@ -117,3 +110,4 @@ The base plugin bundles integrations for popular plugins/themes under [compatibi
 - ST-detection helper `wpml_is_st_loaded()`: [inc/functions.php:922-924](functions.php).
 - Bundled compatibility integrations: [compatibility/](compatibility/) + `compatibility/wpml-compatibility-factory.php`.
 - WPML coding API docs: <https://wpml.org/documentation/support/wpml-coding-api/>.
+- Official documentation: <https://wpml.org/documentation/support/language-configuration-files/>

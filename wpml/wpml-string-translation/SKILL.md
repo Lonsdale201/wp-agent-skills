@@ -1,34 +1,13 @@
 ---
 name: wpml-string-translation
-description: Register and translate a WordPress plugin's dynamic strings
-  with WPML — option values, admin-entered labels, and other free-form
-  text that is NOT a static gettext string. Register via
-  do_action('wpml_register_single_string', $domain, $name, $value) and
-  read back via apply_filters('wpml_translate_single_string', $value,
-  $domain, $name[, $lang]); legacy equivalents are icl_register_string(
-  $context, $name, $value) and icl_t(). CRITICAL — these handlers live
-  in the WPML String Translation add-on, NOT the base plugin — the base
-  only FIRES the hooks, so without ST the translate filter returns the
-  original (safe) and register is a silent no-op, while raw unguarded
-  icl_register_string / icl_t calls FATAL. Covers detecting ST
-  (defined('WPML_ST_VERSION'), class_exists('WPML_String_Translation'),
-  function_exists('icl_register_string')), the function_exists fallback
-  wrapper pattern, and when to use wpml-config <admin-texts> instead.
-  Use for translatable settings, dynamic labels, or any registered string.
-author: Soczó Kristóf
-contact: mailto:lonsdale201@hotmail.com
-plugin: sitepress-multilingual-cms
-plugin-version-tested: "4.9.5"
-php-min: "7.4"
-last-updated: "2026-07-03"
-docs:
-  - https://wpml.org/documentation/support/wpml-coding-api/
-  - https://wpml.org/documentation/support/translate-texts-in-admin-screens-with-wpml-string-translation/
-source-refs:
-  - wp-content/plugins/sitepress-multilingual-cms/docs/theme-integration/wpml-integration.php
-  - wp-content/plugins/sitepress-multilingual-cms/inc/functions.php
-  - wp-content/plugins/sitepress-multilingual-cms/classes/language-switcher/class-wpml-ls-settings-strings.php
-  - wp-content/plugins/sitepress-multilingual-cms/classes/url-handling/class-wpml-endpoints-support.php
+description: Register and translate a WordPress plugin's dynamic strings with WPML — option values, admin-entered labels, and other free-form text that is NOT a static gettext string. Register via do_action('wpml_register_single_string', $domain, $name, $value) and read back via apply_filters('wpml_translate_single_string', $value, $domain, $name[, $lang]); legacy equivalents are icl_register_string( $context, $name, $value) and icl_t(). CRITICAL — these handlers live in the WPML String Translation add-on, NOT the base plugin — the base only FIRES the hooks, so without ST the translate filter returns the original (safe) and register is a silent no-op, while raw unguarded icl_register_string / icl_t calls FATAL. Covers detecting ST (defined('WPML_ST_VERSION'), class_exists('WPML_String_Translation'), function_exists('icl_register_string')), the function_exists fallback wrapper pattern, and when to use wpml-config admin-texts instead. Use for translatable settings, dynamic labels, or any registered string.
+metadata:
+  wp-skills-author: "Soczó Kristóf"
+  wp-skills-contact: "mailto:lonsdale201@hotmail.com"
+  wp-skills-plugin: "sitepress-multilingual-cms"
+  wp-skills-plugin-version-tested: "4.9.5"
+  wp-skills-php-min: "7.4"
+  wp-skills-last-updated: "2026-07-03"
 ---
 
 # WPML: string registration & translation
@@ -169,3 +148,4 @@ do_action( 'wpml_register_single_string', 'my-plugin', 'welcome_heading', $value
 - Graceful `function_exists` wrapper pattern: [docs/theme-integration/wpml-integration.php:130-142](wpml-integration.php).
 - ST detection helper `wpml_is_st_loaded()`: [inc/functions.php:922-924](functions.php); `class_exists('WPML_String_Translation')`: [inc/translation-management/translation-management.class.php:1742](translation-management.class.php).
 - WPML coding API docs: <https://wpml.org/documentation/support/wpml-coding-api/>.
+- Official documentation: <https://wpml.org/documentation/support/translate-texts-in-admin-screens-with-wpml-string-translation/>

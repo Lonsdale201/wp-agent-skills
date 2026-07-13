@@ -1,31 +1,14 @@
 ---
 name: polylang-rest-headless
 description: "Build or audit REST and headless integrations with Polylang 3.8.5, Polylang Pro 3.8.5, and Polylang for WooCommerce 2.2.2. Covers REST lang parameter behavior, pll/v1 languages, filterable REST routes, Pro lang/translations REST fields, pll_rest_api_post_types and pll_rest_api_taxonomies 3.8 format, pll/v1/translation and pll/v1/untranslated-posts, custom REST object-type detection, collection filtering, write permissions, and Woo REST product/order language behavior. Use when creating headless frontends, mobile clients, custom WP REST routes, or REST imports/updates for translated content."
-author: Soczo Kristof
-contact: mailto:lonsdale201@hotmail.com
-plugin: polylang + polylang-pro + polylang-wc
-plugin-version-tested: "Polylang 3.8.5 + Polylang Pro 3.8.5 + Polylang for WooCommerce 2.2.2"
-wp-version-tested: "7.0"
-php-min: "7.4"
-last-updated: "2026-07-01"
-docs:
-  - https://polylang.pro/doc/rest-api/
-  - https://polylang.pro/doc/function-reference/
-source-refs:
-  - wp-content/plugins/polylang/src/rest-request.php
-  - wp-content/plugins/polylang/src/modules/REST/Request.php
-  - wp-content/plugins/polylang/src/modules/REST/API.php
-  - wp-content/plugins/polylang/src/modules/REST/V1/Languages.php
-  - wp-content/plugins/polylang/src/filter-rest-routes.php
-  - wp-content/plugins/polylang-pro/src/modules/rest/rest-api.php
-  - wp-content/plugins/polylang-pro/src/modules/rest/Translatable/Abstract_object.php
-  - wp-content/plugins/polylang-pro/src/modules/rest/Translated/Abstract_Object.php
-  - wp-content/plugins/polylang-pro/src/modules/rest/V1/Translation.php
-  - wp-content/plugins/polylang-pro/src/modules/rest/V1/Untranslated_Posts.php
-  - wp-content/plugins/polylang-wc/src/modules/REST/Module.php
-  - wp-content/plugins/polylang-wc/src/modules/REST/Translated/Product.php
-  - wp-content/plugins/polylang-wc/src/modules/REST/Translated/Batch.php
-  - wp-content/plugins/polylang-wc/src/modules/REST/Filtered/Order.php
+metadata:
+  wp-skills-author: "Soczo Kristof"
+  wp-skills-contact: "mailto:lonsdale201@hotmail.com"
+  wp-skills-plugin: "polylang + polylang-pro + polylang-wc"
+  wp-skills-plugin-version-tested: "Polylang 3.8.5 + Polylang Pro 3.8.5 + Polylang for WooCommerce 2.2.2"
+  wp-skills-wp-version-tested: "7.0"
+  wp-skills-php-min: "7.4"
+  wp-skills-last-updated: "2026-07-01"
 ---
 
 # Polylang REST and Headless
@@ -279,3 +262,23 @@ Local source checked against:
 - Languages endpoint schema/routes: `src/modules/REST/V1/Languages.php`
 - Pro REST fields and filters: `polylang-pro/src/modules/rest/*`
 - Woo REST module and batch queue: `polylang-wc/src/modules/REST/*`
+
+## References
+
+- Official documentation: <https://polylang.pro/doc/rest-api/>
+- Official documentation: <https://polylang.pro/doc/function-reference/>
+- Verified source paths:
+  - `wp-content/plugins/polylang/src/rest-request.php`
+  - `wp-content/plugins/polylang/src/modules/REST/Request.php`
+  - `wp-content/plugins/polylang/src/modules/REST/API.php`
+  - `wp-content/plugins/polylang/src/modules/REST/V1/Languages.php`
+  - `wp-content/plugins/polylang/src/filter-rest-routes.php`
+  - `wp-content/plugins/polylang-pro/src/modules/rest/rest-api.php`
+  - `wp-content/plugins/polylang-pro/src/modules/rest/Translatable/Abstract_object.php`
+  - `wp-content/plugins/polylang-pro/src/modules/rest/Translated/Abstract_Object.php`
+  - `wp-content/plugins/polylang-pro/src/modules/rest/V1/Translation.php`
+  - `wp-content/plugins/polylang-pro/src/modules/rest/V1/Untranslated_Posts.php`
+  - `wp-content/plugins/polylang-wc/src/modules/REST/Module.php`
+  - `wp-content/plugins/polylang-wc/src/modules/REST/Translated/Product.php`
+  - `wp-content/plugins/polylang-wc/src/modules/REST/Translated/Batch.php`
+  - `wp-content/plugins/polylang-wc/src/modules/REST/Filtered/Order.php`

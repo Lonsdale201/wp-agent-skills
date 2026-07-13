@@ -1,24 +1,13 @@
 ---
 name: wc-payment-tokens
 description: Store and use WooCommerce saved payment methods through `WC_Payment_Tokens` and `WC_Payment_Token_CC` safely. Covers provider token vs card data, tokenization gateway support, creating/updating/deleting/defaulting tokens, My Account nonce and ownership checks, `get_customer_tokens`, `get_customer_default_token`, `get_order_tokens`, attaching tokens to orders, gateway ID filtering, custom token tables, hooks, HPOS-safe order use, and checkout saved-token validation. Use when building saved cards, charging a saved method, add-payment-method flows, token migrations, token deletion/default endpoints, or gateway tokenization.
-author: Soczó Kristóf
-contact: mailto:lonsdale201@hotmail.com
-plugin: woocommerce
-plugin-version-tested: "10.9.4"
-php-min: "7.4"
-last-updated: "2026-07-10"
-docs:
-  - https://woocommerce.com/document/payment-gateway-api/
-source-refs:
-  - wp-content/plugins/woocommerce/includes/class-wc-payment-tokens.php
-  - wp-content/plugins/woocommerce/includes/abstracts/abstract-wc-payment-token.php
-  - wp-content/plugins/woocommerce/includes/payment-tokens/class-wc-payment-token-cc.php
-  - wp-content/plugins/woocommerce/includes/payment-tokens/class-wc-payment-token-echeck.php
-  - wp-content/plugins/woocommerce/includes/data-stores/class-wc-payment-token-data-store.php
-  - wp-content/plugins/woocommerce/includes/class-wc-form-handler.php
-  - wp-content/plugins/woocommerce/includes/abstracts/abstract-wc-payment-gateway.php
-  - wp-content/plugins/woocommerce/includes/gateways/class-wc-payment-gateway-cc.php
-  - wp-content/plugins/woocommerce/includes/abstracts/abstract-wc-order.php
+metadata:
+  wp-skills-author: "Soczó Kristóf"
+  wp-skills-contact: "mailto:lonsdale201@hotmail.com"
+  wp-skills-plugin: "woocommerce"
+  wp-skills-plugin-version-tested: "10.9.4"
+  wp-skills-php-min: "7.4"
+  wp-skills-last-updated: "2026-07-10"
 ---
 
 # WooCommerce payment tokens
@@ -278,3 +267,17 @@ Deleting a WooCommerce token does not automatically revoke the token at your pay
 - Gateway `process_payment()` and add-payment-method flow: `wc-payment-gateway`
 - HPOS-safe order reads/writes: `wc-hpos-compatibility`
 - Store API payment requirements: `wc-store-api`
+
+## References
+
+- Official documentation: <https://woocommerce.com/document/payment-gateway-api/>
+- Verified source paths:
+  - `wp-content/plugins/woocommerce/includes/class-wc-payment-tokens.php`
+  - `wp-content/plugins/woocommerce/includes/abstracts/abstract-wc-payment-token.php`
+  - `wp-content/plugins/woocommerce/includes/payment-tokens/class-wc-payment-token-cc.php`
+  - `wp-content/plugins/woocommerce/includes/payment-tokens/class-wc-payment-token-echeck.php`
+  - `wp-content/plugins/woocommerce/includes/data-stores/class-wc-payment-token-data-store.php`
+  - `wp-content/plugins/woocommerce/includes/class-wc-form-handler.php`
+  - `wp-content/plugins/woocommerce/includes/abstracts/abstract-wc-payment-gateway.php`
+  - `wp-content/plugins/woocommerce/includes/gateways/class-wc-payment-gateway-cc.php`
+  - `wp-content/plugins/woocommerce/includes/abstracts/abstract-wc-order.php`

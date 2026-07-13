@@ -1,18 +1,13 @@
 ---
 name: br-rate-limiting
 description: Configure better-route 1.1 RateLimitMiddleware with atomic fixed-window storage. Use for WpObjectCacheRateLimiter, TransientRateLimiter, persistent external object cache checks, wp_cache_incr, MySQL named locks, identity/native WordPress/IP keys, trusted proxies, Retry-After and X-RateLimit headers, custom key resolvers, or diagnosing shared guest buckets and race-prone rate limiting.
-author: Soczó Kristóf
-contact: mailto:lonsdale201@hotmail.com
-plugin: better-route
-plugin-version-tested: "1.1.0"
-php-min: "8.1"
-last-updated: "2026-07-13"
-source-refs:
-  - src/Middleware/RateLimit/RateLimitMiddleware.php
-  - src/Middleware/RateLimit/WpObjectCacheRateLimiter.php
-  - src/Middleware/RateLimit/TransientRateLimiter.php
-  - src/Support/RequestIdentity.php
-  - src/Middleware/Network/TrustedProxyClientIpResolver.php
+metadata:
+  wp-skills-author: "Soczó Kristóf"
+  wp-skills-contact: "mailto:lonsdale201@hotmail.com"
+  wp-skills-plugin: "better-route"
+  wp-skills-plugin-version-tested: "1.1.0"
+  wp-skills-php-min: "8.1"
+  wp-skills-last-updated: "2026-07-13"
 ---
 
 # better-route: rate limiting
@@ -148,3 +143,12 @@ Include route/tenant/identity deliberately and use unambiguous structured encodi
 - Use `br-network-security` for proxy/CIDR rules.
 - Use `br-auth-middleware` for identity ordering.
 - Use `br-cors-public-client` to expose rate-limit headers.
+
+## References
+
+- Verified source paths:
+  - `src/Middleware/RateLimit/RateLimitMiddleware.php`
+  - `src/Middleware/RateLimit/WpObjectCacheRateLimiter.php`
+  - `src/Middleware/RateLimit/TransientRateLimiter.php`
+  - `src/Support/RequestIdentity.php`
+  - `src/Middleware/Network/TrustedProxyClientIpResolver.php`

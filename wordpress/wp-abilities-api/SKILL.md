@@ -9,18 +9,13 @@ description: >-
   meta.show_in_rest, annotations, and Ability vs REST route vs custom hook
   decisions. Use when exposing plugin functionality to agents, admin JS,
   external tools, WP AI Client workflows, or reviewing AI integration code.
-author: Soczó Kristóf
-contact: mailto:lonsdale201@hotmail.com
-plugin: wordpress
-plugin-version-tested: "6.9 - 7.0.1"
-php-min: "7.4"
-last-updated: "2026-07-10"
-docs:
-  - https://developer.wordpress.org/apis/abilities-api/
-  - https://developer.wordpress.org/news/2025/11/introducing-the-wordpress-abilities-api/
-  - https://make.wordpress.org/core/2026/03/24/client-side-abilities-api-in-wordpress-7-0/
-  - https://packagist.org/packages/wordpress/abilities-api
-  - https://github.com/WordPress/abilities-api
+metadata:
+  wp-skills-author: "Soczó Kristóf"
+  wp-skills-contact: "mailto:lonsdale201@hotmail.com"
+  wp-skills-plugin: "wordpress"
+  wp-skills-plugin-version-tested: "6.9 - 7.0.1"
+  wp-skills-php-min: "7.4"
+  wp-skills-last-updated: "2026-07-10"
 ---
 
 # WordPress Abilities API

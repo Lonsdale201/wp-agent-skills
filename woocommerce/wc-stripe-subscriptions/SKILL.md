@@ -1,22 +1,14 @@
 ---
 name: wc-stripe-subscriptions
 description: Integrate WooCommerce Stripe Gateway 10.8+ with WooCommerce Subscriptions 9.0. Covers gateway feature support, automatic renewal charges, Stripe customer/payment-method metadata, failed-renewal recovery, SCA, change-payment SetupIntents, update-all behavior, Express Checkout on the change-payment page, detached tokens, and safe test cases. Use when Stripe is a subscription gateway or code touches scheduled_subscription_payment_stripe, _stripe_source_id on WC_Subscription, change_payment_method, renewal authentication, or Stripe token migration.
-author: Soczo Kristof
-contact: mailto:lonsdale201@hotmail.com
-plugin: woocommerce-gateway-stripe + woocommerce-subscriptions
-plugin-version-tested: "woocommerce-gateway-stripe 10.8.3; woocommerce-subscriptions 9.0.0"
-woocommerce-version-tested: "10.9.4"
-php-min: "7.4"
-last-updated: "2026-07-10"
-source-refs:
-  - wp-content/plugins/woocommerce-gateway-stripe/includes/compat/trait-wc-stripe-subscriptions.php
-  - wp-content/plugins/woocommerce-gateway-stripe/includes/compat/trait-wc-stripe-subscriptions-utilities.php
-  - wp-content/plugins/woocommerce-gateway-stripe/includes/compat/class-wc-stripe-subscriptions-helper.php
-  - wp-content/plugins/woocommerce-gateway-stripe/includes/payment-methods/class-wc-stripe-upe-payment-gateway.php
-  - wp-content/plugins/woocommerce-gateway-stripe/includes/payment-methods/class-wc-stripe-express-checkout-element.php
-  - wp-content/plugins/woocommerce-gateway-stripe/includes/payment-methods/class-wc-stripe-express-checkout-helper.php
-  - wp-content/plugins/woocommerce-subscriptions/includes/core/class-wc-subscriptions-change-payment-gateway.php
-  - wp-content/plugins/woocommerce-subscriptions/includes/gateways/class-wc-subscriptions-payment-gateways.php
+metadata:
+  wp-skills-author: "Soczo Kristof"
+  wp-skills-contact: "mailto:lonsdale201@hotmail.com"
+  wp-skills-plugin: "woocommerce-gateway-stripe + woocommerce-subscriptions"
+  wp-skills-plugin-version-tested: "woocommerce-gateway-stripe 10.8.3; woocommerce-subscriptions 9.0.0"
+  wp-skills-woocommerce-version-tested: "10.9.4"
+  wp-skills-php-min: "7.4"
+  wp-skills-last-updated: "2026-07-10"
 ---
 
 # Stripe and WooCommerce Subscriptions
@@ -181,3 +173,15 @@ Test at minimum:
 - Use `wcs-renewal-scheduler` for WCS schedule/order creation and retry timing.
 - Use `wcs-subscription-hooks` for generic gateway-change hook signatures.
 - Use `wc-stripe-webhooks` for asynchronous Stripe settlement and webhook order locking.
+
+## References
+
+- Verified source paths:
+  - `wp-content/plugins/woocommerce-gateway-stripe/includes/compat/trait-wc-stripe-subscriptions.php`
+  - `wp-content/plugins/woocommerce-gateway-stripe/includes/compat/trait-wc-stripe-subscriptions-utilities.php`
+  - `wp-content/plugins/woocommerce-gateway-stripe/includes/compat/class-wc-stripe-subscriptions-helper.php`
+  - `wp-content/plugins/woocommerce-gateway-stripe/includes/payment-methods/class-wc-stripe-upe-payment-gateway.php`
+  - `wp-content/plugins/woocommerce-gateway-stripe/includes/payment-methods/class-wc-stripe-express-checkout-element.php`
+  - `wp-content/plugins/woocommerce-gateway-stripe/includes/payment-methods/class-wc-stripe-express-checkout-helper.php`
+  - `wp-content/plugins/woocommerce-subscriptions/includes/core/class-wc-subscriptions-change-payment-gateway.php`
+  - `wp-content/plugins/woocommerce-subscriptions/includes/gateways/class-wc-subscriptions-payment-gateways.php`

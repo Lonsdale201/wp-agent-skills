@@ -16,20 +16,14 @@ description: Build a custom FluentCRM funnel benchmark — a goal/wait point
   Triggers on BaseBenchMark, fluentcrm_funnel_benchmark_start_,
   assertCurrentGoalState, startFunnelFromSequencePoint, benchmarkTypeField,
   canEnterField.
-author: Soczó Kristóf
-contact: mailto:lonsdale201@hotmail.com
-plugin: fluent-crm
-plugin-version-tested: "FluentCRM 3.1.8 + FluentCRM Pro 3.1.8"
-api-stable-since: "2.6"
-php-min: "7.4"
-last-updated: "2026-07-09"
-docs:
-  - https://developers.fluentcrm.com/funnel-builder/custom-benchmark/
-source-refs:
-  - app/Services/Funnel/BaseBenchMark.php
-  - app/Services/Funnel/FunnelProcessor.php
-  - app/Services/Funnel/Benchmarks/TagAppliedBenchmark.php
-  - app/Hooks/Handlers/FunnelHandler.php
+metadata:
+  wp-skills-author: "Soczó Kristóf"
+  wp-skills-contact: "mailto:lonsdale201@hotmail.com"
+  wp-skills-plugin: "fluent-crm"
+  wp-skills-plugin-version-tested: "FluentCRM 3.1.8 + FluentCRM Pro 3.1.8"
+  wp-skills-php-min: "7.4"
+  wp-skills-api-stable-since: "2.6"
+  wp-skills-last-updated: "2026-07-09"
 ---
 
 # FluentCRM: register a custom funnel benchmark
@@ -275,3 +269,4 @@ The `assertCurrentGoalState` filter is dispatched separately when the admin load
 - Reference benchmark (Tag Applied) — `app/Services/Funnel/Benchmarks/TagAppliedBenchmark.php`
 - Listener bootstrap + benchmark dispatch — `app/Hooks/Handlers/FunnelHandler.php`
 - ResetFunnelIndexes (benchmark sequence discovery) — `app/Hooks/Handlers/FunnelHandler.php`
+- Official documentation: <https://developers.fluentcrm.com/funnel-builder/custom-benchmark/>

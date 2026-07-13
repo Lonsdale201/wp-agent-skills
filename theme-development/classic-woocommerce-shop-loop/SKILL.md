@@ -1,27 +1,14 @@
 ---
 name: classic-woocommerce-shop-loop
 description: Build or audit WooCommerce shop/archive loops and product cards in a classic PHP theme. Covers `archive-product.php`, `content-product.php`, product taxonomy templates, `woocommerce_product_loop()`, `woocommerce_product_loop_start/end()`, `wc_get_loop_prop()`, `wc_get_template_part( 'content', 'product' )`, `wc_product_class()`, loop hooks, product cards, sale flash, thumbnails, ratings, price, add-to-cart ARIA, result count, ordering, pagination, no-products state, grid columns, and avoiding raw `WP_Query`/postmeta product loops.
-author: Soczó Kristóf
-contact: mailto:lonsdale201@hotmail.com
-plugin: woocommerce
-plugin-version-tested: "10.8.1"
-wp-version-tested: "7.0"
-php-min: "7.4"
-last-updated: "2026-06-14"
-docs:
-  - https://developer.woocommerce.com/docs/theming/theme-development/template-structure/
-  - https://developer.woocommerce.com/docs/theming/theme-development/conditional-tags/
-  - https://developer.woocommerce.com/docs/theming/theme-development/image-sizes/
-  - https://developer.woocommerce.com/docs/theming/theme-development/theme-design-ux-guidelines/
-source-refs:
-  - wp-content/plugins/woocommerce/templates/archive-product.php
-  - wp-content/plugins/woocommerce/templates/content-product.php
-  - wp-content/plugins/woocommerce/templates/loop/add-to-cart.php
-  - wp-content/plugins/woocommerce/templates/loop/loop-start.php
-  - wp-content/plugins/woocommerce/templates/loop/pagination.php
-  - wp-content/plugins/woocommerce/includes/wc-template-hooks.php
-  - wp-content/plugins/woocommerce/includes/wc-template-functions.php
-  - wp-content/plugins/woocommerce/includes/wc-product-functions.php
+metadata:
+  wp-skills-author: "Soczó Kristóf"
+  wp-skills-contact: "mailto:lonsdale201@hotmail.com"
+  wp-skills-plugin: "woocommerce"
+  wp-skills-plugin-version-tested: "10.8.1"
+  wp-skills-wp-version-tested: "7.0"
+  wp-skills-php-min: "7.4"
+  wp-skills-last-updated: "2026-06-14"
 ---
 
 # Classic WooCommerce Shop Loop
@@ -204,3 +191,19 @@ Rules:
 - Losing AJAX add-to-cart classes/data attributes.
 - Hardcoding "Add to cart" without product-specific ARIA.
 - Using `WP_Query` and forgetting `wp_reset_postdata()`.
+
+## References
+
+- Official documentation: <https://developer.woocommerce.com/docs/theming/theme-development/template-structure/>
+- Official documentation: <https://developer.woocommerce.com/docs/theming/theme-development/conditional-tags/>
+- Official documentation: <https://developer.woocommerce.com/docs/theming/theme-development/image-sizes/>
+- Official documentation: <https://developer.woocommerce.com/docs/theming/theme-development/theme-design-ux-guidelines/>
+- Verified source paths:
+  - `wp-content/plugins/woocommerce/templates/archive-product.php`
+  - `wp-content/plugins/woocommerce/templates/content-product.php`
+  - `wp-content/plugins/woocommerce/templates/loop/add-to-cart.php`
+  - `wp-content/plugins/woocommerce/templates/loop/loop-start.php`
+  - `wp-content/plugins/woocommerce/templates/loop/pagination.php`
+  - `wp-content/plugins/woocommerce/includes/wc-template-hooks.php`
+  - `wp-content/plugins/woocommerce/includes/wc-template-functions.php`
+  - `wp-content/plugins/woocommerce/includes/wc-product-functions.php`

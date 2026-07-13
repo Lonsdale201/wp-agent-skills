@@ -8,22 +8,13 @@ description: >-
   conventions. Use when scaffolding settings, choosing persistence for
   plugin-owned data, or auditing update_option/get_option/get_post_meta/
   set_transient/autoload usage.
-author: Soczó Kristóf
-contact: mailto:lonsdale201@hotmail.com
-plugin: wordpress
-plugin-version-tested: "6.5 - 7.0"
-php-min: "7.4"
-last-updated: "2026-07-12"
-docs:
-  - https://developer.wordpress.org/reference/functions/add_option/
-  - https://developer.wordpress.org/reference/functions/get_option/
-  - https://developer.wordpress.org/reference/functions/get_post_meta/
-  - https://developer.wordpress.org/reference/functions/set_transient/
-source-refs:
-  - wp-includes/option.php
-  - wp-includes/functions.php
-  - wp-includes/meta.php
-  - wp-admin/includes/schema.php
+metadata:
+  wp-skills-author: "Soczó Kristóf"
+  wp-skills-contact: "mailto:lonsdale201@hotmail.com"
+  wp-skills-plugin: "wordpress"
+  wp-skills-plugin-version-tested: "6.5 - 7.0"
+  wp-skills-php-min: "7.4"
+  wp-skills-last-updated: "2026-07-12"
 ---
 
 # WordPress plugin: options & storage
@@ -270,3 +261,7 @@ wp_set_option_autoload( 'myplugin_large_report', false );
 - Transient API: `wp-includes/option.php` `set_transient` / `set_site_transient`
 - Meta API: `wp-includes/meta.php` — `get_metadata` / `update_metadata` / `delete_metadata` underlie all `*_meta` functions
 - WP database schema: `wp-admin/includes/schema.php` — see how WP itself names tables and columns for inspiration
+- Official documentation: <https://developer.wordpress.org/reference/functions/add_option/>
+- Official documentation: <https://developer.wordpress.org/reference/functions/get_option/>
+- Official documentation: <https://developer.wordpress.org/reference/functions/get_post_meta/>
+- Official documentation: <https://developer.wordpress.org/reference/functions/set_transient/>

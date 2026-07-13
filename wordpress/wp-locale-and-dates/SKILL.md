@@ -11,17 +11,13 @@ description: Handle dates, times, and numbers in WordPress plugins with
   and locale-aware number formatting. Use for any plugin that stores,
   queries, or displays dates / numbers in multi-locale, multi-timezone
   installs.
-author: Soczó Kristóf
-contact: mailto:lonsdale201@hotmail.com
-plugin: wordpress
-plugin-version-tested: "5.3 - 7.0.1"
-php-min: "7.4"
-last-updated: "2026-07-10"
-docs:
-  - https://developer.wordpress.org/reference/functions/wp_date/
-  - https://developer.wordpress.org/reference/functions/current_datetime/
-  - https://developer.wordpress.org/reference/functions/wp_timezone/
-  - https://make.wordpress.org/core/2019/09/23/date-time-improvements-wp-5-3/
+metadata:
+  wp-skills-author: "Soczó Kristóf"
+  wp-skills-contact: "mailto:lonsdale201@hotmail.com"
+  wp-skills-plugin: "wordpress"
+  wp-skills-plugin-version-tested: "5.3 - 7.0.1"
+  wp-skills-php-min: "7.4"
+  wp-skills-last-updated: "2026-07-10"
 ---
 
 # WordPress Locale, Dates & Numbers
@@ -242,3 +238,7 @@ $rfc3339 = ( new DateTimeImmutable( $datetime_string, wp_timezone() ) )
 - `wp-includes/functions.php:424` — `number_format_i18n()`.
 - `wp-includes/functions.php:7863` — `mysql_to_rfc3339()` with the "does NOT conform to RFC3339" docblock note.
 - `wp-includes/formatting.php:3670` / `:3692` — `get_gmt_from_date()` / `get_date_from_gmt()`.
+- Official documentation: <https://developer.wordpress.org/reference/functions/wp_date/>
+- Official documentation: <https://developer.wordpress.org/reference/functions/current_datetime/>
+- Official documentation: <https://developer.wordpress.org/reference/functions/wp_timezone/>
+- Official documentation: <https://make.wordpress.org/core/2019/09/23/date-time-improvements-wp-5-3/>

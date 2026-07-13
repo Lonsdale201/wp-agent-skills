@@ -7,26 +7,15 @@ description: >
   `WP_REDIS_*` constants, Predis/PhpRedis/Relay client selection, cache groups,
   selective flush, metrics, Query Monitor integration, and correct plugin code
   that uses `wp_cache_*` with Redis Object Cache.
-author: Soczó Kristóf
-contact: mailto:lonsdale201@hotmail.com
-plugin: redis-cache
-plugin-version-tested: "2.8.0"
-wp-version-tested: "7.0"
-php-min: "7.2"
-last-updated: "2026-06-15"
-docs:
-  - https://wordpress.org/plugins/redis-cache/
-  - https://github.com/rhubarbgroup/redis-cache
-source-refs:
-  - wp-content/plugins/redis-cache/redis-cache.php
-  - wp-content/plugins/redis-cache/readme.txt
-  - wp-content/plugins/redis-cache/includes/class-plugin.php
-  - wp-content/plugins/redis-cache/includes/object-cache.php
-  - wp-content/plugins/redis-cache/includes/class-predis.php
-  - wp-content/plugins/redis-cache/includes/cli/class-commands.php
-  - wp-content/plugins/redis-cache/includes/diagnostics.php
-  - wp-content/plugins/redis-cache/includes/class-metrics.php
 license: GPLv3
+metadata:
+  wp-skills-author: "Soczó Kristóf"
+  wp-skills-contact: "mailto:lonsdale201@hotmail.com"
+  wp-skills-plugin: "redis-cache"
+  wp-skills-plugin-version-tested: "2.8.0"
+  wp-skills-wp-version-tested: "7.0"
+  wp-skills-php-min: "7.2"
+  wp-skills-last-updated: "2026-06-15"
 ---
 
 # Redis Object Cache
@@ -291,3 +280,7 @@ Diagnostics intentionally masks `WP_REDIS_PASSWORD` and password query parameter
 - Diagnostics constants: `wp-content/plugins/redis-cache/includes/diagnostics.php`
 - Predis connection/flush helper: `wp-content/plugins/redis-cache/includes/class-predis.php`
 - Metrics behavior: `wp-content/plugins/redis-cache/includes/class-metrics.php`
+- Official documentation: <https://wordpress.org/plugins/redis-cache/>
+- Official documentation: <https://github.com/rhubarbgroup/redis-cache>
+- Verified source paths:
+  - `wp-content/plugins/redis-cache/readme.txt`

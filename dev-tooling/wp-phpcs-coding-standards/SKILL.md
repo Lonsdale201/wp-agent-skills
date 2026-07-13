@@ -13,23 +13,15 @@ description: >
   renames such as `minimum_supported_version` -> `minimum_wp_version`). Use when
   adding coding-standards linting, writing/auditing a ruleset, or fixing
   "standard not installed" / WPCS 2.x-to-3.x migration problems.
-author: Soczó Kristóf
-contact: mailto:lonsdale201@hotmail.com
-plugin: wordpress
-plugin-version-tested: "WPCS 3.3; PHP_CodeSniffer 3.13; PHPCompatibilityWP 2.1; WP 7.0"
-wp-version-tested: "7.0"
-php-min: "7.4"
-last-updated: "2026-06-17"
-docs:
-  - https://github.com/WordPress/WordPress-Coding-Standards
-  - https://github.com/WordPress/WordPress-Coding-Standards/wiki/Customizable-sniff-properties
-  - https://github.com/PHPCompatibility/PHPCompatibilityWP
-source-refs:
-  - https://github.com/WordPress/WordPress-Coding-Standards/releases/tag/3.0.0
-  - https://github.com/PHPCSStandards/PHP_CodeSniffer
-  - https://github.com/PHPCSStandards/composer-installer
-  - https://github.com/PHPCSStandards/PHP_CodeSniffer/wiki/Advanced-Usage
 license: GPLv2-or-later
+metadata:
+  wp-skills-author: "Soczó Kristóf"
+  wp-skills-contact: "mailto:lonsdale201@hotmail.com"
+  wp-skills-plugin: "wordpress"
+  wp-skills-plugin-version-tested: "WPCS 3.3; PHP_CodeSniffer 3.13; PHPCompatibilityWP 2.1; WP 7.0"
+  wp-skills-wp-version-tested: "7.0"
+  wp-skills-php-min: "7.4"
+  wp-skills-last-updated: "2026-06-17"
 ---
 
 # WordPress coding standards with PHPCS
@@ -187,3 +179,4 @@ If you inherit a ruleset that errors on WPCS 3.x, the usual causes (verified aga
 - PHP_CodeSniffer (PHPCSStandards): <https://github.com/PHPCSStandards/PHP_CodeSniffer>
 - Composer installer: <https://github.com/PHPCSStandards/composer-installer>
 - PHPCompatibilityWP: <https://github.com/PHPCompatibility/PHPCompatibilityWP>
+- Related documentation: <https://github.com/PHPCSStandards/PHP_CodeSniffer/wiki/Advanced-Usage>

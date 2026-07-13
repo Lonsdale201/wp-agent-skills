@@ -1,30 +1,13 @@
 ---
 name: lw-lms-rest-frontend
 description: Build a custom frontend against LW LMS's headless `/wp-json/lms/v1` REST API in lw-lms v1.5.1. Use for React, Vue, Astro, mobile, or theme code that calls `/courses`, `/courses/{id}`, `/lessons/{id}`, `/progress`, `/progress/course/{id}`, or `/download/{id}` and must handle public course content, lesson/access gating, paid-course products/subscriptions/subscription_variations/memberships, progress payloads, downloads, and nonce/app-password auth.
-author: Soczó Kristóf
-contact: mailto:lonsdale201@hotmail.com
-plugin: lw-lms
-plugin-version-tested: "1.5.1"
-php-min: "8.1"
-last-updated: "2026-06-15"
-docs:
-  - https://github.com/lwplugins/lw-lms
-source-refs:
-  - wp-content/plugins/lw-lms/includes/Api/RestApi.php
-  - wp-content/plugins/lw-lms/includes/Api/Controllers/CoursesController.php
-  - wp-content/plugins/lw-lms/includes/Api/Controllers/LessonsController.php
-  - wp-content/plugins/lw-lms/includes/Api/Controllers/ProgressController.php
-  - wp-content/plugins/lw-lms/includes/Api/Controllers/DownloadController.php
-  - wp-content/plugins/lw-lms/includes/Api/Transformers/CourseTransformer.php
-  - wp-content/plugins/lw-lms/includes/Api/Transformers/LessonTransformer.php
-  - wp-content/plugins/lw-lms/includes/Api/Transformers/ProgressTransformer.php
-  - wp-content/plugins/lw-lms/includes/Access/AccessChecker.php
-  - wp-content/plugins/lw-lms/includes/Access/MembershipChecker.php
-  - wp-content/plugins/lw-lms/includes/Access/SubscriptionVariationChecker.php
-  - wp-content/plugins/lw-lms/includes/Access/WooCommerceChecker.php
-  - wp-content/plugins/lw-lms/includes/Meta/VideoParser.php
-  - wp-content/plugins/lw-lms/includes/Progress/ProgressCalculator.php
-  - wp-content/plugins/lw-lms/CHANGELOG.md
+metadata:
+  wp-skills-author: "Soczó Kristóf"
+  wp-skills-contact: "mailto:lonsdale201@hotmail.com"
+  wp-skills-plugin: "lw-lms"
+  wp-skills-plugin-version-tested: "1.5.1"
+  wp-skills-php-min: "8.1"
+  wp-skills-last-updated: "2026-06-15"
 ---
 
 # LW LMS: REST frontend consumer
@@ -402,3 +385,10 @@ fetch('/wp-json/lms/v1/progress', {
 - Lesson response shape: `includes/Api/Transformers/LessonTransformer.php`.
 - Progress row shape: `includes/Api/Transformers/ProgressTransformer.php`.
 - Paid access payload including memberships: `includes/Access/AccessChecker.php`, `includes/Access/MembershipChecker.php`.
+- Official documentation: <https://github.com/lwplugins/lw-lms>
+- Verified source paths:
+  - `wp-content/plugins/lw-lms/includes/Access/SubscriptionVariationChecker.php`
+  - `wp-content/plugins/lw-lms/includes/Access/WooCommerceChecker.php`
+  - `wp-content/plugins/lw-lms/includes/Meta/VideoParser.php`
+  - `wp-content/plugins/lw-lms/includes/Progress/ProgressCalculator.php`
+  - `wp-content/plugins/lw-lms/CHANGELOG.md`

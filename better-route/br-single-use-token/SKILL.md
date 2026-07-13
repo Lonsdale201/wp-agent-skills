@@ -1,13 +1,13 @@
 ---
 name: br-single-use-token
 description: Configure Better Route 1.1 atomic single-use tokens for authorization codes, password resets, magic links, invitations, and email confirmation. Use when a token must be stored hashed and consumed no more than once across concurrent requests.
-author: Soczó Kristóf
-contact: mailto:lonsdale201@hotmail.com
-plugin: better-route
-plugin-version-tested: "1.1.0"
-php-min: "8.1"
-last-updated: "2026-07-13"
-docs: https://lonsdale201.github.io/better-docs/docs/better-route/agents
+metadata:
+  wp-skills-author: "Soczó Kristóf"
+  wp-skills-contact: "mailto:lonsdale201@hotmail.com"
+  wp-skills-plugin: "better-route"
+  wp-skills-plugin-version-tested: "1.1.0"
+  wp-skills-php-min: "8.1"
+  wp-skills-last-updated: "2026-07-13"
 ---
 
 # Better Route single-use tokens
@@ -54,3 +54,7 @@ Create a high-entropy raw token with `Crypto::token()`, deliver it over the inte
 Test two simultaneous consumes, expiration, unknown/reused tokens, schema absence, cache-store startup without a persistent cache, and handler failure after consumption.
 
 Source references: `src/Middleware/Write/SingleUseTokenMiddleware.php`, `src/Middleware/Write/WpdbSingleUseTokenStore.php`, `src/Middleware/Write/WpCacheSingleUseTokenStore.php`.
+
+## References
+
+- Official documentation: <https://lonsdale201.github.io/better-docs/docs/better-route/agents>

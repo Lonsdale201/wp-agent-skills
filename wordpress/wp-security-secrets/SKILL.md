@@ -11,16 +11,13 @@ description: Audits WordPress plugin/theme code for secret-handling and
   auth/registration/login features, when integrating third-party
   APIs, or when the user mentions "API key", "token", "session",
   "password reset".
-author: Soczó Kristóf
-contact: mailto:lonsdale201@hotmail.com
-plugin: wordpress
-plugin-version-tested: "6.0 - 7.0.1"
-php-min: "7.4"
-last-updated: "2026-07-10"
-docs:
-  - https://www.php.net/manual/en/function.password-hash.php
-  - https://www.php.net/manual/en/function.random-bytes.php
-  - https://developer.wordpress.org/reference/functions/wp_generate_password/
+metadata:
+  wp-skills-author: "Soczó Kristóf"
+  wp-skills-contact: "mailto:lonsdale201@hotmail.com"
+  wp-skills-plugin: "wordpress"
+  wp-skills-plugin-version-tested: "6.0 - 7.0.1"
+  wp-skills-php-min: "7.4"
+  wp-skills-last-updated: "2026-07-10"
 ---
 
 # WordPress secrets and credentials audit

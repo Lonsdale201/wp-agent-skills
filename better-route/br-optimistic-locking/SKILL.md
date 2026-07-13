@@ -1,13 +1,13 @@
 ---
 name: br-optimistic-locking
 description: Configure Better Route 1.1 optimistic locking for REST writes with If-Match or version parameters and an atomic per-resource critical section. Use when preventing stale updates, lost writes, or two cooperating Better Route requests from passing the same version check concurrently.
-author: Soczó Kristóf
-contact: mailto:lonsdale201@hotmail.com
-plugin: better-route
-plugin-version-tested: "1.1.0"
-php-min: "8.1"
-last-updated: "2026-07-13"
-docs: https://lonsdale201.github.io/better-docs/docs/better-route/agents
+metadata:
+  wp-skills-author: "Soczó Kristóf"
+  wp-skills-contact: "mailto:lonsdale201@hotmail.com"
+  wp-skills-plugin: "better-route"
+  wp-skills-plugin-version-tested: "1.1.0"
+  wp-skills-php-min: "8.1"
+  wp-skills-last-updated: "2026-07-13"
 ---
 
 # Better Route optimistic locking
@@ -69,3 +69,7 @@ For storage shared with uncontrolled writers, implement a true conditional updat
 - Verify every mutation path, including jobs and alternate endpoints, follows the chosen concurrency contract.
 
 Source references: `src/Middleware/Write/OptimisticLockMiddleware.php`, `src/Middleware/Write/WpdbOptimisticLockCriticalSection.php`, `src/Middleware/Write/CallbackOptimisticLockVersionResolver.php`.
+
+## References
+
+- Official documentation: <https://lonsdale201.github.io/better-docs/docs/better-route/agents>

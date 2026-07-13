@@ -1,38 +1,14 @@
 ---
 name: polylang-compatibility-audit
 description: "Audit whether a WordPress plugin or classic theme is compatible with Polylang, Polylang Pro, and Polylang for WooCommerce. Use when asked whether code is Polylang-compatible, why a shortcode/option/page/product does not translate, or when code contains stored post/page/product/term IDs, get_permalink/home_url calls, pll_* calls, pll_register_string, PLL_Translate_Option, custom post types/taxonomies, custom tables, REST lang parameters, shortcode/block output, translated slugs, ACF/sync logic, WooCommerce products/orders/cart/Store API, emails, PDFs, cron jobs, exports, or webhooks."
-author: Soczo Kristof
-contact: mailto:lonsdale201@hotmail.com
-plugin: polylang + polylang-pro + polylang-wc
-plugin-version-tested: "Polylang 3.8.5 + Polylang Pro 3.8.5 + Polylang for WooCommerce 2.2.2"
-wp-version-tested: "7.0"
-php-min: "7.4"
-last-updated: "2026-07-09"
-docs:
-  - https://polylang.pro/doc/function-reference/
-  - https://polylang.pro/doc/developpers-how-to/
-  - https://polylang.pro/doc/rest-api/
-  - https://polylang.pro/doc/polylang-for-woocommerce/
-source-refs:
-  - wp-content/plugins/polylang/polylang.php
-  - wp-content/plugins/polylang/src/api.php
-  - wp-content/plugins/polylang/src/translate-option.php
-  - wp-content/plugins/polylang/src/query.php
-  - wp-content/plugins/polylang/src/translated-post.php
-  - wp-content/plugins/polylang/src/translated-term.php
-  - wp-content/plugins/polylang/src/filter-rest-routes.php
-  - wp-content/plugins/polylang/src/modules/REST/Request.php
-  - wp-content/plugins/polylang-pro/polylang.php
-  - wp-content/plugins/polylang-pro/src/modules/rest/rest-api.php
-  - wp-content/plugins/polylang-pro/src/modules/sync-post/sync-post-model.php
-  - wp-content/plugins/polylang-pro/src/modules/translate-slugs/translate-slugs-model.php
-  - wp-content/plugins/polylang-pro/src/integrations/ACF/Main.php
-  - wp-content/plugins/polylang-wc/polylang-wc.php
-  - wp-content/plugins/polylang-wc/src/data-store.php
-  - wp-content/plugins/polylang-wc/src/products.php
-  - wp-content/plugins/polylang-wc/src/store-blocks.php
-  - wp-content/plugins/polylang-wc/src/hpos-orders-query.php
-  - wp-content/plugins/polylang-wc/src/modules/REST/Module.php
+metadata:
+  wp-skills-author: "Soczo Kristof"
+  wp-skills-contact: "mailto:lonsdale201@hotmail.com"
+  wp-skills-plugin: "polylang + polylang-pro + polylang-wc"
+  wp-skills-plugin-version-tested: "Polylang 3.8.5 + Polylang Pro 3.8.5 + Polylang for WooCommerce 2.2.2"
+  wp-skills-wp-version-tested: "7.0"
+  wp-skills-php-min: "7.4"
+  wp-skills-last-updated: "2026-07-09"
 ---
 
 # Polylang Compatibility Audit
@@ -274,3 +250,30 @@ Use narrower skills for implementation:
 - `polylang-pro-slugs-sync-acf` for translated slugs, sync modules, and ACF behavior.
 - `polylang-wc-compatibility` for Woo products, variations, orders, cart, Store API, HPOS, stock, SKU, and Woo REST.
 - `wp-i18n-audit` for general WordPress gettext and JavaScript i18n.
+
+## References
+
+- Official documentation: <https://polylang.pro/doc/function-reference/>
+- Official documentation: <https://polylang.pro/doc/developpers-how-to/>
+- Official documentation: <https://polylang.pro/doc/rest-api/>
+- Official documentation: <https://polylang.pro/doc/polylang-for-woocommerce/>
+- Verified source paths:
+  - `wp-content/plugins/polylang/polylang.php`
+  - `wp-content/plugins/polylang/src/api.php`
+  - `wp-content/plugins/polylang/src/translate-option.php`
+  - `wp-content/plugins/polylang/src/query.php`
+  - `wp-content/plugins/polylang/src/translated-post.php`
+  - `wp-content/plugins/polylang/src/translated-term.php`
+  - `wp-content/plugins/polylang/src/filter-rest-routes.php`
+  - `wp-content/plugins/polylang/src/modules/REST/Request.php`
+  - `wp-content/plugins/polylang-pro/polylang.php`
+  - `wp-content/plugins/polylang-pro/src/modules/rest/rest-api.php`
+  - `wp-content/plugins/polylang-pro/src/modules/sync-post/sync-post-model.php`
+  - `wp-content/plugins/polylang-pro/src/modules/translate-slugs/translate-slugs-model.php`
+  - `wp-content/plugins/polylang-pro/src/integrations/ACF/Main.php`
+  - `wp-content/plugins/polylang-wc/polylang-wc.php`
+  - `wp-content/plugins/polylang-wc/src/data-store.php`
+  - `wp-content/plugins/polylang-wc/src/products.php`
+  - `wp-content/plugins/polylang-wc/src/store-blocks.php`
+  - `wp-content/plugins/polylang-wc/src/hpos-orders-query.php`
+  - `wp-content/plugins/polylang-wc/src/modules/REST/Module.php`

@@ -10,20 +10,14 @@ description: Registers a custom settings tab in the JetFormBuilder admin
   mentions of "JetFormBuilder settings tab", "JFB settings page",
   "Base_Handler", "register-tabs-handlers", "jet.fb.register.settings-page.tabs",
   "cx-vui-input", or when a JFB-companion plugin is being scaffolded.
-author: Soczó Kristóf
-contact: mailto:lonsdale201@hotmail.com
-plugin: jetformbuilder
-plugin-version-tested: "3.5.6"
-api-stable-since: "3.0"
-php-min: "7.4"
-last-updated: "2026-04-28"
-docs:
-  - https://github.com/Crocoblock/developer-documentation/tree/main/03-jet-form-builder
-source-refs:
-  - includes/admin/tabs-handlers/base-handler.php
-  - includes/admin/tabs-handlers/tab-handler-manager.php
-  - includes/admin/tabs-handlers/options-handler.php
-  - includes/admin/pages/pages-manager.php
+metadata:
+  wp-skills-author: "Soczó Kristóf"
+  wp-skills-contact: "mailto:lonsdale201@hotmail.com"
+  wp-skills-plugin: "jetformbuilder"
+  wp-skills-plugin-version-tested: "3.5.6"
+  wp-skills-php-min: "7.4"
+  wp-skills-api-stable-since: "3.0"
+  wp-skills-last-updated: "2026-04-28"
 ---
 
 # JetFormBuilder: register a custom settings tab
@@ -348,3 +342,4 @@ If you want it in the right-hand row meta column instead (next to *Visit plugin 
 - Pages manager (asset constants): `wp-content/plugins/jetformbuilder/includes/admin/pages/pages-manager.php`
 - Reference implementation in JFB itself: `includes/admin/tabs-handlers/options-handler.php`
 - Real-world examples: `media-storage-for-jetformbuilder`, `google-sheet-for-jetformbuilder` (companion plugins by the same author).
+- Official documentation: <https://github.com/Crocoblock/developer-documentation/tree/main/03-jet-form-builder>

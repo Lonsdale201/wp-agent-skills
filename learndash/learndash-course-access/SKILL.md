@@ -8,20 +8,13 @@ description: >-
   course_*_access_from, open/free/paynow/closed course price types, access
   expiration, course start/end dates, course access activity, or custom
   course-gated templates.
-author: Soczó Kristóf
-contact: mailto:lonsdale201@hotmail.com
-plugin: sfwd-lms
-plugin-version-tested: "5.1.6.1"
-php-min: "7.4"
-last-updated: "2026-07-07"
-docs:
-  - https://developers.learndash.com/
-source-refs:
-  - wp-content/plugins/sfwd-lms/includes/course/ld-course-user-functions.php
-  - wp-content/plugins/sfwd-lms/includes/ld-users.php
-  - wp-content/plugins/sfwd-lms/src/Core/Models/Product.php
-  - wp-content/plugins/sfwd-lms/includes/course/ld-course-steps-functions.php
-  - wp-content/plugins/sfwd-lms/includes/classes/class-ldlms-model-course-steps.php
+metadata:
+  wp-skills-author: "Soczó Kristóf"
+  wp-skills-contact: "mailto:lonsdale201@hotmail.com"
+  wp-skills-plugin: "sfwd-lms"
+  wp-skills-plugin-version-tested: "5.1.6.1"
+  wp-skills-php-min: "7.4"
+  wp-skills-last-updated: "2026-07-07"
 ---
 
 # LearnDash course access
@@ -201,3 +194,4 @@ Validated against LearnDash LMS 5.1.6.1 local source:
 - `src/Core/Models/Product.php`
 - `includes/course/ld-course-steps-functions.php`
 - `includes/classes/class-ldlms-model-course-steps.php`
+- Official documentation: <https://developers.learndash.com/>

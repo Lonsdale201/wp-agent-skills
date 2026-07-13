@@ -15,19 +15,13 @@ description: Audit Elementor addon code for deprecated Elementor APIs,
   WP_DEBUG AND ELEMENTOR_DEBUG within 4 majors (SOFT=4 / HARD=8). Use
   when reviewing an addon, bumping Elementor majors, or chasing
   deprecation notices.
-author: Soczó Kristóf
-contact: mailto:lonsdale201@hotmail.com
-plugin: elementor
-plugin-version-tested: "4.1.4 (free) / 4.1.2 (pro)"
-php-min: "7.4"
-last-updated: "2026-07-09"
-docs:
-  - https://developers.elementor.com/docs/deprecations/
-source-refs:
-  - wp-content/plugins/elementor/modules/dev-tools/deprecation.php
-  - wp-content/plugins/elementor/core/dynamic-tags/base-tag.php
-  - wp-content/plugins/elementor/includes/managers/widgets.php
-  - wp-content/plugins/elementor/core/breakpoints/manager.php
+metadata:
+  wp-skills-author: "Soczó Kristóf"
+  wp-skills-contact: "mailto:lonsdale201@hotmail.com"
+  wp-skills-plugin: "elementor"
+  wp-skills-plugin-version-tested: "4.1.4 (free) / 4.1.2 (pro)"
+  wp-skills-php-min: "7.4"
+  wp-skills-last-updated: "2026-07-09"
 ---
 
 # Elementor: deprecations (audit & deprecate correctly)

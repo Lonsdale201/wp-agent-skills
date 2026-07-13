@@ -1,23 +1,14 @@
 ---
 name: polylang-strings-options
 description: "Register and translate plugin/theme strings and option values with Polylang 3.8.5. Covers pll_register_string admin-only behavior, pll__, pll_e, pll_esc_html__, pll_esc_attr__, pll_translate_string, string context/name strategy, multiline strings, pll_sanitize_string_translation with the 3.8 previous-value argument, PLL_Translate_Option recursive option keys, raw option protection, and why dynamic/generated strings should not be registered as source strings. Use when a plugin stores labels, email copy, settings text, widget copy, or frontend options that site admins must translate in Polylang."
-author: Soczo Kristof
-contact: mailto:lonsdale201@hotmail.com
-plugin: polylang
-plugin-version-tested: "Polylang 3.8.5"
-wp-version-tested: "7.0"
-php-min: "7.4"
-last-updated: "2026-07-01"
-docs:
-  - https://polylang.pro/doc/function-reference/
-  - https://polylang.pro/doc/strings-translation/
-source-refs:
-  - wp-content/plugins/polylang/src/api.php
-  - wp-content/plugins/polylang/src/admin/admin-strings.php
-  - wp-content/plugins/polylang/src/settings/table-string.php
-  - wp-content/plugins/polylang/src/translate-option.php
-  - wp-content/plugins/polylang/src/base.php
-  - wp-content/plugins/polylang-wc/src/strings.php
+metadata:
+  wp-skills-author: "Soczo Kristof"
+  wp-skills-contact: "mailto:lonsdale201@hotmail.com"
+  wp-skills-plugin: "polylang"
+  wp-skills-plugin-version-tested: "Polylang 3.8.5"
+  wp-skills-wp-version-tested: "7.0"
+  wp-skills-php-min: "7.4"
+  wp-skills-last-updated: "2026-07-01"
 ---
 
 # Polylang Strings and Options
@@ -242,3 +233,15 @@ Local source checked against:
 - Save sanitization and 3.8 previous-value argument: `src/settings/table-string.php`
 - Recursive option translation: `src/translate-option.php`
 - Woo option usage examples: `wp-content/plugins/polylang-wc/src/strings.php`
+
+## References
+
+- Official documentation: <https://polylang.pro/doc/function-reference/>
+- Official documentation: <https://polylang.pro/doc/strings-translation/>
+- Verified source paths:
+  - `wp-content/plugins/polylang/src/api.php`
+  - `wp-content/plugins/polylang/src/admin/admin-strings.php`
+  - `wp-content/plugins/polylang/src/settings/table-string.php`
+  - `wp-content/plugins/polylang/src/translate-option.php`
+  - `wp-content/plugins/polylang/src/base.php`
+  - `wp-content/plugins/polylang-wc/src/strings.php`

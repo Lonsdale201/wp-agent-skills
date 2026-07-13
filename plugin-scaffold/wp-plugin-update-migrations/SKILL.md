@@ -9,24 +9,13 @@ description: >-
   upgrade migrations, schema version, database version, data migration,
   upgrader_process_complete, Plugin_Upgrader, dbDelta after activation,
   or when activation hooks are being used to handle updates.
-author: Soczó Kristóf
-contact: mailto:lonsdale201@hotmail.com
-plugin: wordpress
-plugin-version-tested: "7.0"
-php-min: "7.4"
-last-updated: "2026-07-12"
-docs:
-  - https://developer.wordpress.org/reference/hooks/upgrader_process_complete/
-  - https://developer.wordpress.org/reference/functions/dbDelta/
-  - https://developer.wordpress.org/reference/functions/get_option/
-source-refs:
-  - wp-settings.php
-  - wp-admin/update.php
-  - wp-admin/includes/class-wp-upgrader.php
-  - wp-admin/includes/class-plugin-upgrader.php
-  - wp-admin/includes/plugin.php
-  - wp-admin/includes/admin-filters.php
-  - wp-admin/includes/upgrade.php
+metadata:
+  wp-skills-author: "Soczó Kristóf"
+  wp-skills-contact: "mailto:lonsdale201@hotmail.com"
+  wp-skills-plugin: "wordpress"
+  wp-skills-plugin-version-tested: "7.0"
+  wp-skills-php-min: "7.4"
+  wp-skills-last-updated: "2026-07-12"
 ---
 
 # WordPress plugin: update migrations
@@ -245,3 +234,17 @@ add_action( 'upgrader_process_complete', 'myplugin_run_new_migration_code' );
 - Use `wp-plugin-lifecycle` for activation defaults, deactivation cleanup, uninstall deletion, and multisite activation/deactivation callbacks.
 - Use `wp-plugin-options-storage` when deciding where to store schema version, migration progress, and large data.
 - Use `wp-plugin-cron` or `wp-action-scheduler` for background/batched migration work.
+
+## References
+
+- Official documentation: <https://developer.wordpress.org/reference/hooks/upgrader_process_complete/>
+- Official documentation: <https://developer.wordpress.org/reference/functions/dbDelta/>
+- Official documentation: <https://developer.wordpress.org/reference/functions/get_option/>
+- Verified source paths:
+  - `wp-settings.php`
+  - `wp-admin/update.php`
+  - `wp-admin/includes/class-wp-upgrader.php`
+  - `wp-admin/includes/class-plugin-upgrader.php`
+  - `wp-admin/includes/plugin.php`
+  - `wp-admin/includes/admin-filters.php`
+  - `wp-admin/includes/upgrade.php`

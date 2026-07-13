@@ -1,27 +1,14 @@
 ---
 name: classic-woocommerce-template-overrides
 description: Create or audit WooCommerce template overrides in a classic PHP theme. Covers the `yourtheme/woocommerce/` override path, `WC()->template_path()`, `wc_get_template()`, `wc_get_template_part()`, `woocommerce.php`, `single-product.php`, `archive-product.php`, taxonomy templates, `WC_TEMPLATE_DEBUG_MODE`, template `@version` headers, WooCommerce Status outdated-template checks, hook/filter-first customization, child themes, escaping, and when not to override cart/checkout/account/email templates.
-author: Soczó Kristóf
-contact: mailto:lonsdale201@hotmail.com
-plugin: woocommerce
-plugin-version-tested: "10.8.1"
-wp-version-tested: "7.0"
-php-min: "7.4"
-last-updated: "2026-06-14"
-docs:
-  - https://developer.woocommerce.com/docs/theming/theme-development/template-structure/
-  - https://developer.woocommerce.com/docs/theming/theme-development/fixing-outdated-woocommerce-templates/
-  - https://developer.woocommerce.com/docs/theming/theme-development/classic-theme-developer-handbook/
-  - https://developer.woocommerce.com/docs/theming/theme-development/set-up-a-child-theme/
-source-refs:
-  - wp-content/plugins/woocommerce/includes/class-wc-template-loader.php
-  - wp-content/plugins/woocommerce/includes/wc-core-functions.php
-  - wp-content/plugins/woocommerce/includes/wc-template-hooks.php
-  - wp-content/plugins/woocommerce/templates/archive-product.php
-  - wp-content/plugins/woocommerce/templates/content-product.php
-  - wp-content/plugins/woocommerce/templates/content-single-product.php
-  - wp-content/plugins/woocommerce/templates/single-product.php
-  - wp-content/plugins/woocommerce/includes/rest-api/Controllers/Version2/class-wc-rest-system-status-v2-controller.php
+metadata:
+  wp-skills-author: "Soczó Kristóf"
+  wp-skills-contact: "mailto:lonsdale201@hotmail.com"
+  wp-skills-plugin: "woocommerce"
+  wp-skills-plugin-version-tested: "10.8.1"
+  wp-skills-wp-version-tested: "7.0"
+  wp-skills-php-min: "7.4"
+  wp-skills-last-updated: "2026-06-14"
 ---
 
 # Classic WooCommerce Template Overrides
@@ -190,3 +177,19 @@ These templates carry payment, account, accessibility, JavaScript, or compatibil
 - Overriding `woocommerce.php` and accidentally flattening product/archive differences.
 - Breaking variation add-to-cart JavaScript by rewriting `variable.php`.
 - Losing accessible labels/live regions from modern Woo templates.
+
+## References
+
+- Official documentation: <https://developer.woocommerce.com/docs/theming/theme-development/template-structure/>
+- Official documentation: <https://developer.woocommerce.com/docs/theming/theme-development/fixing-outdated-woocommerce-templates/>
+- Official documentation: <https://developer.woocommerce.com/docs/theming/theme-development/classic-theme-developer-handbook/>
+- Official documentation: <https://developer.woocommerce.com/docs/theming/theme-development/set-up-a-child-theme/>
+- Verified source paths:
+  - `wp-content/plugins/woocommerce/includes/class-wc-template-loader.php`
+  - `wp-content/plugins/woocommerce/includes/wc-core-functions.php`
+  - `wp-content/plugins/woocommerce/includes/wc-template-hooks.php`
+  - `wp-content/plugins/woocommerce/templates/archive-product.php`
+  - `wp-content/plugins/woocommerce/templates/content-product.php`
+  - `wp-content/plugins/woocommerce/templates/content-single-product.php`
+  - `wp-content/plugins/woocommerce/templates/single-product.php`
+  - `wp-content/plugins/woocommerce/includes/rest-api/Controllers/Version2/class-wc-rest-system-status-v2-controller.php`

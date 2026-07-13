@@ -8,19 +8,13 @@ description: Audits destructive or long-running WordPress batch writes for retry
   exporters with erasure, backfills, bulk update/delete code, LIMIT/OFFSET
   mutation loops, processing flags, or any workflow that changes many rows
   across multiple requests.
-author: Soczó Kristóf
-contact: mailto:lonsdale201@hotmail.com
-plugin: wordpress
-plugin-version-tested: "6.0 - 7.0.1"
-php-min: "7.4"
-last-updated: "2026-07-12"
-docs:
-  - https://developer.wordpress.org/plugins/cron/
-  - https://developer.wordpress.org/cli/commands/
-source-refs:
-  - wp-includes/option.php
-  - wp-includes/meta.php
-  - wp-includes/class-wpdb.php
+metadata:
+  wp-skills-author: "Soczó Kristóf"
+  wp-skills-contact: "mailto:lonsdale201@hotmail.com"
+  wp-skills-plugin: "wordpress"
+  wp-skills-plugin-version-tested: "6.0 - 7.0.1"
+  wp-skills-php-min: "7.4"
+  wp-skills-last-updated: "2026-07-12"
 ---
 
 # WordPress batch mutation audit
@@ -217,3 +211,5 @@ Separate confirmed behavior from concurrency scenarios that need dynamic tests.
 - WordPress DB behavior: `wp-includes/class-wpdb.php`
 - Metadata return contracts: `wp-includes/meta.php`
 - Option/transient semantics: `wp-includes/option.php`
+- Official documentation: <https://developer.wordpress.org/plugins/cron/>
+- Official documentation: <https://developer.wordpress.org/cli/commands/>

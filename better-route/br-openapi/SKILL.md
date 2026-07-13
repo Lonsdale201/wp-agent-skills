@@ -1,18 +1,13 @@
 ---
 name: br-openapi
 description: Generate or serve better-route 1.1 OpenAPI 3.1 documents from Router/Resource/Woo contracts. Use for OpenApiExporter, OpenApiRouteRegistrar, contracts, contractsFromSources, route args to parameters, explicit parameter overrides, custom responses, OPTIONS 204, strictSchemas, components, securitySchemes, globalSecurity, publicRoute security, Resource response envelopes, Woo schemas, or openapi.json permissions.
-author: Soczó Kristóf
-contact: mailto:lonsdale201@hotmail.com
-plugin: better-route
-plugin-version-tested: "1.1.0"
-php-min: "8.1"
-last-updated: "2026-07-13"
-source-refs:
-  - src/OpenApi/OpenApiExporter.php
-  - src/OpenApi/OpenApiRouteRegistrar.php
-  - src/Router/Router.php
-  - src/Resource/Resource.php
-  - src/Integration/Woo/WooOpenApiComponents.php
+metadata:
+  wp-skills-author: "Soczó Kristóf"
+  wp-skills-contact: "mailto:lonsdale201@hotmail.com"
+  wp-skills-plugin: "better-route"
+  wp-skills-plugin-version-tested: "1.1.0"
+  wp-skills-php-min: "8.1"
+  wp-skills-last-updated: "2026-07-13"
 ---
 
 # better-route: OpenAPI 3.1
@@ -181,3 +176,12 @@ Woo 1.1 components match runtime strict payloads: money is string-typed, product
 - Use `br-routes` for args, intent, and route metadata.
 - Use `br-resource-cpt`/`br-resource-table` for Resource response shapes.
 - Use `br-woo-routes` for Woo runtime contracts.
+
+## References
+
+- Verified source paths:
+  - `src/OpenApi/OpenApiExporter.php`
+  - `src/OpenApi/OpenApiRouteRegistrar.php`
+  - `src/Router/Router.php`
+  - `src/Resource/Resource.php`
+  - `src/Integration/Woo/WooOpenApiComponents.php`

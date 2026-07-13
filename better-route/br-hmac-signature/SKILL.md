@@ -1,13 +1,13 @@
 ---
 name: br-hmac-signature
 description: Configure Better Route 1.1 HMAC authentication for webhooks and server-to-server REST requests. Use when signing request timestamps, methods, paths, raw bodies, optional query strings, rotating key IDs, or consuming the shared HMAC AuthContext identity.
-author: Soczó Kristóf
-contact: mailto:lonsdale201@hotmail.com
-plugin: better-route
-plugin-version-tested: "1.1.0"
-php-min: "8.1"
-last-updated: "2026-07-13"
-docs: https://lonsdale201.github.io/better-docs/docs/better-route/agents
+metadata:
+  wp-skills-author: "Soczó Kristóf"
+  wp-skills-contact: "mailto:lonsdale201@hotmail.com"
+  wp-skills-plugin: "better-route"
+  wp-skills-plugin-version-tested: "1.1.0"
+  wp-skills-php-min: "8.1"
+  wp-skills-last-updated: "2026-07-13"
 ---
 
 # Better Route HMAC request signatures
@@ -59,3 +59,7 @@ After verification, Better Route 1.1 writes `provider: hmac` and `subject: <key-
 Test missing headers, unknown key ID, malformed and out-of-window timestamps, altered body/path/query, key rotation, and an unsigned-route configuration mistake.
 
 Source references: `src/Middleware/Auth/HmacSignatureMiddleware.php`, `src/Middleware/Auth/HmacSecretProviderInterface.php`, `src/Middleware/Auth/ArrayHmacSecretProvider.php`.
+
+## References
+
+- Official documentation: <https://lonsdale201.github.io/better-docs/docs/better-route/agents>

@@ -1,35 +1,14 @@
 ---
 name: wcs-data-model-switching-gifting
 description: WooCommerce Subscriptions data model, switching, and gifting reference for order/product types, schedule and relation storage, switch cart/order payloads, proration hooks, recipient data, and WCS 9.0 APFS plan markers. Use for shop_subscription, _schedule_next_payment, _subscription_switch_data, subscription_switch, _switched_subscription_item_id, wcsg_gift_recipients_email, _recipient_user, _wcsatt_schemes, or _wcsatt_scheme.
-author: Soczo Kristof
-contact: mailto:lonsdale201@hotmail.com
-plugin: woocommerce-subscriptions
-plugin-version-tested: "9.0.0"
-woocommerce-version-tested: "10.9.4"
-php-min: "7.4"
-last-updated: "2026-07-10"
-docs:
-  - https://woocommerce.com/document/subscriptions/develop/
-source-refs:
-  - wp-content/plugins/woocommerce-subscriptions/includes/core/class-wc-subscriptions-core-plugin.php
-  - wp-content/plugins/woocommerce-subscriptions/includes/core/class-wc-subscription.php
-  - wp-content/plugins/woocommerce-subscriptions/includes/core/data-stores/class-wcs-subscription-data-store-cpt.php
-  - wp-content/plugins/woocommerce-subscriptions/includes/core/data-stores/class-wcs-orders-table-subscription-data-store.php
-  - wp-content/plugins/woocommerce-subscriptions/includes/core/class-wc-subscriptions-product.php
-  - wp-content/plugins/woocommerce-subscriptions/includes/core/wcs-functions.php
-  - wp-content/plugins/woocommerce-subscriptions/includes/core/wcs-switch-functions.php
-  - wp-content/plugins/woocommerce-subscriptions/includes/switching/class-wc-subscriptions-switcher.php
-  - wp-content/plugins/woocommerce-subscriptions/includes/switching/class-wcs-switch-totals-calculator.php
-  - wp-content/plugins/woocommerce-subscriptions/includes/downloads/
-  - wp-content/plugins/woocommerce-subscriptions/includes/apfs/class-wcs-att-product.php
-  - wp-content/plugins/woocommerce-subscriptions/includes/apfs/product/class-wcs-att-product-schemes.php
-  - wp-content/plugins/woocommerce-subscriptions/includes/apfs/class-wcs-att-cart.php
-  - wp-content/plugins/woocommerce-subscriptions/includes/apfs/class-wcs-att-order.php
-  - wp-content/plugins/woocommerce-subscriptions/includes/gifting/class-wcs-gifting.php
-  - wp-content/plugins/woocommerce-subscriptions/includes/gifting/class-wcsg-product.php
-  - wp-content/plugins/woocommerce-subscriptions/includes/gifting/class-wcsg-cart.php
-  - wp-content/plugins/woocommerce-subscriptions/includes/gifting/class-wcsg-checkout.php
-  - wp-content/plugins/woocommerce-subscriptions/includes/gifting/class-wcsg-recipient-management.php
+metadata:
+  wp-skills-author: "Soczo Kristof"
+  wp-skills-contact: "mailto:lonsdale201@hotmail.com"
+  wp-skills-plugin: "woocommerce-subscriptions"
+  wp-skills-plugin-version-tested: "9.0.0"
+  wp-skills-woocommerce-version-tested: "10.9.4"
+  wp-skills-php-min: "7.4"
+  wp-skills-last-updated: "2026-07-10"
 ---
 
 # WooCommerce Subscriptions: data model, switching, gifting
@@ -235,3 +214,27 @@ $recipient_id = WCS_Gifting::get_recipient_user( $subscription );
 - Use `wcs-renewal-scheduler` for renewal dates, Action Scheduler, and payment retry timing.
 - Use `wcs-subscription-downloads` for linked downloadable products, download permission grants/revokes, and the subscription downloads mapping table.
 - Use `wcm-data-model-subscriptions-link` for Memberships CPT/meta and the Memberships-to-Subscriptions relation.
+
+## References
+
+- Official documentation: <https://woocommerce.com/document/subscriptions/develop/>
+- Verified source paths:
+  - `wp-content/plugins/woocommerce-subscriptions/includes/core/class-wc-subscriptions-core-plugin.php`
+  - `wp-content/plugins/woocommerce-subscriptions/includes/core/class-wc-subscription.php`
+  - `wp-content/plugins/woocommerce-subscriptions/includes/core/data-stores/class-wcs-subscription-data-store-cpt.php`
+  - `wp-content/plugins/woocommerce-subscriptions/includes/core/data-stores/class-wcs-orders-table-subscription-data-store.php`
+  - `wp-content/plugins/woocommerce-subscriptions/includes/core/class-wc-subscriptions-product.php`
+  - `wp-content/plugins/woocommerce-subscriptions/includes/core/wcs-functions.php`
+  - `wp-content/plugins/woocommerce-subscriptions/includes/core/wcs-switch-functions.php`
+  - `wp-content/plugins/woocommerce-subscriptions/includes/switching/class-wc-subscriptions-switcher.php`
+  - `wp-content/plugins/woocommerce-subscriptions/includes/switching/class-wcs-switch-totals-calculator.php`
+  - `wp-content/plugins/woocommerce-subscriptions/includes/downloads/`
+  - `wp-content/plugins/woocommerce-subscriptions/includes/apfs/class-wcs-att-product.php`
+  - `wp-content/plugins/woocommerce-subscriptions/includes/apfs/product/class-wcs-att-product-schemes.php`
+  - `wp-content/plugins/woocommerce-subscriptions/includes/apfs/class-wcs-att-cart.php`
+  - `wp-content/plugins/woocommerce-subscriptions/includes/apfs/class-wcs-att-order.php`
+  - `wp-content/plugins/woocommerce-subscriptions/includes/gifting/class-wcs-gifting.php`
+  - `wp-content/plugins/woocommerce-subscriptions/includes/gifting/class-wcsg-product.php`
+  - `wp-content/plugins/woocommerce-subscriptions/includes/gifting/class-wcsg-cart.php`
+  - `wp-content/plugins/woocommerce-subscriptions/includes/gifting/class-wcsg-checkout.php`
+  - `wp-content/plugins/woocommerce-subscriptions/includes/gifting/class-wcsg-recipient-management.php`

@@ -1,24 +1,14 @@
 ---
 name: polylang-object-translations
 description: "Create, read, link, and update translated posts and terms with Polylang 3.8.5. Covers pll_get_post, pll_get_term, pll_get_post_language, pll_get_term_language, pll_save_post_translations, pll_save_term_translations, pll_insert_post, pll_insert_term, pll_update_post, pll_update_term, translation group storage, language assignment order, media translation caveats, and why direct DB writes to language/post_translations/term_translations are unsafe. Use when a plugin imports multilingual content, syncs CPTs/taxonomies, maps IDs across languages, or repairs translation groups."
-author: Soczo Kristof
-contact: mailto:lonsdale201@hotmail.com
-plugin: polylang
-plugin-version-tested: "Polylang 3.8.5"
-wp-version-tested: "7.0"
-php-min: "7.4"
-last-updated: "2026-07-01"
-docs:
-  - https://polylang.pro/doc/function-reference/
-  - https://polylang.pro/doc/developpers-how-to/
-source-refs:
-  - wp-content/plugins/polylang/src/api.php
-  - wp-content/plugins/polylang/src/translated-object.php
-  - wp-content/plugins/polylang/src/translated-post.php
-  - wp-content/plugins/polylang/src/translated-term.php
-  - wp-content/plugins/polylang/src/crud-posts.php
-  - wp-content/plugins/polylang/src/crud-terms.php
-  - wp-content/plugins/polylang/src/translatable-object.php
+metadata:
+  wp-skills-author: "Soczo Kristof"
+  wp-skills-contact: "mailto:lonsdale201@hotmail.com"
+  wp-skills-plugin: "polylang"
+  wp-skills-plugin-version-tested: "Polylang 3.8.5"
+  wp-skills-wp-version-tested: "7.0"
+  wp-skills-php-min: "7.4"
+  wp-skills-last-updated: "2026-07-01"
 ---
 
 # Polylang Object Translations
@@ -272,3 +262,16 @@ Local source checked against:
 - Translation group storage and validation: `src/translated-object.php`
 - Post type and post translation behavior: `src/translated-post.php`
 - Term language, WXR group behavior, and term wrappers: `src/translated-term.php`
+
+## References
+
+- Official documentation: <https://polylang.pro/doc/function-reference/>
+- Official documentation: <https://polylang.pro/doc/developpers-how-to/>
+- Verified source paths:
+  - `wp-content/plugins/polylang/src/api.php`
+  - `wp-content/plugins/polylang/src/translated-object.php`
+  - `wp-content/plugins/polylang/src/translated-post.php`
+  - `wp-content/plugins/polylang/src/translated-term.php`
+  - `wp-content/plugins/polylang/src/crud-posts.php`
+  - `wp-content/plugins/polylang/src/crud-terms.php`
+  - `wp-content/plugins/polylang/src/translatable-object.php`

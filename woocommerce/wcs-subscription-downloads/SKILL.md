@@ -1,20 +1,14 @@
 ---
 name: wcs-subscription-downloads
 description: WooCommerce Subscriptions built-in Subscription Downloads reference for linked downloadable products, the woocommerce_subscription_downloads table, file-sharing settings, permission grants/revokes, email/account lists, switch cleanup, optional zero-cost line items, and WCS Gifting ownership. Use for WC_Subscription_Downloads, shared or linked downloads, downloadable subscription access, or subscription download permissions.
-author: Soczó Kristóf
-contact: mailto:lonsdale201@hotmail.com
-plugin: woocommerce-subscriptions
-plugin-version-tested: "9.0.0"
-woocommerce-version-tested: "10.9.4"
-php-min: "7.4"
-last-updated: "2026-07-10"
-docs:
-  - https://woocommerce.com/document/subscriptions/develop/
-source-refs:
-  - wp-content/plugins/woocommerce-subscriptions/changelog.txt
-  - wp-content/plugins/woocommerce-subscriptions/includes/class-wc-subscriptions-plugin.php
-  - wp-content/plugins/woocommerce-subscriptions/includes/downloads/
-  - wp-content/plugins/woocommerce-subscriptions/includes/gifting/class-wcsg-download-handler.php
+metadata:
+  wp-skills-author: "Soczó Kristóf"
+  wp-skills-contact: "mailto:lonsdale201@hotmail.com"
+  wp-skills-plugin: "woocommerce-subscriptions"
+  wp-skills-plugin-version-tested: "9.0.0"
+  wp-skills-woocommerce-version-tested: "10.9.4"
+  wp-skills-php-min: "7.4"
+  wp-skills-last-updated: "2026-07-10"
 ---
 
 # WooCommerce Subscriptions: subscription downloads
@@ -171,3 +165,12 @@ $wpdb->insert( $wpdb->prefix . 'woocommerce_subscription_downloads', array(
 - Use `wcs-data-model-switching-gifting` for switch payloads and WCS Gifting recipient storage.
 - Use `wcs-subscription-hooks` for subscription status, switch, and gifting hooks.
 - Use `wcs-renewal-scheduler` when renewal orders and download permissions interact with payment timing.
+
+## References
+
+- Official documentation: <https://woocommerce.com/document/subscriptions/develop/>
+- Verified source paths:
+  - `wp-content/plugins/woocommerce-subscriptions/changelog.txt`
+  - `wp-content/plugins/woocommerce-subscriptions/includes/class-wc-subscriptions-plugin.php`
+  - `wp-content/plugins/woocommerce-subscriptions/includes/downloads/`
+  - `wp-content/plugins/woocommerce-subscriptions/includes/gifting/class-wcsg-download-handler.php`

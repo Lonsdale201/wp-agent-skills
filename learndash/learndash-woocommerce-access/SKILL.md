@@ -11,24 +11,13 @@ description: >-
   add_course_access, remove_course_access, add_subscription_course_access,
   HPOS compatibility, silent enrollment queue, or variable product/variation
   course links.
-author: Soczó Kristóf
-contact: mailto:lonsdale201@hotmail.com
-plugin: learndash-woocommerce
-plugin-version-tested: "LearnDash WooCommerce 2.0.2 + LearnDash LMS 5.1.6.1"
-php-min: "7.4"
-last-updated: "2026-07-07"
-docs:
-  - https://developers.learndash.com/
-source-refs:
-  - wp-content/plugins/learndash-woocommerce/learndash_woocommerce.php
-  - wp-content/plugins/learndash-woocommerce/includes/class-learndash-woocommerce.php
-  - wp-content/plugins/learndash-woocommerce/src/App/Settings/Status_Access.php
-  - wp-content/plugins/learndash-woocommerce/src/App/Admin/Pages/Sections/Settings_Enrollment_Status.php
-  - wp-content/plugins/learndash-woocommerce/includes/class-cron.php
-  - wp-content/plugins/learndash-woocommerce/includes/class-upgrade.php
-  - wp-content/plugins/learndash-woocommerce/src/App/Modules/Retroactive_Access_Tool/Handler.php
-  - wp-content/plugins/sfwd-lms/includes/course/ld-course-user-functions.php
-  - wp-content/plugins/sfwd-lms/includes/ld-groups.php
+metadata:
+  wp-skills-author: "Soczó Kristóf"
+  wp-skills-contact: "mailto:lonsdale201@hotmail.com"
+  wp-skills-plugin: "learndash-woocommerce"
+  wp-skills-plugin-version-tested: "LearnDash WooCommerce 2.0.2 + LearnDash LMS 5.1.6.1"
+  wp-skills-php-min: "7.4"
+  wp-skills-last-updated: "2026-07-07"
 ---
 
 # LearnDash WooCommerce access
@@ -222,3 +211,6 @@ source:
 - `learndash-woocommerce/includes/class-upgrade.php`
 - `sfwd-lms/includes/course/ld-course-user-functions.php`
 - `sfwd-lms/includes/ld-groups.php`
+- Official documentation: <https://developers.learndash.com/>
+- Verified source paths:
+  - `wp-content/plugins/learndash-woocommerce/src/App/Modules/Retroactive_Access_Tool/Handler.php`

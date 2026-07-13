@@ -1,25 +1,15 @@
 ---
 name: szamlazzhu-vat-checkout-compatibility
 description: Make WooCommerce checkout, B2B, VAT/tax-number, address, and headless checkout code compatible with Integration for Szamlazz.hu & WooCommerce. Covers the classic checkout field `wc_szamlazz_adoszam`, order meta `_billing_wc_szamlazz_adoszam` and `_wc_szamlazz_adoszam_data`, user meta `wc_szamlazz_adoszam`, Checkout Block/Store API extension namespace `wc-szamlazz-vat-number`, the cart `vat_number` vs checkout `billing_vat_number` payload split, NAV/VIES validation filters, EU VAT exemption, company billing rules, admin/customer address display, and how another plugin should map its own VAT fields into Szamlazz.hu invoice XML without creating duplicate checkout state.
-author: Soczó Kristóf
-contact: mailto:lonsdale201@hotmail.com
-plugin: integration-for-szamlazzhu-woocommerce
-plugin-version-tested: "6.2.2 on WooCommerce 10.9.4"
-wp-version-tested: "7.0"
-php-min: "7.4"
-last-updated: "2026-07-09"
-docs:
-  - https://wordpress.org/plugins/integration-for-szamlazzhu-woocommerce/
-  - https://docs.szamlazz.hu/hu/agent/querying_taxpayer/xml
-  - https://ec.europa.eu/taxation_customs/vies/
-source-refs:
-  - wp-content/plugins/integration-for-szamlazzhu-woocommerce/includes/class-vat-number.php
-  - wp-content/plugins/integration-for-szamlazzhu-woocommerce/includes/block/vat-number-block.php
-  - wp-content/plugins/integration-for-szamlazzhu-woocommerce/includes/block/vat-number-block-endpoints.php
-  - wp-content/plugins/integration-for-szamlazzhu-woocommerce/includes/block/vat-number-block-integration.php
-  - wp-content/plugins/integration-for-szamlazzhu-woocommerce/index.php
-  - wp-content/plugins/integration-for-szamlazzhu-woocommerce/includes/compatibility/modules/class-wc-szamlazz-subscriptions.php
 license: GPLv3
+metadata:
+  wp-skills-author: "Soczó Kristóf"
+  wp-skills-contact: "mailto:lonsdale201@hotmail.com"
+  wp-skills-plugin: "integration-for-szamlazzhu-woocommerce"
+  wp-skills-plugin-version-tested: "6.2.2 on WooCommerce 10.9.4"
+  wp-skills-wp-version-tested: "7.0"
+  wp-skills-php-min: "7.4"
+  wp-skills-last-updated: "2026-07-09"
 ---
 
 # Szamlazz.hu VAT/Checkout Compatibility
@@ -322,3 +312,16 @@ VAT numbers are personal/business identifiers. Treat them like billing data:
 - Use `wc-cart-checkout-classic` for classic checkout field placement and validation.
 - Use `wc-hpos-compatibility` for order meta persistence.
 - Use `wcs-subscription-hooks` and `wcs-renewal-scheduler` when VAT must survive subscription renewals.
+
+## References
+
+- Official documentation: <https://wordpress.org/plugins/integration-for-szamlazzhu-woocommerce/>
+- Official documentation: <https://docs.szamlazz.hu/hu/agent/querying_taxpayer/xml>
+- Official documentation: <https://ec.europa.eu/taxation_customs/vies/>
+- Verified source paths:
+  - `wp-content/plugins/integration-for-szamlazzhu-woocommerce/includes/class-vat-number.php`
+  - `wp-content/plugins/integration-for-szamlazzhu-woocommerce/includes/block/vat-number-block.php`
+  - `wp-content/plugins/integration-for-szamlazzhu-woocommerce/includes/block/vat-number-block-endpoints.php`
+  - `wp-content/plugins/integration-for-szamlazzhu-woocommerce/includes/block/vat-number-block-integration.php`
+  - `wp-content/plugins/integration-for-szamlazzhu-woocommerce/index.php`
+  - `wp-content/plugins/integration-for-szamlazzhu-woocommerce/includes/compatibility/modules/class-wc-szamlazz-subscriptions.php`

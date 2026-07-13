@@ -1,35 +1,14 @@
 ---
 name: wcs-subscription-hooks
 description: Curated WooCommerce Subscriptions hook map for subscription creation, status/date transitions, renewal orders, scheduled payments, retries, gateway events, switching, gifting, related orders, APFS plans, REST, and account/admin UI. Use when choosing where to hook around WC_Subscription, wcs_create_subscription, wcs_create_renewal_order, woocommerce_scheduled_subscription_payment, payment_retry, wcsg_, subscription_switch, WCS_ATT, wcsatt_, or _wcsatt_scheme.
-author: Soczó Kristóf
-contact: mailto:lonsdale201@hotmail.com
-plugin: woocommerce-subscriptions
-plugin-version-tested: "9.0.0"
-woocommerce-version-tested: "10.9.4"
-php-min: "7.4"
-last-updated: "2026-07-10"
-docs:
-  - https://woocommerce.com/document/subscriptions/develop/
-source-refs:
-  - wp-content/plugins/woocommerce-subscriptions/includes/core/wcs-functions.php
-  - wp-content/plugins/woocommerce-subscriptions/includes/core/class-wc-subscription.php
-  - wp-content/plugins/woocommerce-subscriptions/includes/core/class-wc-subscriptions-change-payment-gateway.php
-  - wp-content/plugins/woocommerce-subscriptions/includes/core/class-wc-subscriptions-core-plugin.php
-  - wp-content/plugins/woocommerce-subscriptions/includes/core/class-wc-subscriptions-product.php
-  - wp-content/plugins/woocommerce-subscriptions/includes/core/wcs-renewal-functions.php
-  - wp-content/plugins/woocommerce-subscriptions/includes/core/class-wcs-action-scheduler.php
-  - wp-content/plugins/woocommerce-subscriptions/includes/payment-retry/class-wcs-retry-manager.php
-  - wp-content/plugins/woocommerce-subscriptions/includes/switching/class-wc-subscriptions-switcher.php
-  - wp-content/plugins/woocommerce-subscriptions/includes/switching/class-wcs-cart-switch.php
-  - wp-content/plugins/woocommerce-subscriptions/includes/gifting/class-wcs-gifting.php
-  - wp-content/plugins/woocommerce-subscriptions/includes/gifting/class-wcsg-checkout.php
-  - wp-content/plugins/woocommerce-subscriptions/includes/apfs/class-wcs-att-product.php
-  - wp-content/plugins/woocommerce-subscriptions/includes/apfs/class-wcs-att-cart.php
-  - wp-content/plugins/woocommerce-subscriptions/includes/apfs/class-wcs-att-order.php
-  - wp-content/plugins/woocommerce-subscriptions/includes/apfs/api/class-wcs-att-store-api.php
-  - wp-content/plugins/woocommerce-subscriptions/src/Internal/HealthCheck/
-  - wp-content/plugins/woocommerce-subscriptions/src/Internal/Queue_Management/
-  - wp-content/plugins/woocommerce-subscriptions/src/Internal/Abilities/
+metadata:
+  wp-skills-author: "Soczó Kristóf"
+  wp-skills-contact: "mailto:lonsdale201@hotmail.com"
+  wp-skills-plugin: "woocommerce-subscriptions"
+  wp-skills-plugin-version-tested: "9.0.0"
+  wp-skills-woocommerce-version-tested: "10.9.4"
+  wp-skills-php-min: "7.4"
+  wp-skills-last-updated: "2026-07-10"
 ---
 
 # WooCommerce Subscriptions: hook map
@@ -259,3 +238,27 @@ add_action( 'woocommerce_subscription_renewal_payment_complete', function ( WC_S
 - Run `wcs-renewal-scheduler` for changes to next payment dates, renewal order creation, scheduled actions, or payment retry timing.
 - Run `wcs-health-check-processing` for WCS 8.8 Health Check, Resolve actions, dedicated processing, and web-cron queue support.
 - Run `wc-hpos-compatibility` if the integration queries orders/subscriptions directly.
+
+## References
+
+- Official documentation: <https://woocommerce.com/document/subscriptions/develop/>
+- Verified source paths:
+  - `wp-content/plugins/woocommerce-subscriptions/includes/core/wcs-functions.php`
+  - `wp-content/plugins/woocommerce-subscriptions/includes/core/class-wc-subscription.php`
+  - `wp-content/plugins/woocommerce-subscriptions/includes/core/class-wc-subscriptions-change-payment-gateway.php`
+  - `wp-content/plugins/woocommerce-subscriptions/includes/core/class-wc-subscriptions-core-plugin.php`
+  - `wp-content/plugins/woocommerce-subscriptions/includes/core/class-wc-subscriptions-product.php`
+  - `wp-content/plugins/woocommerce-subscriptions/includes/core/wcs-renewal-functions.php`
+  - `wp-content/plugins/woocommerce-subscriptions/includes/core/class-wcs-action-scheduler.php`
+  - `wp-content/plugins/woocommerce-subscriptions/includes/payment-retry/class-wcs-retry-manager.php`
+  - `wp-content/plugins/woocommerce-subscriptions/includes/switching/class-wc-subscriptions-switcher.php`
+  - `wp-content/plugins/woocommerce-subscriptions/includes/switching/class-wcs-cart-switch.php`
+  - `wp-content/plugins/woocommerce-subscriptions/includes/gifting/class-wcs-gifting.php`
+  - `wp-content/plugins/woocommerce-subscriptions/includes/gifting/class-wcsg-checkout.php`
+  - `wp-content/plugins/woocommerce-subscriptions/includes/apfs/class-wcs-att-product.php`
+  - `wp-content/plugins/woocommerce-subscriptions/includes/apfs/class-wcs-att-cart.php`
+  - `wp-content/plugins/woocommerce-subscriptions/includes/apfs/class-wcs-att-order.php`
+  - `wp-content/plugins/woocommerce-subscriptions/includes/apfs/api/class-wcs-att-store-api.php`
+  - `wp-content/plugins/woocommerce-subscriptions/src/Internal/HealthCheck/`
+  - `wp-content/plugins/woocommerce-subscriptions/src/Internal/Queue_Management/`
+  - `wp-content/plugins/woocommerce-subscriptions/src/Internal/Abilities/`

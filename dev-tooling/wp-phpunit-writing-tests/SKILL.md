@@ -12,24 +12,15 @@ description: >
   need Brain Monkey or WP_Mock to mock WP functions. Use when authoring or
   reviewing tests, choosing unit vs integration, mocking HTTP/WP functions, or
   fixing fixture/factory mistakes. For scaffolding and CI see wp-phpunit-test-setup.
-author: Soczó Kristóf
-contact: mailto:lonsdale201@hotmail.com
-plugin: wordpress
-plugin-version-tested: "PHPUnit 9.x; phpunit-polyfills 1.1; Brain Monkey 2.7; WP_Mock 1.1; WP 7.0"
-wp-version-tested: "7.0"
-php-min: "7.4"
-last-updated: "2026-06-17"
-docs:
-  - https://make.wordpress.org/core/handbook/testing/automated-testing/writing-phpunit-tests/
-  - https://developer.wordpress.org/reference/hooks/pre_http_request/
-  - https://github.com/Brain-WP/BrainMonkey
-  - https://github.com/10up/wp_mock
-source-refs:
-  - https://github.com/Yoast/PHPUnit-Polyfills
-  - https://core.trac.wordpress.org/ticket/53911
-  - https://github.com/WordPress/wordpress-develop/tree/trunk/tests/phpunit/includes
-  - https://docs.phpunit.de/en/10.5/attributes.html
 license: GPLv2-or-later
+metadata:
+  wp-skills-author: "Soczó Kristóf"
+  wp-skills-contact: "mailto:lonsdale201@hotmail.com"
+  wp-skills-plugin: "wordpress"
+  wp-skills-plugin-version-tested: "PHPUnit 9.x; phpunit-polyfills 1.1; Brain Monkey 2.7; WP_Mock 1.1; WP 7.0"
+  wp-skills-wp-version-tested: "7.0"
+  wp-skills-php-min: "7.4"
+  wp-skills-last-updated: "2026-06-17"
 ---
 
 # Writing WordPress PHPUnit tests
@@ -212,3 +203,4 @@ Pure unit tests can run on a newer PHPUnit than the WP suite, but keep them in a
 - Brain Monkey: <https://github.com/Brain-WP/BrainMonkey>
 - WP_Mock: <https://github.com/10up/wp_mock>
 - PHPUnit attributes vs annotations: <https://docs.phpunit.de/en/10.5/attributes.html>
+- Related documentation: <https://github.com/WordPress/wordpress-develop/tree/trunk/tests/phpunit/includes>

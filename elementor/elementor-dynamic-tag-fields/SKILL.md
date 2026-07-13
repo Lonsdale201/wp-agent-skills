@@ -15,22 +15,13 @@ description: Build the body of an Elementor Dynamic Tag — choose Tag
   that and must register its own fallback control and consult it in
   get_value(). Use when implementing or reviewing a dynamic tag's
   render/get_value, controls, categories, or fallback behaviour.
-author: Soczó Kristóf
-contact: mailto:lonsdale201@hotmail.com
-plugin: elementor
-plugin-version-tested: "4.0.7 (free) / 4.0.4 (pro)"
-php-min: "7.4"
-last-updated: "2026-06-17"
-docs:
-  - https://developers.elementor.com/docs/dynamic-tags/
-  - https://developers.elementor.com/docs/dynamic-tags/dynamic-tag-data/
-source-refs:
-  - wp-content/plugins/elementor/core/dynamic-tags/tag.php
-  - wp-content/plugins/elementor/core/dynamic-tags/data-tag.php
-  - wp-content/plugins/elementor/core/dynamic-tags/base-tag.php
-  - wp-content/plugins/elementor/modules/dynamic-tags/module.php
-  - wp-content/plugins/elementor-pro/modules/dynamic-tags/tags/post-featured-image.php
-  - wp-content/plugins/elementor-pro/modules/dynamic-tags/tags/post-custom-field.php
+metadata:
+  wp-skills-author: "Soczó Kristóf"
+  wp-skills-contact: "mailto:lonsdale201@hotmail.com"
+  wp-skills-plugin: "elementor"
+  wp-skills-plugin-version-tested: "4.0.7 (free) / 4.0.4 (pro)"
+  wp-skills-php-min: "7.4"
+  wp-skills-last-updated: "2026-06-17"
 ---
 
 # Elementor: Dynamic Tag types, fields & fallback
@@ -255,3 +246,5 @@ protected function register_controls() {
 - Categories: [wp-content/plugins/elementor/modules/dynamic-tags/module.php:31-76](module.php).
 - Manual-fallback Data_Tag: [wp-content/plugins/elementor-pro/modules/dynamic-tags/tags/post-featured-image.php:33-56](post-featured-image.php).
 - Tag with SELECT + TEXT controls + `is_settings_required()`: [wp-content/plugins/elementor-pro/modules/dynamic-tags/tags/post-custom-field.php:46-105](post-custom-field.php).
+- Official documentation: <https://developers.elementor.com/docs/dynamic-tags/>
+- Official documentation: <https://developers.elementor.com/docs/dynamic-tags/dynamic-tag-data/>

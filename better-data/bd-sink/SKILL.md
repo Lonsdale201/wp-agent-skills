@@ -15,24 +15,13 @@ description: Add a new sink to better-data — code that writes
   integrating writes for a new WP store. Triggers on creating a class
   in src/Sink/, toArgs / toMeta / insert / update / save method shape,
   references to SinkProjection or wp_slash in the diff.
-author: Soczó Kristóf
-contact: mailto:lonsdale201@hotmail.com
-plugin: better-data
-plugin-version-tested: "phase-9"
-php-min: "8.3"
-last-updated: "2026-04-29"
-docs:
-  - https://github.com/lonsdale201/better-data
-source-refs:
-  - src/Sink/HasWpSinks.php
-  - src/Sink/PostSink.php
-  - src/Sink/UserSink.php
-  - src/Sink/TermSink.php
-  - src/Sink/OptionSink.php
-  - src/Sink/RowSink.php
-  - src/Internal/SinkProjection.php
-  - src/Encryption/EncryptionEngine.php
-  - src/Exception/MissingIdentifierException.php
+metadata:
+  wp-skills-author: "Soczó Kristóf"
+  wp-skills-contact: "mailto:lonsdale201@hotmail.com"
+  wp-skills-plugin: "better-data"
+  wp-skills-plugin-version-tested: "phase-9"
+  wp-skills-php-min: "8.3"
+  wp-skills-last-updated: "2026-04-29"
 ---
 
 # better-data: Adding a sink
@@ -231,7 +220,7 @@ Smoke scenarios cover the round-trip (write a DTO, read it back, equal). Stress 
 public static function toArgs(DataObject $dto, ...): array
 {
     $args = SinkProjection::projectForStorage($dto);
-    return \wp_slash($args);  // 🔴 caller can't tell it's already slashed
+    return \wp_slash($args);  // WRONG: caller can't tell it's already slashed
 }
 
 // RIGHT — convenience slashes, projection raw
@@ -256,7 +245,7 @@ class FooSink {
 }
 class FooSource {
     public static function hydrate(string $option, string $dtoClass): DataObject {
-        $stored = \get_option($option);  // 🔴 returns ciphertext, no decrypt
+        $stored = \get_option($option);  // WRONG: returns ciphertext, no decrypt
         return $dtoClass::fromArray(['foo' => $stored]);
     }
 }
@@ -295,7 +284,7 @@ $projected = SinkProjection::projectForStorage($cartDto);  // recursively turns 
 
 // WRONG — update without ID guard
 public static function update(DataObject $dto): bool {
-    \wp_update_post(['ID' => $dto->id, ...], true);  // 🔴 ID = 0 => create-with-ID-0 weirdness
+    \wp_update_post(['ID' => $dto->id, ...], true);  // WRONG: ID = 0 => create-with-ID-0 weirdness
 }
 
 // RIGHT
@@ -330,3 +319,6 @@ public static function update(DataObject $dto): bool {
 - Trait shortcuts: [libraries/better-data/src/Sink/HasWpSinks.php:31-115](HasWpSinks.php) — `saveAsPost`, `saveAsUser`, `saveAsTerm`, `saveAsOption`, `saveAsRow`, `toPostArgs`, etc.
 - Other sinks: [libraries/better-data/src/Sink/UserSink.php](UserSink.php), [libraries/better-data/src/Sink/TermSink.php](TermSink.php), [libraries/better-data/src/Sink/RowSink.php](RowSink.php).
 - Encryption engine: [libraries/better-data/src/Encryption/EncryptionEngine.php](EncryptionEngine.php) — `encrypt`, `decrypt`, key handling.
+- Official documentation: <https://github.com/lonsdale201/better-data>
+- Verified source paths:
+  - `src/Exception/MissingIdentifierException.php`

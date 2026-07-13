@@ -1,23 +1,14 @@
 ---
 name: wc-stripe-add-payment-method
 description: Build or audit WooCommerce Stripe Gateway My Account saved-payment-method flows. Covers the canonical Woo form contract, Stripe UPE SetupIntent flow, exact selectors and POST fields, billing details, WC payment tokens, remote detach/default synchronization, custom endpoint security, and the boundary with WooCommerce Subscriptions. Use for payment-methods.php, form-add-payment-method.php, add_payment_method, wc-stripe-setup-intent, wc-stripe-upe-element, Stripe saved cards, or custom customer payment-method screens.
-author: Soczo Kristof
-contact: mailto:lonsdale201@hotmail.com
-plugin: woocommerce-gateway-stripe
-plugin-version-tested: "10.8.3"
-woocommerce-version-tested: "10.9.4"
-php-min: "7.4"
-last-updated: "2026-07-10"
-source-refs:
-  - wp-content/plugins/woocommerce/templates/myaccount/payment-methods.php
-  - wp-content/plugins/woocommerce/templates/myaccount/form-add-payment-method.php
-  - wp-content/plugins/woocommerce/includes/class-wc-form-handler.php
-  - wp-content/plugins/woocommerce/assets/js/frontend/add-payment-method.js
-  - wp-content/plugins/woocommerce-gateway-stripe/includes/payment-methods/class-wc-stripe-upe-payment-gateway.php
-  - wp-content/plugins/woocommerce-gateway-stripe/includes/payment-methods/class-wc-stripe-upe-payment-method.php
-  - wp-content/plugins/woocommerce-gateway-stripe/includes/class-wc-stripe-intent-controller.php
-  - wp-content/plugins/woocommerce-gateway-stripe/includes/payment-tokens/class-wc-stripe-payment-tokens.php
-  - wp-content/plugins/woocommerce-gateway-stripe/includes/compat/trait-wc-stripe-subscriptions.php
+metadata:
+  wp-skills-author: "Soczo Kristof"
+  wp-skills-contact: "mailto:lonsdale201@hotmail.com"
+  wp-skills-plugin: "woocommerce-gateway-stripe"
+  wp-skills-plugin-version-tested: "10.8.3"
+  wp-skills-woocommerce-version-tested: "10.9.4"
+  wp-skills-php-min: "7.4"
+  wp-skills-last-updated: "2026-07-10"
 ---
 
 # WooCommerce Stripe: saved payment methods
@@ -152,3 +143,16 @@ Adding a token and changing a subscription's payment method are different operat
 - Use `wc-stripe-subscriptions` for renewals, payment-method changes, SCA, and Express Checkout on subscriptions.
 - Use `wc-stripe-webhooks` for webhook validation, deferred settlement, and order-state hooks.
 - See [reference.md](reference.md) for the full My Account list/template and legacy compatibility notes.
+
+## References
+
+- Verified source paths:
+  - `wp-content/plugins/woocommerce/templates/myaccount/payment-methods.php`
+  - `wp-content/plugins/woocommerce/templates/myaccount/form-add-payment-method.php`
+  - `wp-content/plugins/woocommerce/includes/class-wc-form-handler.php`
+  - `wp-content/plugins/woocommerce/assets/js/frontend/add-payment-method.js`
+  - `wp-content/plugins/woocommerce-gateway-stripe/includes/payment-methods/class-wc-stripe-upe-payment-gateway.php`
+  - `wp-content/plugins/woocommerce-gateway-stripe/includes/payment-methods/class-wc-stripe-upe-payment-method.php`
+  - `wp-content/plugins/woocommerce-gateway-stripe/includes/class-wc-stripe-intent-controller.php`
+  - `wp-content/plugins/woocommerce-gateway-stripe/includes/payment-tokens/class-wc-stripe-payment-tokens.php`
+  - `wp-content/plugins/woocommerce-gateway-stripe/includes/compat/trait-wc-stripe-subscriptions.php`

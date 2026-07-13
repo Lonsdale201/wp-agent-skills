@@ -16,27 +16,13 @@ description: Work on better-data-plugin-test — the companion plugin
   wp-content/plugins/better-data-plugin-test/. Triggers on Smoke /
   Stress / Runner / Cli files in that path, "wp better-data" CLI
   invocations, "smoke / stress scenario" mentions.
-author: Soczó Kristóf
-contact: mailto:lonsdale201@hotmail.com
-plugin: better-data
-plugin-version-tested: "phase-9"
-php-min: "8.3"
-last-updated: "2026-04-29"
-docs:
-  - https://github.com/lonsdale201/better-data
-source-refs:
-  - wp-content/plugins/better-data-plugin-test/better-data-plugin-test.php
-  - wp-content/plugins/better-data-plugin-test/src/Plugin.php
-  - wp-content/plugins/better-data-plugin-test/src/Cli.php
-  - wp-content/plugins/better-data-plugin-test/src/StressCli.php
-  - wp-content/plugins/better-data-plugin-test/src/SeedCli.php
-  - wp-content/plugins/better-data-plugin-test/src/PurgeCli.php
-  - wp-content/plugins/better-data-plugin-test/src/InventoryCli.php
-  - wp-content/plugins/better-data-plugin-test/src/Smoke/Runner.php
-  - wp-content/plugins/better-data-plugin-test/src/Smoke/Assertion.php
-  - wp-content/plugins/better-data-plugin-test/src/Stress/Runner.php
-  - wp-content/plugins/better-data-plugin-test/src/Stress/Finding.php
-  - wp-content/plugins/better-data-plugin-test/src/Dto/
+metadata:
+  wp-skills-author: "Soczó Kristóf"
+  wp-skills-contact: "mailto:lonsdale201@hotmail.com"
+  wp-skills-plugin: "better-data"
+  wp-skills-plugin-version-tested: "phase-9"
+  wp-skills-php-min: "8.3"
+  wp-skills-last-updated: "2026-04-29"
 ---
 
 # better-data: Companion plugin testbed
@@ -260,7 +246,7 @@ A successful sequence is the ship-readiness check. Library unit + static + style
 
 // WRONG — scenario marked NOTE because it's flaky
 $findings[] = Finding::note('Sometimes the cache primes too late and we read a stale value');
-// 🔴 a flake is a FAIL waiting to happen.
+// WRONG: a flake is a FAIL waiting to happen.
 
 // RIGHT — fix it (add explicit cache priming, or design the scenario to be deterministic)
 $findings[] = Finding::ok('cache primes correctly when explicitly warmed');
@@ -317,3 +303,6 @@ wp better-data stress
 - Stress runner: [wp-content/plugins/better-data-plugin-test/src/Stress/Runner.php](Runner.php) and [src/Stress/Finding.php](Finding.php) — `Finding::ok`, `Finding::fail`, `Finding::note` factories.
 - CLI: [wp-content/plugins/better-data-plugin-test/src/Cli.php](Cli.php), [src/StressCli.php](StressCli.php), [src/SeedCli.php](SeedCli.php), [src/PurgeCli.php](PurgeCli.php), [src/InventoryCli.php](InventoryCli.php).
 - Admin pages: [wp-content/plugins/better-data-plugin-test/src/Admin/](src/Admin/) — `AdminPage` base + concrete pages.
+- Official documentation: <https://github.com/lonsdale201/better-data>
+- Verified source paths:
+  - `wp-content/plugins/better-data-plugin-test/src/Plugin.php`

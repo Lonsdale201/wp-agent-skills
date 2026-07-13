@@ -1,18 +1,13 @@
 ---
 name: wc-shipping-providers
 description: Extend WooCommerce core Order Fulfillments with a custom tracking provider. Covers the `fulfillments` feature gate, `AbstractShippingProvider`, provider registration and collision rules, tracking URL construction, country support, tracking-number parsing and ambiguity scores, REST exposure, input safety, and version guards. Use when a carrier must appear in fulfillment tracking or be auto-detected from tracking numbers.
-author: Soczó Kristóf
-contact: mailto:lonsdale201@hotmail.com
-plugin: woocommerce
-plugin-version-tested: "10.9.4"
-php-min: "7.4"
-last-updated: "2026-07-10"
-source-refs:
-  - wp-content/plugins/woocommerce/src/Admin/Features/Fulfillments/Providers/AbstractShippingProvider.php
-  - wp-content/plugins/woocommerce/src/Admin/Features/Fulfillments/FulfillmentUtils.php
-  - wp-content/plugins/woocommerce/src/Admin/Features/Fulfillments/FulfillmentsManager.php
-  - wp-content/plugins/woocommerce/src/Internal/RestApi/Routes/V4/Fulfillments/Controller.php
-  - wp-content/plugins/woocommerce/src/Internal/Features/FeaturesController.php
+metadata:
+  wp-skills-author: "Soczó Kristóf"
+  wp-skills-contact: "mailto:lonsdale201@hotmail.com"
+  wp-skills-plugin: "woocommerce"
+  wp-skills-plugin-version-tested: "10.9.4"
+  wp-skills-php-min: "7.4"
+  wp-skills-last-updated: "2026-07-10"
 ---
 
 # WooCommerce fulfillment shipping providers
@@ -204,3 +199,6 @@ The provider base class lives under `Admin\Features\Fulfillments`, and the featu
 - Provider contract: `src/Admin/Features/Fulfillments/Providers/AbstractShippingProvider.php`.
 - Registry resolution: `src/Admin/Features/Fulfillments/FulfillmentUtils.php`.
 - Best-score parser: `src/Admin/Features/Fulfillments/FulfillmentsManager.php`.
+- Verified source paths:
+  - `wp-content/plugins/woocommerce/src/Internal/RestApi/Routes/V4/Fulfillments/Controller.php`
+  - `wp-content/plugins/woocommerce/src/Internal/Features/FeaturesController.php`

@@ -1,18 +1,13 @@
 ---
 name: br-error-contract
 description: Produce and consume better-route 1.1 structured errors. Use for ApiException, Response, ErrorNormalizer, ResponseNormalizer, WP_Error conversion, OAuth RFC 6749 error_format, status/code/details/headers, Retry-After, validation_failed, idempotency/rate/optimistic-lock/Woo errors, leak prevention, or invalid response/header diagnostics. In 1.1 ApiException and Response validate status and headers, and WP_Error details are allowlisted.
-author: Soczó Kristóf
-contact: mailto:lonsdale201@hotmail.com
-plugin: better-route
-plugin-version-tested: "1.1.0"
-php-min: "8.1"
-last-updated: "2026-07-13"
-source-refs:
-  - src/Http/ApiException.php
-  - src/Http/ErrorNormalizer.php
-  - src/Http/OAuthErrorNormalizer.php
-  - src/Http/ResponseNormalizer.php
-  - src/Http/Response.php
+metadata:
+  wp-skills-author: "Soczó Kristóf"
+  wp-skills-contact: "mailto:lonsdale201@hotmail.com"
+  wp-skills-plugin: "better-route"
+  wp-skills-plugin-version-tested: "1.1.0"
+  wp-skills-php-min: "8.1"
+  wp-skills-last-updated: "2026-07-13"
 ---
 
 # better-route: error contract
@@ -137,3 +132,12 @@ Do not return an ad hoc `['success' => false]` response; it bypasses the stable 
 
 - Use `br-write-schema` for validation detail shape.
 - Use `br-rate-limiting`, `br-idempotency`, and `br-optimistic-locking` for subsystem errors.
+
+## References
+
+- Verified source paths:
+  - `src/Http/ApiException.php`
+  - `src/Http/ErrorNormalizer.php`
+  - `src/Http/OAuthErrorNormalizer.php`
+  - `src/Http/ResponseNormalizer.php`
+  - `src/Http/Response.php`

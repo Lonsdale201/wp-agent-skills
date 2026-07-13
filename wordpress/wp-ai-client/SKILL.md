@@ -9,15 +9,13 @@ description: Build and review WordPress 7.0 WP AI Client integrations for
   provider configuration, prompt prevention filters, and safe AI feature
   gating. Use when plugin code calls AI models or adds AI-powered WordPress
   features.
-author: Soczó Kristóf
-contact: mailto:lonsdale201@hotmail.com
-plugin: wordpress
-plugin-version-tested: "7.0.1"
-php-min: "7.4"
-last-updated: "2026-07-10"
-docs:
-  - https://make.wordpress.org/core/2026/03/24/introducing-the-ai-client-in-wordpress-7-0/
-  - https://make.wordpress.org/core/2026/05/14/wordpress-7-0-field-guide/
+metadata:
+  wp-skills-author: "Soczó Kristóf"
+  wp-skills-contact: "mailto:lonsdale201@hotmail.com"
+  wp-skills-plugin: "wordpress"
+  wp-skills-plugin-version-tested: "7.0.1"
+  wp-skills-php-min: "7.4"
+  wp-skills-last-updated: "2026-07-10"
 ---
 
 # WordPress AI Client

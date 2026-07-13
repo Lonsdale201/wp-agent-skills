@@ -1,13 +1,13 @@
 ---
 name: br-auth-middleware
 description: Configure Better Route 1.1 authentication with JWT, custom bearer tokens, WordPress Application Passwords, or cookie nonces. Use when protecting routes, mapping verified claims to WordPress users, enforcing scopes, or consuming the shared AuthContext identity.
-author: Soczó Kristóf
-contact: mailto:lonsdale201@hotmail.com
-plugin: better-route
-plugin-version-tested: "1.1.0"
-php-min: "8.1"
-last-updated: "2026-07-13"
-docs: https://lonsdale201.github.io/better-docs/docs/better-route/agents
+metadata:
+  wp-skills-author: "Soczó Kristóf"
+  wp-skills-contact: "mailto:lonsdale201@hotmail.com"
+  wp-skills-plugin: "better-route"
+  wp-skills-plugin-version-tested: "1.1.0"
+  wp-skills-php-min: "8.1"
+  wp-skills-last-updated: "2026-07-13"
 ---
 
 # Better Route authentication middleware
@@ -69,3 +69,7 @@ Successful built-in authentication writes a normalized identity into `RequestCon
 - Never log bearer tokens, Basic credentials, cookies, nonces, or complete claims payloads.
 
 Source references: `src/Middleware/Jwt/*`, `src/Middleware/Auth/*`, `src/Router/RouteBuilder.php`.
+
+## References
+
+- Official documentation: <https://lonsdale201.github.io/better-docs/docs/better-route/agents>

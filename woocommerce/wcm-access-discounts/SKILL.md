@@ -9,21 +9,13 @@ description: WooCommerce Memberships access, restriction, drip-content,
   wc_memberships_access_from_time, wc_memberships_user_has_member_discount,
   wc_memberships_get_member_product_discount,
   wc_memberships_get_discounted_price, or member discount badge hooks.
-author: Soczó Kristóf
-contact: mailto:lonsdale201@hotmail.com
-plugin: woocommerce-memberships
-plugin-version-tested: "1.29.0"
-php-min: "7.4"
-last-updated: "2026-07-06"
-source-refs:
-  - wp-content/plugins/woocommerce-memberships/src/class-wc-memberships-capabilities.php
-  - wp-content/plugins/woocommerce-memberships/src/Restrictions.php
-  - wp-content/plugins/woocommerce-memberships/src/Restrictions/Posts.php
-  - wp-content/plugins/woocommerce-memberships/src/Restrictions/Products.php
-  - wp-content/plugins/woocommerce-memberships/src/class-wc-memberships-member-discounts.php
-  - wp-content/plugins/woocommerce-memberships/src/functions/wc-memberships-functions-restrictions.php
-  - wp-content/plugins/woocommerce-memberships/src/functions/wc-memberships-functions-member-discounts.php
-  - wp-content/plugins/woocommerce-memberships/src/Posts/Abilities/
+metadata:
+  wp-skills-author: "Soczó Kristóf"
+  wp-skills-contact: "mailto:lonsdale201@hotmail.com"
+  wp-skills-plugin: "woocommerce-memberships"
+  wp-skills-plugin-version-tested: "1.29.0"
+  wp-skills-php-min: "7.4"
+  wp-skills-last-updated: "2026-07-06"
 ---
 
 # WooCommerce Memberships: access and discounts
@@ -206,3 +198,15 @@ add_filter( 'wc_memberships_access_from_time', function ( $from_time, $rule, $me
 - Use `wcm-membership-hooks` for creation, status transitions, profile fields, REST/webhooks, members area, CSV, admin, and Subscriptions-linked membership hooks.
 - Use `wcm-data-model-subscriptions-link` when previous-purchase grant logic touches order storage; HPOS means raw `shop_order` post queries are unsafe.
 - Use `wc-variations-pricing-filters` when combining Memberships discounts with custom variation price logic and cached variation price hashes.
+
+## References
+
+- Verified source paths:
+  - `wp-content/plugins/woocommerce-memberships/src/class-wc-memberships-capabilities.php`
+  - `wp-content/plugins/woocommerce-memberships/src/Restrictions.php`
+  - `wp-content/plugins/woocommerce-memberships/src/Restrictions/Posts.php`
+  - `wp-content/plugins/woocommerce-memberships/src/Restrictions/Products.php`
+  - `wp-content/plugins/woocommerce-memberships/src/class-wc-memberships-member-discounts.php`
+  - `wp-content/plugins/woocommerce-memberships/src/functions/wc-memberships-functions-restrictions.php`
+  - `wp-content/plugins/woocommerce-memberships/src/functions/wc-memberships-functions-member-discounts.php`
+  - `wp-content/plugins/woocommerce-memberships/src/Posts/Abilities/`

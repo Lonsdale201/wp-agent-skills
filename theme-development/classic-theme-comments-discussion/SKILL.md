@@ -1,21 +1,13 @@
 ---
 name: classic-theme-comments-discussion
 description: Build or audit classic theme comments output for WP 7.0. Covers `comments_template()`, `comments.php`, `post_password_required()`, `have_comments()`, `wp_list_comments()`, comment pagination, `comment_form()`, threaded comment reply script loading, closed-comment messaging, accessible comment navigation, escaping comment titles and labels, and common mistakes such as custom comment forms, missing password guards, loading `comment-reply` globally, broken callback walkers, or showing comments on unsupported post types.
-author: Soczó Kristóf
-contact: mailto:lonsdale201@hotmail.com
-plugin: wordpress
-plugin-version-tested: "7.0"
-php-min: "7.4"
-last-updated: "2026-06-04"
-docs:
-  - https://developer.wordpress.org/themes/classic-themes/templates/partial-and-miscellaneous-template-files/comment-template/
-  - https://developer.wordpress.org/reference/functions/comment_form/
-  - https://developer.wordpress.org/reference/functions/wp_list_comments/
-source-refs:
-  - wp-includes/comment-template.php
-  - wp-includes/script-loader.php
-  - wp-content/themes/storefront/comments.php
-  - wp-content/themes/generatepress/comments.php
+metadata:
+  wp-skills-author: "Soczó Kristóf"
+  wp-skills-contact: "mailto:lonsdale201@hotmail.com"
+  wp-skills-plugin: "wordpress"
+  wp-skills-plugin-version-tested: "7.0"
+  wp-skills-php-min: "7.4"
+  wp-skills-last-updated: "2026-06-04"
 ---
 
 # Classic Theme Comments and Discussion
@@ -227,3 +219,14 @@ Do not show "Comments are closed" on every page with no discussion.
 - Rendering comment navigation when comments are not paginated.
 - Echoing `get_the_title()` raw inside the comments heading.
 - Using a `<div>` wrapper while asking `wp_list_comments()` for `style => 'ol'`.
+
+## References
+
+- Official documentation: <https://developer.wordpress.org/themes/classic-themes/templates/partial-and-miscellaneous-template-files/comment-template/>
+- Official documentation: <https://developer.wordpress.org/reference/functions/comment_form/>
+- Official documentation: <https://developer.wordpress.org/reference/functions/wp_list_comments/>
+- Verified source paths:
+  - `wp-includes/comment-template.php`
+  - `wp-includes/script-loader.php`
+  - `wp-content/themes/storefront/comments.php`
+  - `wp-content/themes/generatepress/comments.php`

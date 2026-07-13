@@ -1,20 +1,13 @@
 ---
 name: wc-emails-classic
 description: Add or customize classic WooCommerce transactional emails with `WC_Email`. Covers registration, constructor timing, templates and theme overrides, status notification triggers, locale handling, the WooCommerce 10.9 `send_notification()` guard, disabled/skipped/sent outcome hooks, HPOS-safe order data, and one-off styled mail. Use when adding an email type, overriding email templates, or debugging sends that bypass settings and logging.
-author: Soczó Kristóf
-contact: mailto:lonsdale201@hotmail.com
-plugin: woocommerce
-plugin-version-tested: "10.9.4"
-php-min: "7.4"
-last-updated: "2026-07-10"
-docs:
-  - https://woocommerce.com/document/template-structure/
-source-refs:
-  - wp-content/plugins/woocommerce/includes/emails/class-wc-email.php
-  - wp-content/plugins/woocommerce/includes/class-wc-emails.php
-  - wp-content/plugins/woocommerce/includes/emails/class-wc-email-customer-processing-order.php
-  - wp-content/plugins/woocommerce/src/Internal/Email/EmailLogger.php
-  - wp-content/plugins/woocommerce/templates/emails
+metadata:
+  wp-skills-author: "Soczó Kristóf"
+  wp-skills-contact: "mailto:lonsdale201@hotmail.com"
+  wp-skills-plugin: "woocommerce"
+  wp-skills-plugin-version-tested: "10.9.4"
+  wp-skills-php-min: "7.4"
+  wp-skills-last-updated: "2026-07-10"
 ---
 
 # WooCommerce classic transactional emails
@@ -224,3 +217,4 @@ Do not use this shortcut for a recurring transactional type that merchants shoul
 - Registration collection: `includes/class-wc-emails.php`.
 - Canonical trigger implementation: `includes/emails/class-wc-email-customer-processing-order.php`.
 - Outcome logger: `src/Internal/Email/EmailLogger.php`.
+- Official documentation: <https://woocommerce.com/document/template-structure/>

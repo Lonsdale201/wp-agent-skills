@@ -1,22 +1,14 @@
 ---
 name: wcs-health-check-processing
 description: WooCommerce Subscriptions 8.8+ Health Check and Processing Reliability playbook for missing renewal schedules, automatic-renewal candidates, guarded Resolve actions, dedicated Action Scheduler processing, web cron, health-check tables, logs, AJAX nonces, and queue filters. Use for WCS Health Check, wcs_health_check_candidates, wcs_health_check_runs, Processing reliability, subscriptions/job-queue, or renewal remediation.
-author: Soczó Kristóf
-contact: mailto:lonsdale201@hotmail.com
-plugin: woocommerce-subscriptions
-plugin-version-tested: "9.0.0"
-woocommerce-version-tested: "10.9.4"
-php-min: "7.4"
-last-updated: "2026-07-10"
-docs:
-  - https://woocommerce.com/document/subscriptions/develop/
-source-refs:
-  - wp-content/plugins/woocommerce-subscriptions/changelog.txt
-  - wp-content/plugins/woocommerce-subscriptions/includes/class-wc-subscriptions-plugin.php
-  - wp-content/plugins/woocommerce-subscriptions/includes/health-check/class-wcs-health-check-table-maker.php
-  - wp-content/plugins/woocommerce-subscriptions/src/Internal/HealthCheck/
-  - wp-content/plugins/woocommerce-subscriptions/src/Internal/Queue_Management/
-  - wp-content/plugins/woocommerce-subscriptions/includes/core/class-wc-subscriptions-change-payment-gateway.php
+metadata:
+  wp-skills-author: "Soczó Kristóf"
+  wp-skills-contact: "mailto:lonsdale201@hotmail.com"
+  wp-skills-plugin: "woocommerce-subscriptions"
+  wp-skills-plugin-version-tested: "9.0.0"
+  wp-skills-woocommerce-version-tested: "10.9.4"
+  wp-skills-php-min: "7.4"
+  wp-skills-last-updated: "2026-07-10"
 ---
 
 # WooCommerce Subscriptions: Health Check and processing reliability
@@ -185,3 +177,14 @@ add_action( 'woocommerce_subscription_failing_payment_method_updated', 'my_clear
 - Use `wcs-renewal-scheduler` for date changes, renewal order creation, scheduled payment flow, and retry timing.
 - Use `wcs-subscription-hooks` for broader WCS hook selection.
 - Use `wc-action-scheduler-jobs` for general Action Scheduler debugging outside WCS-specific queue management.
+
+## References
+
+- Official documentation: <https://woocommerce.com/document/subscriptions/develop/>
+- Verified source paths:
+  - `wp-content/plugins/woocommerce-subscriptions/changelog.txt`
+  - `wp-content/plugins/woocommerce-subscriptions/includes/class-wc-subscriptions-plugin.php`
+  - `wp-content/plugins/woocommerce-subscriptions/includes/health-check/class-wcs-health-check-table-maker.php`
+  - `wp-content/plugins/woocommerce-subscriptions/src/Internal/HealthCheck/`
+  - `wp-content/plugins/woocommerce-subscriptions/src/Internal/Queue_Management/`
+  - `wp-content/plugins/woocommerce-subscriptions/includes/core/class-wc-subscriptions-change-payment-gateway.php`

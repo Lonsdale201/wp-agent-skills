@@ -1,24 +1,13 @@
 ---
 name: lw-lms-learndash-migration
 description: Plan, run, or review the LW LMS WP-CLI LearnDash migration command `wp lw-lms migrate-learndash` in lw-lms v1.5.1. Use when migrating `sfwd-courses` / `sfwd-lessons`, checking `--dry-run` / `--verbose`, verifying `_lw_lms_migrated_to` mappings, course sections, lesson order, WooCommerce product links, LearnDash video extraction, or safe reruns after partial migration.
-author: Soczó Kristóf
-contact: mailto:lonsdale201@hotmail.com
-plugin: lw-lms
-plugin-version-tested: "1.5.1"
-php-min: "8.1"
-last-updated: "2026-06-15"
-docs:
-  - https://github.com/lwplugins/lw-lms
-source-refs:
-  - wp-content/plugins/lw-lms/includes/Plugin.php
-  - wp-content/plugins/lw-lms/includes/CLI/MigrateLearnDashCommand.php
-  - wp-content/plugins/lw-lms/includes/CLI/Migration/CourseMigrator.php
-  - wp-content/plugins/lw-lms/includes/CLI/Migration/LessonMigrator.php
-  - wp-content/plugins/lw-lms/includes/CLI/Migration/SectionBuilder.php
-  - wp-content/plugins/lw-lms/includes/CLI/Migration/LearnDashData.php
-  - wp-content/plugins/lw-lms/includes/CLI/Migration/VideoExtractor.php
-  - wp-content/plugins/lw-lms/includes/CLI/Migration/PostCreator.php
-  - wp-content/plugins/lw-lms/includes/CLI/Migration/MigrationLogger.php
+metadata:
+  wp-skills-author: "Soczó Kristóf"
+  wp-skills-contact: "mailto:lonsdale201@hotmail.com"
+  wp-skills-plugin: "lw-lms"
+  wp-skills-plugin-version-tested: "1.5.1"
+  wp-skills-php-min: "8.1"
+  wp-skills-last-updated: "2026-06-15"
 ---
 
 # LW LMS LearnDash Migration
@@ -115,3 +104,8 @@ The command is intentionally rerunnable, but not a full synchronization tool:
 - Ordering/sections: `includes/CLI/Migration/SectionBuilder.php`.
 - Source data helpers and mappings: `includes/CLI/Migration/LearnDashData.php`.
 - Video extraction: `includes/CLI/Migration/VideoExtractor.php`.
+- Official documentation: <https://github.com/lwplugins/lw-lms>
+- Verified source paths:
+  - `wp-content/plugins/lw-lms/includes/Plugin.php`
+  - `wp-content/plugins/lw-lms/includes/CLI/Migration/PostCreator.php`
+  - `wp-content/plugins/lw-lms/includes/CLI/Migration/MigrationLogger.php`

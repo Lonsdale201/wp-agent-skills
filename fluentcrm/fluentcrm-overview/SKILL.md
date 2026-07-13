@@ -16,29 +16,14 @@ description: Orient skill for FluentCRM extension development. Covers the
   things live. Triggers on FluentCrmApi, fluentCrmDb, FunnelHelper,
   fluent_crm/contact_, fluent_crm/extended_smart_codes, FLUENTCRM,
   FLUENTCAMPAIGN.
-author: Soczó Kristóf
-contact: mailto:lonsdale201@hotmail.com
-plugin: fluent-crm
-plugin-version-tested: "FluentCRM 3.1.8 + FluentCRM Pro 3.1.8"
-api-stable-since: "2.7"
-php-min: "7.4"
-last-updated: "2026-07-09"
-docs:
-  - https://developers.fluentcrm.com/
-source-refs:
-  - wp-content/plugins/fluent-crm/fluent-crm.php
-  - wp-content/plugins/fluent-crm/boot/app.php
-  - wp-content/plugins/fluent-crm/app/Hooks/actions.php
-  - wp-content/plugins/fluent-crm/app/Hooks/Handlers/FunnelHandler.php
-  - wp-content/plugins/fluent-crm/app/Functions/helpers.php
-  - wp-content/plugins/fluent-crm/app/Models/Subscriber.php
-  - wp-content/plugins/fluent-crm/app/Models/Company.php
-  - wp-content/plugins/fluent-crm/app/Models/EventTracker.php
-  - wp-content/plugins/fluent-crm/app/Services/Helper.php
-  - wp-content/plugins/fluent-crm/app/Api/config.php
-  - wp-content/plugins/fluent-crm/app/Api/Classes/Extender.php
-  - wp-content/plugins/fluentcampaign-pro/fluentcampaign-pro.php
-  - wp-content/plugins/fluentcampaign-pro/app/Hooks/Handlers/IntegrationHandler.php
+metadata:
+  wp-skills-author: "Soczó Kristóf"
+  wp-skills-contact: "mailto:lonsdale201@hotmail.com"
+  wp-skills-plugin: "fluent-crm"
+  wp-skills-plugin-version-tested: "FluentCRM 3.1.8 + FluentCRM Pro 3.1.8"
+  wp-skills-php-min: "7.4"
+  wp-skills-api-stable-since: "2.7"
+  wp-skills-last-updated: "2026-07-09"
 ---
 
 # FluentCRM: developer overview
@@ -395,3 +380,11 @@ Smart codes are evaluated at email render time AND inside dynamic field tokens f
 - Pro integration handler — `fluentcampaign-pro/app/Hooks/Handlers/IntegrationHandler.php`
 - Reference Pro trigger — `fluentcampaign-pro/app/Services/Integrations/TutorLms/CourseEnrollTrigger.php`
 - Reference Pro action — `fluentcampaign-pro/app/Services/Integrations/TutorLms/AddToCourseAction.php`
+- Verified source paths:
+  - `wp-content/plugins/fluent-crm/app/Models/Subscriber.php`
+  - `wp-content/plugins/fluent-crm/app/Models/Company.php`
+  - `wp-content/plugins/fluent-crm/app/Models/EventTracker.php`
+  - `wp-content/plugins/fluent-crm/app/Services/Helper.php`
+  - `wp-content/plugins/fluent-crm/app/Api/config.php`
+  - `wp-content/plugins/fluent-crm/app/Api/Classes/Extender.php`
+  - `wp-content/plugins/fluentcampaign-pro/fluentcampaign-pro.php`

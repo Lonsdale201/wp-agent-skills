@@ -7,17 +7,13 @@ description: >-
   behavior, and the rule that flush_rewrite_rules() must not run on every
   request. Use for custom pretty URLs, CPT permalink 404s, endpoint
   rewrites, and code containing flush_rewrite_rules or add_rewrite_rule.
-author: Soczó Kristóf
-contact: mailto:lonsdale201@hotmail.com
-plugin: wordpress
-plugin-version-tested: "6.5 - 6.9"
-php-min: "7.4"
-last-updated: "2026-04-28"
-docs:
-  - https://developer.wordpress.org/reference/functions/add_rewrite_rule/
-  - https://developer.wordpress.org/reference/functions/flush_rewrite_rules/
-  - https://developer.wordpress.org/reference/functions/add_rewrite_endpoint/
-  - https://developer.wordpress.org/reference/hooks/query_vars/
+metadata:
+  wp-skills-author: "Soczó Kristóf"
+  wp-skills-contact: "mailto:lonsdale201@hotmail.com"
+  wp-skills-plugin: "wordpress"
+  wp-skills-plugin-version-tested: "6.5 - 6.9"
+  wp-skills-php-min: "7.4"
+  wp-skills-last-updated: "2026-04-28"
 ---
 
 # WordPress plugin: rewrite rules & flush
@@ -313,3 +309,6 @@ add_action( 'update_option_myplugin_settings', 'flush_rewrite_rules' );
 - `flush_rewrite_rules`: `wp-includes/rewrite.php` — wraps `WP_Rewrite::flush_rules`
 - `WP_Rewrite::refresh_rewrite_rules` (since WP 6.4): `wp-includes/class-wp-rewrite.php` — explains the deferred-flush behavior when `wp_loaded` hasn't fired
 - `query_vars` filter: [developer.wordpress.org/reference/hooks/query_vars/](https://developer.wordpress.org/reference/hooks/query_vars/)
+- Official documentation: <https://developer.wordpress.org/reference/functions/add_rewrite_rule/>
+- Official documentation: <https://developer.wordpress.org/reference/functions/flush_rewrite_rules/>
+- Official documentation: <https://developer.wordpress.org/reference/functions/add_rewrite_endpoint/>

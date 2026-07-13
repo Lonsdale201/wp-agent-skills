@@ -11,27 +11,13 @@ description: Curated WooCommerce Memberships hook and extension-point map
   WC_Memberships_User_Membership, WC_Memberships_Membership_Plan,
   wc_user_membership, wc_membership_plan, wcm-, _subscription_id,
   wc_memberships_rules, or woocommerce-memberships.
-author: Soczó Kristóf
-contact: mailto:lonsdale201@hotmail.com
-plugin: woocommerce-memberships
-plugin-version-tested: "1.29.0"
-php-min: "7.4"
-last-updated: "2026-07-06"
-source-refs:
-  - wp-content/plugins/woocommerce-memberships/src/class-wc-memberships-post-types.php
-  - wp-content/plugins/woocommerce-memberships/src/class-wc-memberships-user-memberships.php
-  - wp-content/plugins/woocommerce-memberships/src/class-wc-memberships-user-membership.php
-  - wp-content/plugins/woocommerce-memberships/src/class-wc-memberships-membership-plan.php
-  - wp-content/plugins/woocommerce-memberships/src/class-wc-memberships-rules.php
-  - wp-content/plugins/woocommerce-memberships/src/API/Controller/User_Memberships.php
-  - wp-content/plugins/woocommerce-memberships/src/API/Webhooks.php
-  - wp-content/plugins/woocommerce-memberships/src/Abilities/Provider.php
-  - wp-content/plugins/woocommerce-memberships/src/Plans/Abilities/
-  - wp-content/plugins/woocommerce-memberships/src/UserMemberships/Abilities/
-  - wp-content/plugins/woocommerce-memberships/src/Posts/Abilities/
-  - wp-content/plugins/woocommerce-memberships/src/Helpers/Directory_Block_Validator.php
-  - wp-content/plugins/woocommerce-memberships/src/Profile_Fields.php
-  - wp-content/plugins/woocommerce-memberships/src/integrations/subscriptions/
+metadata:
+  wp-skills-author: "Soczó Kristóf"
+  wp-skills-contact: "mailto:lonsdale201@hotmail.com"
+  wp-skills-plugin: "woocommerce-memberships"
+  wp-skills-plugin-version-tested: "1.29.0"
+  wp-skills-php-min: "7.4"
+  wp-skills-last-updated: "2026-07-06"
 ---
 
 # WooCommerce Memberships: hook map
@@ -288,3 +274,21 @@ foreach ( $statuses as $key => $data ) {
 - Use `wcm-access-discounts` for access checks, restriction/drip hooks, member discounts, and price-adjustment recursion safety.
 - Use `wcm-abilities-api` for Memberships 1.29+ WP Abilities API names, permissions, schemas, REST route exposure, and guardrails.
 - Use `wcs-subscription-hooks` or `wcs-renewal-scheduler` when the membership is tied to WooCommerce Subscriptions renewal/payment flow.
+
+## References
+
+- Verified source paths:
+  - `wp-content/plugins/woocommerce-memberships/src/class-wc-memberships-post-types.php`
+  - `wp-content/plugins/woocommerce-memberships/src/class-wc-memberships-user-memberships.php`
+  - `wp-content/plugins/woocommerce-memberships/src/class-wc-memberships-user-membership.php`
+  - `wp-content/plugins/woocommerce-memberships/src/class-wc-memberships-membership-plan.php`
+  - `wp-content/plugins/woocommerce-memberships/src/class-wc-memberships-rules.php`
+  - `wp-content/plugins/woocommerce-memberships/src/API/Controller/User_Memberships.php`
+  - `wp-content/plugins/woocommerce-memberships/src/API/Webhooks.php`
+  - `wp-content/plugins/woocommerce-memberships/src/Abilities/Provider.php`
+  - `wp-content/plugins/woocommerce-memberships/src/Plans/Abilities/`
+  - `wp-content/plugins/woocommerce-memberships/src/UserMemberships/Abilities/`
+  - `wp-content/plugins/woocommerce-memberships/src/Posts/Abilities/`
+  - `wp-content/plugins/woocommerce-memberships/src/Helpers/Directory_Block_Validator.php`
+  - `wp-content/plugins/woocommerce-memberships/src/Profile_Fields.php`
+  - `wp-content/plugins/woocommerce-memberships/src/integrations/subscriptions/`

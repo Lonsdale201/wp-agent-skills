@@ -14,24 +14,15 @@ description: >
   callbacks, dynamic constants), and running with `--level` / `--memory-limit`.
   Use when adding static analysis, writing phpstan.neon, raising the level, or
   taming WP-specific PHPStan errors.
-author: Soczó Kristóf
-contact: mailto:lonsdale201@hotmail.com
-plugin: wordpress
-plugin-version-tested: "PHPStan 2.x; phpstan-wordpress 2.0.3; wordpress-stubs 6.6+; WP 7.0"
-wp-version-tested: "7.0"
-php-min: "7.4"
-last-updated: "2026-06-17"
-docs:
-  - https://github.com/szepeviktor/phpstan-wordpress
-  - https://phpstan.org/user-guide/rule-levels
-  - https://phpstan.org/user-guide/baseline
-  - https://github.com/php-stubs/wordpress-stubs
-source-refs:
-  - https://github.com/szepeviktor/phpstan-wordpress/blob/master/extension.neon
-  - https://github.com/szepeviktor/phpstan-wordpress/blob/master/examples/phpstan.neon.dist
-  - https://github.com/php-stubs/woocommerce-stubs
-  - https://github.com/phpstan/extension-installer
 license: GPLv2-or-later
+metadata:
+  wp-skills-author: "Soczó Kristóf"
+  wp-skills-contact: "mailto:lonsdale201@hotmail.com"
+  wp-skills-plugin: "wordpress"
+  wp-skills-plugin-version-tested: "PHPStan 2.x; phpstan-wordpress 2.0.3; wordpress-stubs 6.6+; WP 7.0"
+  wp-skills-wp-version-tested: "7.0"
+  wp-skills-php-min: "7.4"
+  wp-skills-last-updated: "2026-06-17"
 ---
 
 # PHPStan static analysis for WordPress
@@ -192,3 +183,5 @@ Add a composer script so it joins the QA entry point alongside `phpcs`/`phpunit`
 - WordPress stubs: <https://github.com/php-stubs/wordpress-stubs>
 - WooCommerce stubs: <https://github.com/php-stubs/woocommerce-stubs>
 - Extension installer: <https://github.com/phpstan/extension-installer>
+- Related documentation: <https://github.com/szepeviktor/phpstan-wordpress/blob/master/extension.neon>
+- Related documentation: <https://github.com/szepeviktor/phpstan-wordpress/blob/master/examples/phpstan.neon.dist>

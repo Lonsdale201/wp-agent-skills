@@ -6,16 +6,13 @@ description: Implement or audit outbound HTTP integrations in WordPress with
   redaction, retries, idempotency, streaming downloads, and test hooks. Use
   when a plugin calls an external API, webhook destination, feed, license
   server, OAuth endpoint, remote file, or accepts a URL that WordPress fetches.
-author: Soczó Kristóf
-contact: mailto:lonsdale201@hotmail.com
-plugin: wordpress
-plugin-version-tested: "6.0 - 7.0.1"
-php-min: "7.4"
-last-updated: "2026-07-10"
-docs:
-  - https://developer.wordpress.org/plugins/http-api/
-  - https://developer.wordpress.org/reference/functions/wp_safe_remote_request/
-  - https://developer.wordpress.org/reference/classes/wp_http/request/
+metadata:
+  wp-skills-author: "Soczó Kristóf"
+  wp-skills-contact: "mailto:lonsdale201@hotmail.com"
+  wp-skills-plugin: "wordpress"
+  wp-skills-plugin-version-tested: "6.0 - 7.0.1"
+  wp-skills-php-min: "7.4"
+  wp-skills-last-updated: "2026-07-10"
 ---
 
 # WordPress HTTP API Client
@@ -218,3 +215,9 @@ security skill before sideloading into Media Library.
 - `wp-includes/http.php`: safe wrappers and URL validation.
 - `wp-includes/class-wp-http.php`: request arguments and response contract.
 - `wp-admin/includes/file.php`: `download_url()` and temporary-file cleanup.
+
+## References
+
+- Official documentation: <https://developer.wordpress.org/plugins/http-api/>
+- Official documentation: <https://developer.wordpress.org/reference/functions/wp_safe_remote_request/>
+- Official documentation: <https://developer.wordpress.org/reference/classes/wp_http/request/>

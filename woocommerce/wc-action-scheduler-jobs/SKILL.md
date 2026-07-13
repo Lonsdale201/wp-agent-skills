@@ -1,23 +1,13 @@
 ---
 name: wc-action-scheduler-jobs
 description: Queue and run WooCommerce background jobs with Action Scheduler. Covers async, single, recurring and cron actions, exact-argument checks, groups, JSON args and `array_values()` invocation, the delivery contract (due is not run; no exactly-once or FIFO), remote idempotency keys, bounded retries with backoff and failure telemetry, the AS 3.9.3 `action_scheduler_ensure_recurring_actions` daily repair hook behind `as_supports()`, WP-CLI diagnostics, lifecycle scheduling, batching, and the WC 10.9.4 DB-store rule that `$unique` guards pending/running actions by hook and group rather than argument set. Use when moving slow order/product/customer work out of requests or status hooks.
-author: Soczó Kristóf
-contact: mailto:lonsdale201@hotmail.com
-plugin: woocommerce
-plugin-version-tested: "10.9.4"
-php-min: "7.4"
-last-updated: "2026-07-13"
-docs:
-  - https://actionscheduler.org/
-source-refs:
-  - wp-content/plugins/woocommerce/packages/action-scheduler/functions.php
-  - wp-content/plugins/woocommerce/packages/action-scheduler/classes/ActionScheduler_ActionFactory.php
-  - wp-content/plugins/woocommerce/packages/action-scheduler/classes/data-stores/ActionScheduler_DBStore.php
-  - wp-content/plugins/woocommerce/packages/action-scheduler/classes/WP_CLI/ActionScheduler_WPCLI_Scheduler_command.php
-  - wp-content/plugins/woocommerce/packages/action-scheduler/classes/WP_CLI/Action_Command.php
-  - wp-content/plugins/woocommerce/packages/action-scheduler/classes/WP_CLI/System_Command.php
-  - wp-content/plugins/woocommerce/packages/action-scheduler/classes/abstracts/ActionScheduler_Abstract_QueueRunner.php
-  - wp-content/plugins/woocommerce/packages/action-scheduler/classes/ActionScheduler_RecurringActionScheduler.php
+metadata:
+  wp-skills-author: "Soczó Kristóf"
+  wp-skills-contact: "mailto:lonsdale201@hotmail.com"
+  wp-skills-plugin: "woocommerce"
+  wp-skills-plugin-version-tested: "10.9.4"
+  wp-skills-php-min: "7.4"
+  wp-skills-last-updated: "2026-07-13"
 ---
 
 # WooCommerce Action Scheduler jobs
@@ -337,3 +327,16 @@ Use plain `source` for the selected runtime source. `source --all` shows the reg
 - Order lifecycle hooks that enqueue jobs: `wc-order-lifecycle-and-items`
 - HPOS-safe order reads/writes inside jobs: `wc-hpos-compatibility`
 - Store API/block cart updates that need async follow-up: `wc-store-api`
+
+## References
+
+- Official documentation: <https://actionscheduler.org/>
+- Verified source paths:
+  - `wp-content/plugins/woocommerce/packages/action-scheduler/functions.php`
+  - `wp-content/plugins/woocommerce/packages/action-scheduler/classes/ActionScheduler_ActionFactory.php`
+  - `wp-content/plugins/woocommerce/packages/action-scheduler/classes/data-stores/ActionScheduler_DBStore.php`
+  - `wp-content/plugins/woocommerce/packages/action-scheduler/classes/WP_CLI/ActionScheduler_WPCLI_Scheduler_command.php`
+  - `wp-content/plugins/woocommerce/packages/action-scheduler/classes/WP_CLI/Action_Command.php`
+  - `wp-content/plugins/woocommerce/packages/action-scheduler/classes/WP_CLI/System_Command.php`
+  - `wp-content/plugins/woocommerce/packages/action-scheduler/classes/abstracts/ActionScheduler_Abstract_QueueRunner.php`
+  - `wp-content/plugins/woocommerce/packages/action-scheduler/classes/ActionScheduler_RecurringActionScheduler.php`

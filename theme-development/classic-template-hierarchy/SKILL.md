@@ -1,25 +1,13 @@
 ---
 name: classic-template-hierarchy
 description: Choose, create, or audit classic PHP WordPress template files for WP 7.0 using the template hierarchy. Covers `template-loader.php`, `index.php` fallback, `front-page.php` vs `home.php`, `page.php`, custom page templates, `single.php`, `singular.php`, `archive.php`, taxonomy/category/tag/author/date/search/404/attachment templates, `header.php`, `footer.php`, `comments.php`, `searchform.php`, `get_template_part()` with `$args`, child-theme override order, `template_include`, and why `template_redirect` should not include-and-exit. Use when deciding which classic template file to add or reviewing page.php/404.php/single/archive behavior.
-author: Soczó Kristóf
-contact: mailto:lonsdale201@hotmail.com
-plugin: wordpress
-plugin-version-tested: "7.0"
-php-min: "7.4"
-last-updated: "2026-06-04"
-docs:
-  - https://developer.wordpress.org/themes/classic-themes/basics/template-hierarchy/
-  - https://developer.wordpress.org/themes/classic-themes/basics/template-files/
-  - https://developer.wordpress.org/themes/classic-themes/templates/page-template-files/
-source-refs:
-  - wp-includes/template-loader.php
-  - wp-includes/template.php
-  - wp-includes/general-template.php
-  - wp-includes/class-wp-theme.php
-  - wp-content/themes/storefront/index.php
-  - wp-content/themes/storefront/page.php
-  - wp-content/themes/storefront/404.php
-  - wp-content/themes/generatepress/header.php
+metadata:
+  wp-skills-author: "Soczó Kristóf"
+  wp-skills-contact: "mailto:lonsdale201@hotmail.com"
+  wp-skills-plugin: "wordpress"
+  wp-skills-plugin-version-tested: "7.0"
+  wp-skills-php-min: "7.4"
+  wp-skills-last-updated: "2026-06-04"
 ---
 
 # Classic Template Hierarchy
@@ -229,3 +217,18 @@ Missing `wp_head()` or `wp_footer()` breaks core, plugins, admin bar assets, and
 - Theme bootstrapping, folders, assets: `classic-theme-structure`
 - Escaping, nonces, safe template output: `classic-theme-security-standards`
 - Broader WP security review: `wp-security-audit`
+
+## References
+
+- Official documentation: <https://developer.wordpress.org/themes/classic-themes/basics/template-hierarchy/>
+- Official documentation: <https://developer.wordpress.org/themes/classic-themes/basics/template-files/>
+- Official documentation: <https://developer.wordpress.org/themes/classic-themes/templates/page-template-files/>
+- Verified source paths:
+  - `wp-includes/template-loader.php`
+  - `wp-includes/template.php`
+  - `wp-includes/general-template.php`
+  - `wp-includes/class-wp-theme.php`
+  - `wp-content/themes/storefront/index.php`
+  - `wp-content/themes/storefront/page.php`
+  - `wp-content/themes/storefront/404.php`
+  - `wp-content/themes/generatepress/header.php`

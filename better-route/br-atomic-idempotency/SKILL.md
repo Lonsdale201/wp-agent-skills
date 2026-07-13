@@ -1,17 +1,13 @@
 ---
 name: br-atomic-idempotency
 description: Configure better-route 1.1 AtomicIdempotencyMiddleware for side-effectful POST, PUT, PATCH, or DELETE routes where concurrent duplicate execution must be prevented. Use for WpdbAtomicIdempotencyStore, lease-aware reservations, reservation_token schema migration, Idempotency-Key validation, idempotency_in_progress/conflict/replay behavior, safe stored responses, releaseOnThrowable, Woo write idempotency, or retry-safe payment/order/subscription/account operations.
-author: Soczó Kristóf
-contact: mailto:lonsdale201@hotmail.com
-plugin: better-route
-plugin-version-tested: "1.1.0"
-php-min: "8.1"
-last-updated: "2026-07-13"
-source-refs:
-  - src/Middleware/Write/AtomicIdempotencyMiddleware.php
-  - src/Middleware/Write/WpdbAtomicIdempotencyStore.php
-  - src/Middleware/Write/LeaseAwareAtomicIdempotencyStoreInterface.php
-  - src/Middleware/Write/StoredResponseCodec.php
+metadata:
+  wp-skills-author: "Soczó Kristóf"
+  wp-skills-contact: "mailto:lonsdale201@hotmail.com"
+  wp-skills-plugin: "better-route"
+  wp-skills-plugin-version-tested: "1.1.0"
+  wp-skills-php-min: "8.1"
+  wp-skills-last-updated: "2026-07-13"
 ---
 
 # better-route: atomic idempotency
@@ -113,3 +109,11 @@ Any custom Woo store must implement `AtomicIdempotencyStoreInterface`.
 - Use `br-idempotency` for lower-risk replay-cache semantics.
 - Use `br-woo-routes` for registrar integration.
 - Use `br-error-contract` for 400/409 response shapes.
+
+## References
+
+- Verified source paths:
+  - `src/Middleware/Write/AtomicIdempotencyMiddleware.php`
+  - `src/Middleware/Write/WpdbAtomicIdempotencyStore.php`
+  - `src/Middleware/Write/LeaseAwareAtomicIdempotencyStoreInterface.php`
+  - `src/Middleware/Write/StoredResponseCodec.php`

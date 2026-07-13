@@ -1,30 +1,14 @@
 ---
 name: wcs-subscription-plans-apfs
 description: Build or audit WooCommerce Subscriptions 9.0+ All Products for Subscriptions / Subscription Plans integrations. Covers the bundled APFS loader, standalone-plugin bypass, storewide and product plans, `_wcsatt_schemes_status`, `_wcsatt_schemes`, `wcsatt_subscribe_to_cart_schemes`, `wcsatt_data.active_subscription_scheme`, `_wcsatt_scheme`, plan REST endpoints, `woocommerce_is_subscription`, Store API validation, gifting support, bulk edit, and safe extension hooks. Use when any Woo product can be sold one-time, subscription, or both without being a `subscription` product type.
-author: Soczó Kristóf
-contact: mailto:lonsdale201@hotmail.com
-plugin: woocommerce-subscriptions
-plugin-version-tested: "9.0.0"
-woocommerce-version-tested: "10.9.4"
-php-min: "7.4"
-last-updated: "2026-07-10"
-docs:
-  - https://woocommerce.com/document/all-products-for-woocommerce-subscriptions/
-source-refs:
-  - wp-content/plugins/woocommerce-subscriptions/includes/class-wc-subscriptions-plugin.php
-  - wp-content/plugins/woocommerce-subscriptions/includes/apfs/woocommerce-all-products-for-subscriptions.php
-  - wp-content/plugins/woocommerce-subscriptions/includes/apfs/class-wcs-att-scheme.php
-  - wp-content/plugins/woocommerce-subscriptions/includes/apfs/class-wcs-att-product.php
-  - wp-content/plugins/woocommerce-subscriptions/includes/apfs/product/class-wcs-att-product-schemes.php
-  - wp-content/plugins/woocommerce-subscriptions/includes/apfs/class-wcs-att-cart.php
-  - wp-content/plugins/woocommerce-subscriptions/includes/apfs/class-wcs-att-order.php
-  - wp-content/plugins/woocommerce-subscriptions/includes/apfs/api/class-wcs-att-store-api.php
-  - wp-content/plugins/woocommerce-subscriptions/includes/apfs/admin/class-wcs-att-plans-manager.php
-  - wp-content/plugins/woocommerce-subscriptions/includes/apfs/admin/class-wcs-att-rest-plans-controller.php
-  - wp-content/plugins/woocommerce-subscriptions/includes/apfs/admin/class-wcs-att-rest-product-plans-controller.php
-  - wp-content/plugins/woocommerce-subscriptions/includes/core/class-wc-subscriptions-extend-store-endpoint.php
-  - wp-content/plugins/woocommerce/src/StoreApi/Routes/V1/CartAddItem.php
-  - wp-content/plugins/woocommerce-subscriptions/src/Internal/Products/BulkActions.php
+metadata:
+  wp-skills-author: "Soczó Kristóf"
+  wp-skills-contact: "mailto:lonsdale201@hotmail.com"
+  wp-skills-plugin: "woocommerce-subscriptions"
+  wp-skills-plugin-version-tested: "9.0.0"
+  wp-skills-woocommerce-version-tested: "10.9.4"
+  wp-skills-php-min: "7.4"
+  wp-skills-last-updated: "2026-07-10"
 ---
 
 # WooCommerce Subscriptions: APFS subscription plans
@@ -280,3 +264,22 @@ $plan_data['subscription_pricing_method'] = WCS_ATT_Scheme::MODE_FIXED_DISCOUNT;
 - Run `wcs-data-model-switching-gifting` when exact switch/gift storage and recipient behavior matters.
 - Run `wc-store-api` for Store API nonce/token/session/deferred checkout rules.
 - Run `wc-hpos-compatibility` before querying orders, subscriptions, renewal orders, switch orders, or resubscribe orders.
+
+## References
+
+- Official documentation: <https://woocommerce.com/document/all-products-for-woocommerce-subscriptions/>
+- Verified source paths:
+  - `wp-content/plugins/woocommerce-subscriptions/includes/class-wc-subscriptions-plugin.php`
+  - `wp-content/plugins/woocommerce-subscriptions/includes/apfs/woocommerce-all-products-for-subscriptions.php`
+  - `wp-content/plugins/woocommerce-subscriptions/includes/apfs/class-wcs-att-scheme.php`
+  - `wp-content/plugins/woocommerce-subscriptions/includes/apfs/class-wcs-att-product.php`
+  - `wp-content/plugins/woocommerce-subscriptions/includes/apfs/product/class-wcs-att-product-schemes.php`
+  - `wp-content/plugins/woocommerce-subscriptions/includes/apfs/class-wcs-att-cart.php`
+  - `wp-content/plugins/woocommerce-subscriptions/includes/apfs/class-wcs-att-order.php`
+  - `wp-content/plugins/woocommerce-subscriptions/includes/apfs/api/class-wcs-att-store-api.php`
+  - `wp-content/plugins/woocommerce-subscriptions/includes/apfs/admin/class-wcs-att-plans-manager.php`
+  - `wp-content/plugins/woocommerce-subscriptions/includes/apfs/admin/class-wcs-att-rest-plans-controller.php`
+  - `wp-content/plugins/woocommerce-subscriptions/includes/apfs/admin/class-wcs-att-rest-product-plans-controller.php`
+  - `wp-content/plugins/woocommerce-subscriptions/includes/core/class-wc-subscriptions-extend-store-endpoint.php`
+  - `wp-content/plugins/woocommerce/src/StoreApi/Routes/V1/CartAddItem.php`
+  - `wp-content/plugins/woocommerce-subscriptions/src/Internal/Products/BulkActions.php`

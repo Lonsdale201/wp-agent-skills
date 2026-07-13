@@ -1,30 +1,15 @@
 ---
 name: translatepress-email-notification-compatibility
 description: Audit or implement TranslatePress-compatible WordPress plugin emails, WooCommerce emails, transactional notifications, cron/CLI emails, wp_mail usage, preferred-user-language delivery, trp_translate(), trp_switch_language(), trp_language user/order meta, and email gettext scanning. Use when code sends registration, order, membership, LMS, subscription, invoice, reminder, status, or admin-triggered emails that must arrive in the recipient's language.
-author: Soczó Kristóf
-contact: mailto:lonsdale201@hotmail.com
-plugin: translatepress-multilingual
-plugin-version-tested: "TranslatePress Multilingual 3.2.1 + Business 1.8.2"
-wp-version-tested: "7.0"
-php-min: "7.4"
-last-updated: "2026-06-17"
-docs:
-  - https://translatepress.com/docs/send-emails-in-users-preferred-language/
-  - https://translatepress.com/docs/translating-woocommerce-emails/
-  - https://translatepress.com/docs/translation-function/
-source-refs:
-  - wp-content/plugins/translatepress-multilingual/index.php
-  - wp-content/plugins/translatepress-multilingual/readme.txt
-  - wp-content/plugins/translatepress-multilingual/class-translate-press.php
-  - wp-content/plugins/translatepress-multilingual/includes/class-translation-render.php
-  - wp-content/plugins/translatepress-multilingual/includes/functions.php
-  - wp-content/plugins/translatepress-multilingual/includes/class-preferred-user-language.php
-  - wp-content/plugins/translatepress-multilingual/includes/class-woocommerce-emails.php
-  - wp-content/plugins/translatepress-multilingual/includes/string-translation/class-gettext-scan.php
-  - wp-content/plugins/translatepress-multilingual/includes/string-translation/class-string-translation.php
-  - wp-content/plugins/translatepress-multilingual/includes/string-translation/class-string-translation-helper.php
-  - wp-content/plugins/translatepress-multilingual/includes/compatibility-functions.php
 license: GPLv2-or-later
+metadata:
+  wp-skills-author: "Soczó Kristóf"
+  wp-skills-contact: "mailto:lonsdale201@hotmail.com"
+  wp-skills-plugin: "translatepress-multilingual"
+  wp-skills-plugin-version-tested: "TranslatePress Multilingual 3.2.1 + Business 1.8.2"
+  wp-skills-wp-version-tested: "7.0"
+  wp-skills-php-min: "7.4"
+  wp-skills-last-updated: "2026-06-17"
 ---
 
 # TranslatePress Email And Notification Compatibility
@@ -235,3 +220,9 @@ Test these paths before release:
 - Preferred language docs: <https://translatepress.com/docs/send-emails-in-users-preferred-language/>
 - WooCommerce email docs: <https://translatepress.com/docs/translating-woocommerce-emails/>
 - Translation function docs: <https://translatepress.com/docs/translation-function/>
+- Verified source paths:
+  - `wp-content/plugins/translatepress-multilingual/index.php`
+  - `wp-content/plugins/translatepress-multilingual/readme.txt`
+  - `wp-content/plugins/translatepress-multilingual/includes/string-translation/class-string-translation.php`
+  - `wp-content/plugins/translatepress-multilingual/includes/string-translation/class-string-translation-helper.php`
+  - `wp-content/plugins/translatepress-multilingual/includes/compatibility-functions.php`

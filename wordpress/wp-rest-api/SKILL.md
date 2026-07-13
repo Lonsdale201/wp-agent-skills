@@ -11,25 +11,13 @@ description: Scaffold and audit inbound custom WordPress REST API endpoints
   Trigger on register_rest_route, permission_callback, WP_REST_Request,
   WP_REST_Controller, register_rest_field, rest_ensure_response, or X-WP-Nonce;
   do not trigger merely for outbound wp_remote_* integrations.
-author: Soczó Kristóf
-contact: mailto:lonsdale201@hotmail.com
-plugin: wordpress
-plugin-version-tested: "6.0 - 7.0.1"
-php-min: "7.4"
-last-updated: "2026-07-13"
-docs:
-  - https://developer.wordpress.org/rest-api/extending-the-rest-api/adding-custom-endpoints/
-  - https://developer.wordpress.org/reference/functions/register_rest_route/
-  - https://developer.wordpress.org/rest-api/extending-the-rest-api/controller-classes/
-  - https://developer.wordpress.org/rest-api/extending-the-rest-api/schema/
-  - https://developer.wordpress.org/rest-api/using-the-rest-api/authentication/
-source-refs:
-  - wp-includes/rest-api.php
-  - wp-includes/rest-api/class-wp-rest-server.php
-  - wp-includes/rest-api/class-wp-rest-request.php
-  - wp-includes/rest-api/endpoints/class-wp-rest-controller.php
-  - wp-includes/script-loader.php
-  - wp-includes/capabilities.php
+metadata:
+  wp-skills-author: "Soczó Kristóf"
+  wp-skills-contact: "mailto:lonsdale201@hotmail.com"
+  wp-skills-plugin: "wordpress"
+  wp-skills-plugin-version-tested: "6.0 - 7.0.1"
+  wp-skills-php-min: "7.4"
+  wp-skills-last-updated: "2026-07-13"
 ---
 
 # WordPress REST API: scaffold, review, secure
@@ -297,3 +285,18 @@ breaking an existing public contract in place.
 Do not design custom JWT/OAuth/signature protocols, complete CORS/WAF/proxy
 policy, distributed rate limiting, or OpenAPI generation here. Do not audit
 core-owned `wp/v2` contracts unless plugin code changes them.
+
+## References
+
+- Official documentation: <https://developer.wordpress.org/rest-api/extending-the-rest-api/adding-custom-endpoints/>
+- Official documentation: <https://developer.wordpress.org/reference/functions/register_rest_route/>
+- Official documentation: <https://developer.wordpress.org/rest-api/extending-the-rest-api/controller-classes/>
+- Official documentation: <https://developer.wordpress.org/rest-api/extending-the-rest-api/schema/>
+- Official documentation: <https://developer.wordpress.org/rest-api/using-the-rest-api/authentication/>
+- Verified source paths:
+  - `wp-includes/rest-api.php`
+  - `wp-includes/rest-api/class-wp-rest-server.php`
+  - `wp-includes/rest-api/class-wp-rest-request.php`
+  - `wp-includes/rest-api/endpoints/class-wp-rest-controller.php`
+  - `wp-includes/script-loader.php`
+  - `wp-includes/capabilities.php`

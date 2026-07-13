@@ -11,16 +11,13 @@ description: Register and enqueue WordPress plugin scripts/styles with
   wp_style_add_data, dependency handles, conditional enqueueing on the
   right hook, and avoiding global frontend/admin asset bloat. Use when
   adding or reviewing plugin JS/CSS enqueue code.
-author: Soczó Kristóf
-contact: mailto:lonsdale201@hotmail.com
-plugin: wordpress
-plugin-version-tested: "6.3 - 7.0"
-php-min: "7.4"
-last-updated: "2026-05-21"
-docs:
-  - https://make.wordpress.org/core/2025/11/18/wordpress-6-9-frontend-performance-field-guide/
-  - https://developer.wordpress.org/reference/functions/wp_enqueue_script/
-  - https://developer.wordpress.org/reference/functions/wp_enqueue_style/
+metadata:
+  wp-skills-author: "Soczó Kristóf"
+  wp-skills-contact: "mailto:lonsdale201@hotmail.com"
+  wp-skills-plugin: "wordpress"
+  wp-skills-plugin-version-tested: "6.3 - 7.0"
+  wp-skills-php-min: "7.4"
+  wp-skills-last-updated: "2026-05-21"
 ---
 
 # WordPress Plugin Asset Loading
@@ -252,3 +249,5 @@ wp_enqueue_script( 'myplugin-app', $src, array( 'jquery' ), '1.0.0', array( 'str
 - Script APIs: `wp-includes/functions.wp-scripts.php`
 - Script Modules API: `wp-includes/script-modules.php`
 - Style APIs: `wp-includes/functions.wp-styles.php`
+- Official documentation: <https://developer.wordpress.org/reference/functions/wp_enqueue_script/>
+- Official documentation: <https://developer.wordpress.org/reference/functions/wp_enqueue_style/>

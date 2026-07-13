@@ -11,17 +11,13 @@ description: Design and review native DTOs in WordPress plugins without
   stdClass, WP_Post, WC_Order, $_POST, post meta, or option arrays through
   multiple layers. Mentions better-data only as an optional higher-level
   library; this skill is for native implementations.
-author: Soczo Kristof
-contact: mailto:lonsdale201@hotmail.com
-plugin: wordpress
-plugin-version-tested: "6.3 - 6.9"
-php-min: "7.4"
-last-updated: "2026-04-29"
-docs:
-  - https://developer.wordpress.org/plugins/security/securing-input/
-  - https://developer.wordpress.org/plugins/security/validating-sanitizing-escaping/
-  - https://developer.wordpress.org/reference/classes/wp_error/
-  - https://developer.wordpress.org/reference/functions/wp_unslash/
+metadata:
+  wp-skills-author: "Soczo Kristof"
+  wp-skills-contact: "mailto:lonsdale201@hotmail.com"
+  wp-skills-plugin: "wordpress"
+  wp-skills-plugin-version-tested: "6.3 - 6.9"
+  wp-skills-php-min: "7.4"
+  wp-skills-last-updated: "2026-04-29"
 ---
 
 # WordPress plugin: native DTOs
@@ -224,3 +220,7 @@ return get_object_vars( $dto );
 - [references/before-after-raw-array.md](references/before-after-raw-array.md) - refactoring raw arrays into DTOs.
 - WordPress input security: `wp_unslash()`, sanitization, validation, and escaping.
 - `WP_Error` for user-input validation failures.
+- Official documentation: <https://developer.wordpress.org/plugins/security/securing-input/>
+- Official documentation: <https://developer.wordpress.org/plugins/security/validating-sanitizing-escaping/>
+- Official documentation: <https://developer.wordpress.org/reference/classes/wp_error/>
+- Official documentation: <https://developer.wordpress.org/reference/functions/wp_unslash/>

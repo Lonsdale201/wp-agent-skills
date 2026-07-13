@@ -1,13 +1,13 @@
 ---
 name: br-jwks-jwt-auth
 description: Configure Better Route 1.1 RS256 or ES256 JWT verification from a local or HTTPS JWKS. Use when integrating OIDC/OAuth bearer tokens, selecting keys by kid, validating issuer/audience/lifetime, or operating JWKS caching and refresh behavior safely.
-author: Soczó Kristóf
-contact: mailto:lonsdale201@hotmail.com
-plugin: better-route
-plugin-version-tested: "1.1.0"
-php-min: "8.1"
-last-updated: "2026-07-13"
-docs: https://lonsdale201.github.io/better-docs/docs/better-route/agents
+metadata:
+  wp-skills-author: "Soczó Kristóf"
+  wp-skills-contact: "mailto:lonsdale201@hotmail.com"
+  wp-skills-plugin: "better-route"
+  wp-skills-plugin-version-tested: "1.1.0"
+  wp-skills-php-min: "8.1"
+  wp-skills-last-updated: "2026-07-13"
 ---
 
 # Better Route JWKS JWT authentication
@@ -74,3 +74,7 @@ The `better_route/jwks_refresh` action clears matching caches. Supply the provid
 - Never fetch a JWKS URL selected by an untrusted request.
 
 Source references: `src/Middleware/Jwt/HttpJwksProvider.php`, `src/Middleware/Jwt/Rs256JwksJwtVerifier.php`, `src/Middleware/Jwt/JwksKeySanitizer.php`, `src/Middleware/Auth/JwtBearerTokenVerifierAdapter.php`.
+
+## References
+
+- Official documentation: <https://lonsdale201.github.io/better-docs/docs/better-route/agents>

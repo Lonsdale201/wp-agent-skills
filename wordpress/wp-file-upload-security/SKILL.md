@@ -7,16 +7,13 @@ description: Implement or audit secure WordPress file uploads and sideloads
   file storage. Use when code handles $_FILES, multipart forms, REST uploads,
   Media Library attachments, imported remote files, ZIP extraction, or custom
   download endpoints.
-author: Soczó Kristóf
-contact: mailto:lonsdale201@hotmail.com
-plugin: wordpress
-plugin-version-tested: "6.0 - 7.0.1"
-php-min: "7.4"
-last-updated: "2026-07-10"
-docs:
-  - https://developer.wordpress.org/reference/functions/media_handle_upload/
-  - https://developer.wordpress.org/reference/functions/wp_handle_upload/
-  - https://developer.wordpress.org/reference/functions/wp_check_filetype_and_ext/
+metadata:
+  wp-skills-author: "Soczó Kristóf"
+  wp-skills-contact: "mailto:lonsdale201@hotmail.com"
+  wp-skills-plugin: "wordpress"
+  wp-skills-plugin-version-tested: "6.0 - 7.0.1"
+  wp-skills-php-min: "7.4"
+  wp-skills-last-updated: "2026-07-10"
 ---
 
 # WordPress File Upload Security
@@ -249,3 +246,9 @@ Run tests with and without `fileinfo`, and with a user that has
   `download_url()`, and `unzip_file()`.
 - `wp-admin/includes/media.php`: `media_handle_upload()` and sideload handling.
 - `wp-includes/functions.php`: `wp_check_filetype_and_ext()` and allowed mimes.
+
+## References
+
+- Official documentation: <https://developer.wordpress.org/reference/functions/media_handle_upload/>
+- Official documentation: <https://developer.wordpress.org/reference/functions/wp_handle_upload/>
+- Official documentation: <https://developer.wordpress.org/reference/functions/wp_check_filetype_and_ext/>

@@ -8,17 +8,13 @@ description: Audits WordPress plugin or theme PHP code for the most common
   secure", or when handling code that touches $_GET / $_POST / $_REQUEST /
   $_COOKIE / $_FILES / $_SERVER, admin-ajax / admin-post, REST endpoints,
   options, user meta, custom DB queries, or file uploads.
-author: Soczó Kristóf
-contact: mailto:lonsdale201@hotmail.com
-plugin: wordpress
-plugin-version-tested: "6.0 - 7.0.1"
-php-min: "7.4"
-last-updated: "2026-07-12"
-docs:
-  - https://developer.wordpress.org/apis/security/
-  - https://developer.wordpress.org/plugins/security/
-  - https://developer.wordpress.org/reference/functions/wp_verify_nonce/
-  - https://developer.wordpress.org/reference/functions/current_user_can/
+metadata:
+  wp-skills-author: "Soczó Kristóf"
+  wp-skills-contact: "mailto:lonsdale201@hotmail.com"
+  wp-skills-plugin: "wordpress"
+  wp-skills-plugin-version-tested: "6.0 - 7.0.1"
+  wp-skills-php-min: "7.4"
+  wp-skills-last-updated: "2026-07-12"
 ---
 
 # WordPress security audit
@@ -297,3 +293,6 @@ Date: <YYYY-MM-DD>
 - Detailed examples of each finding type, before/after: `reference.md`
 - Real-world snippets with the fix applied: `examples/`
 - WordPress core: [Plugin Security Handbook](https://developer.wordpress.org/plugins/security/) and [Roles and Capabilities](https://wordpress.org/documentation/article/roles-and-capabilities/)
+- Official documentation: <https://developer.wordpress.org/apis/security/>
+- Official documentation: <https://developer.wordpress.org/reference/functions/wp_verify_nonce/>
+- Official documentation: <https://developer.wordpress.org/reference/functions/current_user_can/>

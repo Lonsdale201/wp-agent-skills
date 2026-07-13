@@ -1,20 +1,13 @@
 ---
 name: wp-api-fetch-client
 description: Implement and audit browser-side WordPress REST clients with the bundled wp-api-fetch script handle, wp.apiFetch, and @wordpress/api-fetch. Covers PHP enqueue dependencies, WordPress-global versus bundled npm initialization, path/url/data/body/parse/signal options, cookie authentication and X-WP-Nonce, parsed REST errors, raw response headers and pagination, cancellation, stale-response protection, middleware side effects, media uploads, and request mocks. Use when plugin or theme JavaScript calls core or custom REST endpoints, replaces fetch or jQuery.ajax, or debugs nonce, 401/403, invalid_json, pagination, duplicate requests, or REST races. Trigger on wp-api-fetch, wp.apiFetch, @wordpress/api-fetch, apiFetch.use, createNonceMiddleware, createRootURLMiddleware, setFetchHandler, or parse:false; do not use for server-side wp_remote_* calls.
-author: Soczó Kristóf
-contact: mailto:lonsdale201@hotmail.com
-plugin: wordpress
-plugin-version-tested: "7.0.1"
-php-min: "7.4"
-last-updated: "2026-07-13"
-docs:
-  - https://developer.wordpress.org/block-editor/reference-guides/packages/packages-api-fetch/
-  - https://developer.wordpress.org/rest-api/using-the-rest-api/authentication/
-  - https://developer.wordpress.org/reference/functions/wp_enqueue_script/
-source-refs:
-  - wp-includes/script-loader.php
-  - wp-includes/js/dist/api-fetch.js
-  - wp-includes/assets/script-loader-packages.php
+metadata:
+  wp-skills-author: "Soczó Kristóf"
+  wp-skills-contact: "mailto:lonsdale201@hotmail.com"
+  wp-skills-plugin: "wordpress"
+  wp-skills-plugin-version-tested: "7.0.1"
+  wp-skills-php-min: "7.4"
+  wp-skills-last-updated: "2026-07-13"
 ---
 
 # WordPress API Fetch Client
@@ -283,4 +276,7 @@ security or correctness flaw from a build/configuration suspicion.
 - [@wordpress/api-fetch](https://developer.wordpress.org/block-editor/reference-guides/packages/packages-api-fetch/)
 - [REST API authentication](https://developer.wordpress.org/rest-api/using-the-rest-api/authentication/)
 - [wp_enqueue_script()](https://developer.wordpress.org/reference/functions/wp_enqueue_script/)
-
+- Verified source paths:
+  - `wp-includes/script-loader.php`
+  - `wp-includes/js/dist/api-fetch.js`
+  - `wp-includes/assets/script-loader-packages.php`

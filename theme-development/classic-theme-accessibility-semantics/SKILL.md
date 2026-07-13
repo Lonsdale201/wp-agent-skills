@@ -1,22 +1,13 @@
 ---
 name: classic-theme-accessibility-semantics
 description: Build or audit accessibility and semantic HTML in classic PHP WordPress themes on WP 7.0. Covers `language_attributes()`, `wp_head()`, `body_class()`, `wp_body_open()`, landmarks, skip links, focus management, `screen-reader-text`, heading order, nav/button semantics, `aria-controls` and `aria-expanded`, forms and labels, image alt handling, icon accessibility, reduced motion CSS, search forms, and common mistakes such as hover-only menus, hidden focus outlines, fake buttons, missing main landmarks, or unlabeled controls.
-author: Soczó Kristóf
-contact: mailto:lonsdale201@hotmail.com
-plugin: wordpress
-plugin-version-tested: "7.0"
-php-min: "7.4"
-last-updated: "2026-06-04"
-docs:
-  - https://developer.wordpress.org/themes/functionality/accessibility/
-  - https://developer.wordpress.org/themes/classic-themes/basics/template-tags/
-source-refs:
-  - wp-includes/general-template.php
-  - wp-includes/post-template.php
-  - wp-includes/nav-menu-template.php
-  - wp-includes/class-walker-nav-menu.php
-  - wp-content/themes/storefront/inc/structure/header.php
-  - wp-content/themes/generatepress/header.php
+metadata:
+  wp-skills-author: "Soczó Kristóf"
+  wp-skills-contact: "mailto:lonsdale201@hotmail.com"
+  wp-skills-plugin: "wordpress"
+  wp-skills-plugin-version-tested: "7.0"
+  wp-skills-php-min: "7.4"
+  wp-skills-last-updated: "2026-06-04"
 ---
 
 # Classic Theme Accessibility and Semantics
@@ -279,3 +270,15 @@ Preserve helpers that contribute useful classes and core integration:
 - Outputting icon-only buttons with no accessible name.
 - Making dropdown menus impossible to use with a keyboard.
 - Forgetting `wp_body_open()` in `header.php`.
+
+## References
+
+- Official documentation: <https://developer.wordpress.org/themes/functionality/accessibility/>
+- Official documentation: <https://developer.wordpress.org/themes/classic-themes/basics/template-tags/>
+- Verified source paths:
+  - `wp-includes/general-template.php`
+  - `wp-includes/post-template.php`
+  - `wp-includes/nav-menu-template.php`
+  - `wp-includes/class-walker-nav-menu.php`
+  - `wp-content/themes/storefront/inc/structure/header.php`
+  - `wp-content/themes/generatepress/header.php`

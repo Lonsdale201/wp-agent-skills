@@ -10,16 +10,13 @@ description: Deep security audit for WordPress plugin/theme PHP code,
   alongside wp-security-audit when reviewing complex plugins, REST
   APIs, integrations that fetch remote URLs, file processors, or any
   code that handles uploads, archives, or self-rolled auth tokens.
-author: Soczó Kristóf
-contact: mailto:lonsdale201@hotmail.com
-plugin: wordpress
-plugin-version-tested: "6.0 - 7.0.1"
-php-min: "7.4"
-last-updated: "2026-07-12"
-docs:
-  - https://developer.wordpress.org/plugins/security/
-  - https://www.php.net/manual/en/function.unserialize.php
-  - https://www.php.net/manual/en/function.hash-equals.php
+metadata:
+  wp-skills-author: "Soczó Kristóf"
+  wp-skills-contact: "mailto:lonsdale201@hotmail.com"
+  wp-skills-plugin: "wordpress"
+  wp-skills-plugin-version-tested: "6.0 - 7.0.1"
+  wp-skills-php-min: "7.4"
+  wp-skills-last-updated: "2026-07-12"
 ---
 
 # WordPress security audit — deep checks
@@ -297,3 +294,4 @@ findings into a single report grouped by severity, not by skill.
 - PHP unserialize advisory: https://www.php.net/manual/en/function.unserialize.php
 - Phar metadata RFC (PHP 8.0): https://wiki.php.net/rfc/phar_stop_autoloading_metadata
 - WP HTTP API request args: https://developer.wordpress.org/reference/classes/wp_http/request/
+- Official documentation: <https://www.php.net/manual/en/function.hash-equals.php>

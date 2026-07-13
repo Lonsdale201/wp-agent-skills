@@ -1,13 +1,13 @@
 ---
 name: br-network-security
 description: Configure Better Route 1.1 trusted-proxy client IP resolution and CIDR allowlists. Use behind Cloudflare, nginx, load balancers, or reverse proxies when authorization, rate limiting, or audit data depends on the real client IP.
-author: Soczó Kristóf
-contact: mailto:lonsdale201@hotmail.com
-plugin: better-route
-plugin-version-tested: "1.1.0"
-php-min: "8.1"
-last-updated: "2026-07-13"
-docs: https://lonsdale201.github.io/better-docs/docs/better-route/agents
+metadata:
+  wp-skills-author: "Soczó Kristóf"
+  wp-skills-contact: "mailto:lonsdale201@hotmail.com"
+  wp-skills-plugin: "better-route"
+  wp-skills-plugin-version-tested: "1.1.0"
+  wp-skills-php-min: "8.1"
+  wp-skills-last-updated: "2026-07-13"
 ---
 
 # Better Route network security
@@ -53,3 +53,7 @@ The header order is a trust decision. Prefer a provider-specific, overwriting he
 - Test direct requests with spoofed headers, trusted and untrusted immediate peers, IPv4/IPv6 CIDRs, malformed chains, multiple trusted hops, and all-hops-trusted fallback.
 
 Source references: `src/Middleware/Network/TrustedProxyClientIpResolver.php`, `src/Middleware/Network/CidrMatcher.php`, `src/Middleware/Network/IpAllowlistMiddleware.php`.
+
+## References
+
+- Official documentation: <https://lonsdale201.github.io/better-docs/docs/better-route/agents>

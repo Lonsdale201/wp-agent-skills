@@ -1,26 +1,13 @@
 ---
 name: classic-theme-security-standards
 description: Write or audit secure modern classic PHP WordPress theme code for WP 7.0. Covers template output escaping, `esc_html`, `esc_attr`, `esc_url`, `wp_kses_post`, `wp_json_encode`, translation escaping, `wp_unslash` + sanitize input, validation, nonces and capability checks for theme forms, safe `template_include`/`get_template_part`, enqueued assets instead of inline tags, `$wpdb->prepare`, WPCS naming/filenames, namespacing/prefixing, no shorthand PHP tags, and no closing PHP tag. Use when reviewing `functions.php`, `header.php`, `page.php`, `404.php`, template parts, search/comment forms, or any classic theme code touching request data or dynamic output.
-author: Soczó Kristóf
-contact: mailto:lonsdale201@hotmail.com
-plugin: wordpress
-plugin-version-tested: "7.0"
-php-min: "7.4"
-last-updated: "2026-06-04"
-docs:
-  - https://developer.wordpress.org/themes/advanced-topics/security/
-  - https://developer.wordpress.org/apis/security/
-  - https://developer.wordpress.org/apis/security/escaping/
-  - https://developer.wordpress.org/apis/security/sanitizing/
-  - https://developer.wordpress.org/coding-standards/wordpress-coding-standards/php/
-source-refs:
-  - wp-includes/template-loader.php
-  - wp-includes/template.php
-  - wp-includes/general-template.php
-  - wp-includes/functions.wp-scripts.php
-  - wp-includes/formatting.php
-  - wp-content/themes/storefront/404.php
-  - wp-content/themes/generatepress/header.php
+metadata:
+  wp-skills-author: "Soczó Kristóf"
+  wp-skills-contact: "mailto:lonsdale201@hotmail.com"
+  wp-skills-plugin: "wordpress"
+  wp-skills-plugin-version-tested: "7.0"
+  wp-skills-php-min: "7.4"
+  wp-skills-last-updated: "2026-06-04"
 ---
 
 # Classic Theme Security Standards
@@ -239,3 +226,19 @@ Do not build SQL with concatenated request data.
 - Secrets/key handling: `wp-security-secrets`
 - Theme structure and asset placement: `classic-theme-structure`
 - Template file selection: `classic-template-hierarchy`
+
+## References
+
+- Official documentation: <https://developer.wordpress.org/themes/advanced-topics/security/>
+- Official documentation: <https://developer.wordpress.org/apis/security/>
+- Official documentation: <https://developer.wordpress.org/apis/security/escaping/>
+- Official documentation: <https://developer.wordpress.org/apis/security/sanitizing/>
+- Official documentation: <https://developer.wordpress.org/coding-standards/wordpress-coding-standards/php/>
+- Verified source paths:
+  - `wp-includes/template-loader.php`
+  - `wp-includes/template.php`
+  - `wp-includes/general-template.php`
+  - `wp-includes/functions.wp-scripts.php`
+  - `wp-includes/formatting.php`
+  - `wp-content/themes/storefront/404.php`
+  - `wp-content/themes/generatepress/header.php`

@@ -1,27 +1,14 @@
 ---
 name: wcs-renewal-scheduler
 description: Safely integrate with WooCommerce Subscriptions renewal scheduling, Action Scheduler, renewal-order creation, gateway charge dispatch, guarded process-renewal-now commands, and retries. Use for WC_Subscription::update_dates, wcs_create_renewal_order, woocommerce_scheduled_subscription_payment, gateway-specific scheduled payment hooks, renewal success/failure, missing renewals, or duplicate renewal orders.
-author: Soczó Kristóf
-contact: mailto:lonsdale201@hotmail.com
-plugin: woocommerce-subscriptions
-plugin-version-tested: "9.0.0"
-woocommerce-version-tested: "10.9.4"
-php-min: "7.4"
-last-updated: "2026-07-10"
-docs:
-  - https://woocommerce.com/document/subscriptions/develop/
-source-refs:
-  - wp-content/plugins/woocommerce-subscriptions/includes/core/class-wc-subscription.php
-  - wp-content/plugins/woocommerce-subscriptions/includes/core/class-wcs-action-scheduler.php
-  - wp-content/plugins/woocommerce-subscriptions/includes/core/abstracts/abstract-wcs-scheduler.php
-  - wp-content/plugins/woocommerce-subscriptions/includes/core/class-wc-subscriptions-manager.php
-  - wp-content/plugins/woocommerce-subscriptions/includes/core/wcs-time-functions.php
-  - wp-content/plugins/woocommerce-subscriptions/includes/class-wcs-api.php
-  - wp-content/plugins/woocommerce-subscriptions/includes/gateways/class-wc-subscriptions-payment-gateways.php
-  - wp-content/plugins/woocommerce-subscriptions/includes/payment-retry/class-wcs-retry-manager.php
-  - wp-content/plugins/woocommerce-subscriptions/includes/core/class-wc-subscriptions-change-payment-gateway.php
-  - wp-content/plugins/woocommerce-subscriptions/src/Internal/Queue_Management/
-  - wp-content/plugins/woocommerce-subscriptions/src/Internal/HealthCheck/
+metadata:
+  wp-skills-author: "Soczó Kristóf"
+  wp-skills-contact: "mailto:lonsdale201@hotmail.com"
+  wp-skills-plugin: "woocommerce-subscriptions"
+  wp-skills-plugin-version-tested: "9.0.0"
+  wp-skills-woocommerce-version-tested: "10.9.4"
+  wp-skills-php-min: "7.4"
+  wp-skills-last-updated: "2026-07-10"
 ---
 
 # WooCommerce Subscriptions: renewal scheduler
@@ -284,3 +271,19 @@ add_action( 'woocommerce_subscription_renewal_payment_complete', 'provision_cust
 - Run `wcs-subscription-hooks` when you need a broader action/filter map beyond renewal timing.
 - Run `wcs-health-check-processing` when diagnosing the 8.8 Health Check tab, Resolve actions, dedicated processing, or web-cron queue support.
 - Run `wc-hpos-compatibility` before writing SQL or `WP_Query` over subscriptions/orders.
+
+## References
+
+- Official documentation: <https://woocommerce.com/document/subscriptions/develop/>
+- Verified source paths:
+  - `wp-content/plugins/woocommerce-subscriptions/includes/core/class-wc-subscription.php`
+  - `wp-content/plugins/woocommerce-subscriptions/includes/core/class-wcs-action-scheduler.php`
+  - `wp-content/plugins/woocommerce-subscriptions/includes/core/abstracts/abstract-wcs-scheduler.php`
+  - `wp-content/plugins/woocommerce-subscriptions/includes/core/class-wc-subscriptions-manager.php`
+  - `wp-content/plugins/woocommerce-subscriptions/includes/core/wcs-time-functions.php`
+  - `wp-content/plugins/woocommerce-subscriptions/includes/class-wcs-api.php`
+  - `wp-content/plugins/woocommerce-subscriptions/includes/gateways/class-wc-subscriptions-payment-gateways.php`
+  - `wp-content/plugins/woocommerce-subscriptions/includes/payment-retry/class-wcs-retry-manager.php`
+  - `wp-content/plugins/woocommerce-subscriptions/includes/core/class-wc-subscriptions-change-payment-gateway.php`
+  - `wp-content/plugins/woocommerce-subscriptions/src/Internal/Queue_Management/`
+  - `wp-content/plugins/woocommerce-subscriptions/src/Internal/HealthCheck/`

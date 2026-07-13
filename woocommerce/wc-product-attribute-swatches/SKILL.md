@@ -1,25 +1,13 @@
 ---
 name: wc-product-attribute-swatches
 description: Build or audit WooCommerce 10.9+ product attribute swatch integrations around the experimental `wc-visual` attribute type. Covers feature-flag gating, global `pa_*` attribute taxonomy type, color/image term meta, Store API `__experimental_visual` / `__experimentalVisual`, classic variation dropdown fallbacks, and safe plugin/theme rendering. Use when code or requests mention variation swatches, visual attributes, `wc-visual`, `wc_visual_attribute_type`, `term_color`, `term_image`, `__experimental_visual`, `ProductAttributeTerms`, or custom swatch UI.
-author: Soczó Kristóf
-contact: mailto:lonsdale201@hotmail.com
-plugin: woocommerce
-plugin-version-tested: "10.9.4"
-php-min: "7.4"
-last-updated: "2026-07-10"
-docs:
-  - https://woocommerce.com/document/variable-product/
-  - https://developer.woocommerce.com/docs/apis/store-api/
-source-refs:
-  - wp-content/plugins/woocommerce/includes/wc-attribute-functions.php
-  - wp-content/plugins/woocommerce/src/Internal/Features/FeaturesController.php
-  - wp-content/plugins/woocommerce/src/Internal/ProductAttributes/VisualAttributeTermMeta.php
-  - wp-content/plugins/woocommerce/src/Internal/ProductAttributes/VisualAttributeTermAdmin.php
-  - wp-content/plugins/woocommerce/src/StoreApi/Routes/V1/ProductAttributeTerms.php
-  - wp-content/plugins/woocommerce/src/StoreApi/Schemas/V1/ProductAttributeTermSchema.php
-  - wp-content/plugins/woocommerce/includes/admin/meta-boxes/views/html-product-attribute-inner.php
-  - wp-content/plugins/woocommerce/includes/wc-template-functions.php
-  - wp-content/plugins/woocommerce/templates/single-product/add-to-cart/variable.php
+metadata:
+  wp-skills-author: "Soczó Kristóf"
+  wp-skills-contact: "mailto:lonsdale201@hotmail.com"
+  wp-skills-plugin: "woocommerce"
+  wp-skills-plugin-version-tested: "10.9.4"
+  wp-skills-php-min: "7.4"
+  wp-skills-last-updated: "2026-07-10"
 ---
 
 # WooCommerce product attribute swatches
@@ -297,3 +285,18 @@ Keep the native select available as the authoritative accessible control. Swatch
 - Do not hardcode Woo admin CSS classes as frontend contracts or confuse term swatches with per-variation galleries.
 
 Use `wc-variations-data` for real variation CRUD/sync, `wc-variation-gallery` for per-variation image sets, `wc-store-api` for headless reads, and `wc-variations-pricing-filters` when selection affects price/availability display.
+
+## References
+
+- Official documentation: <https://woocommerce.com/document/variable-product/>
+- Official documentation: <https://developer.woocommerce.com/docs/apis/store-api/>
+- Verified source paths:
+  - `wp-content/plugins/woocommerce/includes/wc-attribute-functions.php`
+  - `wp-content/plugins/woocommerce/src/Internal/Features/FeaturesController.php`
+  - `wp-content/plugins/woocommerce/src/Internal/ProductAttributes/VisualAttributeTermMeta.php`
+  - `wp-content/plugins/woocommerce/src/Internal/ProductAttributes/VisualAttributeTermAdmin.php`
+  - `wp-content/plugins/woocommerce/src/StoreApi/Routes/V1/ProductAttributeTerms.php`
+  - `wp-content/plugins/woocommerce/src/StoreApi/Schemas/V1/ProductAttributeTermSchema.php`
+  - `wp-content/plugins/woocommerce/includes/admin/meta-boxes/views/html-product-attribute-inner.php`
+  - `wp-content/plugins/woocommerce/includes/wc-template-functions.php`
+  - `wp-content/plugins/woocommerce/templates/single-product/add-to-cart/variable.php`

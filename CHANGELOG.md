@@ -2,6 +2,32 @@
 
 This collection is continuously evolving — entries are date-based, not version-tagged. New skills land when they're ready; updates go in when they cover real ground (a new release of an upstream plugin, a verified misconception, a corrected example).
 
+## 2026-07-13 (fifth batch — migration to the open Agent Skills format)
+
+### Changed — every SKILL.md migrated to the portable Agent Skills specification
+
+All **197 skills** re-shaped to the open [Agent Skills specification](https://agentskills.io/specification) so the collection is client-portable (Claude, Codex, any Agent Skills-compatible runtime). Bodies were preserved byte-for-byte except for the References merge described below.
+
+- **Top-level frontmatter reduced to the standard fields** (`name`, `description`, `license`, `compatibility`, `metadata`, `allowed-tools`). The collection's custom scalars moved under `metadata` as namespaced string pairs: `author` → `wp-skills-author`, `contact` → `wp-skills-contact`, `plugin` → `wp-skills-plugin`, `plugin-version-tested` → `wp-skills-plugin-version-tested`, `wp-version-tested` → `wp-skills-wp-version-tested`, `php-min` → `wp-skills-php-min`, `api-stable-since` → `wp-skills-api-stable-since`, `last-updated` → `wp-skills-last-updated`, plus the two domain-specific scalars `woocommerce-version-tested` and `wpml-string-translation-version-tested` under the same namespace. All values quoted strings, per the spec's string→string metadata contract. The 11 existing `license` values stayed top-level (standard field).
+- **`docs:` and `source-refs:` lists moved into the body `## References` section** (the portable metadata map cannot hold lists): merged into the 110 existing References sections without duplicating URLs/paths already cited (95 skills needed additions), appended as a new section elsewhere (75 skills). URL-shaped source-refs became `Related documentation` links; 10 better-route skills carried `docs` as a plain string rather than a list — normalized and preserved.
+- **14 descriptions edited for spec compliance** — 6 exceeded the hard 1024-char limit (trimmed with trigger tokens preserved: `bd-better-route-bridge`, `bd-data-object`, `je-listings-callback`, `jfb-action-events`, `lw-site-manager-extend-abilities`, `wp-rocket-cache-invalidation`) and 8 more contained XML/HTML-tag-like `<...>` sequences, which Agent Skills clients embed in XML prompt blocks (rewritten without angle brackets: `bd-source-adapter`, `fluentcrm-rest-options`, `classic-theme-media-images`, `wc-product-search-select`, `wp-admin-settings-api`, `wp-cli-extending`, `wpml-config`, `wpml-string-translation`). PHP `->` / `=>` arrows were deliberately left in place — they are not tag-like and are load-bearing trigger tokens.
+- **Emoji cleanup in 12 pre-existing bodies** surfaced by the new full-repo validation: red-circle antipattern markers replaced with the repo's `WRONG:` convention, the bidirectional-arrow glyph with ASCII `<->` (jet-engine x3, better-data x7, `lw-site-manager-extend-abilities`, `jfb-form-action`).
+
+### Validation
+
+- Official reference validator: **`skills-ref validate` passes on all 197 skill directories** (agentskills/agentskills reference implementation; on Windows requires `PYTHONUTF8=1` because the tool reads files with the locale encoding).
+- Repo validator rewritten for the new schema and now also runs locally over the whole collection: `node .github/scripts/validate-skill.js --all` — passes with 0 errors.
+- A migration audit compared every file against the previous commit: all legacy field values, docs URLs, and source paths verified present post-migration; no body content changed outside the References merge and the emoji cleanup.
+- Documented exceptions to the spec's 500-line SKILL.md recommendation (pre-existing long bodies, not restructured during a schema migration): `jet-engine/je-dynamic-visibility-condition` (533), `jet-engine/je-query-builder-custom-type` (731), `jetformbuilder/jfb-form-action` (601).
+
+### Repo / docs / tooling (open-format batch)
+
+- `.github/scripts/validate-skill.js` — enforces the standard top-level field set, name charset/reserved-word rules, the 1024-char description hard limit, the no-tag-like-sequence rule, string-only `wp-skills-*` metadata, `compatibility` ≤500 chars, string `allowed-tools`; new `--all` mode validates the entire collection locally; >500-line warning aligned to the spec.
+- `.github/scripts/build-skills-index.js` — reads the new frontmatter shape and flattens `metadata` into the index with the `wp-skills-` prefix stripped, so `skills-index.json` consumers keep seeing the pre-migration keys (`author`, `plugin`, `plugin-version-tested`, ...). `docs`/`source-refs` are no longer in the index metadata (they live in the SKILL.md body, which index consumers fetch anyway).
+- `.github/scripts/build-skill-pr.js` (Submit-a-skill bot) — generates the new frontmatter shape, routes form-supplied docs URLs into the body References section, and rejects tag-like sequences in descriptions.
+- `SKILL_TEMPLATE.md` and `CONTRIBUTING.md` rewritten for the new schema (standard fields only, the `metadata` string→string rule, the `wp-skills-*` namespace, docs/source-refs in body References, the official `skills-ref validate` command). `README.md` now presents the collection as portable Agent Skills with a spec link.
+- `skills-index.json` regenerated.
+
 ## 2026-07-13 (fourth batch — Action Scheduler delivery semantics)
 
 ### Updated — `woocommerce/wc-action-scheduler-jobs` (major expansion)

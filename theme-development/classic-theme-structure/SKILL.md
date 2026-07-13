@@ -1,29 +1,13 @@
 ---
 name: classic-theme-structure
 description: Build or audit a modern classic PHP WordPress theme structure for WP 7.0 without FSE/block-theme assumptions. Covers required `style.css` + `index.php`, `functions.php` as bootstrap, `after_setup_theme`, `wp_enqueue_scripts`, `get_theme_file_uri/path`, `wp_head`, `wp_body_open`, `wp_footer`, recommended `assets/`, `inc/`, `template-parts/`, `page-templates/`, `languages/`, child-theme-safe paths, theme supports, menus, sidebars, and what belongs in a plugin instead of a theme. Use when scaffolding/reviewing a non-FSE theme, converting static HTML to a theme, or deciding where theme files/hooks belong.
-author: Soczó Kristóf
-contact: mailto:lonsdale201@hotmail.com
-plugin: wordpress
-plugin-version-tested: "7.0"
-php-min: "7.4"
-last-updated: "2026-06-04"
-docs:
-  - https://developer.wordpress.org/themes/classic-themes/
-  - https://developer.wordpress.org/themes/releasing-your-theme/required-theme-files/
-  - https://developer.wordpress.org/themes/classic-themes/basics/main-stylesheet-style-css/
-  - https://developer.wordpress.org/themes/core-concepts/custom-functionality/
-  - https://developer.wordpress.org/themes/core-concepts/including-assets/
-source-refs:
-  - wp-includes/template-loader.php
-  - wp-includes/template.php
-  - wp-includes/general-template.php
-  - wp-includes/theme.php
-  - wp-includes/link-template.php
-  - wp-includes/functions.wp-scripts.php
-  - wp-includes/functions.wp-styles.php
-  - wp-includes/class-wp-theme.php
-  - wp-content/themes/storefront/
-  - wp-content/themes/generatepress/
+metadata:
+  wp-skills-author: "Soczó Kristóf"
+  wp-skills-contact: "mailto:lonsdale201@hotmail.com"
+  wp-skills-plugin: "wordpress"
+  wp-skills-plugin-version-tested: "7.0"
+  wp-skills-php-min: "7.4"
+  wp-skills-last-updated: "2026-06-04"
 ---
 
 # Classic Theme Structure
@@ -274,3 +258,22 @@ Without these, plugins and WordPress core cannot enqueue scripts/styles, inject 
 - Block themes, FSE, `theme.json`, block templates, block patterns, and Site Editor workflows.
 - Deep template hierarchy decisions; use `classic-template-hierarchy`.
 - Detailed escaping/security review; use `classic-theme-security-standards` and `wp-security-audit`.
+
+## References
+
+- Official documentation: <https://developer.wordpress.org/themes/classic-themes/>
+- Official documentation: <https://developer.wordpress.org/themes/releasing-your-theme/required-theme-files/>
+- Official documentation: <https://developer.wordpress.org/themes/classic-themes/basics/main-stylesheet-style-css/>
+- Official documentation: <https://developer.wordpress.org/themes/core-concepts/custom-functionality/>
+- Official documentation: <https://developer.wordpress.org/themes/core-concepts/including-assets/>
+- Verified source paths:
+  - `wp-includes/template-loader.php`
+  - `wp-includes/template.php`
+  - `wp-includes/general-template.php`
+  - `wp-includes/theme.php`
+  - `wp-includes/link-template.php`
+  - `wp-includes/functions.wp-scripts.php`
+  - `wp-includes/functions.wp-styles.php`
+  - `wp-includes/class-wp-theme.php`
+  - `wp-content/themes/storefront/`
+  - `wp-content/themes/generatepress/`

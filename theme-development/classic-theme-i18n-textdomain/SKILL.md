@@ -1,23 +1,13 @@
 ---
 name: classic-theme-i18n-textdomain
 description: Build or audit internationalization in classic WordPress themes on WP 7.0. Covers `style.css` `Text Domain` and `Domain Path`, slug-matching domains, `load_theme_textdomain()` and `load_child_theme_textdomain()` on `after_setup_theme`, WP 6.7+ early translation warnings, escaped translation functions, `_x`, `_n`, translator comments, placeholders, JavaScript translation setup, and common mistakes such as variable text domains, string concatenation, missing domains, raw translated output, or wrongly named theme `.mo` files.
-author: Soczó Kristóf
-contact: mailto:lonsdale201@hotmail.com
-plugin: wordpress
-plugin-version-tested: "7.0"
-php-min: "7.4"
-last-updated: "2026-06-04"
-docs:
-  - https://developer.wordpress.org/themes/advanced-topics/internationalization/
-  - https://developer.wordpress.org/themes/classic-themes/functionality/internationalization/
-  - https://developer.wordpress.org/reference/functions/load_theme_textdomain/
-source-refs:
-  - wp-includes/l10n.php
-  - wp-includes/class-wp-theme.php
-  - wp-includes/link-template.php
-  - wp-content/themes/storefront/style.css
-  - wp-content/themes/storefront/inc/class-storefront.php
-  - wp-content/themes/generatepress/style.css
+metadata:
+  wp-skills-author: "Soczó Kristóf"
+  wp-skills-contact: "mailto:lonsdale201@hotmail.com"
+  wp-skills-plugin: "wordpress"
+  wp-skills-plugin-version-tested: "7.0"
+  wp-skills-php-min: "7.4"
+  wp-skills-last-updated: "2026-06-04"
 ---
 
 # Classic Theme Internationalization and Text Domain
@@ -228,3 +218,16 @@ Check:
 - Echoing raw `__()` output.
 - Translating dynamic user/content values.
 - Naming bundled theme files `my-theme-de_DE.mo` inside the theme directory instead of `de_DE.mo`.
+
+## References
+
+- Official documentation: <https://developer.wordpress.org/themes/advanced-topics/internationalization/>
+- Official documentation: <https://developer.wordpress.org/themes/classic-themes/functionality/internationalization/>
+- Official documentation: <https://developer.wordpress.org/reference/functions/load_theme_textdomain/>
+- Verified source paths:
+  - `wp-includes/l10n.php`
+  - `wp-includes/class-wp-theme.php`
+  - `wp-includes/link-template.php`
+  - `wp-content/themes/storefront/style.css`
+  - `wp-content/themes/storefront/inc/class-storefront.php`
+  - `wp-content/themes/generatepress/style.css`
