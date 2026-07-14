@@ -1,6 +1,6 @@
 # wp-agent-skills
 
-**197 skills · 29 plugins**
+**198 skills · 29 plugins**
 
 A community-maintained collection of **portable Agent Skills** for WordPress plugin and theme development.
 
@@ -35,7 +35,7 @@ Skills are grouped by domain. Each domain has its own README listing the skills 
 | [`translatepress/`](translatepress) | Making your own plugin/theme **TranslatePress-compatible** — translatable output and exclusions, URL/SEO/slug and Different-Domain behavior, language switchers and navigation, and recipient-language emails. Covers the free core plus the Business add-ons. |
 | [`elementor/`](elementor) | Building **Elementor** addon plugins — registering Dynamic Tags, their controls and fallback behavior, AJAX item pickers for large datasets, and auditing deprecated Elementor APIs. Extends the free base classes and feature-detects Pro. |
 | [`szamlazzhu/`](szamlazzhu) | Making your own WooCommerce extension cooperate with **Integration for Szamlazz.hu & WooCommerce** — invoice line items / XML / document timing and B2B VAT-number checkout, via the plugin's hooks and canonical data model rather than duplicating it. |
-| [`dev-tooling/`](dev-tooling) | Testing & QA tooling for plugins/themes — PHPUnit (scaffold, harness, CI, writing tests), PHP_CodeSniffer + WordPress Coding Standards, and PHPStan, wired through Composer. The developer pipeline beside the code, not WP runtime APIs. |
+| [`dev-tooling/`](dev-tooling) | Testing & QA tooling for plugins/themes — PHPUnit (scaffold, harness, CI, writing tests), PHP_CodeSniffer + WordPress Coding Standards, PHPStan, and Strauss namespace prefixing for bundled Composer dependencies, wired through Composer. The developer pipeline beside the code, not WP runtime APIs. |
 | [`polylang/`](polylang) | Making your own plugin/theme **Polylang-compatible** — the guarded public language API, translated post/term groups via the model (not raw DB writes), Pro slugs / sync / ACF behavior, REST & headless `lang` semantics, string/option translation, and Polylang for WooCommerce data stores. Covers the free core plus Polylang Pro and Polylang for WooCommerce. |
 | [`wpml/`](wpml) | Making your own plugin/theme **WPML-compatible** — the "WPML translates copies" model, detecting the base plugin vs the String Translation / Media / Translation Management add-ons, declaring translatable content in `wpml-config.xml`, the runtime language hook API (`wpml_object_id`, `wpml_switch_language`, `wpml_permalink`), and registering/translating dynamic strings. |
 | [`learndash/`](learndash) | Making your own plugin, theme, or integration cooperate with **LearnDash LMS** (`sfwd-lms`) and the **LearnDash WooCommerce** bridge — course and group access/enrollment through the public access APIs (not raw usermeta), the user/course/group/leader relationship model and hierarchical groups, Woo order/subscription/refund-driven enrollment with the access counter, and the `ldlms/v2` + `learndash/v1` REST surfaces. |

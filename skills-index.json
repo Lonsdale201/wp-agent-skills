@@ -12,7 +12,7 @@
     "skill_file": "SKILL.md"
   },
   "domain_count": 20,
-  "skill_count": 197,
+  "skill_count": 198,
   "domains": [
     {
       "slug": "better-data",
@@ -30,7 +30,7 @@
       "slug": "dev-tooling",
       "path": "dev-tooling",
       "readme_path": "dev-tooling/README.md",
-      "skill_count": 4
+      "skill_count": 5
     },
     {
       "slug": "elementor",
@@ -1335,6 +1335,37 @@
         "bytes": 10304,
         "lines": 207,
         "sha256": "48aa3649a182cd89775c04cec8eaa32440ae91b2da23f706d07936b480bb7bc0"
+      }
+    },
+    {
+      "slug": "wp-strauss-namespace-prefixing",
+      "name": "wp-strauss-namespace-prefixing",
+      "domain": "dev-tooling",
+      "description": "Bundle Composer dependencies inside a WordPress plugin without conflicts by prefixing their namespaces, classnames, and constants with Strauss (brianhenryie/strauss, the maintained Mozart successor). Covers why shared vendor libraries collide between plugins (one PHP process, first-registered autoloader wins), running Strauss as a pinned strauss.phar from composer scripts (post-install-cmd / post-update-cmd, include-autoloader on post-autoload-dump) rather than require --dev, the extra.strauss config (target_directory vendor-prefixed, namespace_prefix, classmap_prefix, constant_prefix, packages, exclude_from_prefix, override_autoload, delete_vendor_packages, update_call_sites), loading vendor-prefixed/autoload.php, release/CI builds, and migrating from Mozart. Use when a plugin ships Guzzle, Monolog, an SDK, or any Composer runtime dependency, when two plugins fatal on conflicting library versions, or when composer.json contains extra.strauss or extra.mozart.",
+      "path": "dev-tooling/wp-strauss-namespace-prefixing",
+      "skill_path": "dev-tooling/wp-strauss-namespace-prefixing/SKILL.md",
+      "url": "https://raw.githubusercontent.com/Lonsdale201/wp-agent-skills/main/dev-tooling/wp-strauss-namespace-prefixing/SKILL.md",
+      "raw_url": "https://raw.githubusercontent.com/Lonsdale201/wp-agent-skills/main/dev-tooling/wp-strauss-namespace-prefixing/SKILL.md",
+      "html_url": "https://github.com/Lonsdale201/wp-agent-skills/blob/main/dev-tooling/wp-strauss-namespace-prefixing/SKILL.md",
+      "directory_url": "https://github.com/Lonsdale201/wp-agent-skills/tree/main/dev-tooling/wp-strauss-namespace-prefixing",
+      "metadata": {
+        "author": "Soczó Kristóf",
+        "contact": "mailto:lonsdale201@hotmail.com",
+        "plugin": "wordpress",
+        "plugin-version-tested": "Strauss 0.28.1 (2026-07-11); WP 7.0",
+        "wp-version-tested": "7.0",
+        "php-min": "7.4",
+        "last-updated": "2026-07-14",
+        "license": "GPLv2-or-later"
+      },
+      "resources": [],
+      "has_reference": false,
+      "has_examples": false,
+      "has_scripts": false,
+      "skill_md": {
+        "bytes": 12034,
+        "lines": 180,
+        "sha256": "6a3622b4dccd0a2958e84a90ff95d037b938bd7d2da6fa8aaf9fa167ef4b268d"
       }
     },
     {

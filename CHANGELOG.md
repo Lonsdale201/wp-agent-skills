@@ -2,6 +2,18 @@
 
 This collection is continuously evolving — entries are date-based, not version-tagged. New skills land when they're ready; updates go in when they cover real ground (a new release of an upstream plugin, a verified misconception, a corrected example).
 
+## 2026-07-14 (dev-tooling: Strauss dependency prefixing)
+
+### Added — `dev-tooling/wp-strauss-namespace-prefixing`
+
+New skill for **Strauss** (`brianhenryie/strauss`, the maintained Mozart successor) — prefixing bundled Composer runtime dependencies so two plugins shipping different versions of the same library (Guzzle, Monolog, SDKs) stop colliding in the shared PHP process. Grounded against the upstream README and `composer.json` at **v0.28.1 (2026-07-11)**:
+
+- The upstream-recommended **pinned `strauss.phar` via composer scripts** install (`prefix-namespaces` on `post-install-cmd` / `post-update-cmd`, `strauss include-autoloader` on `post-autoload-dump`) and why `composer require --dev` is discouraged (Strauss's own dependency tree — `composer/composer`, `symfony/console`, `nikic/php-parser` — would land in your dev autoloader).
+- The `extra.strauss` config with verified defaults: `target_directory` (`vendor-prefixed`), inferred `namespace_prefix` / `classmap_prefix`, `constant_prefix` (empty = constants untouched), `packages` (defaults to all of `require` — dev tools never prefixed), `update_call_sites` (true/false/paths array), `delete_vendor_packages` + the dev-only `autoload_aliases.php` caveat, `override_autoload`, the three `exclude_*` blocks, `namespace_replacement_patterns`, `include_root_autoload`.
+- Autoloader wiring (direct `vendor-prefixed/autoload.php` require vs `include-autoloader`), release/CI workflow (`--dry-run`, pin the phar release, never ship an unprefixed duplicate), the two things a mechanical rewrite can't decide — string class references and plugin-boundary type-hints (PSR interop) — plus Mozart migration (Strauss reads the Mozart config) and a short PHP-Scoper positioning note.
+
+Domain README intro + table row, root README domain row, and the skill counter (197 → 198) updated; `skills-index.json` regenerated.
+
 ## 2026-07-14 (rules refresh)
 
 ### Updated — `rules/` layer aligned with the recent batches
