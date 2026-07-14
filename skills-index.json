@@ -12,7 +12,7 @@
     "skill_file": "SKILL.md"
   },
   "domain_count": 20,
-  "skill_count": 198,
+  "skill_count": 200,
   "domains": [
     {
       "slug": "better-data",
@@ -30,7 +30,7 @@
       "slug": "dev-tooling",
       "path": "dev-tooling",
       "readme_path": "dev-tooling/README.md",
-      "skill_count": 5
+      "skill_count": 7
     },
     {
       "slug": "elementor",
@@ -1203,6 +1203,97 @@
         "bytes": 3683,
         "lines": 68,
         "sha256": "52c49e2c7d50a821aa34da2016cc495e734b5e38ada1e49b5ae6a2bede44fa9d"
+      }
+    },
+    {
+      "slug": "wp-docker-compose-stack",
+      "name": "wp-docker-compose-stack",
+      "domain": "dev-tooling",
+      "description": "Build a custom docker-compose development stack for WordPress when wp-env's abstraction runs out — Redis object cache, Mailpit SMTP capture, custom PHP extensions (phpredis, Xdebug), php.ini overrides. Covers the official wordpress image's runtime-env config model (wp-config.php reads WORDPRESS_DB_* / WORDPRESS_CONFIG_EXTRA via getenv at request time, so every container sharing the volume — wp-cli included — needs the same environment, best shared via a YAML anchor), the mariadb healthcheck + service_healthy dependency, a wp-cli service as user 33:33, wiring the redis-cache plugin drop-in with WP_REDIS_HOST, why wp_mail silently fails (invalid wordpress@localhost From) and the phpmailer_init + Mailpit fix, pecl Dockerfiles for phpredis/Xdebug, and pinning image tags because wordpress:latest lags WP releases. Use when composing docker-compose.yml for WP, adding Redis/mail capture to local dev, or debugging a WP container where config env vars seem ignored.",
+      "path": "dev-tooling/wp-docker-compose-stack",
+      "skill_path": "dev-tooling/wp-docker-compose-stack/SKILL.md",
+      "url": "https://raw.githubusercontent.com/Lonsdale201/wp-agent-skills/main/dev-tooling/wp-docker-compose-stack/SKILL.md",
+      "raw_url": "https://raw.githubusercontent.com/Lonsdale201/wp-agent-skills/main/dev-tooling/wp-docker-compose-stack/SKILL.md",
+      "html_url": "https://github.com/Lonsdale201/wp-agent-skills/blob/main/dev-tooling/wp-docker-compose-stack/SKILL.md",
+      "directory_url": "https://github.com/Lonsdale201/wp-agent-skills/tree/main/dev-tooling/wp-docker-compose-stack",
+      "metadata": {
+        "author": "Soczó Kristóf",
+        "contact": "mailto:lonsdale201@hotmail.com",
+        "plugin": "wordpress",
+        "plugin-version-tested": "wordpress:latest image (WP 6.8.3 / PHP 8.3); mariadb:lts; redis-cache 2.8.0; Xdebug 3.5.3; Docker 29.3 / Compose v5.1",
+        "wp-version-tested": "7.0",
+        "php-min": "7.4",
+        "last-updated": "2026-07-14",
+        "license": "GPLv2-or-later"
+      },
+      "resources": [
+        {
+          "path": "examples/docker-compose.yml",
+          "repo_path": "dev-tooling/wp-docker-compose-stack/examples/docker-compose.yml",
+          "type": "example",
+          "bytes": 2805,
+          "sha256": "0577dadec5d52fc6d8462413045e3c1e9d2897c58a523d482661f40c380709d6"
+        },
+        {
+          "path": "examples/Dockerfile.xdebug",
+          "repo_path": "dev-tooling/wp-docker-compose-stack/examples/Dockerfile.xdebug",
+          "type": "example",
+          "bytes": 791,
+          "sha256": "dfd7a0e4fca6ccb02a3c2a343b70a30bb0de9c581fcf8ef938100c79e491c241"
+        },
+        {
+          "path": "examples/mu-plugin-mailpit.php",
+          "repo_path": "dev-tooling/wp-docker-compose-stack/examples/mu-plugin-mailpit.php",
+          "type": "example",
+          "bytes": 816,
+          "sha256": "a90c4c5ea6f3f81feb1af3596228568c8fe945c2890997cbeccc58cbeb2e2572"
+        },
+        {
+          "path": "examples/uploads.ini",
+          "repo_path": "dev-tooling/wp-docker-compose-stack/examples/uploads.ini",
+          "type": "example",
+          "bytes": 173,
+          "sha256": "59250e8ccb8b871960b6b53ac5ac81d8ed11475402a8c9444cc6b89860f87b54"
+        }
+      ],
+      "has_reference": false,
+      "has_examples": true,
+      "has_scripts": false,
+      "skill_md": {
+        "bytes": 11835,
+        "lines": 215,
+        "sha256": "d98b6c8170fc698fa20f4c97a5537d9798663a4775c93d858b164d6cefcb75b0"
+      }
+    },
+    {
+      "slug": "wp-env-local-dev",
+      "name": "wp-env-local-dev",
+      "domain": "dev-tooling",
+      "description": "Run a local WordPress development environment with wp-env (the official @wordpress/env Docker wrapper) — the default choice for plugin and block development. Covers the npx @wordpress/env command (and the trap that bare \"npx wp-env\" installs an unrelated stub package), the .wp-env.json config (core, phpVersion, plugins, themes, mappings, config constants, ports, multisite, lifecycleScripts, .wp-env.override.json merge rules), the twin instances (dev on 8888, tests on 8889 with separate databases), running wp-cli via \"wp-env run cli\", the preinstalled PHPUnit + Composer + WP test suite in the tests instance, step debugging with \"wp-env start --xdebug\", and start/stop/clean/destroy lifecycle. Use when setting up local WP for a plugin or theme, when a .wp-env.json is present or needs writing, when the user asks for a quick WordPress sandbox with Docker, or before reaching for a hand-written docker-compose stack.",
+      "path": "dev-tooling/wp-env-local-dev",
+      "skill_path": "dev-tooling/wp-env-local-dev/SKILL.md",
+      "url": "https://raw.githubusercontent.com/Lonsdale201/wp-agent-skills/main/dev-tooling/wp-env-local-dev/SKILL.md",
+      "raw_url": "https://raw.githubusercontent.com/Lonsdale201/wp-agent-skills/main/dev-tooling/wp-env-local-dev/SKILL.md",
+      "html_url": "https://github.com/Lonsdale201/wp-agent-skills/blob/main/dev-tooling/wp-env-local-dev/SKILL.md",
+      "directory_url": "https://github.com/Lonsdale201/wp-agent-skills/tree/main/dev-tooling/wp-env-local-dev",
+      "metadata": {
+        "author": "Soczó Kristóf",
+        "contact": "mailto:lonsdale201@hotmail.com",
+        "plugin": "wordpress",
+        "plugin-version-tested": "wp-env 11.10.0; WP 7.0.1; Xdebug 3.5.3; Docker 29.3 / Compose v5.1",
+        "wp-version-tested": "7.0",
+        "php-min": "7.4",
+        "last-updated": "2026-07-14",
+        "license": "GPLv2-or-later"
+      },
+      "resources": [],
+      "has_reference": false,
+      "has_examples": false,
+      "has_scripts": false,
+      "skill_md": {
+        "bytes": 9461,
+        "lines": 161,
+        "sha256": "00f900369ee97457f21f4076da16ee09e677ff600c908ca226d53b16184da507"
       }
     },
     {

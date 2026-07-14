@@ -2,6 +2,17 @@
 
 This collection is continuously evolving — entries are date-based, not version-tagged. New skills land when they're ready; updates go in when they cover real ground (a new release of an upstream plugin, a verified misconception, a corrected example).
 
+## 2026-07-14 (dev-tooling: local Docker environments)
+
+### Added — `dev-tooling/wp-env-local-dev` and `dev-tooling/wp-docker-compose-stack`
+
+Two skills for local WordPress Docker environments, **grounded by actually booting and verifying every claim** on Docker 29.3 / Compose v5.1 (not from docs alone):
+
+- **`wp-env-local-dev`** — the official `@wordpress/env` wrapper (11.10.0) as the *default* for plugin/block development: the verified trap that bare `npx wp-env` installs an unrelated stub npm package (`wp-env@1.0.1`); `.wp-env.json` anatomy with `core: null` confirmed to install the latest production WP (7.0.1) and `phpVersion: "8.3"` honored; `plugins: ["."]` mapping verified active with live hooks on the frontend; the twin dev (8888) / tests (8889) instances; `run cli` / `tests-cli`; the tests container's preinstalled PHPUnit + Composer + `WP_TESTS_DIR=/wordpress-phpunit`; `--xdebug` (Xdebug 3.5.3 confirmed loaded).
+- **`wp-docker-compose-stack`** — the escape hatch when wp-env's abstraction runs out, built around the empirically-hit gotchas: the official image resolves `WORDPRESS_*` config from env **at request time** (`wp-config.php` `getenv` + `eval` of `WORDPRESS_CONFIG_EXTRA`), so a wp-cli container without the same env silently runs on defaults — our `wp redis enable` failed against 127.0.0.1 exactly this way → shared YAML-anchor env block; mariadb `healthcheck.sh` + `service_healthy` gating; `wordpress:latest` lags releases (shipped WP 6.8.3 / PHP 8.3 while wp-env installed 7.0.1) → pin tags; wp-cli as `user: "33:33"` (verified `www-data` ownership of written files; alpine cli defaults to uid 82); Redis drop-in end-to-end (`Status: Connected`, Predis 2.4.0 fallback — no phpredis in the official image; pecl Dockerfile for phpredis verified); `wp_mail` failing on the invalid `wordpress@localhost` From *before any SMTP attempt* + the `phpmailer_init`/`wp_mail_from` Mailpit fix (delivery verified via the Mailpit API); `uploads.ini` conf.d mount; Xdebug 3.5.3 pecl build. Ships the boot-verified files under `examples/` (compose stack, uploads.ini, Xdebug Dockerfile, Mailpit mu-plugin).
+
+Positioning is deliberate: wp-env is the recommended default, the compose stack is for when custom services (Redis, Mailpit, phpredis, nginx) are needed; node build tooling (Tailwind, @wordpress/scripts) stays on the host. Domain + root README rows, skill counter (198 → 200), and `skills-index.json` updated.
+
 ## 2026-07-14 (dev-tooling: Strauss dependency prefixing)
 
 ### Added — `dev-tooling/wp-strauss-namespace-prefixing`

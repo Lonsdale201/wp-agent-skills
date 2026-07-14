@@ -1,0 +1,87 @@
+# WordPress development stack — boot-verified (WP + MariaDB + Redis + Mailpit + wp-cli).
+#
+# Usage:
+#   docker compose up -d
+#   docker compose run --rm wpcli wp core install --url=http://localhost:8080 \
+#     --title="Dev" --admin_user=admin --admin_password=admin \
+#     --admin_email=admin@example.com --skip-email
+#   docker compose run --rm wpcli wp plugin install redis-cache --activate
+#   docker compose run --rm wpcli wp redis enable
+#
+# Site: http://localhost:8080  ·  Mailpit UI: http://localhost:8025
+# Teardown keeping data: docker compose down  ·  full wipe: docker compose down -v
+
+name: wp-dev
+
+# Shared by every container that loads WordPress. The official image resolves
+# config from the environment AT REQUEST TIME (wp-config.php reads getenv),
+# so wp-cli needs the exact same block or it silently runs with defaults.
+x-wp-environment: &wp-environment
+  WORDPRESS_DB_HOST: db
+  WORDPRESS_DB_USER: wordpress
+  WORDPRESS_DB_PASSWORD: wordpress
+  WORDPRESS_DB_NAME: wordpress
+  WORDPRESS_CONFIG_EXTRA: |
+    define( 'WP_REDIS_HOST', 'redis' );
+    if ( ! defined( 'WP_DEBUG' ) ) { define( 'WP_DEBUG', true ); }
+    define( 'WP_DEBUG_LOG', true );
+    define( 'WP_DEBUG_DISPLAY', false );
+
+services:
+  db:
+    image: mariadb:lts
+    environment:
+      MARIADB_DATABASE: wordpress
+      MARIADB_USER: wordpress
+      MARIADB_PASSWORD: wordpress
+      MARIADB_ROOT_PASSWORD: root
+    volumes:
+      - db_data:/var/lib/mysql
+    healthcheck:
+      test: ["CMD", "healthcheck.sh", "--connect", "--innodb_initialized"]
+      interval: 5s
+      timeout: 5s
+      retries: 12
+
+  wordpress:
+    # Pin this in a real project (e.g. wordpress:6.8-php8.3-apache) —
+    # :latest lags WordPress releases and changes PHP under you.
+    image: wordpress:latest
+    depends_on:
+      db:
+        condition: service_healthy
+      redis:
+        condition: service_started
+    ports:
+      - "8080:80"
+    environment: *wp-environment
+    volumes:
+      - wp_data:/var/www/html
+      - ./uploads.ini:/usr/local/etc/php/conf.d/uploads.ini
+      # Plugin development: mount your plugin on top of the named volume:
+      # - ./:/var/www/html/wp-content/plugins/my-plugin
+
+  redis:
+    image: redis:alpine
+
+  mailpit:
+    image: axllent/mailpit
+    ports:
+      - "8025:8025"   # web UI + API; SMTP stays internal on mailpit:1025
+
+  wpcli:
+    image: wordpress:cli
+    # Debian Apache image serves as uid 33 (www-data); the Alpine cli image
+    # defaults to uid 82 — force 33:33 so written files stay web-editable.
+    user: "33:33"
+    profiles: ["cli"]   # never starts with `up`; invoke via `docker compose run --rm wpcli ...`
+    depends_on:
+      db:
+        condition: service_healthy
+    environment: *wp-environment
+    volumes:
+      - wp_data:/var/www/html
+
+volumes:
+  db_data:
+  wp_data:
