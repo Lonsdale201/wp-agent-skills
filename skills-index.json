@@ -12,7 +12,7 @@
     "skill_file": "SKILL.md"
   },
   "domain_count": 20,
-  "skill_count": 200,
+  "skill_count": 202,
   "domains": [
     {
       "slug": "better-data",
@@ -120,7 +120,7 @@
       "slug": "wordpress",
       "path": "wordpress",
       "readme_path": "wordpress/README.md",
-      "skill_count": 32
+      "skill_count": 34
     },
     {
       "slug": "wp-rocket",
@@ -4410,7 +4410,7 @@
       "slug": "wc-order-lifecycle-and-items",
       "name": "wc-order-lifecycle-and-items",
       "domain": "woocommerce",
-      "description": "Work safely with WooCommerce order statuses, payment completion, status hooks, order items, line-item meta, totals, and stock side effects. Covers `payment_complete()` vs `update_status()`, `woocommerce_order_status_*` hook ordering and args, `woocommerce_order_status_changed`, `woocommerce_order_payment_status_changed`, `WC_Order_Item_Product`, `add_item()`, `calculate_totals()`, stock reduction/restoration hooks, HPOS-safe CRUD, and why not to instantiate base `WC_Order_Item`. Use when reacting to orders, adding/editing items, changing statuses, provisioning, fulfillment, stock logic, or debugging paid orders that skipped lifecycle side effects.",
+      "description": "Work safely with WooCommerce order statuses, payment completion, status hooks, order items, line-item meta, totals, stock side effects, and paid analytics/conversion idempotency. Covers `payment_complete()` vs `update_status()`, status-hook ordering, `woocommerce_thankyou` vs paid events, replay-safe external side effects, concrete order-item classes, totals, HPOS-safe CRUD, and stock handling. Use when reacting to orders, changing statuses/items, provisioning, fulfillment, stock logic, external conversion events, or debugging paid orders that skipped lifecycle side effects.",
       "path": "woocommerce/wc-order-lifecycle-and-items",
       "skill_path": "woocommerce/wc-order-lifecycle-and-items/SKILL.md",
       "url": "https://raw.githubusercontent.com/Lonsdale201/wp-agent-skills/main/woocommerce/wc-order-lifecycle-and-items/SKILL.md",
@@ -4423,16 +4423,16 @@
         "plugin": "woocommerce",
         "plugin-version-tested": "10.9.4",
         "php-min": "7.4",
-        "last-updated": "2026-07-10"
+        "last-updated": "2026-07-15"
       },
       "resources": [],
       "has_reference": false,
       "has_examples": false,
       "has_scripts": false,
       "skill_md": {
-        "bytes": 9625,
-        "lines": 206,
-        "sha256": "5d1ae447ad6d280ee921376734977da02e9105614ca17b9db489421374a3f028"
+        "bytes": 11495,
+        "lines": 248,
+        "sha256": "58b449668a5afaf873cfafeca17ed96be9b8f9d2851792ca646c8c223d9005d8"
       }
     },
     {
@@ -5801,6 +5801,43 @@
       }
     },
     {
+      "slug": "wp-dependency-security-audit",
+      "name": "wp-dependency-security-audit",
+      "domain": "wordpress",
+      "description": "Audit third-party PHP and JavaScript dependencies bundled with a WordPress plugin or theme, including Composer/npm packages, copied minified browser libraries, prefixed/vendorized PHP, CDN assets, and components with no manifest. Inventories version evidence, verifies current official security advisories and fixed ranges, traces vulnerable APIs to attacker-controlled inputs, separates an affected version from a reachable exploit, and produces an upgrade/SBOM plan. Use for release security reviews, vendor directories, composer.lock/package-lock files, assets/lib bundles, source maps, license headers, `composer audit`, npm advisories, GHSA/CVE reports, or unknown-version third-party code.",
+      "path": "wordpress/wp-dependency-security-audit",
+      "skill_path": "wordpress/wp-dependency-security-audit/SKILL.md",
+      "url": "https://raw.githubusercontent.com/Lonsdale201/wp-agent-skills/main/wordpress/wp-dependency-security-audit/SKILL.md",
+      "raw_url": "https://raw.githubusercontent.com/Lonsdale201/wp-agent-skills/main/wordpress/wp-dependency-security-audit/SKILL.md",
+      "html_url": "https://github.com/Lonsdale201/wp-agent-skills/blob/main/wordpress/wp-dependency-security-audit/SKILL.md",
+      "directory_url": "https://github.com/Lonsdale201/wp-agent-skills/tree/main/wordpress/wp-dependency-security-audit",
+      "metadata": {
+        "author": "Soczó Kristóf",
+        "contact": "mailto:lonsdale201@hotmail.com",
+        "plugin": "wordpress",
+        "plugin-version-tested": "6.0 - 7.0.1",
+        "php-min": "7.4",
+        "last-updated": "2026-07-15"
+      },
+      "resources": [
+        {
+          "path": "agents/openai.yaml",
+          "repo_path": "wordpress/wp-dependency-security-audit/agents/openai.yaml",
+          "type": "resource",
+          "bytes": 317,
+          "sha256": "43fd57dc675a10e6d29852b403532409e67c43a875dbccf56f4d1e738cedac49"
+        }
+      ],
+      "has_reference": false,
+      "has_examples": false,
+      "has_scripts": false,
+      "skill_md": {
+        "bytes": 10799,
+        "lines": 211,
+        "sha256": "1805c0b5fc1552c5a0e3c79a20af47cfc79ca7356bfb8b45fce868c1eba69ee4"
+      }
+    },
+    {
       "slug": "wp-file-upload-security",
       "name": "wp-file-upload-security",
       "domain": "wordpress",
@@ -5899,7 +5936,7 @@
       "slug": "wp-http-api-client",
       "name": "wp-http-api-client",
       "domain": "wordpress",
-      "description": "Implement or audit outbound HTTP integrations in WordPress with wp_remote_request, wp_safe_remote_get/post/request, bounded timeouts, redirects and response sizes, host allowlists, JSON handling, authentication redaction, retries, idempotency, streaming downloads, and test hooks. Use when a plugin calls an external API, webhook destination, feed, license server, OAuth endpoint, remote file, or accepts a URL that WordPress fetches.",
+      "description": "Implement or audit outbound HTTP integrations in WordPress with wp_remote_request, wp_safe_remote_get/post/request, bounded timeouts, redirects and response sizes, host allowlists, JSON handling, authentication redaction, retries, idempotency, streaming downloads, and test hooks. Use when a plugin calls an external API, webhook destination, feed, license server, OAuth endpoint, remote file, private update service, remote report definition, or accepts a URL that WordPress fetches.",
       "path": "wordpress/wp-http-api-client",
       "skill_path": "wordpress/wp-http-api-client/SKILL.md",
       "url": "https://raw.githubusercontent.com/Lonsdale201/wp-agent-skills/main/wordpress/wp-http-api-client/SKILL.md",
@@ -5912,7 +5949,7 @@
         "plugin": "wordpress",
         "plugin-version-tested": "6.0 - 7.0.1",
         "php-min": "7.4",
-        "last-updated": "2026-07-10"
+        "last-updated": "2026-07-15"
       },
       "resources": [
         {
@@ -5927,9 +5964,9 @@
       "has_examples": false,
       "has_scripts": false,
       "skill_md": {
-        "bytes": 9077,
-        "lines": 224,
-        "sha256": "67945e22ece6c458702f3f9ae7d3075ce925fcdca71b45bad0244eb6dc231c49"
+        "bytes": 10652,
+        "lines": 253,
+        "sha256": "0ed4760b8fb31a6c975e8160edb1415671436b28a59d4141a49161e52ea9f94a"
       }
     },
     {
@@ -6060,7 +6097,7 @@
       "slug": "wp-privacy-personal-data",
       "name": "wp-privacy-personal-data",
       "domain": "wordpress",
-      "description": "Implement or audit WordPress plugin privacy integration with privacy-policy suggestions, personal-data exporters, and personal-data erasers. Covers wp_add_privacy_policy_content, wp_privacy_personal_data_exporters, wp_privacy_personal_data_erasers, paged callback contracts, retained-data messages, idempotent erasure, custom tables/meta/remote systems, retention, and multisite scope. Use when a plugin stores email addresses, IPs, user identifiers, profiles, form submissions, logs, analytics, orders, messages, or other personal data.",
+      "description": "Implement or audit WordPress plugin privacy integration with privacy-policy suggestions, personal-data exporters, and personal-data erasers. Covers wp_add_privacy_policy_content, wp_privacy_personal_data_exporters, wp_privacy_personal_data_erasers, paged callback contracts, retained-data messages, idempotent erasure, re-identification closure, collection-time validity, custom tables/meta/remote systems, retention, and multisite scope. Use when a plugin stores email addresses, IPs, user identifiers, profiles, form submissions, logs, analytics, orders, messages, or other personal data.",
       "path": "wordpress/wp-privacy-personal-data",
       "skill_path": "wordpress/wp-privacy-personal-data/SKILL.md",
       "url": "https://raw.githubusercontent.com/Lonsdale201/wp-agent-skills/main/wordpress/wp-privacy-personal-data/SKILL.md",
@@ -6073,7 +6110,7 @@
         "plugin": "wordpress",
         "plugin-version-tested": "4.9.6 - 7.0.1",
         "php-min": "7.4",
-        "last-updated": "2026-07-10"
+        "last-updated": "2026-07-15"
       },
       "resources": [
         {
@@ -6088,9 +6125,9 @@
       "has_examples": false,
       "has_scripts": false,
       "skill_md": {
-        "bytes": 9216,
-        "lines": 219,
-        "sha256": "7b9270fac284fb7511cc1e64502ddd91d874fd7871e7525bb28e8971928bfde6"
+        "bytes": 11120,
+        "lines": 249,
+        "sha256": "c75977e165f52300a29b4e052fb7d33e59a68b74233ea6f2eeed42d16af36699"
       }
     },
     {
@@ -6123,10 +6160,47 @@
       }
     },
     {
+      "slug": "wp-relational-data-portability-audit",
+      "name": "wp-relational-data-portability-audit",
+      "domain": "wordpress",
+      "description": "Audit WordPress custom-table export, import, restore, merge, and date-range deletion workflows for relational integrity. Covers root selection and dependency closure, shared dimensions, portable identity and ID remapping, schema-versioned manifests, checksums, staging/conflict policy, transaction boundaries, post-import verification, streaming, compressed-size limits, and resumable batches. Use when code emits SQL/CSV/JSON backups, preserves auto-increment IDs, uses INSERT IGNORE, imports into non-empty databases, deletes analytics/log/session data by time range, or promises backup/restore for related custom tables.",
+      "path": "wordpress/wp-relational-data-portability-audit",
+      "skill_path": "wordpress/wp-relational-data-portability-audit/SKILL.md",
+      "url": "https://raw.githubusercontent.com/Lonsdale201/wp-agent-skills/main/wordpress/wp-relational-data-portability-audit/SKILL.md",
+      "raw_url": "https://raw.githubusercontent.com/Lonsdale201/wp-agent-skills/main/wordpress/wp-relational-data-portability-audit/SKILL.md",
+      "html_url": "https://github.com/Lonsdale201/wp-agent-skills/blob/main/wordpress/wp-relational-data-portability-audit/SKILL.md",
+      "directory_url": "https://github.com/Lonsdale201/wp-agent-skills/tree/main/wordpress/wp-relational-data-portability-audit",
+      "metadata": {
+        "author": "Soczó Kristóf",
+        "contact": "mailto:lonsdale201@hotmail.com",
+        "plugin": "wordpress",
+        "plugin-version-tested": "6.0 - 7.0.1",
+        "php-min": "7.4",
+        "last-updated": "2026-07-15"
+      },
+      "resources": [
+        {
+          "path": "agents/openai.yaml",
+          "repo_path": "wordpress/wp-relational-data-portability-audit/agents/openai.yaml",
+          "type": "resource",
+          "bytes": 335,
+          "sha256": "9fb232e45d62ad46db2c4de0d70d00cd75c4c12c71086737df563d0731b9a2b1"
+        }
+      ],
+      "has_reference": false,
+      "has_examples": false,
+      "has_scripts": false,
+      "skill_md": {
+        "bytes": 10229,
+        "lines": 217,
+        "sha256": "af70f3150dcf895f6cb796b424a5eea547417a77162f4e5e245dbe976cbf038b"
+      }
+    },
+    {
       "slug": "wp-rest-api",
       "name": "wp-rest-api",
       "domain": "wordpress",
-      "description": "Scaffold and audit inbound custom WordPress REST API endpoints registered with register_rest_route on rest_api_init. Covers explicit permission_callback intent, public-route review, object-level authorization, request-source precedence, args/JSON Schema validation and sanitization, WP_REST_Controller resources, bounded pagination and filters, WP_REST_Response/WP_Error contracts, register_rest_field, cookie auth with X-WP-Nonce, and REST vs admin-ajax decisions. Use for endpoint implementation, security review, 401/403 debugging, headless APIs, or admin-ajax migration. Trigger on register_rest_route, permission_callback, WP_REST_Request, WP_REST_Controller, register_rest_field, rest_ensure_response, or X-WP-Nonce; do not trigger merely for outbound wp_remote_* integrations.",
+      "description": "Scaffold and audit inbound custom WordPress REST API endpoints registered with register_rest_route on rest_api_init. Covers explicit permission_callback intent, public-route review, object-level authorization, public telemetry/beacon abuse budgets, request-source precedence, args/JSON Schema validation and sanitization, WP_REST_Controller resources, bounded pagination and filters, WP_REST_Response/WP_Error contracts, register_rest_field, cookie auth with X-WP-Nonce, and REST vs admin-ajax decisions. Use for endpoint implementation, security review, 401/403 debugging, headless APIs, or admin-ajax migration. Trigger on register_rest_route, permission_callback, WP_REST_Request, WP_REST_Controller, register_rest_field, rest_ensure_response, or X-WP-Nonce; do not trigger merely for outbound wp_remote_* integrations.",
       "path": "wordpress/wp-rest-api",
       "skill_path": "wordpress/wp-rest-api/SKILL.md",
       "url": "https://raw.githubusercontent.com/Lonsdale201/wp-agent-skills/main/wordpress/wp-rest-api/SKILL.md",
@@ -6139,7 +6213,7 @@
         "plugin": "wordpress",
         "plugin-version-tested": "6.0 - 7.0.1",
         "php-min": "7.4",
-        "last-updated": "2026-07-13"
+        "last-updated": "2026-07-15"
       },
       "resources": [
         {
@@ -6154,9 +6228,9 @@
       "has_examples": false,
       "has_scripts": false,
       "skill_md": {
-        "bytes": 13115,
-        "lines": 303,
-        "sha256": "fdb0ea0ad279dc66dcbc758f35ac5cd6f6282781124ab97213d14f3d95aa92ba"
+        "bytes": 15026,
+        "lines": 335,
+        "sha256": "5a0b7142adf64f01931a7937b1d32cd0a86157d30e6900da1f839f25fb5f203a"
       }
     },
     {
@@ -6207,7 +6281,7 @@
       "slug": "wp-security-deep",
       "name": "wp-security-deep",
       "domain": "wordpress",
-      "description": "Deep security audit for WordPress plugin/theme PHP code, covering issues beyond the basic sanitize/escape/nonce checklist — PHP object injection (unserialize), SSRF in remote requests, CSRF on state-changing GET handlers, mass assignment via $_POST loops, insecure file include / template injection, mail header injection, ZipSlip in archive extraction, type-juggling in auth comparisons, and TOCTOU race patterns in option/meta locks. Use after or alongside wp-security-audit when reviewing complex plugins, REST APIs, integrations that fetch remote URLs, file processors, or any code that handles uploads, archives, or self-rolled auth tokens.",
+      "description": "Deep security audit for WordPress plugin/theme PHP code, covering issues beyond the basic sanitize/escape/nonce checklist — PHP object injection (unserialize), SSRF in remote requests, CSRF on state-changing GET handlers, mass assignment via $_POST loops, insecure file include / template injection, mail header injection, ZipSlip in archive extraction, type-juggling in auth comparisons, and TOCTOU race patterns in option/meta locks. Use after or alongside wp-security-audit when reviewing complex plugins, REST APIs, integrations that fetch remote URLs, file processors, or any code that handles uploads, archives, self-rolled auth tokens, remote SQL/report definitions, or private plugin update channels.",
       "path": "wordpress/wp-security-deep",
       "skill_path": "wordpress/wp-security-deep/SKILL.md",
       "url": "https://raw.githubusercontent.com/Lonsdale201/wp-agent-skills/main/wordpress/wp-security-deep/SKILL.md",
@@ -6220,16 +6294,24 @@
         "plugin": "wordpress",
         "plugin-version-tested": "6.0 - 7.0.1",
         "php-min": "7.4",
-        "last-updated": "2026-07-12"
+        "last-updated": "2026-07-15"
       },
-      "resources": [],
-      "has_reference": false,
+      "resources": [
+        {
+          "path": "reference.md",
+          "repo_path": "wordpress/wp-security-deep/reference.md",
+          "type": "reference",
+          "bytes": 2841,
+          "sha256": "c42c90da06ccaea69370bba3969167c3dccfd84441d699dbae53462e8741fda1"
+        }
+      ],
+      "has_reference": true,
       "has_examples": false,
       "has_scripts": false,
       "skill_md": {
-        "bytes": 11245,
-        "lines": 298,
-        "sha256": "ea3e7b17194345050231f6357dfc2122c78b619a7a69393f46d1efab2fb2400b"
+        "bytes": 12329,
+        "lines": 314,
+        "sha256": "c7f8ef14668e9bbc50fce6fe51c082fe95b9249dba74a1de5e20a4406a49e8c6"
       }
     },
     {

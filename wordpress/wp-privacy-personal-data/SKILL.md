@@ -5,7 +5,8 @@ description: Implement or audit WordPress plugin privacy integration with
   erasers. Covers wp_add_privacy_policy_content,
   wp_privacy_personal_data_exporters, wp_privacy_personal_data_erasers,
   paged callback contracts, retained-data messages, idempotent erasure,
-  custom tables/meta/remote systems, retention, and multisite scope. Use when
+  re-identification closure, collection-time validity, custom tables/meta/remote
+  systems, retention, and multisite scope. Use when
   a plugin stores email addresses, IPs, user identifiers, profiles, form
   submissions, logs, analytics, orders, messages, or other personal data.
 metadata:
@@ -14,7 +15,7 @@ metadata:
   wp-skills-plugin: "wordpress"
   wp-skills-plugin-version-tested: "4.9.6 - 7.0.1"
   wp-skills-php-min: "7.4"
-  wp-skills-last-updated: "2026-07-10"
+  wp-skills-last-updated: "2026-07-15"
 ---
 
 # WordPress Personal Data Privacy Integration
@@ -36,6 +37,21 @@ Before writing callbacks, trace every personal-data store and transfer:
 
 Exporters and erasers must cover the same inventory. Do not assume deleting a
 `WP_User` removes plugin tables, files, remote copies, or denormalized logs.
+
+## Verify the collection boundary
+
+Capture personal data only after the host workflow has established that the
+submission or business event is valid. Early hooks such as
+`rest_request_before_callbacks` and priority-zero `wp_ajax_nopriv_*` observers
+run before the target plugin's permission callback or action callback, including
+its callback-level nonce, spam, business validation, and success logic. The REST
+filter runs after core authentication and registered argument validation, but it
+can still persist data from requests the endpoint later rejects.
+
+Prefer the integration's documented post-success hook and verify the exact
+form/list/action plus consent/feature state. Sanitization does not turn a failed
+submission into a valid collection event. Test invalid, spam, unauthorized, and
+downstream-failure paths and assert that they create no durable profile data.
 
 ## Suggest privacy-policy text
 
@@ -148,6 +164,14 @@ kept; explain why in `messages` without leaking the retained data itself.
 - Make erasure idempotent. Re-running it must be safe and converge.
 - Prefer anonymization when a business/legal record must remain; sever user
   links and remove direct identifiers that are not required.
+- Close every re-identification path, not only the main row. Delete or
+  irreversibly detach crosswalk/profile rows keyed by user ID, email, cookie ID,
+  session ID, device fingerprint, order/customer ID, captcha/consent token, or
+  deterministic hash. An anonymized entity is still identifiable when a
+  secondary table can attach the same browser/account again on its next visit.
+- Derive erasure fields from the same versioned registry/schema used by every
+  data-producing integration. A hand-written generic PII list easily misses
+  namespaces such as `form_email` or provider-specific address fields.
 - Do not use offset pagination over a result set whose matching rows disappear
   as they are erased: page 2 can skip records. Re-query the next first batch,
   or use a stable cursor/processed marker and calculate `has_more` explicitly.
@@ -186,12 +210,18 @@ Test at least:
 4. retained and partially failed records;
 5. repeated erasure calls;
 6. multisite scope and deleted-user records;
-7. export output for accidental secrets/internal fields.
+7. export output for accidental secrets/internal fields;
+8. every integration-specific PII namespace and every profile/crosswalk type;
+9. failed/spam/unauthorized submissions create no durable data;
+10. a post-erasure request with the old cookie/fingerprint cannot reattach the
+    anonymized entity.
 
 ## Critical rules
 
 - Inventory first; exporter and eraser coverage must match actual storage.
 - Keep callbacks paged, deterministic, idempotent, and truthful about `done`.
+- Erase the re-identification graph and integration-specific PII namespaces,
+  not just direct fields on the primary entity.
 - Do not equate user deletion, uninstall, or DB-row deletion with complete
   personal-data erasure.
 - Do not expose passwords, auth tokens, secret meta, or unrelated users' data.

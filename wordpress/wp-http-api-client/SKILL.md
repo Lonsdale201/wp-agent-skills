@@ -5,14 +5,15 @@ description: Implement or audit outbound HTTP integrations in WordPress with
   redirects and response sizes, host allowlists, JSON handling, authentication
   redaction, retries, idempotency, streaming downloads, and test hooks. Use
   when a plugin calls an external API, webhook destination, feed, license
-  server, OAuth endpoint, remote file, or accepts a URL that WordPress fetches.
+  server, OAuth endpoint, remote file, private update service, remote report
+  definition, or accepts a URL that WordPress fetches.
 metadata:
   wp-skills-author: "Soczó Kristóf"
   wp-skills-contact: "mailto:lonsdale201@hotmail.com"
   wp-skills-plugin: "wordpress"
   wp-skills-plugin-version-tested: "6.0 - 7.0.1"
   wp-skills-php-min: "7.4"
-  wp-skills-last-updated: "2026-07-10"
+  wp-skills-last-updated: "2026-07-15"
 ---
 
 # WordPress HTTP API Client
@@ -92,6 +93,31 @@ function myplugin_fetch_customer( int $customer_id ) {
 
 Validate the decoded schema before using values. An HTTP 200 and valid JSON do
 not prove the expected fields/types are present.
+
+## Keep executable policy out of remote responses
+
+Classify every response field as data or control-plane input. A fixed HTTPS host
+and valid authentication do not justify executing whatever that host returns.
+
+Do not let a response directly provide:
+
+- SQL passed to `$wpdb->query()`, `get_results()`, or a report executor;
+- PHP/template content, callback/class names, local paths, or capabilities;
+- an unrestricted plugin/theme update package URL;
+- a redirect, webhook destination, or secondary download host outside an exact
+  semantic allowlist.
+
+Keep report queries and privileged decisions local and versioned. Prefer a small
+remote vocabulary such as `report_id`, typed filter values, and feature states;
+map the ID to local code after strict schema/enum/range validation. A `SELECT`
+prefix check or SQL parser is not a durable sandbox, and read-only intent should
+also be enforced with database privilege separation where practical.
+
+For private updates, validate metadata and package hosts independently, recheck
+every redirect, and verify a release signature/digest against a separately
+trusted key or manifest. TLS protects the channel but does not contain a
+compromised vendor. Apply `wp-security-deep` to rate the full SQL/update-to-code
+execution chain and its trigger.
 
 ## Sending JSON
 
@@ -190,6 +216,8 @@ security skill before sideloading into Media Library.
 - Use `pre_http_request` in tests to return deterministic fake responses.
 - Assert timeout, host, headers, body, error/status, malformed JSON, 429/5xx,
   oversized response, redirect, and cleanup behavior.
+- Inject syntactically valid but malicious control fields (`sql`, `download_url`,
+  callback/path values) and assert they cannot reach an executable sink.
 - Use `http_api_debug` only for redacted diagnostics; never dump full requests.
 - Do not set `sslverify => false`, including in local examples. Fix CA/proxy
   configuration instead.
@@ -202,6 +230,7 @@ security skill before sideloading into Media Library.
 - Keep TLS verification enabled and redact secrets/personal data.
 - Retry only when the operation is demonstrably idempotent.
 - Validate decoded response structure and downloaded file content.
+- Keep executable SQL, update trust, callbacks, and authorization policy local.
 
 ## Cross-references
 

@@ -9,14 +9,15 @@ description: Deep security audit for WordPress plugin/theme PHP code,
   and TOCTOU race patterns in option/meta locks. Use after or
   alongside wp-security-audit when reviewing complex plugins, REST
   APIs, integrations that fetch remote URLs, file processors, or any
-  code that handles uploads, archives, or self-rolled auth tokens.
+  code that handles uploads, archives, self-rolled auth tokens, remote
+  SQL/report definitions, or private plugin update channels.
 metadata:
   wp-skills-author: "Soczó Kristóf"
   wp-skills-contact: "mailto:lonsdale201@hotmail.com"
   wp-skills-plugin: "wordpress"
   wp-skills-plugin-version-tested: "6.0 - 7.0.1"
   wp-skills-php-min: "7.4"
-  wp-skills-last-updated: "2026-07-12"
+  wp-skills-last-updated: "2026-07-15"
 ---
 
 # WordPress security audit — deep checks
@@ -43,6 +44,8 @@ Trigger when the basic audit is clean but the code does any of:
 - Compares tokens, hashes, or secrets with `==` / `===` instead of
   `hash_equals`.
 - Implements its own lock / counter via `get_option` + `update_option`.
+- Uses a remote response to choose SQL, PHP/template code, callback/class names,
+  filesystem paths, redirects, or a plugin-update package URL.
 
 ## Audit checks
 
@@ -246,7 +249,17 @@ WP options have no atomic CAS. Mitigations:
 Flag the pattern, propose the lock approach. Don't claim certainty
 about race windows without dynamic testing.
 
-### 10. Direct file access guard
+### 10. Remote control-plane and executable response trust
+
+Treat remote responses as attacker-controlled data even with valid HTTPS and a
+fixed vendor. If response fields reach SQL execution, dynamic code/templates,
+capabilities, redirects, or a private update package, read
+[reference.md](reference.md#remote-control-plane-and-executable-response-trust)
+and trace the complete control-plane chain. Keep executable policy local and
+versioned; accept only a small allowlisted ID plus schema-validated parameters.
+Apply `wp-http-api-client` for transport, size, redirect, and test controls.
+
+### 11. Direct file access guard
 
 Top of every PHP file that has side effects on load:
 
@@ -261,9 +274,10 @@ top-level (most class files are fine). Flag explicitly for files in
 ## Severity guide
 
 Same as `wp-security-audit`. Object injection, SSRF on internal
-network, RCE via include, ZipSlip → HIGH. CSRF on admin GET
-typically HIGH (any logged-in admin clicking a link). TOCTOU,
-timing → MEDIUM unless directly exploitable.
+network, RCE via include, ZipSlip → HIGH. A remote-control-plane chain that can
+install PHP or execute unrestricted database statements can be CRITICAL when
+its stated trigger is realistic. CSRF on admin GET typically HIGH (any logged-in
+admin clicking a link). TOCTOU, timing → MEDIUM unless directly exploitable.
 
 ## Report format
 
@@ -284,7 +298,9 @@ findings into a single report grouped by severity, not by skill.
 
 - Cryptographic protocol correctness (custom JWT, signing schemes).
 - Business-logic IDOR beyond capability/ownership checks.
-- Third-party dependency CVEs (run `composer audit`).
+- Third-party dependency CVEs and manually bundled libraries; use
+  `wp-dependency-security-audit` because `composer audit` alone cannot inventory
+  copied JS or manifest-less/prefixed PHP.
 - Batch retry/idempotency analysis beyond surface TOCTOU patterns.
 - Server hardening (open_basedir, disable_functions, file perms).
 

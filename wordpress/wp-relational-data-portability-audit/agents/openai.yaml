@@ -1,0 +1,4 @@
+interface:
+  display_name: "WordPress Relational Data Portability Audit"
+  short_description: "Audit safe custom-table export, import, and deletion"
+  default_prompt: "Use $wp-relational-data-portability-audit to review this WordPress custom-table export, import, restore, or range-deletion workflow for integrity and recovery risks."
