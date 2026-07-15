@@ -2,6 +2,40 @@
 
 This collection is continuously evolving — entries are date-based, not version-tagged. New skills land when they're ready; updates go in when they cover real ground (a new release of an upstream plugin, a verified misconception, a corrected example).
 
+## 2026-07-15 (wordpress: dependency + data-portability audits, remote control-plane trust)
+
+A coherent batch of two new `wordpress/` audit skills plus five updates, all pulling in one direction: **treat what crosses a trust boundary — a bundled dependency, a remote response, an anonymous beacon, an imported backup, a "paid" page — as untrusted until proven otherwise.**
+
+### Added — `wordpress/wp-dependency-security-audit`
+
+Audit third-party PHP & JavaScript that ships inside a plugin/theme — the code `composer audit` alone can't see. Inventories every production dependency with explicit **exact / inferred / unknown** version confidence (copied minified browser libs, PHP-Scoper/prefixed namespaces, CDN assets, manifest-less forks), uses package-manager audits as *one* input, verifies affected/fixed ranges against current **primary upstream advisories** (not just an aggregator or a repo Security tab returning "none"), then traces reachability — is the affected code loaded, is the vulnerable API called, can attacker-controlled input shape the vulnerable argument — so an *affected version* is never silently promoted to a *confirmed exploit*. Ships a severity guide, SBOM/loading controls (SRI + fixed CDN origins, no dynamic executable updates), false-positive guards, and a report format that keeps "version affected" and "exploit confirmed" as separate fields. Cross-refs `wp-security-deep`, `wp-http-api-client`, `wp-file-upload-security`.
+
+### Added — `wordpress/wp-relational-data-portability-audit`
+
+Audit custom-table export / import / restore / merge / range-deletion for **relational integrity and the recovery contract** — not merely emitting syntactically valid SQL. Core invariant: every exported/imported/retained child and shared dimension still refers to the same logical object, or the operation fails visibly before commit. Covers root selection + dependency closure (don't independently date-filter each related table), why raw auto-increment IDs + `INSERT IGNORE` silently bind children to the wrong parent in a non-empty target and lose rows, source→target ID remapping scoped to the operation, versioned self-describing manifests with counts/digests (a checksum beside attacker-controlled content is corruption detection, not authenticity), validate-and-stage-before-commit, shared-dimension preservation during range deletion (`NOT EXISTS` over `NOT IN`), streaming + decompressed-size caps, and a 10-case verification matrix. Cross-refs `wp-batch-mutation-audit`, `wp-database-performance-audit`, `wp-file-upload-security`.
+
+### Updated — `wordpress/wp-security-deep` (+ new `reference.md`)
+
+New check **#10 "Remote control-plane and executable response trust"**: a valid HTTPS host + auth does not justify executing whatever it returns. Flags remote responses that reach SQL execution, dynamic code/templates/callbacks, capabilities, redirects, or a plugin-update package. Remote-generated SQL isn't made safe by `$wpdb->prepare()` around local placeholders — it hands the DB user's full statement authority to the vendor, and `get_results()` doesn't enforce read-only. Keep executable policy local and versioned; accept only an allowlisted ID + schema-validated params. Private updates need independent metadata/package host validation plus a signature/digest rooted outside the same mutable response. Severity guide gains a **CRITICAL** tier for a realistic remote-control-plane chain that can install PHP or run unrestricted DB statements. The detailed trace/remediation/tests moved into a new `reference.md` (progressive disclosure), and the dependency-CVE "out of scope" note now points at `wp-dependency-security-audit`.
+
+### Updated — `wordpress/wp-http-api-client`
+
+New section **"Keep executable policy out of remote responses"**: classify every response field as data vs control-plane input; a fixed HTTPS host doesn't let a response supply SQL, PHP/callback/path values, an unrestricted update package URL, or an off-allowlist redirect/download host. Prefer a small remote vocabulary (`report_id` + typed params) mapped to local code after strict validation. Adds a test hook for injecting syntactically valid but malicious control fields and a critical-rule line; cross-refs `wp-security-deep` for rating the full chain.
+
+### Updated — `wordpress/wp-rest-api`
+
+New section **"Audit public telemetry and ingestion routes as resource APIs"**: an intentionally-public analytics beacon can still be an IDOR or DoS primitive. Bound raw body bytes and per-request fan-out (dimension get-or-create, per-element inserts, goal eval, email, outbound HTTP all belong to the anonymous request's cost — queue the slow parts), schema every nested value with realistic caps (a 1–2 MiB JSON limit is far too generous for a few metrics), never accept a sequential record ID as proof of ownership (opaque token or server-resolved session + `WHERE id = ? AND session_id = ?`), and return deterministic `400/413/422/429` instead of PHP warnings/5xx.
+
+### Updated — `wordpress/wp-privacy-personal-data`
+
+Two additions. **"Verify the collection boundary"**: capture personal data only after the host workflow has established the event is valid — early hooks (`rest_request_before_callbacks`, priority-0 `wp_ajax_nopriv_*`) run before the target's permission/nonce/spam/business checks, and sanitization doesn't turn a failed submission into a valid collection event. **Re-identification closure**: erase the whole graph, not just the primary row — crosswalk/profile rows keyed by cookie/session/fingerprint/hash let a secondary table re-attach the same browser on its next visit; derive erasure fields from the same versioned registry every integration writes through. Verification matrix extended to 10 cases.
+
+### Updated — `woocommerce/wc-order-lifecycle-and-items`
+
+New section **"Model paid business events separately from page and status events"**: `woocommerce_thankyou` proves a receipt page rendered, not that payment captured; `woocommerce_new_order` isn't a stable Purchase event. For a paid conversion, key off `woocommerce_payment_complete` / `woocommerce_order_payment_status_changed`, load the order fresh and verify `is_paid()`, claim a durable versioned event (`order:{id}:purchase:v1`) before enqueueing remote work, and pass the same key as a provider idempotency field. A unique insert / `INSERT IGNORE` only dedupes if the downstream action fires **only when this invocation created the row** — firing `do_action()`/a remote call after a no-op insert bypasses dedup. Refunds/cancellations/renewals are separate versioned events, not replays of the initial Purchase.
+
+Domain + root README rows and the skill counter (200 → 202) updated; `skills-index.json` regenerated. Plugin count unchanged (both new skills are WordPress core).
+
 ## 2026-07-14 (dev-tooling: local Docker environments)
 
 ### Added — `dev-tooling/wp-env-local-dev` and `dev-tooling/wp-docker-compose-stack`

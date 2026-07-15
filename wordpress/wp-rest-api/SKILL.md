@@ -3,7 +3,8 @@ name: wp-rest-api
 description: Scaffold and audit inbound custom WordPress REST API endpoints
   registered with register_rest_route on rest_api_init. Covers explicit
   permission_callback intent, public-route review, object-level authorization,
-  request-source precedence, args/JSON Schema validation and sanitization,
+  public telemetry/beacon abuse budgets, request-source precedence,
+  args/JSON Schema validation and sanitization,
   WP_REST_Controller resources, bounded pagination and filters,
   WP_REST_Response/WP_Error contracts, register_rest_field, cookie auth with
   X-WP-Nonce, and REST vs admin-ajax decisions. Use for endpoint implementation,
@@ -17,7 +18,7 @@ metadata:
   wp-skills-plugin: "wordpress"
   wp-skills-plugin-version-tested: "6.0 - 7.0.1"
   wp-skills-php-min: "7.4"
-  wp-skills-last-updated: "2026-07-13"
+  wp-skills-last-updated: "2026-07-15"
 ---
 
 # WordPress REST API: scaffold, review, secure
@@ -158,6 +159,37 @@ permission layer unless another layer or the main callback denies it.
 For a public form, login, webhook, or callback route, verify the complete abuse
 policy: bounded input, rate/resource limits, signature or token rules where
 applicable, replay handling, and non-enumerating responses.
+
+### Audit public telemetry and ingestion routes as resource APIs
+
+An analytics beacon can be intentionally public and still expose an IDOR or
+denial-of-service primitive. Review the complete per-request work budget, not
+only `permission_callback`.
+
+- Bound raw body bytes before expensive decoding where the application can do
+  so; also enforce infrastructure/WAF limits because PHP receives the request
+  after the web server.
+- Give every nested string/number/array a schema. Use `maxLength`, numeric
+  bounds, `maxItems`, accepted keys, and a custom depth/node budget when core's
+  schema cannot express it. A 1–2 MiB JSON cap is usually far too generous for
+  a beacon that should contain a few metrics.
+- Count fan-out through hooks: dimension get-or-create queries, inserts per
+  array element, goal evaluation, email, and outbound HTTP all belong to the
+  anonymous request's cost. Queue slow or retriable remote delivery.
+- Do not accept a sequential record ID as proof that an anonymous client owns
+  the record. Return an opaque random/signed token or bind the record to a
+  server-resolved session, then update with both resource and owner predicates
+  such as `WHERE id = ? AND session_id = ?`.
+- Rate-limit and quota by a proxy-safe identity, but keep storage and fan-out
+  bounded even when attackers rotate IPs/cookies. Rate limiting is not a
+  substitute for ownership or idempotency.
+- Return deterministic `400`, `413`, `422`, and `429` errors. Malformed JSON or
+  a scalar root must not fall through into PHP warnings/5xx responses.
+
+Test cross-session record updates, replayed tokens, maximum and maximum+1 array
+sizes, oversized/deep bodies, concurrent first beacons, and repeated requests
+with outbound integrations enabled. Assert a documented upper bound on local
+queries/writes and zero synchronous third-party calls on the public hot path.
 
 ### Declare and enforce the input contract
 

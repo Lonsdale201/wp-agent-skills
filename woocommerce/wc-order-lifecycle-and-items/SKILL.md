@@ -1,13 +1,20 @@
 ---
 name: wc-order-lifecycle-and-items
-description: Work safely with WooCommerce order statuses, payment completion, status hooks, order items, line-item meta, totals, and stock side effects. Covers `payment_complete()` vs `update_status()`, `woocommerce_order_status_*` hook ordering and args, `woocommerce_order_status_changed`, `woocommerce_order_payment_status_changed`, `WC_Order_Item_Product`, `add_item()`, `calculate_totals()`, stock reduction/restoration hooks, HPOS-safe CRUD, and why not to instantiate base `WC_Order_Item`. Use when reacting to orders, adding/editing items, changing statuses, provisioning, fulfillment, stock logic, or debugging paid orders that skipped lifecycle side effects.
+description: Work safely with WooCommerce order statuses, payment completion,
+  status hooks, order items, line-item meta, totals, stock side effects, and paid
+  analytics/conversion idempotency. Covers `payment_complete()` vs
+  `update_status()`, status-hook ordering, `woocommerce_thankyou` vs paid events,
+  replay-safe external side effects, concrete order-item classes, totals,
+  HPOS-safe CRUD, and stock handling. Use when reacting to orders, changing
+  statuses/items, provisioning, fulfillment, stock logic, external conversion
+  events, or debugging paid orders that skipped lifecycle side effects.
 metadata:
   wp-skills-author: "Soczó Kristóf"
   wp-skills-contact: "mailto:lonsdale201@hotmail.com"
   wp-skills-plugin: "woocommerce"
   wp-skills-plugin-version-tested: "10.9.4"
   wp-skills-php-min: "7.4"
-  wp-skills-last-updated: "2026-07-10"
+  wp-skills-last-updated: "2026-07-15"
 ---
 
 # WooCommerce order lifecycle and items
@@ -96,6 +103,37 @@ add_action(
 
 Do not perform slow API calls directly inside status hooks. Enqueue a job and make the job idempotent.
 
+## Model paid business events separately from page and status events
+
+`woocommerce_thankyou` proves that a receipt/order-received page rendered. It
+does not prove capture or payment: the order can be pending, on-hold, failed
+later, or the page can be refreshed. Likewise, `woocommerce_new_order` is not a
+stable Purchase event and can run before every downstream integration has the
+final item snapshot it expects.
+
+For a paid conversion, start from WooCommerce's payment lifecycle:
+
+- prefer `woocommerce_payment_complete` when the gateway follows the canonical
+  API, or `woocommerce_order_payment_status_changed` for the pending/failed to
+  paid transition;
+- load the order fresh and verify `is_paid()`/date paid plus the product's
+  accepted status policy;
+- claim a durable logical event such as `order:{id}:purchase:v1` before enqueueing
+  the remote job; status hooks can replay after manual transitions and retries;
+- pass the same operation key to a provider idempotency field/header and retain
+  reconciliation state when the provider cannot enforce it.
+
+A unique insert or `INSERT IGNORE` is only useful if downstream actions are
+emitted **only when this invocation created the event**. Calling `do_action()`
+or a remote API unconditionally after a duplicate/no-op insert bypasses local
+deduplication. Keep local claim, queue creation, remote delivery, and completion
+states explicit.
+
+Model refund, cancellation, and Subscriptions renewal payments as separate
+versioned business events. Do not infer them by replaying the initial Purchase.
+Test pending/on-hold, processing, completed, failed, thank-you refresh, manual
+status reversal, webhook retry, partial/full refund, and renewal orders.
+
 ## Order creation hooks
 
 `woocommerce_new_order` is not a universal "checkout just started" hook. Since WC 10.8 the CPT and HPOS stores skip normal new-order behavior for draft/new/checkout-draft transitions and fire it when the order becomes non-draft. For checkout-specific behavior, use checkout hooks such as `woocommerce_checkout_order_created` or `woocommerce_checkout_order_processed`.
@@ -180,6 +218,10 @@ Do not use `get_post_meta()`, `update_post_meta()`, `WP_Query` over `shop_order`
 - Using `update_status( 'completed' )` as a payment success replacement for `payment_complete()`.
 - Passing `wc-processing` to object methods that expect unprefixed statuses.
 - Running slow fulfillment/API calls directly inside order status hooks.
+- Treating `woocommerce_thankyou`, checkout completion, or order creation as
+  proof of successful payment/Purchase.
+- Deduplicating a local row but firing the conversion action even when the
+  insert was a duplicate/no-op.
 - Instantiating `WC_Order_Item` instead of `WC_Order_Item_Product`, `WC_Order_Item_Fee`, `WC_Order_Item_Shipping`, `WC_Order_Item_Coupon`, or `WC_Order_Item_Tax`.
 - Editing items and forgetting `calculate_totals()` and `save()`.
 - Calling stock reduction manually after WooCommerce already did it.
