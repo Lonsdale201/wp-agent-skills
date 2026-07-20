@@ -4,7 +4,7 @@ This collection is continuously evolving — entries are date-based, not version
 
 ## 2026-07-20 (docs + CI: woocommerce structure row, GitHub Actions bumps)
 
-Root README `Repository structure` table: the `woocommerce/` row now names the extension families that live under the domain — WooCommerce Subscriptions (`wcs-*`), WooCommerce Memberships (`wcm-*`), the WooCommerce Stripe payment gateway, and Sequential Order Numbers Pro — instead of the vague "Subscriptions, Memberships, Stripe, etc.". The folder layout is unchanged; only the domain description reads more clearly. No skill content changed, so `skills-index.json` and the skill/plugin counts are untouched.
+Root README `Repository structure` table: the `woocommerce/` domain is now broken out into its own indented sub-rows — WooCommerce Subscriptions (`wcs-*`), WooCommerce Memberships (`wcm-*`), and other extensions (the Stripe gateway, Sequential Order Numbers Pro) — each linking to its section in the woocommerce domain README, instead of one flat row that buried them in prose. The folder layout is unchanged; no skill content changed, so `skills-index.json` and the skill/plugin counts are untouched.
 
 CI maintenance: the GitHub Actions in `.github/workflows/` are bumped to their current majors — `actions/checkout` v4 → v7, `actions/setup-node` v4 → v7, `actions/github-script` v7 → v9 (the pending Dependabot proposals, applied directly on `main` since `contrib` had drifted out of sync). `contrib` was re-synced to `main` afterward.
 
