@@ -19,6 +19,8 @@ Use this skill when account markup or custom code can affect adding, listing, de
 
 Do not rebuild Stripe Elements markup or submit raw card data to WordPress. Keep `$gateway->payment_fields()` and let Stripe.js own payment details. WordPress receives only provider identifiers such as `seti_...` and `pm_...`.
 
+This skill covers saving without a purchase on the My Account Add payment method screen. A SetupIntent creates no charge. For checkout that takes an initial payment and saves the same reusable method for installments or other future off-session charges, use `wc-stripe-future-payments`; for a custom Checkout Block gateway adapter, also use `wc-checkout-block-payment-method`.
+
 Stripe 10.8.4 uses `WC_Stripe_UPE_Payment_Gateway` as the main `stripe` gateway. `WC_Gateway_Stripe` is only a deprecated compatibility subclass. Optimized Checkout is deliberately disabled on Add payment method and Subscriptions Change payment method pages; those pages use the standard UPE flow. Express Checkout on a subscription change-payment page is a separate Stripe 10.8+ feature covered by `wc-stripe-subscriptions`.
 
 ## Canonical Woo form
@@ -146,6 +148,8 @@ Adding a token and changing a subscription's payment method are different operat
 ## Cross-references
 
 - Use `wc-payment-tokens` for provider-neutral Woo token storage and ownership rules.
+- Use `wc-stripe-future-payments` for charge-now-and-save, later off-session PaymentIntents, consent, SCA recovery, and installment scheduling.
+- Use `wc-checkout-block-payment-method` for a custom payment method's Blocks PHP/JavaScript adapter.
 - Use `wc-stripe-link-payments` for native Link versus Link-wallet card tokens, consent, and remote reconciliation.
 - Use `wc-stripe-subscriptions` for renewals, payment-method changes, SCA, and Express Checkout on subscriptions.
 - Use `wc-stripe-webhooks` for webhook validation, deferred settlement, and order-state hooks.

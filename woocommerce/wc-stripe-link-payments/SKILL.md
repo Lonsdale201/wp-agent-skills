@@ -78,7 +78,7 @@ Use `get_type()` and capabilities such as `method_exists()` before type-specific
 
 ## Let the gateway create tokens
 
-For Add payment method, checkout, or subscription changes, preserve the plugin's Payment Element/SetupIntent flow. It retrieves the final Stripe PaymentMethod, selects its method handler, and creates the matching Woo token:
+Preserve the plugin's Payment Element and intent orchestration. Add payment method and subscription change-payment use SetupIntents because they save without taking a purchase payment; normal paid checkout uses a PaymentIntent and, when future reuse is required and supported, `setup_future_usage=off_session`. The gateway retrieves the final Stripe PaymentMethod, selects its method handler, and creates the matching Woo token:
 
 - native Link stores `link.email` and the PaymentMethod ID;
 - card stores safe card display fields and fingerprint;

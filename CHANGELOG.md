@@ -2,6 +2,24 @@
 
 This collection is continuously evolving — entries are date-based, not version-tagged. New skills land when they're ready; updates go in when they cover real ground (a new release of an upstream plugin, a verified misconception, a corrected example).
 
+## 2026-07-20 (woocommerce: Checkout Block payment methods + Stripe future payments)
+
+A second WooCommerce batch — two new skills plus six cross-linking updates — closing the Blocks and off-session gaps around the payment skills. Verified against WooCommerce 10.9.4 (Stripe Gateway 10.8.4).
+
+### Added — `woocommerce/wc-checkout-block-payment-method`
+
+Build or audit a Checkout Block payment-method integration as an adapter around a gateway, not a replacement for it. Keeps four layers separate — `WC_Payment_Gateway` (settings/validation/server calls/classic checkout), the `AbstractPaymentMethodType` PHP adapter (registers Block assets + exposes non-secret settings), the JS `registerPaymentMethod()` UI (renders, reports availability, prepares opaque payment data, handles SDK events), and Store API processing — and insists one stable identifier ties `$id` / `$name` / `name` / `paymentMethodId` together. Covers `onPaymentSetup` (not the deprecated `onPaymentProcessing`, and always returning the unsubscribe fn), the two server paths (return `paymentMethodData` to reuse `process_payment()` via the legacy bridge, or own processing through `woocommerce_rest_checkout_process_payment_with_context` with `PaymentContext`/`PaymentResult` — never charge in both), client-secret/SDK confirmation via `PaymentResult::payment_details` + `onCheckoutSuccess`, `savedTokenComponent` receiving a local Woo token ID (resolve/verify server-side), and a classic-vs-Block audit matrix. Cross-refs `wc-payment-gateway`, `wc-store-api`, `wc-payment-tokens`, and the two Stripe skills.
+
+### Added — `woocommerce/wc-stripe-future-payments`
+
+Design or audit Stripe flows that save a reusable method and charge it later, treating save / charge-now / charge-later as three distinct operations with explicit owners. Corrects the common "a SetupIntent also takes the first payment" error: a SetupIntent never charges — use a PaymentIntent with `setup_future_usage=off_session` for charge-and-save, or a SetupIntent followed by separate PaymentIntents. Covers later off-session PaymentIntents (`off_session=true`, `confirm=true`) with idempotency keyed on an immutable installment record (not a timestamp), explicit consent/mandate snapshots, the `wc_stripe_force_save_payment_method` filter (fires with and without an order ID; hiding the save checkbox is itself treated as forced-save; refuses logged-out users), the guest→Customer first-purchase problem, a Woo-accounting model so the Stripe amount and order/refund records agree, SCA-recovery as a normal state, Woo token polymorphism (Link/card/debit — classify by provider type, not ID prefix), and a review checklist. Cross-refs the add-payment-method, Link, webhooks, Action Scheduler, and Subscriptions skills.
+
+### Updated — six payment skills (cross-linking + boundaries)
+
+`wc-payment-gateway`, `wc-store-api`, `wc-stripe-add-payment-method`, `wc-stripe-link-payments`, `wc-stripe-subscriptions`, and `wc-stripe-webhooks` now point at the two new skills and sharpen the boundaries between them — the classic gateway vs the Blocks adapter (`AbstractPaymentMethodType` + `registerPaymentMethod()`), and SetupIntent (save-only) vs PaymentIntent + `setup_future_usage` (charge-and-save). Date bumps to 2026-07-20; `wc-stripe-webhooks` to Stripe Gateway 10.8.4.
+
+Domain + root README rows and the skill counter (205 → 207) updated; `skills-index.json` regenerated (each new skill ships a `references/` file). Plugin count unchanged at 29. The two new skills' `wp-skills-author` was normalized to the canonical accented "Soczó Kristóf".
+
 ## 2026-07-20 (woocommerce: Stripe Link + polymorphic payment tokens, coupon & download skills)
 
 A WooCommerce batch — three new skills plus five updates — converging on two themes: **stop assuming every saved payment method is a card**, and **keep coupon / download definition, entitlement, and delivery as separate layers**. Verified against WooCommerce 10.9.4 (Stripe Gateway 10.8.4).
