@@ -1,18 +1,18 @@
 ---
 name: lw-lms-wp-cli-operations
-description: Use the LW LMS v1.5.1 operational WP-CLI commands added in v1.4.0. Covers `wp lw-lms course create|list|delete|set-section`, `wp lw-lms lesson create|list|assign`, `wp lw-lms enroll`, `wp lw-lms revoke`, `wp lw-lms force-complete`, argument resolution by ID/slug/login/email, enrollment hook side effects, progress hook side effects, and common CLI footguns.
+description: Use the LW LMS v1.6.0 operational WP-CLI commands added in v1.4.0. Covers `wp lw-lms course create|list|delete|set-section`, `wp lw-lms lesson create|list|assign`, `wp lw-lms enroll`, `wp lw-lms revoke`, `wp lw-lms force-complete`, argument resolution by ID/slug/login/email, enrollment/progress hook side effects, source-scoped revocation limitations, and common CLI footguns.
 metadata:
   wp-skills-author: "Soczó Kristóf"
   wp-skills-contact: "mailto:lonsdale201@hotmail.com"
   wp-skills-plugin: "lw-lms"
-  wp-skills-plugin-version-tested: "1.5.1"
-  wp-skills-php-min: "8.1"
-  wp-skills-last-updated: "2026-06-15"
+  wp-skills-plugin-version-tested: "1.6.0"
+  wp-skills-php-min: "8.2"
+  wp-skills-last-updated: "2026-07-20"
 ---
 
 # LW LMS: WP-CLI operations
 
-Use this for the day-to-day LW LMS WP-CLI commands introduced in v1.4.0 and verified against local lw-lms **v1.5.1**. This is not the LearnDash migration command; use `lw-lms-learndash-migration` for `wp lw-lms migrate-learndash`.
+Use this for the day-to-day LW LMS WP-CLI commands introduced in v1.4.0 and verified against local lw-lms **v1.6.0**. v1.6.0 did not add a CLI command or option. This is not the LearnDash migration command; use `lw-lms-learndash-migration` for `wp lw-lms migrate-learndash`.
 
 ## When to use this skill
 
@@ -183,6 +183,19 @@ wp lw-lms revoke alice 42
 
 This calls `AccessRepository::revoke( $user_id, $course_id )`. It flips the first matching active row to `status='revoked'` and fires `lw_lms_after_revoke` only when a row was changed. If there is no active row, the command warns and exits without an error.
 
+v1.6.0 added `AccessRepository::revoke_by_source()` to the PHP API, but this CLI command still has no `--source` or `--source-id` option and still calls the broad `revoke()`. For an integration-owned grant, use PHP and pass both the expected source and its stable external source ID:
+
+```php
+AccessRepository::revoke_by_source(
+    $user_id,
+    $course_id,
+    'my_integration',
+    $external_access_id
+);
+```
+
+Omitting the fourth argument revokes all active rows for that source on the user/course, not only rows whose `source_id` is null.
+
 Runtime subscription, membership, or legacy purchase access has no stored row to revoke. Revoke the upstream WooCommerce entitlement or change course meta if access comes from those live checks.
 
 ## Force-complete
@@ -209,7 +222,8 @@ This command does not enroll the user. It only writes progress.
 - This skill does not cover `wp lw-lms migrate-learndash`; use `lw-lms-learndash-migration`.
 - `course set-section` and `lesson assign` are separate operations. A section existing on the course does not automatically move lessons.
 - `enroll` writes an access row and fires access hooks; subscription/membership live access does not.
-- `revoke` only revokes stored access rows, not live subscription or membership entitlement.
+- `revoke` changes only the first stored active row regardless of source; it does not expose the v1.6.0 source-scoped PHP API.
+- Neither CLI nor PHP stored-row revocation removes live subscription, membership, or legacy-purchase entitlement.
 - `force-complete` writes progress, not access.
 - There is no dry-run flag for these operational commands.
 - Use `--format=json` or `--format=ids` for scripts instead of parsing table output.

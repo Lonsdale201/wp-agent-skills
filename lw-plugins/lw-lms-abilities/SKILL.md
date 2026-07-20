@@ -1,13 +1,13 @@
 ---
 name: lw-lms-abilities
-description: Consumer and reviewer reference for LW LMS Abilities API registrations in lw-lms v1.5.1. Use when calling or auditing `lw-lms/list-courses`, `lw-lms/get-course`, `lw-lms/get-progress`, `lw-lms/set-progress`, `lw-lms/get-options`, `/wp-json/wp-abilities/v1/abilities/lw-lms/.../run`, Site Manager bridge integration, standalone WP 6.9+ Abilities API fallback, ability `input_schema` / `output_schema`, or AI-agent access to LMS course/progress data.
+description: Consumer and reviewer reference for LW LMS Abilities API registrations in lw-lms v1.6.0. Use when calling or auditing `lw-lms/list-courses`, `lw-lms/get-course`, `lw-lms/get-progress`, `lw-lms/set-progress`, `lw-lms/get-options`, `/wp-json/wp-abilities/v1/abilities/lw-lms/.../run`, Site Manager bridge integration, standalone WP 6.9+ Abilities API fallback, ability `input_schema` / `output_schema`, or AI-agent access to LMS course/progress data.
 metadata:
   wp-skills-author: "Soczó Kristóf"
   wp-skills-contact: "mailto:lonsdale201@hotmail.com"
   wp-skills-plugin: "lw-lms"
-  wp-skills-plugin-version-tested: "1.5.1"
-  wp-skills-php-min: "8.1"
-  wp-skills-last-updated: "2026-06-15"
+  wp-skills-plugin-version-tested: "1.6.0"
+  wp-skills-php-min: "8.2"
+  wp-skills-last-updated: "2026-07-20"
 ---
 
 # LW LMS Abilities API
@@ -26,7 +26,7 @@ Trigger this skill when ANY of the following is true:
 
 ## Verified registration model
 
-LW LMS v1.5.1 registers abilities in two modes. The v1.4.0 WP-CLI/settings work and the v1.5.0 WooCommerce Memberships access work did not add new `lw-lms/*` abilities.
+LW LMS v1.6.0 registers abilities in two modes. The v1.4.0 WP-CLI/settings work, v1.5.0 WooCommerce Memberships access, and v1.6.0 access-filter/source-revocation changes did not add or change any `lw-lms/*` ability.
 
 1. Site Manager bridge: hooks `lw_site_manager_register_categories` and `lw_site_manager_register_abilities`, receives the Site Manager `PermissionManager`, and registers into category `lms`.
 2. Standalone fallback: hooks `wp_abilities_api_categories_init` and `wp_abilities_api_init` at priority 20. `did_action()` guards prevent duplicate registration when Site Manager is active.

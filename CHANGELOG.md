@@ -2,6 +2,28 @@
 
 This collection is continuously evolving — entries are date-based, not version-tagged. New skills land when they're ready; updates go in when they cover real ground (a new release of an upstream plugin, a verified misconception, a corrected example).
 
+## 2026-07-20 (lw-plugins: LW LMS v1.6.0 — paid-access filter + source-scoped revocation)
+
+The five `lw-plugins/` LW LMS skills, refreshed for local lw-lms **v1.6.0** (minimum PHP now **8.2**). The release does not add REST routes, JSON schemas, WP-CLI commands, or abilities — it changes the server-side paid-course access decision and adds a source-scoped stored-access revoke to the PHP API. Two of the skills were also split for progressive disclosure.
+
+### Updated — `lw-plugins/lw-lms-backend-extend` (+ new `references/backend-contract-details.md`)
+
+Corrects the earlier v1.5.1 "critical correction" that said `lw_lms_has_course_access` was unreachable for normal paid courses. In v1.6.0 the filter is the **final logged-in paid-course decision**, reached after the complete built-in cascade (access rows → parent subscriptions → variation subscriptions → WooCommerce Memberships → legacy purchases), so a callback can grant *or* deliberately deny — but `open`, `free`, and anonymous paths still return before it, and `CourseTransformer::transform_full()` calls the check twice, so callbacks must stay deterministic and side-effect-free. Adds `AccessRepository::revoke_by_source( $user_id, $course_id, $source, $source_id )` for revoking only an integration-owned grant (the broad `revoke()` still flips the first active row regardless of source; a null `$source_id` revokes every active row for that source). `lw_lms_after_revoke` now also fires once after a successful `revoke_by_source()`. The plugin identity, data model, full public PHP API, settings-tab integration, and expanded wrong/right examples moved into a new `references/backend-contract-details.md`; the access-decision model, hooks, workflows, and critical rules stay in `SKILL.md`.
+
+### Updated — `lw-plugins/lw-lms-rest-frontend` (+ new `references/rest-response-contract.md`)
+
+No route or JSON-schema change. Documents that a server-side `lw_lms_has_course_access` callback can now change the final logged-in paid-course access decision, which flows through `access.has_access`, lesson accessibility, lesson detail, progress writes, attachments, and protected downloads — the client must keep trusting the server response and never reproduce entitlement rules in JavaScript, and a non-deterministic backend callback can make `access.has_access` disagree with lesson/attachment gating in one response (the full-course transformer checks access twice). The request parameters, full JSON shapes, nullable fields, lesson errors, progress validation, and binary downloads moved into a new `references/rest-response-contract.md`; routes, auth, access decisions, and client safety rules stay in `SKILL.md`.
+
+### Updated — `lw-plugins/lw-lms-wp-cli-operations`
+
+The v1.6.0 `AccessRepository::revoke_by_source()` is **PHP-only**: the `wp lw-lms revoke` command still calls the broad `revoke()`, still changes the first active row regardless of source, and exposes no `--source` / `--source-id` selector. Adds the PHP example for source-scoped revocation and clarifies that neither CLI nor PHP stored-row revocation removes live subscription, membership, or legacy-purchase entitlement.
+
+### Updated — `lw-plugins/lw-lms-abilities` and `lw-plugins/lw-lms-learndash-migration`
+
+Version/PHP/date refresh to v1.6.0 / PHP 8.2. The v1.6.0 access-filter and source-revocation work added or changed **no** `lw-lms/*` ability and did **not** alter the `wp lw-lms migrate-learndash` flow; both notes now say so explicitly.
+
+`lw-plugins/` domain README rows updated to v1.6.0; `skills-index.json` regenerated (the two new `references/` files register as bundled resources). Skill and plugin counts unchanged — all five are updates, no new skills.
+
 ## 2026-07-15 (wordpress: dependency + data-portability audits, remote control-plane trust)
 
 A coherent batch of two new `wordpress/` audit skills plus five updates, all pulling in one direction: **treat what crosses a trust boundary — a bundled dependency, a remote response, an anonymous beacon, an imported backup, a "paid" page — as untrusted until proven otherwise.**
