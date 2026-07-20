@@ -1,0 +1,4 @@
+interface:
+  display_name: "WordPress HTTP API Client"
+  short_description: "Build safe outbound HTTP integrations"
+  default_prompt: "Use $wp-http-api-client to implement or audit this WordPress outbound HTTP integration."

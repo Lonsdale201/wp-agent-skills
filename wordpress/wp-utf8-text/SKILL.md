@@ -7,14 +7,13 @@ description: Handle UTF-8 and text encoding safely in WordPress plugins,
   behavior; XML/JSON/feed/export boundaries; and avoiding data loss from
   premature replacement. Use when processing imported text, CSV, XML, feeds,
   email, REST payloads, AI prompts, logs, filenames, or external API data.
-author: Soczó Kristóf
-contact: mailto:lonsdale201@hotmail.com
-plugin: wordpress
-plugin-version-tested: "6.9 - 6.9.4"
-php-min: "7.4"
-last-updated: "2026-04-29"
-docs:
-  - https://make.wordpress.org/core/2025/11/18/modernizing-utf-8-support-in-wordpress-6-9/
+metadata:
+  wp-skills-author: "Soczó Kristóf"
+  wp-skills-contact: "mailto:lonsdale201@hotmail.com"
+  wp-skills-plugin: "wordpress"
+  wp-skills-plugin-version-tested: "6.9 - 7.0.1"
+  wp-skills-php-min: "7.4"
+  wp-skills-last-updated: "2026-07-10"
 ---
 
 # WordPress UTF-8 Text Handling
@@ -80,12 +79,22 @@ $title = wp_scrub_utf8( (string) $title );
 $xml .= '<title>' . esc_xml( $title ) . '</title>';
 ```
 
-Preserve raw bytes in storage, scrub for display:
+Preserve raw bytes as an encoded forensic value, scrub only a decoded copy for
+display. Do not write invalid bytes directly to normal text meta/options: the
+database charset layer may reject, strip, or alter them.
 
 ```php
-update_post_meta( $post_id, '_myplugin_raw_payload', $payload );
+$encoded = base64_encode( $payload );
+update_post_meta( $post_id, '_myplugin_raw_payload_b64', $encoded );
 
-$safe_for_screen = wp_scrub_utf8( $payload );
+$raw = base64_decode(
+    (string) get_post_meta( $post_id, '_myplugin_raw_payload_b64', true ),
+    true
+);
+if ( false === $raw ) {
+    return new WP_Error( 'invalid_raw_payload', __( 'Stored payload is invalid.', 'myplugin' ) );
+}
+$safe_for_screen = wp_scrub_utf8( $raw );
 echo esc_html( $safe_for_screen );
 ```
 
@@ -100,6 +109,10 @@ Use it when you are already in a WordPress escaping/sanitizing path that expects
 Unicode noncharacters can be valid UTF-8 while still being inappropriate for interchange formats. Use `wp_has_noncharacters()` when producing XML, strict external API payloads, or data that will be consumed outside WordPress.
 
 ```php
+if ( ! wp_is_valid_utf8( $text ) ) {
+    return new WP_Error( 'invalid_utf8', __( 'Invalid text encoding.', 'myplugin' ) );
+}
+
 if ( wp_has_noncharacters( $text ) ) {
     return new WP_Error(
         'myplugin_noncharacter_text',
@@ -114,6 +127,8 @@ if ( wp_has_noncharacters( $text ) ) {
 - **Do not scrub identifiers.** Reject invalid bytes for slugs, tokens, IDs, and security-sensitive values.
 - **Do not scrub too early.** Replacement is lossy and may destroy useful import/debug information.
 - **Validate before serialization boundaries.** XML, JSON, feed, sitemap, and external API payloads should not receive invalid bytes.
+- **Call Unicode code-point helpers only after UTF-8 validation/scrubbing.**
+  Noncharacter checks do not replace byte-sequence validation.
 - **Remember ASCII ambiguity.** A string can be valid UTF-8 and still originate from a non-UTF-8 encoding if it contains only ASCII.
 
 ## Common mistakes
@@ -154,5 +169,5 @@ $slug = sanitize_key( $raw_slug );
 ## References
 
 - WordPress 6.9 UTF-8 dev note: <https://make.wordpress.org/core/2025/11/18/modernizing-utf-8-support-in-wordpress-6-9/>
-- UTF-8 helpers: [wp-includes/utf8.php](wp-includes/utf8.php)
-- `wp_check_invalid_utf8()` / `seems_utf8()`: [wp-includes/formatting.php](wp-includes/formatting.php)
+- UTF-8 helpers: `wp-includes/utf8.php`
+- `wp_check_invalid_utf8()` / `seems_utf8()`: `wp-includes/formatting.php`

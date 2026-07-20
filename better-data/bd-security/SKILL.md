@@ -1,6 +1,7 @@
 ---
 name: bd-security
-description: Apply better-data's security discipline when touching
+description: >-
+  Apply better-data's security discipline when touching
   Secret, EncryptionEngine, #[Sensitive], #[Encrypted],
   MetaKeyRegistry::register, RequestSource guards, or user_pass
   handling. Loud-over-silent — missing key throws, tampered ciphertext
@@ -14,24 +15,13 @@ description: Apply better-data's security discipline when touching
   Constant-time comparison — hash_equals, never == or ===. Use when
   any of those primitives is in the diff. Triggers on EncryptionEngine,
   Secret, Sensitive, Encrypted, RequestSource, BETTER_DATA_ENCRYPTION_KEY.
-author: Soczó Kristóf
-contact: mailto:lonsdale201@hotmail.com
-plugin: better-data
-plugin-version-tested: "phase-9"
-php-min: "8.3"
-last-updated: "2026-04-29"
-docs:
-  - https://github.com/lonsdale201/better-data
-source-refs:
-  - src/Secret.php
-  - src/Encryption/EncryptionEngine.php
-  - src/Attribute/Encrypted.php
-  - src/Attribute/Sensitive.php
-  - src/Registration/MetaKeyRegistry.php
-  - src/Source/RequestSource.php
-  - src/DataObject.php
-  - src/Exception/DecryptionFailedException.php
-  - src/Exception/SecretSerializationException.php
+metadata:
+  wp-skills-author: "Soczó Kristóf"
+  wp-skills-contact: "mailto:lonsdale201@hotmail.com"
+  wp-skills-plugin: "better-data"
+  wp-skills-plugin-version-tested: "phase-9"
+  wp-skills-php-min: "8.3"
+  wp-skills-last-updated: "2026-04-29"
 ---
 
 # better-data: Security-sensitive changes
@@ -219,7 +209,7 @@ public function decrypt(string $ciphertext, string $field): string
 {
     $plaintext = self::actualDecrypt($ciphertext);
     if (\defined('BETTER_DATA_DEBUG') && BETTER_DATA_DEBUG) {
-        \error_log("Decrypted {$field}: {$plaintext}");  // 🔴 plaintext to log
+        \error_log("Decrypted {$field}: {$plaintext}");  // INSECURE — plaintext to log
     }
     return $plaintext;
 }
@@ -232,7 +222,7 @@ public function decrypt(string $ciphertext, string $field): ?string
     try {
         return self::actualDecrypt($ciphertext);
     } catch (\Throwable) {
-        return null;  // 🔴 caller can't tell garbage data from missing data
+        return null;  // BUG — caller can't tell garbage data from missing data
     }
 }
 
@@ -250,7 +240,7 @@ class EncryptionEngine
 
     private static function getKey(): string
     {
-        return self::$cachedKey ??= \constant(self::CONST_PRIMARY);  // 🔴 rotation broken
+        return self::$cachedKey ??= \constant(self::CONST_PRIMARY);  // BUG — rotation broken
     }
 }
 
@@ -261,7 +251,7 @@ private static function getKey(): string
 }
 
 // WRONG — equality with ===
-if ($candidate === $secret->reveal()) {  // 🔴 timing oracle
+if ($candidate === $secret->reveal()) {  // INSECURE — timing oracle
     grant_access();
 }
 
@@ -273,7 +263,7 @@ if ($secret->equals($candidate)) {  // hash_equals under the hood
 // WRONG — relaxing __serialize to redact
 public function __serialize(): array
 {
-    return ['value' => '***'];  // 🔴 silent: caller's serialized blob looks "fine"
+    return ['value' => '***'];  // BUG — silent: caller's serialized blob looks "fine"
 }
 
 // RIGHT — throw, force explicit reveal at the call site
@@ -323,3 +313,8 @@ class AttributeDrivenHydrator {
 - `#[Sensitive]` attribute: [libraries/better-data/src/Attribute/Sensitive.php](Sensitive.php) — read by `Presenter::sensitiveFieldNames`.
 - Idempotent decrypt: [libraries/better-data/src/DataObject.php:173-184](DataObject.php) — `looksEncrypted` + `Encrypted` attribute check.
 - `MetaKeyRegistry`: [libraries/better-data/src/Registration/MetaKeyRegistry.php](MetaKeyRegistry.php) — collision throws.
+- Official documentation: <https://github.com/lonsdale201/better-data>
+- Verified source paths:
+  - `src/Source/RequestSource.php`
+  - `src/Exception/DecryptionFailedException.php`
+  - `src/Exception/SecretSerializationException.php`

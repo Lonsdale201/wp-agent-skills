@@ -14,30 +14,13 @@ description: Add a new validation rule to better-data — implement
   Uuid, Min, Max, MinLength, MaxLength, Regex, OneOf, Required,
   Callback). Triggers on creating a class implementing Rule, adding a
   new #[Rule\Foo] attribute, or extending applyRuleAttribute.
-author: Soczó Kristóf
-contact: mailto:lonsdale201@hotmail.com
-plugin: better-data
-plugin-version-tested: "phase-9"
-php-min: "8.3"
-last-updated: "2026-04-29"
-docs:
-  - https://github.com/lonsdale201/better-data
-source-refs:
-  - src/Validation/Rule.php
-  - src/Validation/Rule/Required.php
-  - src/Validation/Rule/Email.php
-  - src/Validation/Rule/Url.php
-  - src/Validation/Rule/Uuid.php
-  - src/Validation/Rule/Min.php
-  - src/Validation/Rule/Max.php
-  - src/Validation/Rule/MinLength.php
-  - src/Validation/Rule/MaxLength.php
-  - src/Validation/Rule/Regex.php
-  - src/Validation/Rule/OneOf.php
-  - src/Validation/Rule/Callback.php
-  - src/Validation/BuiltInValidator.php
-  - src/Validation/ValidationResult.php
-  - src/Internal/RestSchemaBuilder.php
+metadata:
+  wp-skills-author: "Soczó Kristóf"
+  wp-skills-contact: "mailto:lonsdale201@hotmail.com"
+  wp-skills-plugin: "better-data"
+  wp-skills-plugin-version-tested: "phase-9"
+  wp-skills-php-min: "8.3"
+  wp-skills-last-updated: "2026-04-29"
 ---
 
 # better-data: Adding a validation rule
@@ -295,7 +278,7 @@ if ($value === null) {
 // WRONG — environment reads in rules
 public function check(mixed $value, string $fieldName, DataObject $subject): ?string
 {
-    $strict = (bool) ($_ENV['STRICT_VALIDATION'] ?? false);  // 🔴 rule is no longer pure
+    $strict = (bool) ($_ENV['STRICT_VALIDATION'] ?? false);  // WRONG: rule is no longer pure
     return $strict ? $this->strictCheck($value) : $this->lenientCheck($value);
 }
 
@@ -352,3 +335,15 @@ case CreditCard::class:
 - Built-in rule directory: [libraries/better-data/src/Validation/Rule/](Rule/) — `Required`, `Email`, `Url`, `Uuid`, `Min`, `Max`, `MinLength`, `MaxLength`, `Regex`, `OneOf`, `Callback` as templates.
 - Schema mapping: [libraries/better-data/src/Internal/RestSchemaBuilder.php:220-260](RestSchemaBuilder.php) — `applyRuleAttribute` switch.
 - Validator: [libraries/better-data/src/Validation/BuiltInValidator.php](BuiltInValidator.php) — accumulates `ValidationResult` across rules.
+- Official documentation: <https://github.com/lonsdale201/better-data>
+- Verified source paths:
+  - `src/Validation/Rule/Url.php`
+  - `src/Validation/Rule/Uuid.php`
+  - `src/Validation/Rule/Min.php`
+  - `src/Validation/Rule/Max.php`
+  - `src/Validation/Rule/MinLength.php`
+  - `src/Validation/Rule/MaxLength.php`
+  - `src/Validation/Rule/Regex.php`
+  - `src/Validation/Rule/OneOf.php`
+  - `src/Validation/Rule/Callback.php`
+  - `src/Validation/ValidationResult.php`

@@ -1,37 +1,14 @@
 ---
 name: wcs-data-model-switching-gifting
-description: WooCommerce Subscriptions data model, switcher, and gifting
-  reference for exact order type names, product type slugs, subscription
-  meta keys, schedule/date keys, related-order relation meta, switch cart
-  data, switch order data, switched item types/meta, proration hooks, and
-  WCS Gifting recipient storage. Use when code reads or writes
-  shop_subscription, subscription, variable-subscription,
-  subscription_variation, _billing_period, _schedule_next_payment,
-  _subscription_switch_data, _subscription_switch, subscription_switch,
-  _switched_subscription_item_id, wcsg_gift_recipients_email,
-  _recipient_user, _recipient_user_email_address, wcsg_recipient, or when
-  an agent needs the full WooCommerce Subscriptions switcher/gifting flow.
-author: Soczo Kristof
-contact: mailto:lonsdale201@hotmail.com
-plugin: woocommerce-subscriptions
-plugin-version-tested: "8.6.0"
-php-min: "7.4"
-last-updated: "2026-05-01"
-source-refs:
-  - wp-content/plugins/woocommerce-subscriptions/includes/core/class-wc-subscriptions-core-plugin.php
-  - wp-content/plugins/woocommerce-subscriptions/includes/core/class-wc-subscription.php
-  - wp-content/plugins/woocommerce-subscriptions/includes/core/data-stores/class-wcs-subscription-data-store-cpt.php
-  - wp-content/plugins/woocommerce-subscriptions/includes/core/data-stores/class-wcs-orders-table-subscription-data-store.php
-  - wp-content/plugins/woocommerce-subscriptions/includes/core/class-wc-subscriptions-product.php
-  - wp-content/plugins/woocommerce-subscriptions/includes/core/wcs-functions.php
-  - wp-content/plugins/woocommerce-subscriptions/includes/core/wcs-switch-functions.php
-  - wp-content/plugins/woocommerce-subscriptions/includes/switching/class-wc-subscriptions-switcher.php
-  - wp-content/plugins/woocommerce-subscriptions/includes/switching/class-wcs-switch-totals-calculator.php
-  - wp-content/plugins/woocommerce-subscriptions/includes/gifting/class-wcs-gifting.php
-  - wp-content/plugins/woocommerce-subscriptions/includes/gifting/class-wcsg-product.php
-  - wp-content/plugins/woocommerce-subscriptions/includes/gifting/class-wcsg-cart.php
-  - wp-content/plugins/woocommerce-subscriptions/includes/gifting/class-wcsg-checkout.php
-  - wp-content/plugins/woocommerce-subscriptions/includes/gifting/class-wcsg-recipient-management.php
+description: WooCommerce Subscriptions data model, switching, and gifting reference for order/product types, schedule and relation storage, switch cart/order payloads, proration hooks, recipient data, and WCS 9.0 APFS plan markers. Use for shop_subscription, _schedule_next_payment, _subscription_switch_data, subscription_switch, _switched_subscription_item_id, wcsg_gift_recipients_email, _recipient_user, _wcsatt_schemes, or _wcsatt_scheme.
+metadata:
+  wp-skills-author: "Soczo Kristof"
+  wp-skills-contact: "mailto:lonsdale201@hotmail.com"
+  wp-skills-plugin: "woocommerce-subscriptions"
+  wp-skills-plugin-version-tested: "9.0.0"
+  wp-skills-woocommerce-version-tested: "10.9.4"
+  wp-skills-php-min: "7.4"
+  wp-skills-last-updated: "2026-07-10"
 ---
 
 # WooCommerce Subscriptions: data model, switching, gifting
@@ -92,6 +69,25 @@ Subscription product data lives on `product` or `product_variation` posts.
 
 Use `WC_Subscriptions_Product` helpers such as `get_price()`, `get_period()`, `get_interval()`, `get_length()`, `get_trial_length()`, `get_sign_up_fee()`, and `get_gifting()`.
 
+## APFS / Subscription Plans storage in WCS 9.0+
+
+All Products for Subscriptions is bundled into WooCommerce Subscriptions 9.0 as Subscription Plans. It can make ordinary product types behave as subscriptions through runtime meta and `woocommerce_is_subscription`.
+
+| Storage | Key | Purpose |
+|---|---|---|
+| Option | `wcsatt_subscribe_to_cart_schemes` | Storewide plan definitions. |
+| Product meta | `_wcsatt_schemes_status` | Product purchase mode: `disable`, `override`, or `inherit`. |
+| Product meta | `_wcsatt_schemes` | Product-specific custom plans in override mode. |
+| Product meta | `_wcsatt_storewide_selection_mode` | `all` or `specific` storewide plan selection. |
+| Product meta | `_wcsatt_selected_storewide_plans` | Storewide plan IDs allowed for a specific product. |
+| Product meta | `_wcsatt_force_subscription` | `yes` means disable one-time purchase when plans are active. |
+| Product meta | `_wcsatt_disabled` | Legacy one-time-only flag maintained for compatibility. |
+| Cart item data | `wcsatt_data.active_subscription_scheme` | Selected plan key, `false` for one-time, `null` for undefined/default. |
+| Order item meta | `_wcsatt_scheme` | Selected plan key persisted on order/subscription line items. |
+| Order item meta | `_wcsatt_scheme_id` | Legacy APFS plan key. |
+
+Use `WCS_ATT_Product::get_subscription_scheme_mode()`, `WCS_ATT_Product::set_subscription_scheme_mode()`, `WCS_ATT_Product_Schemes::get_subscription_schemes()`, `WCS_ATT_Cart::get_subscription_scheme()`, and `WCS_ATT_Order::get_subscription_scheme()`. Do not infer APFS plans from the native `_subscription_*` product meta table above; APFS sets WCS-compatible values as runtime meta when a scheme is active.
+
 ## Related order relation meta
 
 WCS relates ordinary orders to subscriptions with order meta and relation stores. Do not infer relation from parent ID alone.
@@ -137,98 +133,11 @@ Do not implement switching by directly calling `$subscription->remove_item()` an
 
 For read-only previews or eligibility checks, it is fine to expose custom endpoints that return allowed products, switchable item IDs, and WCS-calculated preview totals. For writes, prefer a service that uses WCS cart/checkout objects internally.
 
-## Switch cart data
+## Switch payload and extension reference
 
-The cart item key is `subscription_switch`. Typical shape:
+Cart items use `subscription_switch`; switch orders persist `_subscription_switch_data`; staged/archive items use custom `*_pending_switch`, `*_switched`, and `line_item_removed` types. These payloads include item IDs, proration results, schedule changes, coupons, fees, and shipping lines and are not a stable shortcut for direct mutation.
 
-```php
-$cart_item['subscription_switch'] = array(
-    'subscription_id'        => 123,
-    'item_id'                => 456,
-    'next_payment_timestamp' => 1770000000,
-    'upgraded_or_downgraded' => 'upgraded', // or downgraded/crossgraded, after calculation
-    'first_payment_timestamp' => 1771000000, // after proration calculation
-    'end_timestamp'          => 1780000000, // when length changes
-    'recurring_payment_prorated' => true,
-    'force_payment'          => true,
-);
-```
-
-`item_id` is the subscription line item being replaced. When adding an item to a subscription without replacing one, `item_id` can be empty and `wcs_cart_contains_switches( 'add' )` is relevant.
-
-## Switch order data
-
-Switch orders store `subscription_switch_data`, persisted as `_subscription_switch_data` on the order. Shape by subscription ID:
-
-```php
-$switch_data[ $subscription_id ] = array(
-    'switches' => array(
-        $switch_order_item_id => array(
-            'remove_line_item'  => 456,
-            'add_line_item'     => 789,
-            'switch_direction'  => 'upgrade',
-        ),
-    ),
-    'billing_schedule' => array(
-        '_billing_period'   => 'month',
-        '_billing_interval' => 1,
-    ),
-    'dates' => array(
-        'update' => array(
-            'next_payment' => '2026-06-01 00:00:00',
-            'trial_end'    => 0,
-            'end'          => '2027-06-01 00:00:00',
-        ),
-        'delete' => array( 'trial_end' ),
-    ),
-    'coupons'             => array( 111 ),
-    'fee_items'           => array( 222 ),
-    'shipping_line_items' => array( 333 ),
-);
-```
-
-WCS can cancel older unpaid switch orders for the same subscription when a new switch order is created.
-
-## Switched item types and meta
-
-WCS uses custom order item types during and after switch execution.
-
-| Item type | Meaning |
-|---|---|
-| `line_item_pending_switch` | New line item staged on a subscription before switch completion. |
-| `line_item_switched` | Old subscription line item archived after replacement. |
-| `line_item_removed` | Removed subscription line item. |
-| `coupon_pending_switch`, `fee_pending_switch`, `shipping_pending_switch` | Staged recurring coupon/fee/shipping items. |
-| `coupon_switched`, `fee_switched`, `shipping_switched` | Archived old recurring coupon/fee/shipping items. |
-
-Important item meta:
-
-| Item meta | Stored on | Purpose |
-|---|---|---|
-| `_switched_subscription_item_id` | New subscription line item | Old subscription item ID. |
-| `_switched_subscription_new_item_id` | Old subscription line item | New subscription/order line item ID. |
-| `_switched_subscription_sign_up_fee_prorated` | Switch order line item | Portion of order line total from prorated sign-up fee. |
-| `_switched_subscription_price_prorated` | Switch order line item | Portion of order line total from prorated recurring price. |
-| `_has_trial` | Pending switch item | Marks new item with trial. |
-
-## Switch extension points
-
-| Need | Hook/filter | Args |
-|---|---|---|
-| Check product switchability | `wcs_is_product_switchable` | `$is_switchable, $product, $variation` |
-| Check item switchability | `woocommerce_subscriptions_can_item_be_switched` | `$can, $item, $subscription` |
-| Check user can switch item | `woocommerce_subscriptions_can_item_be_switched_by_user` | `$can, $item, $subscription` |
-| Switch URL | `woocommerce_subscriptions_switch_url` | `$url, $item_id, $item, $subscription` |
-| Switch link markup/text/classes | `woocommerce_subscriptions_switch_link`, `woocommerce_subscriptions_switch_link_text`, `woocommerce_subscriptions_switch_link_classes` | Link context. |
-| Retain coupons | `woocommerce_subscriptions_retain_coupon_on_switch` | `$retain, $coupon_code, $coupon, $subscription` |
-| Switch added to cart | `woocommerce_subscriptions_switch_added_to_cart` | `$subscription, $existing_item, $cart_item_key, $cart_item` |
-| Proration price/day | `wcs_switch_proration_old_price_per_day`, `wcs_switch_proration_new_price_per_day` | Calculator context. |
-| Switch type | `wcs_switch_proration_switch_type` | `$type, $subscription, $cart_item, $old_price_per_day, $new_price_per_day` |
-| Prorate recurring/sign-up fee | `wcs_switch_should_prorate_recurring_price`, `wcs_switch_should_prorate_sign_up_fee` | `$bool, $switch_item` |
-| Extra amount | `wcs_switch_proration_extra_to_pay` | `$extra, $subscription, $cart_item, $days_in_old_cycle` |
-| Completion | `woocommerce_subscriptions_switch_completed` | `$order` |
-| Item switched | `woocommerce_subscriptions_switched_item` | `$subscription, $new_order_item, $old_subscription_item` |
-| Subscription item switched | `woocommerce_subscription_item_switched` | `$order, $subscription, $new_item_id, $old_item_id` |
+Use [switching-reference.md](switching-reference.md) for exact payload shapes, item meta, and hook signatures. In WCS 8.8+, `wcs_switch_proration_extra_to_pay` has a fifth `$switch_item` argument; register accepted args `5` when that context matters.
 
 ## Gifting storage
 
@@ -261,6 +170,7 @@ Product giftability:
 
 - Global enablement comes from WCSG admin settings.
 - Product-level override is `_subscription_gifting`: `enabled`, `disabled`, or empty for global.
+- In WCS 9.0 APFS, the Subscription Plans product panel can also write the product-level gifting override while saving ordinary products sold via plans.
 - Variable subscription parent returns giftable to render UI; each variation decides final `gifting` variation data.
 - Product page gifting UI is suppressed during switching (`switch-subscription` query arg).
 
@@ -300,5 +210,31 @@ $recipient_id = WCS_Gifting::get_recipient_user( $subscription );
 ## Cross-references
 
 - Use `wcs-subscription-hooks` for general lifecycle hook selection.
+- Use `wcs-subscription-plans-apfs` for the full WCS 9.0 Subscription Plans / APFS plan API, REST endpoints, and headless cart behavior.
 - Use `wcs-renewal-scheduler` for renewal dates, Action Scheduler, and payment retry timing.
+- Use `wcs-subscription-downloads` for linked downloadable products, download permission grants/revokes, and the subscription downloads mapping table.
 - Use `wcm-data-model-subscriptions-link` for Memberships CPT/meta and the Memberships-to-Subscriptions relation.
+
+## References
+
+- Official documentation: <https://woocommerce.com/document/subscriptions/develop/>
+- Verified source paths:
+  - `wp-content/plugins/woocommerce-subscriptions/includes/core/class-wc-subscriptions-core-plugin.php`
+  - `wp-content/plugins/woocommerce-subscriptions/includes/core/class-wc-subscription.php`
+  - `wp-content/plugins/woocommerce-subscriptions/includes/core/data-stores/class-wcs-subscription-data-store-cpt.php`
+  - `wp-content/plugins/woocommerce-subscriptions/includes/core/data-stores/class-wcs-orders-table-subscription-data-store.php`
+  - `wp-content/plugins/woocommerce-subscriptions/includes/core/class-wc-subscriptions-product.php`
+  - `wp-content/plugins/woocommerce-subscriptions/includes/core/wcs-functions.php`
+  - `wp-content/plugins/woocommerce-subscriptions/includes/core/wcs-switch-functions.php`
+  - `wp-content/plugins/woocommerce-subscriptions/includes/switching/class-wc-subscriptions-switcher.php`
+  - `wp-content/plugins/woocommerce-subscriptions/includes/switching/class-wcs-switch-totals-calculator.php`
+  - `wp-content/plugins/woocommerce-subscriptions/includes/downloads/`
+  - `wp-content/plugins/woocommerce-subscriptions/includes/apfs/class-wcs-att-product.php`
+  - `wp-content/plugins/woocommerce-subscriptions/includes/apfs/product/class-wcs-att-product-schemes.php`
+  - `wp-content/plugins/woocommerce-subscriptions/includes/apfs/class-wcs-att-cart.php`
+  - `wp-content/plugins/woocommerce-subscriptions/includes/apfs/class-wcs-att-order.php`
+  - `wp-content/plugins/woocommerce-subscriptions/includes/gifting/class-wcs-gifting.php`
+  - `wp-content/plugins/woocommerce-subscriptions/includes/gifting/class-wcsg-product.php`
+  - `wp-content/plugins/woocommerce-subscriptions/includes/gifting/class-wcsg-cart.php`
+  - `wp-content/plugins/woocommerce-subscriptions/includes/gifting/class-wcsg-checkout.php`
+  - `wp-content/plugins/woocommerce-subscriptions/includes/gifting/class-wcsg-recipient-management.php`

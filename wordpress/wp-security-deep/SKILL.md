@@ -9,17 +9,15 @@ description: Deep security audit for WordPress plugin/theme PHP code,
   and TOCTOU race patterns in option/meta locks. Use after or
   alongside wp-security-audit when reviewing complex plugins, REST
   APIs, integrations that fetch remote URLs, file processors, or any
-  code that handles uploads, archives, or self-rolled auth tokens.
-author: Soczó Kristóf
-contact: mailto:lonsdale201@hotmail.com
-plugin: wordpress
-plugin-version-tested: "6.0 - 6.9"
-php-min: "7.4"
-last-updated: "2026-04-28"
-docs:
-  - https://developer.wordpress.org/plugins/security/
-  - https://www.php.net/manual/en/function.unserialize.php
-  - https://www.php.net/manual/en/function.hash-equals.php
+  code that handles uploads, archives, self-rolled auth tokens, remote
+  SQL/report definitions, or private plugin update channels.
+metadata:
+  wp-skills-author: "Soczó Kristóf"
+  wp-skills-contact: "mailto:lonsdale201@hotmail.com"
+  wp-skills-plugin: "wordpress"
+  wp-skills-plugin-version-tested: "6.0 - 7.0.1"
+  wp-skills-php-min: "7.4"
+  wp-skills-last-updated: "2026-07-15"
 ---
 
 # WordPress security audit — deep checks
@@ -46,6 +44,8 @@ Trigger when the basic audit is clean but the code does any of:
 - Compares tokens, hashes, or secrets with `==` / `===` instead of
   `hash_equals`.
 - Implements its own lock / counter via `get_option` + `update_option`.
+- Uses a remote response to choose SQL, PHP/template code, callback/class names,
+  filesystem paths, redirects, or a plugin-update package URL.
 
 ## Audit checks
 
@@ -56,10 +56,18 @@ Trigger when the basic audit is clean but the code does any of:
 $data = unserialize( $_POST['payload'] );
 ```
 
-Even with `[ 'allowed_classes' => false ]`, prefer `json_decode` for
-network/user input. `maybe_unserialize` on `get_option` is generally
-safe (admin wrote it), but flag it on user-meta keys that any user
-can write (custom registration forms, profile editors).
+Before assigning severity, identify who can write the **raw serialized bytes**,
+whether classes and usable gadgets are loaded, and which magic method creates
+the security effect. `maybe_unserialize( get_option(...) )` is not automatically
+vulnerable; state the required writer instead of assuming either admin-only or
+attacker-controlled storage.
+
+Prefer JSON for network/user input. `allowed_classes => false` blocks normal
+class instantiation but not huge/deep/cyclic graphs or unsafe later recursion;
+also bound bytes, depth/nodes, accepted result type, and traversal.
+
+For nested/double serialization, byte-length corruption, and transformed-key
+collisions, apply **`wp-metadata-api`** rather than blind string replacement.
 
 `Phar` deserialization: on **PHP < 8.0**, filesystem functions
 (`file_exists`, `is_dir`, `filesize`, `fopen`, etc.) on a path using
@@ -74,8 +82,9 @@ finding severity depends on the deployment's minimum PHP version:
 - PHP 8.0+ only: still flag explicit `Phar::getMetadata()` over
   user-controlled archives, plus any `unserialize()` of binary blobs.
 
-**Fix:** JSON for transport, allowlist classes if unserialize is
-unavoidable, never accept `phar://` from input on PHP 7.x.
+**Fix:** JSON for transport; reject serialized user input when possible; if
+legacy parsing is unavoidable, constrain classes, bytes, depth, graph traversal,
+and accepted result types; never accept `phar://` from input on PHP 7.x.
 
 ### 2. SSRF in outbound requests
 
@@ -84,83 +93,13 @@ unavoidable, never accept `phar://` from input on PHP 7.x.
 $response = wp_remote_get( $_POST['webhook_url'] );
 ```
 
-**Preferred defense — host allowlist.** If the integration only ever
-talks to a known set of hosts (Stripe, Slack, an internal API),
-allowlist them:
-
-```php
-$url   = esc_url_raw( wp_unslash( $_POST['webhook_url'] ?? '' ) );
-$parts = wp_parse_url( $url );
-
-$allowed_hosts = [ 'api.stripe.com', 'hooks.slack.com' ];
-if ( empty( $parts['host'] )
-     || ! in_array( strtolower( $parts['host'] ), $allowed_hosts, true )
-     || ! in_array( $parts['scheme'] ?? '', [ 'https' ], true ) ) {
-    wp_die( 'Forbidden host', 403 );
-}
-
-$response = wp_remote_post( $url, [
-    'timeout'             => 5,
-    'redirection'         => 2,
-    'reject_unsafe_urls'  => true,
-] );
-```
-
-**Fallback — generic URL with IP-range filtering.** Only use this when
-allowlisting is impossible (e.g. user-submitted webhook URLs). The
-naive `gethostbyname()` check is **not enough**: it returns a single
-IPv4 A record, missing AAAA records (IPv6 ::1, fc00::/7),
-multi-record DNS responses, and post-redirect destinations. A correct
-generic check needs:
-
-```php
-$host = strtolower( wp_parse_url( $url, PHP_URL_HOST ) );
-
-// Reject literal IPs in private/reserved ranges before DNS
-if ( filter_var( $host, FILTER_VALIDATE_IP ) ) {
-    if ( ! filter_var( $host, FILTER_VALIDATE_IP,
-        FILTER_FLAG_NO_PRIV_RANGE | FILTER_FLAG_NO_RES_RANGE ) ) {
-        wp_die( 'Forbidden host', 403 );
-    }
-}
-
-// Resolve ALL records, not just the first A
-$records = array_merge(
-    dns_get_record( $host, DNS_A )  ?: [],
-    dns_get_record( $host, DNS_AAAA ) ?: []
-);
-foreach ( $records as $r ) {
-    $ip = $r['ip'] ?? $r['ipv6'] ?? '';
-    if ( ! filter_var( $ip, FILTER_VALIDATE_IP,
-        FILTER_FLAG_NO_PRIV_RANGE | FILTER_FLAG_NO_RES_RANGE ) ) {
-        wp_die( 'Forbidden host', 403 );
-    }
-}
-
-$response = wp_remote_get( $url, [
-    'timeout'            => 5,
-    'redirection'        => 2,
-    'reject_unsafe_urls' => true,
-] );
-```
-
-Even this is incomplete — DNS rebinding can return safe records to
-the resolver and unsafe records to the actual fetch. For full
-protection you need to resolve once, fetch by IP with a `Host:`
-header. WordPress's `reject_unsafe_urls` request arg does some
-filtering via the `http_request_host_is_external` /
-`http_request_host_is_allowed` filters, but is opt-in and not
-sufficient on its own.
-
-Flag when:
-- No host allowlist when the integration only needs known endpoints.
-- `gethostbyname()`-only check (audit ourselves: this skill's earlier
-  versions had this same bug — IPv4-only, single-record, no redirect
-  reverification).
-- `redirection` not capped (default follows up to 5 — can chain into
-  internal services after passing the initial check).
-- `timeout` missing — DoS vector.
-- `reject_unsafe_urls` not set on user-influenced URLs.
+Flag missing exact HTTPS host allowlists, plain `wp_remote_*` on
+user-influenced URLs, unbounded timeout/redirect/body size, disabled TLS
+verification, and ignored `WP_Error`/HTTP statuses. Use `wp_safe_remote_*` so
+core validates the initial URL and redirects. Do not accept a hand-rolled DNS
+pre-check as complete protection: it has rebinding/TOCTOU and IPv6 pitfalls.
+Arbitrary destinations need infrastructure egress controls as well. Apply the
+full **`wp-http-api-client`** skill for implementation and test patterns.
 
 ### 3. CSRF on state-changing GET handlers
 
@@ -175,10 +114,12 @@ if ( isset( $_GET['action'] ) && $_GET['action'] === 'delete' ) {
 }
 ```
 
-**Rule:** any handler that writes MUST verify a nonce regardless of
-HTTP method. Action links must be built with `wp_nonce_url(
-$url, 'delete_post_' . $id )` and verified with
-`check_admin_referer( 'delete_post_' . $id )`.
+**Rule:** any cookie-authenticated browser handler that writes MUST verify a
+nonce regardless of HTTP method. Legacy action links can be built with
+`wp_nonce_url( $url, 'delete_post_' . $id )` and verified with
+`check_admin_referer( 'delete_post_' . $id )`; prefer POST forms for destructive
+new UI. Signed webhooks, CLI, and cron use their own trust boundary rather than
+a WordPress nonce.
 
 ### 4. Mass assignment
 
@@ -243,56 +184,33 @@ Pass headers as an array, not a concatenated string.
 $zip->extractTo( $target_dir );
 ```
 
-**Fix:** reject suspicious entries explicitly, then containment-check
-the resolved path with a trailing separator:
+**Preferred WordPress path:** initialize `WP_Filesystem()` and call core's
+`unzip_file()`. Core validates each entry with `validate_file()`, calculates
+required space, creates directories through the selected transport, and
+returns `true|WP_Error`.
 
 ```php
-$base_real = realpath( $target_dir );
-if ( $base_real === false ) {
-    wp_die( 'Invalid target', 500 );
-}
-$base_with_sep = rtrim( $base_real, DIRECTORY_SEPARATOR ) . DIRECTORY_SEPARATOR;
+require_once ABSPATH . 'wp-admin/includes/file.php';
 
-for ( $i = 0; $i < $zip->numFiles; $i++ ) {
-    $name = $zip->getNameIndex( $i );
-
-    // Reject obvious traversal / absolute / drive prefixes
-    if ( $name === false
-         || $name === ''
-         || strpos( $name, "\0" ) !== false
-         || preg_match( '#(^|[/\\\\])\.\.([/\\\\]|$)#', $name )
-         || preg_match( '#^([a-zA-Z]:|/|\\\\)#', $name )
-    ) {
-        wp_die( 'Malicious archive entry', 400 );
-    }
-
-    // Resolve intended target. Note: file does not exist yet, so
-    // realpath() returns false — we manually normalize and then
-    // require it to be inside $base_with_sep (with the trailing
-    // separator, so /base does not pass for /base-evil).
-    $candidate = $base_with_sep . $name;
-    $normalized = $base_with_sep
-        . ltrim( str_replace( '\\', '/', $name ), '/' );
-
-    // After normalization, prefix-check against base+sep.
-    if ( strncmp( $normalized, $base_with_sep, strlen( $base_with_sep ) ) !== 0 ) {
-        wp_die( 'Archive escape attempt', 400 );
-    }
+if ( ! WP_Filesystem() ) {
+    return new WP_Error( 'filesystem_unavailable', 'Filesystem unavailable.' );
 }
 
-// Optionally extract entries one at a time with stream filters that
-// also reject symlinks (ZipArchive::extractTo does not honor symlinks
-// portably; symlink-bearing archives are a separate audit).
-$zip->extractTo( $target_dir );
+$result = unzip_file( $archive_file, $target_dir );
+if ( is_wp_error( $result ) ) {
+    return $result;
+}
 ```
 
-Also: **never use `realpath()` for not-yet-existing paths** — it
-returns `false` and the common fallback `$base . '/' . $name` is
-exactly the unvalidated string the attacker controls. Always
-normalize manually and prefix-check against `base + DIRECTORY_SEPARATOR`.
-
-Reject symlinks, hardlinks, and entries whose archive metadata
-indicates non-regular file types if your archive format exposes them.
+This is not permission to unpack arbitrary uploads into a web-accessible
+directory. Before extraction, impose compressed/uncompressed byte limits,
+entry-count and extension/type policies; reject executable content when it is
+not required. Extract to a fresh, non-public staging directory, inspect the
+result, then move only expected regular files. `unzip_file()` skips invalid
+paths but does not implement your product's content policy. For non-ZIP
+formats or custom extractors, reject absolute/traversal paths, symlinks,
+hardlinks, device nodes, and archive bombs, and containment-check every
+destination before writing it.
 
 ### 8. Timing-safe comparison
 
@@ -321,8 +239,8 @@ if ( ! get_option( 'myplugin_processing' ) ) {
 
 WP options have no atomic CAS. Mitigations:
 
-- Use a transient with a short TTL as a soft lock — not perfect, but
-  better than the above.
+- Use a transient with a short TTL only as a soft stampede hint. It is not an
+  atomic correctness lock.
 - For real exclusion: `$wpdb->query( "SELECT GET_LOCK('myplugin', 0)" )`
   and `RELEASE_LOCK`. MySQL-level, atomic.
 - If correctness matters (billing, idempotency), use a unique-key
@@ -331,7 +249,17 @@ WP options have no atomic CAS. Mitigations:
 Flag the pattern, propose the lock approach. Don't claim certainty
 about race windows without dynamic testing.
 
-### 10. Direct file access guard
+### 10. Remote control-plane and executable response trust
+
+Treat remote responses as attacker-controlled data even with valid HTTPS and a
+fixed vendor. If response fields reach SQL execution, dynamic code/templates,
+capabilities, redirects, or a private update package, read
+[reference.md](reference.md#remote-control-plane-and-executable-response-trust)
+and trace the complete control-plane chain. Keep executable policy local and
+versioned; accept only a small allowlisted ID plus schema-validated parameters.
+Apply `wp-http-api-client` for transport, size, redirect, and test controls.
+
+### 11. Direct file access guard
 
 Top of every PHP file that has side effects on load:
 
@@ -346,9 +274,10 @@ top-level (most class files are fine). Flag explicitly for files in
 ## Severity guide
 
 Same as `wp-security-audit`. Object injection, SSRF on internal
-network, RCE via include, ZipSlip → HIGH. CSRF on admin GET
-typically HIGH (any logged-in admin clicking a link). TOCTOU,
-timing → MEDIUM unless directly exploitable.
+network, RCE via include, ZipSlip → HIGH. A remote-control-plane chain that can
+install PHP or execute unrestricted database statements can be CRITICAL when
+its stated trigger is realistic. CSRF on admin GET typically HIGH (any logged-in
+admin clicking a link). TOCTOU, timing → MEDIUM unless directly exploitable.
 
 ## Report format
 
@@ -362,20 +291,23 @@ findings into a single report grouped by severity, not by skill.
 - Run **`wp-security-secrets`** for hardcoded credentials, weak
   randomness in tokens, and password-storage issues — these are
   adjacent but distinct findings.
+- Run **`wp-batch-mutation-audit`** for durable cursors, lost responses,
+  retries, partial failures, and server-side exclusion.
 
 ## What this skill does NOT cover
 
 - Cryptographic protocol correctness (custom JWT, signing schemes).
 - Business-logic IDOR beyond capability/ownership checks.
-- Third-party dependency CVEs (run `composer audit`).
-- Concurrency analysis beyond surface TOCTOU patterns.
+- Third-party dependency CVEs and manually bundled libraries; use
+  `wp-dependency-security-audit` because `composer audit` alone cannot inventory
+  copied JS or manifest-less/prefixed PHP.
+- Batch retry/idempotency analysis beyond surface TOCTOU patterns.
 - Server hardening (open_basedir, disable_functions, file perms).
 
 ## References
 
-- WP Plugin Security Handbook:
-  https://developer.wordpress.org/plugins/security/
-- PHP unserialize advisory:
-  https://www.php.net/manual/en/function.unserialize.php
+- WP Plugin Security Handbook: https://developer.wordpress.org/plugins/security/
+- PHP unserialize advisory: https://www.php.net/manual/en/function.unserialize.php
 - Phar metadata RFC (PHP 8.0): https://wiki.php.net/rfc/phar_stop_autoloading_metadata
 - WP HTTP API request args: https://developer.wordpress.org/reference/classes/wp_http/request/
+- Official documentation: <https://www.php.net/manual/en/function.hash-equals.php>

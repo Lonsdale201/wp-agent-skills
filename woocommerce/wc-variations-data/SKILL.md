@@ -1,35 +1,13 @@
 ---
 name: wc-variations-data
-description: Read, query, and write WooCommerce product variations correctly —
-  the WC_Product_Variable (parent) vs WC_Product_Variation (child) class
-  split, the parent's get_variation_prices( $for_display ) cached
-  aggregation and how to bust the wc_var_prices_<id> transient,
-  programmatic variation creation via WC_Product_Variation + set_parent_id
-  + set_attributes + save followed by WC_Product_Variable::sync, the
-  inherited-vs-own variation stock model (parent flag, variation flag, derived
-  stock_status), get_available_variations for frontend variation data, and the
-  $for_display tax-handling parameter that breaks display logic when
-  forgotten. Use when scaffolding plugin code that creates / queries /
-  modifies variations or when debugging stale variation data after
-  programmatic writes. Triggers on WC_Product_Variation,
-  WC_Product_Variable, get_variation_prices, get_available_variations,
-  product_variation post type, wc_var_prices, sync_variation, or
-  programmatic variation creation context.
-author: Soczó Kristóf
-contact: mailto:lonsdale201@hotmail.com
-plugin: woocommerce
-plugin-version-tested: "10.x"
-php-min: "7.4"
-last-updated: "2026-04-29"
-docs:
-  - https://github.com/woocommerce/woocommerce/wiki/Product-Variations
-  - https://woocommerce.com/document/managing-product-variations/
-source-refs:
-  - wp-content/plugins/woocommerce/includes/class-wc-product-variable.php
-  - wp-content/plugins/woocommerce/includes/class-wc-product-variation.php
-  - wp-content/plugins/woocommerce/includes/data-stores/class-wc-product-variable-data-store-cpt.php
-  - wp-content/plugins/woocommerce/includes/data-stores/class-wc-product-variation-data-store-cpt.php
-  - wp-content/plugins/woocommerce/includes/wc-product-functions.php
+description: Read, query, and write WooCommerce product variations through `WC_Product_Variation` and `WC_Product_Variable`. Covers parent/child storage, cached variation prices, CRUD creation, WooCommerce 10.9 deferred parent synchronization, stock inheritance, frontend variation data, and raw versus display-tax price reads. Use when creating, importing, querying, or debugging stale variation data.
+metadata:
+  wp-skills-author: "Soczó Kristóf"
+  wp-skills-contact: "mailto:lonsdale201@hotmail.com"
+  wp-skills-plugin: "woocommerce"
+  wp-skills-plugin-version-tested: "10.9.4"
+  wp-skills-php-min: "7.4"
+  wp-skills-last-updated: "2026-07-10"
 ---
 
 # WooCommerce: variations data layer (CRUD + cache)
@@ -118,16 +96,12 @@ $variation->set_stock_quantity( 50 );
 $variation->set_stock_status( 'instock' );
 $variation->set_sku( 'TSHIRT-RED-M' );
 
-$variation_id = $variation->save();  // returns the new variation post ID; clears parent product transients in WC 10.7
-
-// CRITICAL — invalidate the parent's caches and re-aggregate.
-wc_delete_product_transients( $parent_id );
-WC_Product_Variable::sync( $parent_id );
+$variation_id = $variation->save();
 ```
 
-`wc_delete_product_transients( $parent_id )` clears product-specific transients such as `wc_product_children_<id>`, `wc_var_prices_<id>`, `wc_child_has_weight_<id>`, and `wc_child_has_dimensions_<id>`. `WC_Product_Variable::sync( $parent_id )` recomputes the parent from its children: it rewrites the parent's stored `_price` meta values, updates `wc_product_meta_lookup`, refreshes derived stock status, syncs legacy attributes, then saves the parent.
+In WooCommerce 10.9, variation CRUD clears variation and parent transients and `WC_Product::save()` queues the parent ID through `wc_deferred_product_sync()`. `WC_Post_Data::do_deferred_product_sync()` deduplicates and synchronizes parents at shutdown. Normal CRUD therefore needs no manual cache delete or parent sync.
 
-Skip the sync and raw cache invalidation after direct writes and: catalog shows old price range, parent shows "out of stock" until next manual save, or frontend variation data is built from stale child/transient data.
+Direct post/meta/SQL writes bypass that contract and can leave the catalog stale. Avoid them. If the same request must read rebuilt parent aggregates before shutdown, call `WC_Product_Variable::sync( $parent_id )` explicitly after the final child write.
 
 ## Querying variations
 
@@ -168,11 +142,11 @@ $variation->get_stock_status(); // 'instock' / 'outofstock' / 'onbackorder'
 $variable->get_stock_status();
 ```
 
-After programmatic stock changes, `WC_Product_Variable::sync( $parent_id )` recomputes the parent's display status from the children. Without the sync the parent shows stale.
+After CRUD stock changes, deferred parent sync recomputes the parent's display status at shutdown. Explicitly sync only when same-request code needs the updated parent immediately.
 
-## When parent must be re-synced — checklist
+## Changes that queue parent synchronization
 
-Call `wc_delete_product_transients( $parent_id )` + `WC_Product_Variable::sync( $parent_id )` whenever you:
+CRUD writes affecting these values queue parent synchronization:
 
 - Add a new variation
 - Delete a variation
@@ -181,7 +155,7 @@ Call `wc_delete_product_transients( $parent_id )` + `WC_Product_Variable::sync( 
 - Change a variation's enabled / disabled flag (post_status)
 - Bulk update attributes that affect availability
 
-In WC 10.7, `$variation->save()` clears product transients for the variation and its parent, but it does not replace the parent aggregation sync. For cron jobs, REST imports, CLI scripts, and any cross-request flow, collect touched parent IDs and call `WC_Product_Variable::sync()` once per parent after the batch.
+The shutdown queue deduplicates parent IDs, so CRUD-based imports do not need their own per-row sync. If code bypasses CRUD, it owns lookup-table updates, transient invalidation, and parent synchronization.
 
 ## Hook checkpoints for variation data
 
@@ -217,7 +191,7 @@ For non-display logic (filtering, sorting in custom listings), pass `$for_displa
 
 - **`WC_Product_Variation` is the right class** for programmatic create/update of a single variation. Don't `wp_insert_post( 'product_variation', ... )` directly.
 - **`set_parent_id` + `set_attributes` + `save()`** is the minimum sequence; attributes MUST match the parent's available attribute terms.
-- **After every programmatic mutation**, call `wc_delete_product_transients( $parent_id )` AND `WC_Product_Variable::sync( $parent_id )`; for bulk CRUD, sync each touched parent once after the loop. The latter is a static method on `WC_Product_Variable`, not an instance method.
+- **CRUD saves already invalidate and defer parent sync in WC 10.9.** Do not add duplicate cache deletion/sync work after every row. Use explicit `WC_Product_Variable::sync()` only for immediate consistency or after unavoidable raw writes.
 - **`get_variation_prices( $for_display )` — always be explicit about `$for_display`.** Default is `false` (raw); pass `true` only at the render edge.
 - **`get_children()` for cheap iteration**, `get_available_variations()` for full UI-ready data — different costs.
 - **Parent stock vs variation stock are independent flags.** Most stores want variation-level (`manage_stock` on the variation, `manage_stock = no` on the parent).
@@ -243,8 +217,6 @@ $variation->set_attributes( array( 'pa_color' => 'red' ) );
 $variation->set_regular_price( '20.00' );
 $variation->set_price( '20.00' );
 $variation->save();
-wc_delete_product_transients( $parent_id );
-WC_Product_Variable::sync( $parent_id );
 
 // WRONG — passing $for_display = true and then doing logic on the value
 $prices = $variable->get_variation_prices( true );
@@ -255,48 +227,21 @@ if ( current( $prices['price'] ) < 10 ) { /* ... */ }
 $prices = $variable->get_variation_prices( false );
 if ( (float) current( $prices['price'] ) < 10 ) { /* ... */ }
 
-// WRONG — bulk import without sync
+// RIGHT — CRUD queues and deduplicates parent sync at shutdown.
 foreach ( $rows as $row ) {
     $v = new WC_Product_Variation();
     $v->set_parent_id( $row['parent_id'] );
     $v->set_regular_price( $row['price'] );
     $v->save();
 }
-// 1000 variations imported; parent lookup rows / stock aggregation can be stale.
-
-// RIGHT — sync each parent once after the loop
-$touched_parents = array();
-foreach ( $rows as $row ) {
-    $v = new WC_Product_Variation();
-    $v->set_parent_id( $row['parent_id'] );
-    $v->set_regular_price( $row['price'] );
-    $v->save();
-    $touched_parents[ $row['parent_id'] ] = true;
-}
-foreach ( array_keys( $touched_parents ) as $parent_id ) {
-    wc_delete_product_transients( $parent_id );
-    WC_Product_Variable::sync( $parent_id );
-}
-
-// WRONG — assuming parent stock applies to every variation
-$variable->set_manage_stock( true );
-$variable->set_stock_quantity( 100 );
-// Only variations with manage_stock=no inherit this. Variations with manage_stock=yes
-// keep using their own stock quantity.
-
-// WRONG — querying via WP_Query, missing data-store caches
-$ids = get_posts( array(
-    'post_type' => 'product_variation',
-    'post_parent' => $parent_id,
-    'fields' => 'ids',
-) );
-// RIGHT
-$ids = wc_get_product( $parent_id )->get_children();
 ```
+
+Also avoid: assuming parent stock applies to variation-managed stock, and querying child variations via `WP_Query` / `get_posts` in hot paths instead of `$variable->get_children()`.
 
 ## Cross-references
 
 - Run **`wc-variations-pricing-filters`** for the price filter chain (`woocommerce_product_variation_get_price`, `woocommerce_variation_prices_price`, etc.) — when a plugin needs to mutate variation prices via filters rather than direct CRUD.
+- Run **`wc-variation-gallery`** for WooCommerce 10.9+ native variation gallery data (`gallery_image_ids`, `gallery_images_html`, REST v3 gallery payloads, and Additional Variation Images migration).
 - Run **`wc-product-search-select`** when the UI needs an admin product picker — `woocommerce_json_search_products_and_variations` returns variation IDs alongside parent products.
 - Run **`wp-plugin-cron`** for batch imports — cron callbacks scheduled idempotently are the right place for bulk variation operations.
 
@@ -304,9 +249,9 @@ $ids = wc_get_product( $parent_id )->get_children();
 
 - The price filter chain. Mutating variation prices via filters (without changing stored data) is a separate topic — see `wc-variations-pricing-filters`.
 - The frontend variation switching UX (`found_variation` JS event, AJAX swatch / dropdown logic). That's frontend territory; this skill is data-layer.
-- Variation image handling beyond `set_image_id()`. The image gallery / shared-image inheritance has its own quirks.
+- Variation image handling beyond `set_image_id()`. Native variation galleries are covered by `wc-variation-gallery`.
 - Grouped products and external products — different post types, different rules.
-- WC subscriptions variations (subscription products + variation pricing) — covered by the WC Subscriptions plugin, not core.
+- Extension-defined product types and their pricing rules.
 - Product attributes registration / management — orthogonal topic; variations consume already-existing attributes.
 
 ## References
@@ -316,3 +261,7 @@ $ids = wc_get_product( $parent_id )->get_children();
 - Variation data store, transient name `wc_var_prices_`, price hash inputs: [wp-content/plugins/woocommerce/includes/data-stores/class-wc-product-variable-data-store-cpt.php](class-wc-product-variable-data-store-cpt.php).
 - `WC_Product_Variation`: [wp-content/plugins/woocommerce/includes/class-wc-product-variation.php](class-wc-product-variation.php).
 - `wc_delete_product_transients()` for cache invalidation: [wp-content/plugins/woocommerce/includes/wc-product-functions.php](wc-product-functions.php).
+- Official documentation: <https://github.com/woocommerce/woocommerce/wiki/Product-Variations>
+- Official documentation: <https://woocommerce.com/document/managing-product-variations/>
+- Verified source paths:
+  - `wp-content/plugins/woocommerce/includes/data-stores/class-wc-product-variation-data-store-cpt.php`

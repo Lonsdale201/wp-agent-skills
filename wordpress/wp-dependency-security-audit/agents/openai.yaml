@@ -1,0 +1,4 @@
+interface:
+  display_name: "WordPress Dependency Security Audit"
+  short_description: "Audit bundled PHP and JavaScript dependencies"
+  default_prompt: "Use $wp-dependency-security-audit to inventory this WordPress plugin’s bundled dependencies, verify official advisories, and rate reachable vulnerability paths."

@@ -11,16 +11,13 @@ description: Audits WordPress plugin/theme code for secret-handling and
   auth/registration/login features, when integrating third-party
   APIs, or when the user mentions "API key", "token", "session",
   "password reset".
-author: Soczó Kristóf
-contact: mailto:lonsdale201@hotmail.com
-plugin: wordpress
-plugin-version-tested: "6.0 - 6.9"
-php-min: "7.4"
-last-updated: "2026-04-28"
-docs:
-  - https://www.php.net/manual/en/function.password-hash.php
-  - https://www.php.net/manual/en/function.random-bytes.php
-  - https://developer.wordpress.org/reference/functions/wp_generate_password/
+metadata:
+  wp-skills-author: "Soczó Kristóf"
+  wp-skills-contact: "mailto:lonsdale201@hotmail.com"
+  wp-skills-plugin: "wordpress"
+  wp-skills-plugin-version-tested: "6.0 - 7.0.1"
+  wp-skills-php-min: "7.4"
+  wp-skills-last-updated: "2026-07-10"
 ---
 
 # WordPress secrets and credentials audit
@@ -100,11 +97,12 @@ $nonce = wp_create_nonce( 'action' );
 **Don't confuse:**
 - `wp_create_nonce` is a 10-char CSRF token, valid 12-24h. NOT for
   password resets, API keys, session IDs.
-- `wp_generate_uuid4()` is **NOT cryptographically random** despite the
-  v4 UUID name. WordPress core implements it with `mt_rand()`
-  (verified in `wp-includes/functions.php`). Use it for non-security
-  identifiers (post UIDs, log IDs) only. For security tokens use
-  `wp_generate_password()`, `random_bytes()`, or `random_int()`.
+- `wp_generate_uuid4()` used `mt_rand()` through WordPress 6.9, but WordPress
+  7.0+ uses `wp_rand()`, whose normal path uses `random_int()`. On a strict
+  WP 7.0+ baseline it is suitable as an unguessable identifier. Dedicated
+  `random_bytes()`/`wp_generate_password()` tokens remain clearer for
+  credentials and give explicit entropy/encoding control. Do not assume the
+  same property when supporting WordPress 6.9 or older.
 
 ### 3. Password storage
 
@@ -122,9 +120,11 @@ is bcrypt (was PHPass / portable hash before). To work around bcrypt's
 base64-encodes the result, then runs `password_hash()` with
 `PASSWORD_BCRYPT`, prefixing the output with `$wp` to distinguish it
 from vanilla bcrypt. `wp_check_password()` still verifies legacy
-PHPass hashes from older sites and rehashes on successful login, so
-the migration is transparent — **don't reimplement password storage
-for WP users**, always go through these functions.
+PHPass hashes from older sites. `wp_check_password()` itself only verifies;
+core authentication flows separately call `wp_password_needs_rehash()` and
+`wp_set_password()` after a successful login. Therefore **don't reimplement
+password storage for WP users**; use the core authentication flow and hashing
+functions.
 
 The algorithm and options are filterable (`wp_hash_password_algorithm`,
 `wp_hash_password_options`) for sites that want argon2id or stronger
@@ -150,6 +150,14 @@ Allocate at least 255 bytes for the stored hash column to leave room
 for future algorithm output growth. Never roll your own with `hash()`
 + `salt`.
 
+For high-entropy random tokens such as API keys or recovery tokens, WordPress
+6.8+ also provides `wp_fast_hash()` and `wp_verify_fast_hash()`. They use a
+fast generic hash with a fixed domain-separation key, not a per-record salt,
+and are appropriate when guessing is already infeasible because the input is
+random and has at least 128 bits of entropy. They are **not** a replacement for
+the deliberately slow `wp_hash_password()`/`wp_check_password()` path for
+human-chosen passwords.
+
 ### 4. Cookie flags
 
 ```php
@@ -170,8 +178,14 @@ setcookie( 'myplugin_session', $token, [
 ] );
 ```
 
-For WP's own auth, **don't roll your own** — use `wp_set_auth_cookie`
-which handles all flags correctly.
+For WP's own auth, **don't roll your own**: use `wp_set_auth_cookie()` so core
+owns session tokens, expiry, and its Secure/HttpOnly cookie behavior. Do not
+claim that it explicitly sets SameSite: WordPress 7.0.1's auth-cookie calls do
+not pass a SameSite attribute.
+
+`SameSite=None` requires `Secure`. Also ensure `is_ssl()` is correct behind a
+TLS-terminating reverse proxy; that is a hosting configuration concern, not a
+reason for a plugin to guess or trust arbitrary forwarded headers.
 
 Flag: any `setcookie` storing a token, session ID, or user identifier
 without `secure` (when `is_ssl()`) and `httponly`.

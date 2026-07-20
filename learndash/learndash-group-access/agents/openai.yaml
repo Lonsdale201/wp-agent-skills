@@ -1,0 +1,4 @@
+interface:
+  display_name: "LearnDash Group Access"
+  short_description: "LearnDash group membership and course access"
+  default_prompt: "Use $learndash-group-access to review LearnDash group access logic."

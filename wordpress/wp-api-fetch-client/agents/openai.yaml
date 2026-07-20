@@ -1,0 +1,4 @@
+interface:
+  display_name: "WordPress API Fetch Client"
+  short_description: "Build reliable WordPress REST clients"
+  default_prompt: "Use $wp-api-fetch-client to implement or audit this WordPress client-side REST request flow."

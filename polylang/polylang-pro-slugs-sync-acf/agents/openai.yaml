@@ -1,0 +1,4 @@
+interface:
+  display_name: "Polylang Pro Slugs, Sync, and ACF"
+  short_description: "Polylang Pro slugs, sync, and ACF rules"
+  default_prompt: "Use $polylang-pro-slugs-sync-acf to handle Polylang Pro translated slugs, shared slugs, duplicate sync, or ACF field translation behavior."

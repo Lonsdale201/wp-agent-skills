@@ -1,27 +1,14 @@
 ---
 name: wcs-renewal-scheduler
-description: Safely integrate with WooCommerce Subscriptions renewal,
-  next-payment scheduling, Action Scheduler events, and retry flow.
-  Shows when to use WC_Subscription::update_dates, update_status,
-  wcs_create_renewal_order, wcs_renewal_order_created,
-  woocommerce_scheduled_subscription_payment,
-  woocommerce_scheduled_subscription_payment_{gateway_id},
-  woocommerce_subscription_renewal_payment_complete, and payment retry
-  hooks. Use when changing next payment dates, forcing/rescheduling
-  renewals, reacting to failed renewals, building gateway recurring
-  charge logic, or debugging missing/duplicate renewal orders.
-author: Soczó Kristóf
-contact: mailto:lonsdale201@hotmail.com
-plugin: woocommerce-subscriptions
-plugin-version-tested: "8.6.0"
-php-min: "7.4"
-last-updated: "2026-04-29"
-source-refs:
-  - wp-content/plugins/woocommerce-subscriptions/includes/core/class-wcs-action-scheduler.php
-  - wp-content/plugins/woocommerce-subscriptions/includes/core/abstracts/abstract-wcs-scheduler.php
-  - wp-content/plugins/woocommerce-subscriptions/includes/core/class-wc-subscriptions-manager.php
-  - wp-content/plugins/woocommerce-subscriptions/includes/gateways/class-wc-subscriptions-payment-gateways.php
-  - wp-content/plugins/woocommerce-subscriptions/includes/payment-retry/class-wcs-retry-manager.php
+description: Safely integrate with WooCommerce Subscriptions renewal scheduling, Action Scheduler, renewal-order creation, gateway charge dispatch, guarded process-renewal-now commands, and retries. Use for WC_Subscription::update_dates, wcs_create_renewal_order, woocommerce_scheduled_subscription_payment, gateway-specific scheduled payment hooks, renewal success/failure, missing renewals, or duplicate renewal orders.
+metadata:
+  wp-skills-author: "Soczó Kristóf"
+  wp-skills-contact: "mailto:lonsdale201@hotmail.com"
+  wp-skills-plugin: "woocommerce-subscriptions"
+  wp-skills-plugin-version-tested: "9.0.0"
+  wp-skills-woocommerce-version-tested: "10.9.4"
+  wp-skills-php-min: "7.4"
+  wp-skills-last-updated: "2026-07-10"
 ---
 
 # WooCommerce Subscriptions: renewal scheduler
@@ -95,21 +82,39 @@ try {
 }
 ```
 
-## Force a renewal safely
+## WCS 9.0 date validation details
 
-Prefer triggering WCS's normal scheduled-payment action when you want "run the renewal flow now":
+WCS 9.0 keeps the same public rule: use `WC_Subscription::update_dates()` or `update_valid_dates()`. Two source-verified edge cases matter for integrations:
+
+- `prepare_dates_for_update()` compares `next_payment` against `trial_end` at minute resolution. If both land in the same visible minute, WCS treats that as valid instead of rejecting the edit over hidden seconds.
+- Admin schedule editor text now correctly tells merchants that next payment must be after the trial end.
+
+Practical import rule: normalize external schedule dates to UTC `Y-m-d H:i:s`, but do not add arbitrary seconds just to make trial end and next payment different. If your system only stores minute precision, pass the minute value and let WCS validate it.
+
+## Process a renewal now
+
+There is no safe one-line public "force renewal" call. A bare:
 
 ```php
-$subscription = wcs_get_subscription( $subscription_id );
-
-if ( $subscription instanceof WC_Subscription && $subscription->has_status( 'active' ) ) {
-    do_action( 'woocommerce_scheduled_subscription_payment', $subscription->get_id() );
-}
+do_action( 'woocommerce_scheduled_subscription_payment', $subscription_id ); // unsafe as a general command
 ```
 
-This uses the same flow as the scheduled action: status handling, renewal order creation, and gateway hook dispatch. If you only need to create a pending renewal order for later payment, call `wcs_create_renewal_order()` directly:
+can race the already-running/pending Action Scheduler action and create or charge twice. WCS 9.0's Health Check Resolve tool is the preferred merchant operation because it adds recent-renewal and running-action guards.
 
-If the payment method supports `gateway_scheduled_payments`, the gateway owns its own recurring schedule and WCS will not create/charge the normal renewal order from this hook.
+Programmatic processing must follow this sequence:
+
+1. Acquire a durable per-subscription command lock.
+2. Allow only the intended status (`active` or deliberately `on-hold`).
+3. Reject if the canonical scheduled action is already running.
+4. Reject if a recent/in-flight renewal order already exists.
+5. Call `WC_Subscriptions_Manager::process_renewal( $id, $subscription->get_status(), $note )`.
+6. If no `WC_Order` is returned, do not unschedule anything; gateways with `gateway_scheduled_payments` own their schedule.
+7. Only after order creation, unschedule the matching pending canonical action using hook, associative args, and group.
+8. Dispatch `WC_Subscriptions_Payment_Gateways::gateway_scheduled_subscription_payment( $id )` and release the lock in `finally`.
+
+These manager methods are established WCS classes but not a transactional command API. Pin tests to the installed WCS version. See [programmatic-renewal.md](programmatic-renewal.md) for a source-verified skeleton.
+
+If you only need to create a pending renewal order for a later manual workflow, `wcs_create_renewal_order()` is lower-level and still requires duplicate prevention:
 
 ```php
 $renewal_order = wcs_create_renewal_order( $subscription );
@@ -133,6 +138,8 @@ add_filter( 'wcs_renewal_order_created', function ( WC_Order $renewal_order, WC_
     return $renewal_order;
 }, 10, 2 );
 ```
+
+REST order API caution in WCS 9.0: when WooCommerce REST updates renewal, resubscribe, or switch order line items, WCS no longer reapplies the product sign-up fee to those line totals. If your integration edits those order types through REST, preserve existing WCS relation meta and do not add sign-up fees again in your own `woocommerce_rest_set_order_item` callback.
 
 ## Gateway recurring charge hook
 
@@ -185,6 +192,24 @@ add_filter( 'woocommerce_email_enabled_customer_processing_renewal_order', funct
 
 Only hook `wcs_is_scheduled_payment_attempt` when you intentionally need to override WCS retry detection.
 
+## Same-gateway failed-renewal retries in WCS 8.8+
+
+When a failed renewal is paid/retried with the same gateway, WCS 8.8 no longer calls `WC_Subscriptions_Change_Payment_Gateway::update_payment_method()` just to rewrite the same gateway onto the subscription. That means these hooks do not fire for same-gateway retry events:
+
+- `woocommerce_subscriptions_pre_update_payment_method`
+- `woocommerce_subscription_payment_method_updated`
+- `woocommerce_subscription_payment_method_updated_to_{gateway_id}`
+
+Use `woocommerce_subscription_failing_payment_method_updated` or `woocommerce_subscription_failing_payment_method_updated_{gateway_id}` for retry-event side effects such as clearing external failure counters. Those hooks still fire after the failed renewal payment method handling.
+
+```php
+add_action( 'woocommerce_subscription_failing_payment_method_updated', function ( WC_Subscription $subscription, WC_Order $renewal_order ): void {
+    my_gateway_clear_retry_failure_state( $subscription->get_id(), $renewal_order->get_id() );
+}, 10, 2 );
+```
+
+Do not move ordinary payment-method migration logic to the failing-payment hook. Keep token/gateway migration behavior on `woocommerce_subscription_payment_method_updated`; use the failing-payment hook only for failed-renewal recovery behavior.
+
 ## Scheduler customization
 
 Only use these when you intentionally extend WCS scheduling. For ordinary next-payment changes, use `update_dates()`.
@@ -225,6 +250,9 @@ as_schedule_single_action( time() + DAY_IN_SECONDS, 'woocommerce_scheduled_subsc
 // RIGHT: set the subscription date and let WCS schedule the canonical action.
 $subscription->update_dates( array( 'next_payment' => gmdate( 'Y-m-d H:i:s', time() + DAY_IN_SECONDS ) ), 'gmt' );
 
+// WRONG: firing the scheduled hook as an unguarded admin command can race AS.
+do_action( 'woocommerce_scheduled_subscription_payment', $subscription_id );
+
 // WRONG: fulfillment at scheduled-payment time, before payment succeeds.
 add_action( 'woocommerce_scheduled_subscription_payment', 'provision_customer' );
 
@@ -241,4 +269,21 @@ add_action( 'woocommerce_subscription_renewal_payment_complete', 'provision_cust
 ## Cross-references
 
 - Run `wcs-subscription-hooks` when you need a broader action/filter map beyond renewal timing.
+- Run `wcs-health-check-processing` when diagnosing the 8.8 Health Check tab, Resolve actions, dedicated processing, or web-cron queue support.
 - Run `wc-hpos-compatibility` before writing SQL or `WP_Query` over subscriptions/orders.
+
+## References
+
+- Official documentation: <https://woocommerce.com/document/subscriptions/develop/>
+- Verified source paths:
+  - `wp-content/plugins/woocommerce-subscriptions/includes/core/class-wc-subscription.php`
+  - `wp-content/plugins/woocommerce-subscriptions/includes/core/class-wcs-action-scheduler.php`
+  - `wp-content/plugins/woocommerce-subscriptions/includes/core/abstracts/abstract-wcs-scheduler.php`
+  - `wp-content/plugins/woocommerce-subscriptions/includes/core/class-wc-subscriptions-manager.php`
+  - `wp-content/plugins/woocommerce-subscriptions/includes/core/wcs-time-functions.php`
+  - `wp-content/plugins/woocommerce-subscriptions/includes/class-wcs-api.php`
+  - `wp-content/plugins/woocommerce-subscriptions/includes/gateways/class-wc-subscriptions-payment-gateways.php`
+  - `wp-content/plugins/woocommerce-subscriptions/includes/payment-retry/class-wcs-retry-manager.php`
+  - `wp-content/plugins/woocommerce-subscriptions/includes/core/class-wc-subscriptions-change-payment-gateway.php`
+  - `wp-content/plugins/woocommerce-subscriptions/src/Internal/Queue_Management/`
+  - `wp-content/plugins/woocommerce-subscriptions/src/Internal/HealthCheck/`

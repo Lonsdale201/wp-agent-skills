@@ -1,24 +1,20 @@
 ---
 name: wp-plugin-cron
-description: Designs and reviews scheduled/background work in WordPress
+description: >-
+  Designs and reviews scheduled/background work in WordPress
   plugins: wp_schedule_event, wp_schedule_single_event, cron_schedules,
   wp_next_scheduled guards, activation scheduling, deactivation cleanup,
   WP-Cron pseudo-cron timing, DISABLE_WP_CRON/system cron, multisite
   per-blog cron, idempotent callbacks, chunking, and Action Scheduler
   graduation. Use when adding scheduled jobs, debugging late/duplicate
   cron events, or deciding between WP cron and Action Scheduler.
-author: Soczó Kristóf
-contact: mailto:lonsdale201@hotmail.com
-plugin: wordpress
-plugin-version-tested: "6.5 - 6.9"
-php-min: "7.4"
-last-updated: "2026-04-28"
-docs:
-  - https://developer.wordpress.org/plugins/cron/
-  - https://developer.wordpress.org/reference/functions/wp_schedule_event/
-  - https://developer.wordpress.org/reference/functions/wp_schedule_single_event/
-  - https://developer.wordpress.org/reference/hooks/cron_schedules/
-  - https://actionscheduler.org
+metadata:
+  wp-skills-author: "Soczó Kristóf"
+  wp-skills-contact: "mailto:lonsdale201@hotmail.com"
+  wp-skills-plugin: "wordpress"
+  wp-skills-plugin-version-tested: "6.5 - 6.9"
+  wp-skills-php-min: "7.4"
+  wp-skills-last-updated: "2026-04-28"
 ---
 
 # WordPress plugin: cron & background jobs
@@ -40,7 +36,7 @@ Trigger when ANY of the following is true:
 WordPress cron does NOT run on a system schedule. There is no `cron` daemon waking WP up. Instead:
 
 1. Page request comes in.
-2. On `init`, WordPress calls `wp_cron()` ([wp-includes/default-filters.php](wp-includes/default-filters.php)).
+2. On `init`, WordPress calls `wp_cron()` (`wp-includes/default-filters.php`).
 3. Since WP 6.9, `wp_cron()` registers `_wp_cron()` on `shutdown` for normal requests, so the cron spawn does not hurt TTFB as much. With `ALTERNATE_WP_CRON`, it still uses `wp_loaded`.
 4. `_wp_cron()` checks for due events and makes a non-blocking loopback request to `/wp-cron.php`, which actually runs the due events.
 
@@ -158,7 +154,7 @@ For a network-wide periodic task, two options:
    ```
 2. **Schedule once on the main blog** if the work is genuinely site-wide (writes to network options, not per-blog data). Document the choice — future maintainers will assume per-site otherwise.
 
-Multisite cron caveat: this skill's authoring environment is single-site. The above is source-derived from [wp-includes/cron.php](wp-includes/cron.php) but not end-to-end tested in a real network. Verify before relying.
+Multisite cron caveat: this skill's authoring environment is single-site. The above is source-derived from `wp-includes/cron.php` but not end-to-end tested in a real network. Verify before relying.
 
 ## Action Scheduler — when WP cron is not enough
 
@@ -329,7 +325,9 @@ foreach ( $orders as $order ) {
 ## References
 
 - WP Cron Handbook: [developer.wordpress.org/plugins/cron/](https://developer.wordpress.org/plugins/cron/)
-- `wp_schedule_event` / `wp_schedule_single_event` / `wp_next_scheduled` / `wp_unschedule_hook`: [wp-includes/cron.php](wp-includes/cron.php)
+- `wp_schedule_event` / `wp_schedule_single_event` / `wp_next_scheduled` / `wp_unschedule_hook`: `wp-includes/cron.php`
 - `cron_schedules` filter: [developer.wordpress.org/reference/hooks/cron_schedules/](https://developer.wordpress.org/reference/hooks/cron_schedules/)
-- WP 6.9 cron change (`_wp_cron` moved to `shutdown`): [wp-includes/cron.php](wp-includes/cron.php) `wp_cron()` docblock
+- WP 6.9 cron change (`_wp_cron` moved to `shutdown`): `wp-includes/cron.php` `wp_cron()` docblock
 - Action Scheduler: [actionscheduler.org](https://actionscheduler.org), [bundled in WooCommerce](https://github.com/woocommerce/action-scheduler)
+- Official documentation: <https://developer.wordpress.org/reference/functions/wp_schedule_event/>
+- Official documentation: <https://developer.wordpress.org/reference/functions/wp_schedule_single_event/>

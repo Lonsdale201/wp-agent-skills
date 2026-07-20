@@ -25,7 +25,16 @@ body:
         - better-route
         - lw-plugins
         - wp-rocket
+        - redis-object-cache
         - fluentcrm
+        - theme-development
+        - translatepress
+        - elementor
+        - szamlazzhu
+        - dev-tooling
+        - polylang
+        - wpml
+        - learndash
         - other
     validations:
       required: true

@@ -1,0 +1,4 @@
+interface:
+  display_name: "Woo Sequential Order Numbers Pro"
+  short_description: "Integrate with sequential WC order numbers"
+  default_prompt: "Use $wc-sequential-order-numbers-pro to audit or build compatibility with WooCommerce Sequential Order Numbers Pro."

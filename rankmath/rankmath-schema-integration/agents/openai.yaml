@@ -1,0 +1,4 @@
+interface:
+  display_name: "Rank Math Schema Integration"
+  short_description: "Extend Rank Math JSON-LD schema safely"
+  default_prompt: "Use $rankmath-schema-integration to add or modify Rank Math JSON-LD schema for this plugin."

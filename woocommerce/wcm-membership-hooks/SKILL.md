@@ -11,22 +11,13 @@ description: Curated WooCommerce Memberships hook and extension-point map
   WC_Memberships_User_Membership, WC_Memberships_Membership_Plan,
   wc_user_membership, wc_membership_plan, wcm-, _subscription_id,
   wc_memberships_rules, or woocommerce-memberships.
-author: Soczó Kristóf
-contact: mailto:lonsdale201@hotmail.com
-plugin: woocommerce-memberships
-plugin-version-tested: "1.28.1"
-php-min: "7.4"
-last-updated: "2026-05-10"
-source-refs:
-  - wp-content/plugins/woocommerce-memberships/src/class-wc-memberships-post-types.php
-  - wp-content/plugins/woocommerce-memberships/src/class-wc-memberships-user-memberships.php
-  - wp-content/plugins/woocommerce-memberships/src/class-wc-memberships-user-membership.php
-  - wp-content/plugins/woocommerce-memberships/src/class-wc-memberships-membership-plan.php
-  - wp-content/plugins/woocommerce-memberships/src/class-wc-memberships-rules.php
-  - wp-content/plugins/woocommerce-memberships/src/API/Controller/User_Memberships.php
-  - wp-content/plugins/woocommerce-memberships/src/API/Webhooks.php
-  - wp-content/plugins/woocommerce-memberships/src/Profile_Fields.php
-  - wp-content/plugins/woocommerce-memberships/src/integrations/subscriptions/
+metadata:
+  wp-skills-author: "Soczó Kristóf"
+  wp-skills-contact: "mailto:lonsdale201@hotmail.com"
+  wp-skills-plugin: "woocommerce-memberships"
+  wp-skills-plugin-version-tested: "1.29.0"
+  wp-skills-php-min: "7.4"
+  wp-skills-last-updated: "2026-07-06"
 ---
 
 # WooCommerce Memberships: hook map
@@ -49,7 +40,7 @@ Trigger when ANY of the following is true:
 
 ## Workflow
 
-1. Identify the layer first: user membership lifecycle, purchase/free-signup grant, access/restriction, discount, profile fields, REST/webhook, members area, CSV/admin, or Subscriptions integration.
+1. Identify the layer first: user membership lifecycle, purchase/free-signup grant, access/restriction, discount, profile fields, REST/webhook, Abilities API, members area, CSV/admin, or Subscriptions integration.
 2. Prefer public functions and objects over raw `WP_Query`, `wp_update_post()`, or direct post meta writes.
 3. For status strings, know the boundary: WP post statuses use `wcm-` prefix, but object methods and lifecycle hooks commonly use unprefixed statuses such as `active`, `paused`, `cancelled`, `expired`, `free_trial`, `delayed`.
 4. Before implementing, inspect the installed plugin line with:
@@ -171,6 +162,25 @@ Same rule for `WC_Memberships` itself (the main class): it's loaded INSIDE `init
 | User membership webhook events | `wc_memberships_webhook_user_membership_created`, `updated`, `transferred`, `deleted` | Webhook topic source events; usually observe, not replace. |
 | Plan webhook events | `wc_memberships_webhook_membership_plan_created`, `updated`, `deleted`, `restored` | Webhook topic source events for plans. |
 
+The public member directory endpoint is not a generic user-memberships list shortcut. `/wc/v4/memberships/members/directory` requires a `page_id` that contains a Memberships Directory block and validates the referenced block context. Directory responses are intentionally narrowed to the fields the block renders: `id`, `customer_data`, `plan_name`, `profile_fields`, and `meta_data` with `meta_data` blanked and `profile_fields` filtered to the block's allowed slugs. Cross-resource REST links are stripped. Use the admin-gated user memberships endpoint for full membership records.
+
+## Abilities API
+
+Memberships 1.28.0+ registers WordPress Abilities API abilities when `wp_register_ability()` and `wp_register_ability_category()` exist:
+
+- `woocommerce-memberships/plans-create`
+- `woocommerce-memberships/plans-delete`
+- `woocommerce-memberships/plans-get`
+- `woocommerce-memberships/plans-list`
+- `woocommerce-memberships/user-memberships-create`
+- `woocommerce-memberships/user-memberships-delete`
+- `woocommerce-memberships/user-memberships-get`
+- `woocommerce-memberships/user-memberships-list`
+- `woocommerce-memberships/post-restriction-rules-get`
+- `woocommerce-memberships/post-restriction-rules-update`
+
+Plan and user-membership abilities use `manage_woocommerce`; post restriction rule abilities use `manage_woocommerce_membership_plans`. The GET rule ability also gets an `edit_post` check from its integer input, while UPDATE wrappers should add their own `edit_post` guard. Treat them as privileged admin/editor automation, not front-end/headless customer endpoints. Use `wcm-abilities-api` when implementing or reviewing ability-based automation.
+
 ## Members area, directory, CSV, admin
 
 | Area | Hooks | Use |
@@ -262,4 +272,23 @@ foreach ( $statuses as $key => $data ) {
 
 - Use `wcm-data-model-subscriptions-link` for exact CPT names, meta keys, rule storage, profile-field storage, and Memberships-Subscriptions relation details.
 - Use `wcm-access-discounts` for access checks, restriction/drip hooks, member discounts, and price-adjustment recursion safety.
+- Use `wcm-abilities-api` for Memberships 1.29+ WP Abilities API names, permissions, schemas, REST route exposure, and guardrails.
 - Use `wcs-subscription-hooks` or `wcs-renewal-scheduler` when the membership is tied to WooCommerce Subscriptions renewal/payment flow.
+
+## References
+
+- Verified source paths:
+  - `wp-content/plugins/woocommerce-memberships/src/class-wc-memberships-post-types.php`
+  - `wp-content/plugins/woocommerce-memberships/src/class-wc-memberships-user-memberships.php`
+  - `wp-content/plugins/woocommerce-memberships/src/class-wc-memberships-user-membership.php`
+  - `wp-content/plugins/woocommerce-memberships/src/class-wc-memberships-membership-plan.php`
+  - `wp-content/plugins/woocommerce-memberships/src/class-wc-memberships-rules.php`
+  - `wp-content/plugins/woocommerce-memberships/src/API/Controller/User_Memberships.php`
+  - `wp-content/plugins/woocommerce-memberships/src/API/Webhooks.php`
+  - `wp-content/plugins/woocommerce-memberships/src/Abilities/Provider.php`
+  - `wp-content/plugins/woocommerce-memberships/src/Plans/Abilities/`
+  - `wp-content/plugins/woocommerce-memberships/src/UserMemberships/Abilities/`
+  - `wp-content/plugins/woocommerce-memberships/src/Posts/Abilities/`
+  - `wp-content/plugins/woocommerce-memberships/src/Helpers/Directory_Block_Validator.php`
+  - `wp-content/plugins/woocommerce-memberships/src/Profile_Fields.php`
+  - `wp-content/plugins/woocommerce-memberships/src/integrations/subscriptions/`

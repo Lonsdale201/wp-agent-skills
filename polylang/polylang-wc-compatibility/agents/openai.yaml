@@ -1,0 +1,4 @@
+interface:
+  display_name: "Polylang WC Compatibility"
+  short_description: "Polylang for WooCommerce integration rules"
+  default_prompt: "Use $polylang-wc-compatibility to make WooCommerce products, orders, REST routes, stock, or settings compatible with Polylang for WooCommerce."

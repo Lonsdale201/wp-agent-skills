@@ -1,23 +1,20 @@
 ---
 name: wp-plugin-options-storage
-description: Picks the right WordPress storage primitive for plugin data:
-  options, user/post/term/comment meta, transients, site options, site
-  transients, or custom tables. Covers grouped settings, autoload
-  management, transient TTL rules, serialized/JSON blob trade-offs,
-  multisite storage caveats, and naming conventions. Use when scaffolding
-  settings, choosing persistence for plugin-owned data, or auditing
-  update_option/get_option/get_post_meta/set_transient/autoload usage.
-author: Soczó Kristóf
-contact: mailto:lonsdale201@hotmail.com
-plugin: wordpress
-plugin-version-tested: "6.5 - 6.9"
-php-min: "7.4"
-last-updated: "2026-04-28"
-docs:
-  - https://developer.wordpress.org/reference/functions/add_option/
-  - https://developer.wordpress.org/reference/functions/get_option/
-  - https://developer.wordpress.org/reference/functions/get_post_meta/
-  - https://developer.wordpress.org/reference/functions/set_transient/
+description: >-
+  Picks the right WordPress storage primitive for plugin data: options,
+  user/post/term/comment meta, transients, site options, site transients, or
+  custom tables. Covers grouped settings, autoload management, transient TTL
+  rules, serialized/JSON blob trade-offs, multisite storage caveats, and naming
+  conventions. Use when scaffolding settings, choosing persistence for
+  plugin-owned data, or auditing update_option/get_option/get_post_meta/
+  set_transient/autoload usage.
+metadata:
+  wp-skills-author: "Soczó Kristóf"
+  wp-skills-contact: "mailto:lonsdale201@hotmail.com"
+  wp-skills-plugin: "wordpress"
+  wp-skills-plugin-version-tested: "6.5 - 7.0"
+  wp-skills-php-min: "7.4"
+  wp-skills-last-updated: "2026-07-12"
 ---
 
 # WordPress plugin: options & storage
@@ -28,7 +25,7 @@ This skill covers picking + using them correctly. It does NOT cover one-time act
 
 ## Multisite caveat (read first)
 
-This skill's author works on single-site WordPress; the multisite advice below is **derived from WP source code but has not been end-to-end tested in a multisite environment**. The primitives — `get_site_option` / `update_site_option` / `set_site_transient` / `delete_site_option` — exist and are documented; their semantics here are taken from [wp-includes/option.php](wp-includes/option.php). If you ship a plugin that has actual multisite users, run an integration test on a real network install before relying on these patterns. Some quirks (`switch_to_blog` interactions, network admin context detection, blog-id-aware caches) only surface in a real network.
+This skill's author works on single-site WordPress; the multisite advice below is **derived from WP source code but has not been end-to-end tested in a multisite environment**. The primitives — `get_site_option` / `update_site_option` / `set_site_transient` / `delete_site_option` — exist and are documented; their semantics here are taken from `wp-includes/option.php`. If you ship a plugin that has actual multisite users, run an integration test on a real network install before relying on these patterns. Some quirks (`switch_to_blog` interactions, network admin context detection, blog-id-aware caches) only surface in a real network.
 
 ## When to use this skill
 
@@ -57,12 +54,13 @@ Trigger when ANY of the following is true:
 
 The rough rule: **scalar or grouped key/value with no querying needs → option / meta / transient. Multi-row data you'll filter, sort, aggregate, or index → custom table.**
 
-## Group settings into ONE option, not 100
+## Group coherent settings; separate independent state
 
-The biggest single mistake in WP plugin storage: one option per setting.
+Avoid mechanically creating one option for every form field, but do not replace
+that smell with one universal blob. Choose boundaries by read/write lifecycle.
 
 ```php
-// WRONG — 12 rows, 12 writes, 12 cache/autoload entries
+// SMELL when these fields are always read and saved together.
 update_option( 'myplugin_provider',         $provider );
 update_option( 'myplugin_default_model',    $model );
 update_option( 'myplugin_max_tokens',       $tokens );
@@ -72,7 +70,7 @@ update_option( 'myplugin_failure_mode',     $mode );
 ```
 
 ```php
-// RIGHT — one row, one write, one cache/autoload entry
+// GOOD when this is one coherent settings contract.
 update_option( 'myplugin_settings', array(
     'provider'         => $provider,
     'default_model'    => $model,
@@ -90,15 +88,22 @@ When to group:
 - **Secrets are the exception.** Do not bury API keys or OAuth tokens inside a normal grouped settings option that may autoload. Store them separately with explicit non-autoload, or prefer `wp-config.php` constants / an encryption layer.
 
 When NOT to group:
-- **Counters / increments updated by independent code paths.** Two requests writing to the same `myplugin_settings` array race each other (read-modify-write without atomic CAS — see `wp-plugin-cron` for the concurrency story). Counters live in their own option (single scalar value) or a custom table.
+- **Counters / increments updated by independent code paths.** Two requests
+  writing the same settings array race. A separate scalar option limits the
+  collision domain but still is not an atomic increment; use it only for
+  single-writer or best-effort state. Correct concurrent counters need an atomic
+  custom-table update or a backend whose increment primitive is guaranteed.
+- **Independent settings with different write cadence, capability, autoload,
+  secret, or migration requirements.** A few intentional scalar options are
+  clearer and safer than a shared read-modify-write blob.
 - **Cached values with different TTLs** — those are transients, not options.
 - **Per-user / per-post data** — wrong primitive, use the right meta API.
 
-WP auto-serializes the array via `maybe_serialize` ([wp-includes/functions.php](wp-includes/functions.php)) using PHP `serialize()`. `get_option` auto-`maybe_unserialize`s back. You don't manually JSON-encode.
+WP auto-serializes the array via `maybe_serialize` (`wp-includes/functions.php`) using PHP `serialize()`. `get_option` auto-`maybe_unserialize`s back. You don't manually JSON-encode.
 
 ## Autoload management — WP 6.6+ semantics
 
-`autoload` controls whether the option is loaded into memory on every WordPress page request. Verified in [add_option docblock](wp-includes/option.php) (`@since 6.6.0 The $autoload parameter's default value was changed to null`, `@since 6.7.0 The autoload values 'yes' and 'no' are deprecated`):
+`autoload` controls whether the option is loaded into memory on every WordPress page request. Verified in the `add_option` docblock at `wp-includes/option.php` (`@since 6.6.0 The $autoload parameter's default value was changed to null`, `@since 6.7.0 The autoload values 'yes' and 'no' are deprecated`):
 
 ```php
 // MODERN — let WP decide via default autoload heuristics
@@ -117,7 +122,7 @@ Rules:
 - **Default to `null` (auto-decide)** for small settings read in normal runtime paths. In WP 6.6+, the default path stores an internal value such as `auto`, `auto-on`, or `auto-off`; by default `auto` and `auto-on` are treated as autoloaded values.
 - **Force `false`** for options that are only read on specific admin pages, REST endpoints, or background jobs. A 500KB serialized config that's only read on the settings page should NOT be in autoload.
 - **Force `true`** only when the option is genuinely needed on most page loads (rare for plugin settings). The site's autoload payload is shared across all plugins; bloating it slows everything down.
-- **Changing autoload on an existing option is a separate operation.** `update_option( $name, $same_value, false )` returns early and will not change autoload. On WP 6.7+, use `wp_set_option_autoload( $name, false )`; for older supported WP versions, change autoload when the value changes or recreate the option deliberately during a migration.
+- **Changing autoload on an existing option is a separate operation.** `update_option( $name, $same_value, false )` returns early and will not change autoload. On WP 6.4+, use `wp_set_option_autoload( $name, false )` or batch with `wp_set_option_autoload_values()`. For older supported WP versions, change autoload when the value changes or recreate the option deliberately during a migration.
 
 Audit your plugin's autoload footprint with:
 ```sql
@@ -185,7 +190,9 @@ Rules:
 
 ## Critical rules
 
-- **Group settings into ONE associative-array option per feature.** Not 100 scalar options.
+- **Group settings that form one read/write contract.** Keep independently
+  updated or differently protected state separate; avoid both 100 accidental
+  scalar rows and one race-prone universal blob.
 - **Default `autoload` to `null`** (let WP decide). Force `false` for rarely-read options. Don't pass `'yes'`/`'no'` strings on WP 6.7+.
 - **For queryable / aggregable / append-mostly data, use a custom table.** JSON / PHP-serialized blobs in options can't be SQL-indexed.
 - **Transients are cache, not storage.** Always TTL, always plugin-prefixed.
@@ -196,7 +203,7 @@ Rules:
 ## Common mistakes
 
 ```php
-// WRONG — one option per setting, 30 rows, 30 autoload entries
+// SMELL — unbounded field-to-option expansion with no storage contract.
 foreach ( $settings as $key => $value ) {
     update_option( 'myplugin_' . $key, $value );
 }
@@ -235,6 +242,7 @@ wp_set_option_autoload( 'myplugin_large_report', false );
 ## Cross-references
 
 - Run **`wp-plugin-lifecycle`** for default option seeding via `add_option` on activation, and `delete_option` / `delete_site_option` on uninstall.
+- Run **`wp-settings-storage-audit`** when reviewing a full settings contract: option array shape, Settings API registration, defaults, autoload, REST exposure, Customizer boundary, update hooks, and deprecations.
 - Run **`wp-security-secrets`** when the option holds API keys, tokens, OAuth secrets — autoload + plaintext storage warrants additional thought.
 - Run **`wp-plugin-architecture`** for the `Schema` / Constants centralization pattern that names every option key in one place.
 
@@ -248,8 +256,12 @@ wp_set_option_autoload( 'myplugin_large_report', false );
 
 ## References
 
-- `add_option` autoload semantics (WP 6.6 `null` default, 6.7 `'yes'`/`'no'` deprecation): [wp-includes/option.php](wp-includes/option.php)
-- `maybe_serialize` (WP's auto-PHP-serialize for arrays/objects): [wp-includes/functions.php](wp-includes/functions.php)
-- Transient API: [wp-includes/option.php](wp-includes/option.php) `set_transient` / `set_site_transient`
-- Meta API: [wp-includes/meta.php](wp-includes/meta.php) — `get_metadata` / `update_metadata` / `delete_metadata` underlie all `*_meta` functions
-- WP database schema: [wp-admin/includes/schema.php](wp-admin/includes/schema.php) — see how WP itself names tables and columns for inspiration
+- `add_option` autoload semantics (WP 6.6 `null` default, 6.7 `'yes'`/`'no'` deprecation): `wp-includes/option.php`
+- `maybe_serialize` (WP's auto-PHP-serialize for arrays/objects): `wp-includes/functions.php`
+- Transient API: `wp-includes/option.php` `set_transient` / `set_site_transient`
+- Meta API: `wp-includes/meta.php` — `get_metadata` / `update_metadata` / `delete_metadata` underlie all `*_meta` functions
+- WP database schema: `wp-admin/includes/schema.php` — see how WP itself names tables and columns for inspiration
+- Official documentation: <https://developer.wordpress.org/reference/functions/add_option/>
+- Official documentation: <https://developer.wordpress.org/reference/functions/get_option/>
+- Official documentation: <https://developer.wordpress.org/reference/functions/get_post_meta/>
+- Official documentation: <https://developer.wordpress.org/reference/functions/set_transient/>
