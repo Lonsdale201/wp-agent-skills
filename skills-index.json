@@ -12,7 +12,7 @@
     "skill_file": "SKILL.md"
   },
   "domain_count": 20,
-  "skill_count": 202,
+  "skill_count": 205,
   "domains": [
     {
       "slug": "better-data",
@@ -114,7 +114,7 @@
       "slug": "woocommerce",
       "path": "woocommerce",
       "readme_path": "woocommerce/README.md",
-      "skill_count": 35
+      "skill_count": 38
     },
     {
       "slug": "wordpress",
@@ -4281,7 +4281,7 @@
       "slug": "wc-coupon-dynamic",
       "name": "wc-coupon-dynamic",
       "domain": "woocommerce",
-      "description": "Implement dynamic or virtual WooCommerce coupons without creating `shop_coupon` posts. Covers `woocommerce_get_shop_coupon_data`, the `read_manual_coupon` field contract, precedence, validation, custom discount types, exact usage-limit behavior, idempotent usage accounting, performance, and security. Use for generated loyalty, partner, campaign, or entitlement codes resolved from an owned table or service.",
+      "description": "Build or audit WooCommerce virtual coupons resolved at runtime without a `shop_coupon` row. Covers `woocommerce_get_shop_coupon_data`, the `read_manual_coupon()` data contract, reserved code namespaces and resolver precedence, database-fallback collisions, request caching, Store API and classic checkout behavior, validation, external atomic usage accounting, order coupon snapshots, direct order application, deterministic recalculation, and security. Use for generated loyalty, referral, partner, campaign, or entitlement codes backed by an owned table/service, or when code calls these APIs. For persisted coupons, new discount-type math, or general coupon rules use `wc-coupon-types-rules`.",
       "path": "woocommerce/wc-coupon-dynamic",
       "skill_path": "woocommerce/wc-coupon-dynamic/SKILL.md",
       "url": "https://raw.githubusercontent.com/Lonsdale201/wp-agent-skills/main/woocommerce/wc-coupon-dynamic/SKILL.md",
@@ -4294,16 +4294,60 @@
         "plugin": "woocommerce",
         "plugin-version-tested": "10.9.4",
         "php-min": "7.4",
-        "last-updated": "2026-07-10"
+        "last-updated": "2026-07-20"
       },
       "resources": [],
       "has_reference": false,
       "has_examples": false,
       "has_scripts": false,
       "skill_md": {
-        "bytes": 8383,
-        "lines": 204,
-        "sha256": "6cd26d6ab08537a65a4bd8cb78f82e489fb50facdda5c4ad519983f167f48ab7"
+        "bytes": 12046,
+        "lines": 240,
+        "sha256": "cefbc586bdade59a2742dda3318658d492109587f3d91e5b0ce230e2aa7fb0b7"
+      }
+    },
+    {
+      "slug": "wc-coupon-types-rules",
+      "name": "wc-coupon-types-rules",
+      "domain": "woocommerce",
+      "description": "Implement, extend, or audit WooCommerce coupon types, persisted coupon CRUD, eligibility rules, inclusions/exclusions, stacking, usage limits, and order lifecycle behavior. Covers the complete custom discount-type contract (`woocommerce_coupon_discount_types`, product-vs-cart classification, calculation, and sort order), `WC_Coupon` setters, `WC_Discounts`, native product/category/sale/email/spend restrictions, custom validation hooks, admin fields, Store API and REST compatibility, concurrency holds, order snapshots, refunds/cancellations, taxes, and deterministic recalculation. Use when a plugin adds a coupon type or rule engine, changes which products/users qualify, creates coupons programmatically, auto-applies coupons, or produces incorrect/zero/duplicated discounts.",
+      "path": "woocommerce/wc-coupon-types-rules",
+      "skill_path": "woocommerce/wc-coupon-types-rules/SKILL.md",
+      "url": "https://raw.githubusercontent.com/Lonsdale201/wp-agent-skills/main/woocommerce/wc-coupon-types-rules/SKILL.md",
+      "raw_url": "https://raw.githubusercontent.com/Lonsdale201/wp-agent-skills/main/woocommerce/wc-coupon-types-rules/SKILL.md",
+      "html_url": "https://github.com/Lonsdale201/wp-agent-skills/blob/main/woocommerce/wc-coupon-types-rules/SKILL.md",
+      "directory_url": "https://github.com/Lonsdale201/wp-agent-skills/tree/main/woocommerce/wc-coupon-types-rules",
+      "metadata": {
+        "author": "Soczó Kristóf",
+        "contact": "mailto:lonsdale201@hotmail.com",
+        "plugin": "woocommerce",
+        "plugin-version-tested": "10.9.4",
+        "php-min": "7.4",
+        "last-updated": "2026-07-20"
+      },
+      "resources": [
+        {
+          "path": "agents/openai.yaml",
+          "repo_path": "woocommerce/wc-coupon-types-rules/agents/openai.yaml",
+          "type": "resource",
+          "bytes": 251,
+          "sha256": "a216f93ac7fc688d5c77c12bb9c89f51fa790583f0f15720fdbd2db601675e57"
+        },
+        {
+          "path": "references/coupon-contract.md",
+          "repo_path": "woocommerce/wc-coupon-types-rules/references/coupon-contract.md",
+          "type": "reference",
+          "bytes": 16130,
+          "sha256": "feafee3a2e8ad794b6e188f5f6721f87d41485009f454c5c4fcb2ce8ca4880d7"
+        }
+      ],
+      "has_reference": true,
+      "has_examples": false,
+      "has_scripts": false,
+      "skill_md": {
+        "bytes": 12185,
+        "lines": 219,
+        "sha256": "fc35a79ce80e93f2bb172ba2aa9f1d71e0dc3873c2179868688df64f4103b182"
       }
     },
     {
@@ -4333,6 +4377,50 @@
         "bytes": 8107,
         "lines": 189,
         "sha256": "27f5ccd5ecf3ddf1c0e09868b67e3d8d6fe63d1508b8c262c6979daedf087408"
+      }
+    },
+    {
+      "slug": "wc-downloadable-products",
+      "name": "wc-downloadable-products",
+      "domain": "woocommerce",
+      "description": "Implement, extend, or audit WooCommerce downloadable products and customer download access. Covers WC_Product_Download, stable download IDs, product CRUD, approved directories, the customer-download permission table and WC_Customer_Download CRUD, order-based grants and safe regeneration, limits and expiry, My Account and REST reads, bearer download URLs, download methods, logging, partial requests, and protected file storage. Use for _downloadable_files, wc_downloadable_product_permissions(), wc_downloadable_file_permission(), WC_Download_Handler, missing/duplicate/expired downloads, private digital files, or code that grants and revokes WooCommerce downloads.",
+      "path": "woocommerce/wc-downloadable-products",
+      "skill_path": "woocommerce/wc-downloadable-products/SKILL.md",
+      "url": "https://raw.githubusercontent.com/Lonsdale201/wp-agent-skills/main/woocommerce/wc-downloadable-products/SKILL.md",
+      "raw_url": "https://raw.githubusercontent.com/Lonsdale201/wp-agent-skills/main/woocommerce/wc-downloadable-products/SKILL.md",
+      "html_url": "https://github.com/Lonsdale201/wp-agent-skills/blob/main/woocommerce/wc-downloadable-products/SKILL.md",
+      "directory_url": "https://github.com/Lonsdale201/wp-agent-skills/tree/main/woocommerce/wc-downloadable-products",
+      "metadata": {
+        "author": "Soczó Kristóf",
+        "contact": "mailto:lonsdale201@hotmail.com",
+        "plugin": "woocommerce",
+        "plugin-version-tested": "10.9.4",
+        "php-min": "7.4",
+        "last-updated": "2026-07-20"
+      },
+      "resources": [
+        {
+          "path": "agents/openai.yaml",
+          "repo_path": "woocommerce/wc-downloadable-products/agents/openai.yaml",
+          "type": "resource",
+          "bytes": 239,
+          "sha256": "f25bd649640a3b8b411464fe8f17b36dc8e38621c55c3e184b826992b5df8ac0"
+        },
+        {
+          "path": "references/core-download-contract.md",
+          "repo_path": "woocommerce/wc-downloadable-products/references/core-download-contract.md",
+          "type": "reference",
+          "bytes": 10831,
+          "sha256": "44799d7558dd94e895808ee1b4e99e3605186d8df43856af026da9f40c9409f3"
+        }
+      ],
+      "has_reference": true,
+      "has_examples": false,
+      "has_scripts": false,
+      "skill_md": {
+        "bytes": 8969,
+        "lines": 159,
+        "sha256": "f82952e02454e0109e673eccf6efd695af84e94f1f674870bdfd0c99e7406af0"
       }
     },
     {
@@ -4484,7 +4572,7 @@
       "slug": "wc-payment-tokens",
       "name": "wc-payment-tokens",
       "domain": "woocommerce",
-      "description": "Store and use WooCommerce saved payment methods through `WC_Payment_Tokens` and `WC_Payment_Token_CC` safely. Covers provider token vs card data, tokenization gateway support, creating/updating/deleting/defaulting tokens, My Account nonce and ownership checks, `get_customer_tokens`, `get_customer_default_token`, `get_order_tokens`, attaching tokens to orders, gateway ID filtering, custom token tables, hooks, HPOS-safe order use, and checkout saved-token validation. Use when building saved cards, charging a saved method, add-payment-method flows, token migrations, token deletion/default endpoints, or gateway tokenization.",
+      "description": "Store and use WooCommerce saved payment methods safely through `WC_Payment_Tokens` and polymorphic `WC_Payment_Token` subclasses. Covers provider references versus payment credentials, CC/eCheck/custom token shapes, tokenization gateway support, creating/updating/deleting/defaulting tokens, My Account nonce and ownership checks, customer/order token queries, gateway and type validation, provider reconciliation filters, hooks, HPOS-safe order use, and checkout saved-token validation. Use for saved cards or wallets, charging a saved method, add-payment-method flows, token migrations, deletion/default endpoints, custom token types, or gateway tokenization.",
       "path": "woocommerce/wc-payment-tokens",
       "skill_path": "woocommerce/wc-payment-tokens/SKILL.md",
       "url": "https://raw.githubusercontent.com/Lonsdale201/wp-agent-skills/main/woocommerce/wc-payment-tokens/SKILL.md",
@@ -4497,16 +4585,16 @@
         "plugin": "woocommerce",
         "plugin-version-tested": "10.9.4",
         "php-min": "7.4",
-        "last-updated": "2026-07-10"
+        "last-updated": "2026-07-20"
       },
       "resources": [],
       "has_reference": false,
       "has_examples": false,
       "has_scripts": false,
       "skill_md": {
-        "bytes": 11948,
-        "lines": 284,
-        "sha256": "6edfc4f315da2857d71b318673467e2d90b99fb325825a670d04c8b2a616f5ff"
+        "bytes": 13106,
+        "lines": 299,
+        "sha256": "2739516c637448e455a70bca75f2d781eca543f565f3c74479aa2b29e8af1c72"
       }
     },
     {
@@ -4734,7 +4822,7 @@
       "slug": "wc-stripe-add-payment-method",
       "name": "wc-stripe-add-payment-method",
       "domain": "woocommerce",
-      "description": "Build or audit WooCommerce Stripe Gateway My Account saved-payment-method flows. Covers the canonical Woo form contract, Stripe UPE SetupIntent flow, exact selectors and POST fields, billing details, WC payment tokens, remote detach/default synchronization, custom endpoint security, and the boundary with WooCommerce Subscriptions. Use for payment-methods.php, form-add-payment-method.php, add_payment_method, wc-stripe-setup-intent, wc-stripe-upe-element, Stripe saved cards, or custom customer payment-method screens.",
+      "description": "Build or audit WooCommerce Stripe Gateway My Account saved-payment-method flows. Covers the canonical Woo form contract, Stripe UPE SetupIntents, exact selectors and POST fields, billing details, polymorphic Woo tokens including native Link, remote reconciliation/detach/default synchronization, custom endpoint security, and the Subscriptions boundary. Use for payment-methods.php, form-add-payment-method.php, add_payment_method, wc-stripe-setup-intent, wc-stripe-upe-element, Stripe saved cards or Link, or custom customer payment-method screens.",
       "path": "woocommerce/wc-stripe-add-payment-method",
       "skill_path": "woocommerce/wc-stripe-add-payment-method/SKILL.md",
       "url": "https://raw.githubusercontent.com/Lonsdale201/wp-agent-skills/main/woocommerce/wc-stripe-add-payment-method/SKILL.md",
@@ -4745,34 +4833,79 @@
         "author": "Soczo Kristof",
         "contact": "mailto:lonsdale201@hotmail.com",
         "plugin": "woocommerce-gateway-stripe",
-        "plugin-version-tested": "10.8.3",
+        "plugin-version-tested": "10.8.4",
         "woocommerce-version-tested": "10.9.4",
         "php-min": "7.4",
-        "last-updated": "2026-07-10"
+        "last-updated": "2026-07-20"
       },
       "resources": [
         {
           "path": "reference.md",
           "repo_path": "woocommerce/wc-stripe-add-payment-method/reference.md",
           "type": "reference",
-          "bytes": 2708,
-          "sha256": "184b9f1b63b1ef2ecea73c84f2a651bba7bb811bee10f95b735d47d7c5550e37"
+          "bytes": 2845,
+          "sha256": "c88fa9af8ed5909575ea58f97990d62b6d4e8d7a0e68f0ceb4795a07ec685ffb"
         }
       ],
       "has_reference": true,
       "has_examples": false,
       "has_scripts": false,
       "skill_md": {
-        "bytes": 10600,
-        "lines": 159,
-        "sha256": "d2e076f0798a06021ab6f3bfe00ce376848f354f2a4c8bd618a63ba5d4f0fc30"
+        "bytes": 11575,
+        "lines": 166,
+        "sha256": "c876725c73d011ccb5408661fad2b8929a93b2f9069b48d351d0cd300746f73a"
+      }
+    },
+    {
+      "slug": "wc-stripe-link-payments",
+      "name": "wc-stripe-link-payments",
+      "domain": "woocommerce",
+      "description": "Implement or audit Stripe Link behavior in the WooCommerce Stripe Gateway, especially code that assumes every `pm_...` or `stripe` token is a card. Distinguishes native Stripe PaymentMethod `type=link` and `WC_Payment_Token_Link` from `type=card` with `card.wallet.type=link`, and covers gateway/type identifiers, Payment Element and Express Checkout, save consent, SetupIntents, remote-to-Woo token reconciliation, duplicate detection, checkout request validation, deletion/defaulting, orders, subscriptions, and Link-specific test cases. Use for Link by Stripe, `WC_Payment_Token_Link`, `link.email`, `wallet_type=link`, saved Link methods, or Stripe token type errors.",
+      "path": "woocommerce/wc-stripe-link-payments",
+      "skill_path": "woocommerce/wc-stripe-link-payments/SKILL.md",
+      "url": "https://raw.githubusercontent.com/Lonsdale201/wp-agent-skills/main/woocommerce/wc-stripe-link-payments/SKILL.md",
+      "raw_url": "https://raw.githubusercontent.com/Lonsdale201/wp-agent-skills/main/woocommerce/wc-stripe-link-payments/SKILL.md",
+      "html_url": "https://github.com/Lonsdale201/wp-agent-skills/blob/main/woocommerce/wc-stripe-link-payments/SKILL.md",
+      "directory_url": "https://github.com/Lonsdale201/wp-agent-skills/tree/main/woocommerce/wc-stripe-link-payments",
+      "metadata": {
+        "author": "Soczó Kristóf",
+        "contact": "mailto:lonsdale201@hotmail.com",
+        "plugin": "woocommerce-gateway-stripe",
+        "plugin-version-tested": "10.8.4",
+        "woocommerce-version-tested": "10.9.4",
+        "php-min": "7.4",
+        "last-updated": "2026-07-20"
+      },
+      "resources": [
+        {
+          "path": "agents/openai.yaml",
+          "repo_path": "woocommerce/wc-stripe-link-payments/agents/openai.yaml",
+          "type": "resource",
+          "bytes": 251,
+          "sha256": "d1072664096545c0bb13e5141503b68e03c46b1fec8e68cd3790b1324ae0400f"
+        },
+        {
+          "path": "references/link-contract.md",
+          "repo_path": "woocommerce/wc-stripe-link-payments/references/link-contract.md",
+          "type": "reference",
+          "bytes": 11327,
+          "sha256": "c22887f56f876b709d6e516106d0b522627a9414f26f00289c8ee8b2fde1eed9"
+        }
+      ],
+      "has_reference": true,
+      "has_examples": false,
+      "has_scripts": false,
+      "skill_md": {
+        "bytes": 11700,
+        "lines": 194,
+        "sha256": "5ce8bbcef7fd8930d123bc4b66e00b0f0d6292a121ecd8c047e68b2c66658be9"
       }
     },
     {
       "slug": "wc-stripe-subscriptions",
       "name": "wc-stripe-subscriptions",
       "domain": "woocommerce",
-      "description": "Integrate WooCommerce Stripe Gateway 10.8+ with WooCommerce Subscriptions 9.0. Covers gateway feature support, automatic renewal charges, Stripe customer/payment-method metadata, failed-renewal recovery, SCA, change-payment SetupIntents, update-all behavior, Express Checkout on the change-payment page, detached tokens, and safe test cases. Use when Stripe is a subscription gateway or code touches scheduled_subscription_payment_stripe, _stripe_source_id on WC_Subscription, change_payment_method, renewal authentication, or Stripe token migration.",
+      "description": "Integrate WooCommerce Stripe Gateway 10.8+ with WooCommerce Subscriptions 9.0. Covers gateway feature support, automatic renewals, Stripe metadata, failed-renewal recovery, SCA, change-payment SetupIntents, update-all behavior, Express Checkout, native Link and card-wallet token shapes, detached tokens, and safe tests. Use when Stripe is a subscription gateway or code touches scheduled_subscription_payment_stripe, _stripe_source_id on WC_Subscription, change_payment_method, renewal authentication, Link, or Stripe token migration.",
       "path": "woocommerce/wc-stripe-subscriptions",
       "skill_path": "woocommerce/wc-stripe-subscriptions/SKILL.md",
       "url": "https://raw.githubusercontent.com/Lonsdale201/wp-agent-skills/main/woocommerce/wc-stripe-subscriptions/SKILL.md",
@@ -4782,20 +4915,21 @@
       "metadata": {
         "author": "Soczo Kristof",
         "contact": "mailto:lonsdale201@hotmail.com",
-        "plugin": "woocommerce-gateway-stripe + woocommerce-subscriptions",
-        "plugin-version-tested": "woocommerce-gateway-stripe 10.8.3; woocommerce-subscriptions 9.0.0",
+        "plugin": "woocommerce-gateway-stripe",
+        "plugin-version-tested": "10.8.4",
+        "woocommerce-subscriptions-version-tested": "9.0.0",
         "woocommerce-version-tested": "10.9.4",
         "php-min": "7.4",
-        "last-updated": "2026-07-10"
+        "last-updated": "2026-07-20"
       },
       "resources": [],
       "has_reference": false,
       "has_examples": false,
       "has_scripts": false,
       "skill_md": {
-        "bytes": 11060,
-        "lines": 188,
-        "sha256": "0aeca6a14fb5d51d04090c6c2391f627b142069a0259be1b7f1e2f6b03d17d33"
+        "bytes": 12108,
+        "lines": 197,
+        "sha256": "31c07a2ed43a63aec8911dde157c77db5525288920ff5c925d11c9fcd95b19b7"
       }
     },
     {
@@ -5171,7 +5305,7 @@
       "slug": "wcs-subscription-downloads",
       "name": "wcs-subscription-downloads",
       "domain": "woocommerce",
-      "description": "WooCommerce Subscriptions built-in Subscription Downloads reference for linked downloadable products, the woocommerce_subscription_downloads table, file-sharing settings, permission grants/revokes, email/account lists, switch cleanup, optional zero-cost line items, and WCS Gifting ownership. Use for WC_Subscription_Downloads, shared or linked downloads, downloadable subscription access, or subscription download permissions.",
+      "description": "Implement, extend, or audit WooCommerce Subscriptions download access. Distinguishes ordinary downloadable subscription line items from the bundled linked Subscription Downloads feature; covers WCS_Download_Handler, shop_subscription-owned permissions, renewal de-duplication, new-file drip behavior, subscription status access gates, the woocommerce_subscription_downloads catalog mapping, active/cancel/expire grants and revokes, counter resets, optional zero-cost line items, projections, switching, emails, and WCS Gifting. Use for missing or duplicate subscription downloads, WC_Subscription_Downloads, linked/shared files, drip downloadable content, subscription renewal access, or downloadable permissions tied to a subscription.",
       "path": "woocommerce/wcs-subscription-downloads",
       "skill_path": "woocommerce/wcs-subscription-downloads/SKILL.md",
       "url": "https://raw.githubusercontent.com/Lonsdale201/wp-agent-skills/main/woocommerce/wcs-subscription-downloads/SKILL.md",
@@ -5182,19 +5316,19 @@
         "author": "Soczó Kristóf",
         "contact": "mailto:lonsdale201@hotmail.com",
         "plugin": "woocommerce-subscriptions",
-        "plugin-version-tested": "9.0.0",
+        "plugin-version-tested": "9.0.1",
         "woocommerce-version-tested": "10.9.4",
         "php-min": "7.4",
-        "last-updated": "2026-07-10"
+        "last-updated": "2026-07-20"
       },
       "resources": [],
       "has_reference": false,
       "has_examples": false,
       "has_scripts": false,
       "skill_md": {
-        "bytes": 8749,
-        "lines": 177,
-        "sha256": "34e1e294012e50ded25aada81d0e0fc6a54e65b363c81daf6442c3f5a23bdadd"
+        "bytes": 13688,
+        "lines": 243,
+        "sha256": "278531eb3b348b8e6098ff9cc35059ccb5d555fcae4144272c81608cfb494759"
       }
     },
     {

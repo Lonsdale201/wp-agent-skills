@@ -2,6 +2,40 @@
 
 This collection is continuously evolving — entries are date-based, not version-tagged. New skills land when they're ready; updates go in when they cover real ground (a new release of an upstream plugin, a verified misconception, a corrected example).
 
+## 2026-07-20 (woocommerce: Stripe Link + polymorphic payment tokens, coupon & download skills)
+
+A WooCommerce batch — three new skills plus five updates — converging on two themes: **stop assuming every saved payment method is a card**, and **keep coupon / download definition, entitlement, and delivery as separate layers**. Verified against WooCommerce 10.9.4 (Stripe Gateway 10.8.4).
+
+### Added — `woocommerce/wc-stripe-link-payments`
+
+Handle Stripe Link correctly instead of treating every `pm_...` / `stripe` token as a card. Distinguishes the two Link representations — native reusable Link (`type=link`, hydrated as `WC_Payment_Token_Link`, keyed on `link.email`) versus a card used through Link (`type=card` with `card.wallet.type=link`, hydrated as `WC_Stripe_Payment_Token_CC`) — and keeps the identifier layers separate (Stripe method type vs Woo token type vs token class vs the `stripe` gateway ID vs request markers like `express_payment_type=link`). Covers inspecting tokens polymorphically (a verified 10.8.4 quirk: `WC_Payment_Token_Link::get_payment_method_type()` returns `null` because the prop is missing from `extra_data` — classify with `get_type() === 'link'`), letting the gateway own token creation, the Link-vs-Woo-tokenization consent boundary, Payment Element / Express Checkout intent pairing, reconciliation-on-read of `get_customer_tokens()` (email-based dedup means neither Link email nor local token ID is a stable business key), and orders/subscriptions through gateway `stripe`. Cross-refs `wc-stripe-add-payment-method`, `wc-payment-tokens`, `wc-stripe-subscriptions`, `wc-stripe-webhooks`.
+
+### Added — `woocommerce/wc-coupon-types-rules`
+
+The persisted-coupon counterpart to `wc-coupon-dynamic`: implement/extend/audit coupon **types** and rule engines on real `shop_coupon` objects. Covers the complete custom discount-type contract (`woocommerce_coupon_discount_types` registration, product-vs-cart classification via `woocommerce_product_coupon_types` / `woocommerce_cart_coupon_types`, the per-unit `woocommerce_coupon_get_discount_amount` branch that returns a discount not a price, and `woocommerce_coupon_sort` stacking), `WC_Coupon` CRUD with native restrictions, the validation hook family (`woocommerce_coupon_is_valid` / `..._for_product` / `..._for_cart`, `..._get_items_to_apply`, `..._get_apply_quantity`) kept side-effect-free, core usage accounting (tentative concurrency holds, status-driven counts, `_used_by`, idempotent recorded-usage flag), order snapshots via `woocommerce_checkout_create_order_coupon_item`, and deterministic recalculation. Cross-refs `wc-coupon-dynamic`, `wc-cart-checkout-classic`, `wc-store-api`, `wc-order-lifecycle-and-items`.
+
+### Added — `woocommerce/wc-downloadable-products`
+
+Downloadable products and customer download access through the three-layer model: `WC_Product_Download` (what a product can deliver) → `WC_Customer_Download` (who may download which stable file ID, via which order, until when) → `WC_Download_Handler` (does the request pass every check). Core rule: a permission row is not access unless the related order still permits downloads. Covers stable UUID download IDs (replacing one strands old permissions), order-lifecycle grants via `wc_downloadable_product_permissions()` / `wc_downloadable_file_permission()`, safe full regeneration (the table has no unique constraint and `$force` does not purge old rows — delete via the customer-download data store first), reads via `wc_get_customer_available_downloads()`, limits/expiry, bearer-link security, and protected storage (`force` / `xsendfile` / `redirect`). Cross-refs `wcs-subscription-downloads`, `wc-order-lifecycle-and-items`, `wc-rest-api-v4`, `wc-action-scheduler-jobs`.
+
+### Updated — `woocommerce/wc-payment-tokens`
+
+Reframed around polymorphic `WC_Payment_Token` subclasses instead of a CC-centric view: provider reference vs payment credentials, CC / eCheck / custom / Link token shapes, gateway **and type** validation, provider reconciliation-on-read filters, and a new "treat token objects polymorphically" section. The data layer beneath both `wc-stripe-add-payment-method` and the new Link skill.
+
+### Updated — `woocommerce/wc-stripe-add-payment-method` and `woocommerce/wc-stripe-subscriptions`
+
+Both bumped to Stripe Gateway 10.8.4 and extended for native Link: the add-payment-method flow gains a "Link boundary" section (polymorphic Woo tokens, reconciliation/detach/default sync), and the Subscriptions skill gains a "Link token contract" section (native Link vs card-wallet token shapes on renewals and change-payment). `wc-stripe-subscriptions` also drops its combined `wp-skills-plugin` value (`woocommerce-gateway-stripe + woocommerce-subscriptions`) down to `woocommerce-gateway-stripe`, moving the Subscriptions version into a dedicated `wp-skills-woocommerce-subscriptions-version-tested` key.
+
+### Updated — `woocommerce/wc-coupon-dynamic`
+
+Rescoped from "dynamic coupons" to **virtual coupons**: the runtime `woocommerce_get_shop_coupon_data` mechanism, an owned-namespace + single-request-snapshot resolver pattern, side-effect-free validation, canonical manual data, atomic external usage accounting, and order snapshots. The persisted custom-discount-type material moved out to the new `wc-coupon-types-rules`, so the two skills no longer overlap.
+
+### Updated — `woocommerce/wcs-subscription-downloads`
+
+Restructured around the two distinct models: ordinary downloadable items on a subscription product (WC grants/drips per renewal) vs the built-in **Linked Subscription Downloads** feature (the `woocommerce_subscription_downloads` mapping is catalog data with its own permission lifecycle). Adds new-file drip behavior, a line-item display/performance projection, and a regression matrix.
+
+Domain + root README rows and the skill counter (202 → 205) updated; `skills-index.json` regenerated (the three new skills each ship a `references/` file, registered as bundled resources). Plugin count unchanged at 29 — `woocommerce-subscriptions` stays counted via the `wcs-*` skills despite `wc-stripe-subscriptions` dropping its combo `plugin` value.
+
 ## 2026-07-20 (docs + CI: woocommerce structure row, GitHub Actions bumps)
 
 Root README `Repository structure` table: the `woocommerce/` domain is now broken out into its own indented sub-rows — WooCommerce Subscriptions (`wcs-*`), WooCommerce Memberships (`wcm-*`), and other extensions (the Stripe gateway, Sequential Order Numbers Pro) — each linking to its section in the woocommerce domain README, instead of one flat row that buried them in prose. The folder layout is unchanged; no skill content changed, so `skills-index.json` and the skill/plugin counts are untouched.

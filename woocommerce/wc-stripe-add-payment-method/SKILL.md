@@ -1,14 +1,14 @@
 ---
 name: wc-stripe-add-payment-method
-description: Build or audit WooCommerce Stripe Gateway My Account saved-payment-method flows. Covers the canonical Woo form contract, Stripe UPE SetupIntent flow, exact selectors and POST fields, billing details, WC payment tokens, remote detach/default synchronization, custom endpoint security, and the boundary with WooCommerce Subscriptions. Use for payment-methods.php, form-add-payment-method.php, add_payment_method, wc-stripe-setup-intent, wc-stripe-upe-element, Stripe saved cards, or custom customer payment-method screens.
+description: Build or audit WooCommerce Stripe Gateway My Account saved-payment-method flows. Covers the canonical Woo form contract, Stripe UPE SetupIntents, exact selectors and POST fields, billing details, polymorphic Woo tokens including native Link, remote reconciliation/detach/default synchronization, custom endpoint security, and the Subscriptions boundary. Use for payment-methods.php, form-add-payment-method.php, add_payment_method, wc-stripe-setup-intent, wc-stripe-upe-element, Stripe saved cards or Link, or custom customer payment-method screens.
 metadata:
   wp-skills-author: "Soczo Kristof"
   wp-skills-contact: "mailto:lonsdale201@hotmail.com"
   wp-skills-plugin: "woocommerce-gateway-stripe"
-  wp-skills-plugin-version-tested: "10.8.3"
+  wp-skills-plugin-version-tested: "10.8.4"
   wp-skills-woocommerce-version-tested: "10.9.4"
   wp-skills-php-min: "7.4"
-  wp-skills-last-updated: "2026-07-10"
+  wp-skills-last-updated: "2026-07-20"
 ---
 
 # WooCommerce Stripe: saved payment methods
@@ -19,7 +19,7 @@ Use this skill when account markup or custom code can affect adding, listing, de
 
 Do not rebuild Stripe Elements markup or submit raw card data to WordPress. Keep `$gateway->payment_fields()` and let Stripe.js own payment details. WordPress receives only provider identifiers such as `seti_...` and `pm_...`.
 
-Stripe 10.8.3 uses `WC_Stripe_UPE_Payment_Gateway` as the main `stripe` gateway. `WC_Gateway_Stripe` is only a deprecated compatibility subclass. Optimized Checkout is deliberately disabled on Add payment method and Subscriptions Change payment method pages; those pages use the standard UPE flow. Express Checkout on a subscription change-payment page is a separate Stripe 10.8+ feature covered by `wc-stripe-subscriptions`.
+Stripe 10.8.4 uses `WC_Stripe_UPE_Payment_Gateway` as the main `stripe` gateway. `WC_Gateway_Stripe` is only a deprecated compatibility subclass. Optimized Checkout is deliberately disabled on Add payment method and Subscriptions Change payment method pages; those pages use the standard UPE flow. Express Checkout on a subscription change-payment page is a separate Stripe 10.8+ feature covered by `wc-stripe-subscriptions`.
 
 ## Canonical Woo form
 
@@ -86,6 +86,12 @@ do_action( 'woocommerce_stripe_add_payment_method', $user_id, $payment_method_ob
 
 and redirects to the `payment-methods` endpoint. Do not document this hook with a token ID: its arguments are user ID and the Stripe PaymentMethod object.
 
+### Link boundary
+
+Classify the retrieved PaymentMethod, not its `pm_...` prefix. A native Stripe `type=link` method becomes `WC_Payment_Token_Link` with Woo token type `link`, gateway `stripe`, and email metadata; it is not a `WC_Payment_Token_CC`. A `type=card` method with `card.wallet.type=link` remains a Stripe CC token with card fields. Do not store either one under a fictional `stripe_link` order gateway.
+
+When Link is enabled, Stripe hides the Woo store-level save checkbox for card and Link because the Payment Element owns Link-wallet consent. Do not re-add that checkbox. Add payment method still uses a SetupIntent and the gateway's merchant-side token-creation path. Use `wc-stripe-link-payments` for the complete identifier, consent, duplicate, and reconciliation contract.
+
 ## Billing data
 
 UPE preloads billing data from `WC()->customer`; country-restricted methods also depend on `customerData.billing_country`. Custom account screens must map edits back to canonical Woo customer properties:
@@ -135,11 +141,12 @@ Adding a token and changing a subscription's payment method are different operat
 4. Confirm SetupIntent creation succeeds and the final POST contains `wc-stripe-setup-intent`.
 5. Confirm `woocommerce_stripe_add_payment_method` fires once and a Woo token is created for the current user.
 6. Confirm the method appears in My Account after Stripe customer cache clearing.
-7. Test delete/default, duplicate-card handling, redirect/SCA methods, and subscription change-payment separately.
+7. Test delete/default, duplicate-card handling, native Link versus card-through-Link, redirect/SCA methods, and subscription change-payment separately.
 
 ## Cross-references
 
 - Use `wc-payment-tokens` for provider-neutral Woo token storage and ownership rules.
+- Use `wc-stripe-link-payments` for native Link versus Link-wallet card tokens, consent, and remote reconciliation.
 - Use `wc-stripe-subscriptions` for renewals, payment-method changes, SCA, and Express Checkout on subscriptions.
 - Use `wc-stripe-webhooks` for webhook validation, deferred settlement, and order-state hooks.
 - See [reference.md](reference.md) for the full My Account list/template and legacy compatibility notes.
