@@ -1,38 +1,14 @@
 ---
 name: jfb-action-events
-description: Configures the JetFormBuilder action events system — the
-  named events (DEFAULT.PROCESS, DEFAULT.REQUIRED, GATEWAY.SUCCESS,
-  GATEWAY.FAILED, BAD.REQUEST, ON.DYNAMIC_STATE, never) that decide
-  WHEN a Form Action runs. Covers declaring supported / unsupported /
-  required events on a custom action, the validation precedence inside
-  Base_Event::is_valid_action(), the multi-event subscription model
-  the action editor exposes, and how to register a brand-new event
-  type via the 'jet-form-builder/event-types' filter using Base_Event,
-  Base_Action_Event, or Base_Gateway_Event. Use when an action needs
-  to run only on payment callbacks, only on validation failure, only
-  on a specific conditional state, after another action's hidden flow,
-  or when the plugin needs to define its own event class (e.g. for
-  inbound webhooks). Triggers on mentions of "JFB events", "action
-  events", "GATEWAY.SUCCESS", "DEFAULT.PROCESS", "supported_events",
-  "unsupported_events", "get_required_events", "Base_Event",
-  "Base_Gateway_Event", "jet-form-builder/event-types",
-  "before-trigger-event", "add_hidden".
-author: Soczó Kristóf
-contact: mailto:lonsdale201@hotmail.com
-plugin: jetformbuilder
-plugin-version-tested: "3.5.6"
-api-stable-since: "3.0"
-php-min: "7.4"
-last-updated: "2026-04-28"
-docs:
-  - https://github.com/Crocoblock/developer-documentation/tree/main/03-jet-form-builder
-source-refs:
-  - includes/actions/events/base-event.php
-  - includes/actions/events/base-action-event.php
-  - includes/actions/events/base-gateway-event.php
-  - includes/actions/events-list.php
-  - includes/actions/events-manager.php
-  - includes/actions/types/base.php
+description: Configures the JetFormBuilder action events system — the named events (DEFAULT.PROCESS, DEFAULT.REQUIRED, GATEWAY.SUCCESS, GATEWAY.FAILED, BAD.REQUEST, ON.DYNAMIC_STATE, never) that decide WHEN a Form Action runs. Covers declaring supported / unsupported / required events on a custom action, the validation precedence inside Base_Event::is_valid_action(), the multi-event subscription model the action editor exposes, and how to register a brand-new event type via the 'jet-form-builder/event-types' filter using Base_Event, Base_Action_Event, or Base_Gateway_Event. Use when an action must run only on payment callbacks, validation failure, a conditional state, another action's hidden flow, or when defining a custom event class (e.g. inbound webhooks). Triggers on mentions of "JFB events", "action events", "GATEWAY.SUCCESS", "DEFAULT.PROCESS", "supported_events", "unsupported_events", "get_required_events", "Base_Event", "Base_Gateway_Event", "jet-form-builder/event-types", "before-trigger-event", "add_hidden".
+metadata:
+  wp-skills-author: "Soczó Kristóf"
+  wp-skills-contact: "mailto:lonsdale201@hotmail.com"
+  wp-skills-plugin: "jetformbuilder"
+  wp-skills-plugin-version-tested: "3.5.6"
+  wp-skills-php-min: "7.4"
+  wp-skills-api-stable-since: "3.0"
+  wp-skills-last-updated: "2026-04-28"
 ---
 
 # JetFormBuilder: action events — when does an action run?
@@ -428,3 +404,4 @@ If your action's `provideEvents` shouldn't depend on settings, ignore the argume
 - Bad request event: `wp-content/plugins/jetformbuilder/includes/actions/events/bad-request/bad-request-event.php`
 - Never event (hidden actions): `wp-content/plugins/jetformbuilder/includes/actions/events/never/never-event.php`
 - Dynamic state event: `wp-content/plugins/jetformbuilder/includes/actions/events/on-dynamic-state/on-dynamic-state-event.php`
+- Official documentation: <https://github.com/Crocoblock/developer-documentation/tree/main/03-jet-form-builder>

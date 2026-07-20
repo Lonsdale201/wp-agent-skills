@@ -25,3 +25,7 @@ node_modules/
 package.json
 package-lock.json
 
+# Spreadsheets (never commit)
+*.csv
+*.xlsx
+

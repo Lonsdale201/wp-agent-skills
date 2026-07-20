@@ -17,21 +17,13 @@ description: Register a custom Dynamic Visibility condition for
   (handles WP_Post, WP_User, WP_Term, WP_Comment, listing macros).
   Use when scaffolding a JetEngine companion plugin's visibility
   conditions.
-author: Soczó Kristóf
-contact: mailto:lonsdale201@hotmail.com
-plugin: jet-engine
-plugin-version-tested: "3.8.8.2"
-php-min: "7.4"
-last-updated: "2026-05-01"
-docs:
-  - https://crocoblock.com/knowledge-base/plugins/jetengine/
-  - https://github.com/Crocoblock/developer-documentation/tree/main/01-jet-engine
-source-refs:
-  - wp-content/plugins/jet-engine/includes/modules/dynamic-visibility/inc/conditions/base.php
-  - wp-content/plugins/jet-engine/includes/modules/dynamic-visibility/inc/conditions/equal.php
-  - wp-content/plugins/jet-engine/includes/modules/dynamic-visibility/inc/conditions/week-days.php
-  - wp-content/plugins/jet-engine/includes/modules/dynamic-visibility/inc/conditions-checker.php
-  - wp-content/plugins/jet-engine/includes/modules/dynamic-visibility/inc/module.php
+metadata:
+  wp-skills-author: "Soczó Kristóf"
+  wp-skills-contact: "mailto:lonsdale201@hotmail.com"
+  wp-skills-plugin: "jet-engine"
+  wp-skills-plugin-version-tested: "3.8.8.2"
+  wp-skills-php-min: "7.4"
+  wp-skills-last-updated: "2026-05-01"
 ---
 
 # JetEngine: register a Dynamic Visibility condition
@@ -167,7 +159,7 @@ The `jet-engine/init` action is the cleanest because the JE instance is passed i
 ```php
 // WRONG — calling on plugins_loaded (any priority) fatal-errors
 add_action( 'plugins_loaded', static function (): void {
-    if ( jet_engine()->modules->is_module_active( 'dynamic-visibility' ) ) {  // 🔴 modules is null here
+    if ( jet_engine()->modules->is_module_active( 'dynamic-visibility' ) ) {  // WRONG: modules is null here
         // ...
     }
 }, 11 );
@@ -410,7 +402,7 @@ public function check( $args = [] ): bool {
 
 // WRONG — generic slug colliding with built-ins
 public function get_id(): string {
-    return 'is-front-page';   // 🔴 might collide with another plugin's condition
+    return 'is-front-page';   // WRONG: might collide with another plugin's condition
 }
 
 // RIGHT — namespaced
@@ -461,7 +453,7 @@ add_action( 'plugins_loaded', function () {
 add_action( 'plugins_loaded', function () {
     if ( ! function_exists( 'jet_engine' ) ) return;
     if ( ! jet_engine()->modules->is_module_active( 'dynamic-visibility' ) ) return;
-    // 🔴 Fatal — jet_engine()->modules is null until init:-999. plugins_loaded runs earlier.
+    // WRONG: Fatal — jet_engine()->modules is null until init:-999. plugins_loaded runs earlier.
 }, 11 );
 
 // RIGHT — just register the action; JE itself only fires it when the module is on
@@ -495,7 +487,7 @@ public function get_custom_controls(): array {
     return [ 'days' => [ /* ... */ ] ];
 }
 public function check( $args = [] ): bool {
-    return ! empty( $args['my_plugin_days'] );   // 🔴 reads wrong key
+    return ! empty( $args['my_plugin_days'] );   // WRONG: reads wrong key
 }
 
 // RIGHT — keys match between get_custom_controls() and $args
@@ -534,3 +526,7 @@ public function check( $args = [] ): bool {
 - JE init timing: [wp-content/plugins/jet-engine/jet-engine.php:164,345](jet-engine.php) — `add_action( 'init', [ $this, 'init' ], -999 )` is where `$this->modules = new Jet_Engine_Modules()` is set; calling `is_module_active()` before that fires fatal-errors.
 - Modules manager: [wp-content/plugins/jet-engine/includes/modules/modules-manager.php:382](modules-manager.php) — `is_module_active()` impl, callable only after `init:-999`.
 - Crocoblock developer documentation: <https://github.com/Crocoblock/developer-documentation>.
+- Official documentation: <https://crocoblock.com/knowledge-base/plugins/jetengine/>
+- Official documentation: <https://github.com/Crocoblock/developer-documentation/tree/main/01-jet-engine>
+- Verified source paths:
+  - `wp-content/plugins/jet-engine/includes/modules/dynamic-visibility/inc/module.php`

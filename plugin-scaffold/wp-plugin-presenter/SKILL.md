@@ -10,17 +10,13 @@ description: Design and review native presenter classes in WordPress
   rest_ensure_response data, wp_add_inline_script config, or when code
   returns raw DTOs, WP_Post, WC_Order, get_object_vars, json_encode, or
   unescaped HTML from controllers.
-author: Soczo Kristof
-contact: mailto:lonsdale201@hotmail.com
-plugin: wordpress
-plugin-version-tested: "6.3 - 6.9"
-php-min: "7.4"
-last-updated: "2026-04-29"
-docs:
-  - https://developer.wordpress.org/plugins/security/validating-sanitizing-escaping/
-  - https://developer.wordpress.org/rest-api/extending-the-rest-api/adding-custom-endpoints/
-  - https://developer.wordpress.org/reference/functions/rest_ensure_response/
-  - https://developer.wordpress.org/reference/functions/wp_json_encode/
+metadata:
+  wp-skills-author: "Soczo Kristof"
+  wp-skills-contact: "mailto:lonsdale201@hotmail.com"
+  wp-skills-plugin: "wordpress"
+  wp-skills-plugin-version-tested: "6.3 - 6.9"
+  wp-skills-php-min: "7.4"
+  wp-skills-last-updated: "2026-04-29"
 ---
 
 # WordPress plugin: native presenters
@@ -205,3 +201,7 @@ update_option( 'myplugin_last_presented', time() );
 - `rest_ensure_response()` for REST controllers.
 - `wp_send_json_success()` / `wp_send_json_error()` for AJAX.
 - `wp_json_encode()` and `wp_add_inline_script()` for safe JS config.
+- Official documentation: <https://developer.wordpress.org/plugins/security/validating-sanitizing-escaping/>
+- Official documentation: <https://developer.wordpress.org/rest-api/extending-the-rest-api/adding-custom-endpoints/>
+- Official documentation: <https://developer.wordpress.org/reference/functions/rest_ensure_response/>
+- Official documentation: <https://developer.wordpress.org/reference/functions/wp_json_encode/>

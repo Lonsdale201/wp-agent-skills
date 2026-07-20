@@ -1,0 +1,4 @@
+interface:
+  display_name: "LearnDash Course Access"
+  short_description: "LearnDash course access and enrollment"
+  default_prompt: "Use $learndash-course-access to review LearnDash course enrollment logic."

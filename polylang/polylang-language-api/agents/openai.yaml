@@ -1,0 +1,4 @@
+interface:
+  display_name: "Polylang Language API"
+  short_description: "Polylang language guards and switchers"
+  default_prompt: "Use $polylang-language-api to make this WordPress plugin or theme code safe for Polylang language detection, URLs, and switchers."

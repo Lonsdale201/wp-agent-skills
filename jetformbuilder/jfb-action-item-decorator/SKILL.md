@@ -11,18 +11,14 @@ description: Wraps every action item in the JetFormBuilder action editor with
   of "jet.fb.action.item", "useLoopedAction", "useActionsEdit", "useActions",
   "ActionItemWrapper", "ActionItemBody", "decorate every action", "per-action
   toggle", or "visual control over action events".
-author: Soczó Kristóf
-contact: mailto:lonsdale201@hotmail.com
-plugin: jetformbuilder
-plugin-version-tested: "3.5.6"
-api-stable-since: "3.0"
-php-min: "7.4"
-last-updated: "2026-04-28"
-docs:
-  - https://github.com/Crocoblock/developer-documentation/tree/main/03-jet-form-builder
-  - https://developer.wordpress.org/block-editor/reference-guides/packages/packages-hooks/
-source-refs:
-  - assets/build/editor/form.builder.js
+metadata:
+  wp-skills-author: "Soczó Kristóf"
+  wp-skills-contact: "mailto:lonsdale201@hotmail.com"
+  wp-skills-plugin: "jetformbuilder"
+  wp-skills-plugin-version-tested: "3.5.6"
+  wp-skills-php-min: "7.4"
+  wp-skills-api-stable-since: "3.0"
+  wp-skills-last-updated: "2026-04-28"
 ---
 
 # JetFormBuilder: per-action UI decorator (`jet.fb.action.item` filter)
@@ -414,3 +410,4 @@ If you don't want the custom events visible in the multi-select (cleaner UX, onl
 - `chatgpt-for-jetformbuilder` plugin: production reference implementation of the TRUE/FALSE/Always pattern. See `assets/js/action-editor.js` lines around the `addFilter( 'jet.fb.action.item', ... )` call.
 - `jet-form-builder/assets/build/editor/form.builder.js`: the bundle that applies the filter (the `jet.fb.action.item` callback site).
 - `@wordpress/hooks` — the underlying filter mechanism (https://developer.wordpress.org/block-editor/reference-guides/packages/packages-hooks/).
+- Official documentation: <https://github.com/Crocoblock/developer-documentation/tree/main/03-jet-form-builder>

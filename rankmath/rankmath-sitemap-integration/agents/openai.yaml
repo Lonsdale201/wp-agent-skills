@@ -1,0 +1,4 @@
+interface:
+  display_name: "Rank Math Sitemap Integration"
+  short_description: "Integrate custom content with Rank Math sitemaps"
+  default_prompt: "Use $rankmath-sitemap-integration to make this plugin’s content work correctly in Rank Math sitemaps."

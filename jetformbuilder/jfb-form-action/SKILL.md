@@ -15,21 +15,14 @@ description: Registers a custom JetFormBuilder Form Action — a server-side
   "JFB action", "jet-form-builder/actions/register", "Base_Action",
   "JetFBActions.addAction", "Action_Exception", "field map", or
   "fields_map".
-author: Soczó Kristóf
-contact: mailto:lonsdale201@hotmail.com
-plugin: jetformbuilder
-plugin-version-tested: "3.5.6"
-api-stable-since: "3.0"
-php-min: "7.4"
-last-updated: "2026-04-28"
-docs:
-  - https://github.com/Crocoblock/developer-documentation/tree/main/03-jet-form-builder
-  - https://developer.wordpress.org/block-editor/reference-guides/components/
-source-refs:
-  - includes/actions/types/base.php
-  - includes/actions/manager.php
-  - includes/actions/action-handler.php
-  - modules/actions-v2/send-email/send-email-action.php
+metadata:
+  wp-skills-author: "Soczó Kristóf"
+  wp-skills-contact: "mailto:lonsdale201@hotmail.com"
+  wp-skills-plugin: "jetformbuilder"
+  wp-skills-plugin-version-tested: "3.5.6"
+  wp-skills-php-min: "7.4"
+  wp-skills-api-stable-since: "3.0"
+  wp-skills-last-updated: "2026-04-28"
 ---
 
 # JetFormBuilder: register a custom Form Action
@@ -419,7 +412,7 @@ For multi-value selects (e.g. CRM lists or tags), use JFB's `FormLabeledTokenFie
 const lists           = data.lists || []; // [{ value, label }]
 const selectedListIds = ( settings.list_id || [] ).map( String );
 
-// FormLabeledTokenField (JFB-shipped) handles value↔label translation
+// FormLabeledTokenField (JFB-shipped) handles value<->label translation
 // internally: pass IDs as `value`, pass {value, label} objects as
 // `suggestions`, and onChange receives IDs back. This is unlike the
 // standard @wordpress/components FormTokenField, which is string-only.
@@ -604,3 +597,4 @@ You don't need to read or write this directly — JFB handles the round-trip. If
   `wp-content/plugins/fluent-subscriptions-for-jetformbuilder-main/src/Actions/FluentCrmSubscribeAction.php`
   `wp-content/plugins/fluent-subscriptions-for-jetformbuilder-main/assets/js/editor-action.js`
 - WP component catalog: https://developer.wordpress.org/block-editor/reference-guides/components/
+- Official documentation: <https://github.com/Crocoblock/developer-documentation/tree/main/03-jet-form-builder>

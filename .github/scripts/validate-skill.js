@@ -19,10 +19,27 @@ const ALLOWED_DOMAINS = new Set([
   'better-route',
   'lw-plugins',
   'wp-rocket',
+  'redis-object-cache',
   'fluentcrm',
+  'theme-development',
+  'translatepress',
+  'elementor',
+  'szamlazzhu',
+  'dev-tooling',
+  'polylang',
+  'wpml',
+  'learndash',
+  'rankmath',
 ]);
 
-const REQUIRED_FRONTMATTER = ['name', 'description', 'author', 'plugin', 'plugin-version-tested', 'php-min'];
+// Open Agent Skills format (https://agentskills.io/specification):
+// only these top-level frontmatter keys are allowed. Everything
+// collection-specific lives under `metadata` as string->string pairs
+// in the wp-skills-* namespace.
+const ALLOWED_TOP_LEVEL = new Set(['name', 'description', 'license', 'compatibility', 'metadata', 'allowed-tools']);
+const REQUIRED_FRONTMATTER = ['name', 'description'];
+const REQUIRED_METADATA = ['wp-skills-author', 'wp-skills-plugin', 'wp-skills-plugin-version-tested', 'wp-skills-php-min'];
+const TAG_LIKE_RE = /<[A-Za-z!\/][^<>]*>/;
 
 // Conservative emoji regex (skin tones, ZWJ sequences, common pictographs)
 const EMOJI_RE = /[‼⁉⃣™ℹ↔-↙↩-↪⌚-⌛⌨⏏⏩-⏳⏸-⏺Ⓜ▪-▫▶◀◻-◾☀-➿⤴-⤵⬅-⬇⬛-⬜⭐⭕〰〽㊗㊙️]|[\u{1F000}-\u{1FFFF}]/u;
@@ -204,17 +221,32 @@ function validateSkillFolder(folderRel, errors, warnings, knownSkills) {
     }
   }
 
+  // Open format: no non-standard top-level keys.
+  for (const k of Object.keys(data)) {
+    if (!ALLOWED_TOP_LEVEL.has(k)) {
+      errors.push(`${domain}/${slug}/SKILL.md: non-standard top-level frontmatter key \`${k}\` — move it under \`metadata\` (wp-skills-* namespace) or, for docs/source-refs, into the body \`## References\` section.`);
+    }
+  }
+
   if (data.name && data.name !== slug) {
     errors.push(`${domain}/${slug}/SKILL.md: \`name\` (\`${data.name}\`) must equal the folder name (\`${slug}\`).`);
   }
+  if (typeof data.name === 'string') {
+    if (!/^[a-z0-9](?:[a-z0-9-]{0,62}[a-z0-9])?$/.test(data.name) || data.name.includes('--')) {
+      errors.push(`${domain}/${slug}/SKILL.md: \`name\` must be 1-64 chars of [a-z0-9-], no leading/trailing/consecutive hyphens.`);
+    }
+    if (/anthropic|claude/i.test(data.name)) {
+      errors.push(`${domain}/${slug}/SKILL.md: \`name\` must not contain the reserved words "anthropic" or "claude".`);
+    }
+  }
 
   if (typeof data.description === 'string') {
-    // CONTRIBUTING recommends <=1024 chars (router attention budget). Existing
-    // skills sometimes overshoot slightly; warn rather than block contributor
-    // PRs that touch unrelated content. The Submit-a-skill issue form's
-    // pre-check still treats >1024 as a hard error for NEW skills.
+    // Spec hard limit (agentskills.io): 1-1024 characters.
     if (data.description.length > 1024) {
-      warnings.push(`${domain}/${slug}/SKILL.md: description is ${data.description.length} chars (>1024 — router attention budget).`);
+      errors.push(`${domain}/${slug}/SKILL.md: description is ${data.description.length} chars (spec maximum is 1024).`);
+    }
+    if (TAG_LIKE_RE.test(data.description)) {
+      errors.push(`${domain}/${slug}/SKILL.md: description contains an XML/HTML-tag-like \`<...>\` sequence — descriptions are embedded in XML prompt blocks; spell the element name out instead.`);
     }
     if (/\bsee below\b/i.test(data.description)) {
       errors.push(`${domain}/${slug}/SKILL.md: description must not say "see below".`);
@@ -224,9 +256,38 @@ function validateSkillFolder(folderRel, errors, warnings, knownSkills) {
     }
   }
 
-  if (typeof data['plugin-version-tested'] === 'string' &&
-      !/^\d+(\.\d+)+(\s*-\s*\d+(\.\d+)+)?$/.test(data['plugin-version-tested'])) {
-    warnings.push(`${domain}/${slug}/SKILL.md: \`plugin-version-tested\` "${data['plugin-version-tested']}" should look like "10.5" or "10.0 - 10.5".`);
+  // metadata: flat string->string map, wp-skills-* namespaced keys.
+  const meta = data.metadata;
+  if (meta !== undefined) {
+    if (!meta || typeof meta !== 'object' || Array.isArray(meta)) {
+      errors.push(`${domain}/${slug}/SKILL.md: \`metadata\` must be a mapping of string keys to string values.`);
+    } else {
+      for (const [mk, mv] of Object.entries(meta)) {
+        if (typeof mv !== 'string') {
+          errors.push(`${domain}/${slug}/SKILL.md: \`metadata.${mk}\` must be a string (quote versions/dates); lists and nested mappings are not allowed.`);
+        }
+        if (!mk.startsWith('wp-skills-')) {
+          warnings.push(`${domain}/${slug}/SKILL.md: \`metadata.${mk}\` is outside the \`wp-skills-\` namespace — collection keys should be namespaced to avoid collisions.`);
+        }
+      }
+    }
+  }
+  for (const k of REQUIRED_METADATA) {
+    if (!meta || typeof meta !== 'object' || !String(meta[k] || '').trim()) {
+      errors.push(`${domain}/${slug}/SKILL.md: missing required metadata field \`${k}\`.`);
+    }
+  }
+
+  if (typeof data.compatibility === 'string' && data.compatibility.length > 500) {
+    errors.push(`${domain}/${slug}/SKILL.md: \`compatibility\` is ${data.compatibility.length} chars (spec maximum is 500).`);
+  }
+  if (data['allowed-tools'] !== undefined && typeof data['allowed-tools'] !== 'string') {
+    errors.push(`${domain}/${slug}/SKILL.md: \`allowed-tools\` must be a single space-separated string, not a YAML list.`);
+  }
+
+  const pvt = meta && typeof meta === 'object' ? meta['wp-skills-plugin-version-tested'] : undefined;
+  if (typeof pvt === 'string' && !/^\d+(\.\d+)+(\s*-\s*\d+(\.\d+)+)?$/.test(pvt)) {
+    warnings.push(`${domain}/${slug}/SKILL.md: \`wp-skills-plugin-version-tested\` "${pvt}" should look like "10.5" or "10.0 - 10.5".`);
   }
 
   // Body length / split rule. CONTRIBUTING recommends moving long material
@@ -234,9 +295,11 @@ function validateSkillFolder(folderRel, errors, warnings, knownSkills) {
   // pre-existing oversize skill is not blocked by an unrelated structural
   // rule; the warning still shows up in the PR check log for review.
   const lines = lineCount(content);
-  const hasReference = fs.existsSync(path.join(skillDir, 'reference.md'));
-  if (lines > 300 && !hasReference) {
-    warnings.push(`${domain}/${slug}/SKILL.md: ${lines} lines and no reference.md (CONTRIBUTING.md recommends progressive disclosure past 300 lines).`);
+  const hasReference = fs.existsSync(path.join(skillDir, 'reference.md')) || fs.existsSync(path.join(skillDir, 'references'));
+  if (lines > 500) {
+    warnings.push(`${domain}/${slug}/SKILL.md: ${lines} lines (the Agent Skills spec recommends keeping SKILL.md under 500 lines — split into references/).`);
+  } else if (lines > 300 && !hasReference) {
+    warnings.push(`${domain}/${slug}/SKILL.md: ${lines} lines and no reference file (CONTRIBUTING.md recommends progressive disclosure past 300 lines).`);
   }
 
   // Emoji / secrets in all .md files in the folder
@@ -284,9 +347,25 @@ function validateSkillFolder(folderRel, errors, warnings, knownSkills) {
 }
 
 function main() {
-  const files = changedFiles();
+  const validateAll = process.argv.includes('--all');
+  const files = validateAll ? [] : changedFiles();
   const errors = [];
   const warnings = [];
+
+  if (validateAll) {
+    const known = listExistingSkills();
+    const folders = [];
+    for (const d of ALLOWED_DOMAINS) {
+      const dir = path.join(ROOT, d);
+      if (!fs.existsSync(dir)) continue;
+      for (const e of fs.readdirSync(dir)) {
+        if (fs.existsSync(path.join(dir, e, 'SKILL.md'))) folders.push(`${d}/${e}`);
+      }
+    }
+    for (const folder of folders) validateSkillFolder(folder, errors, warnings, known);
+    report(errors, warnings);
+    return;
+  }
 
   if (files.length === 0) {
     console.log('No changed files detected — nothing to validate.');
@@ -296,6 +375,9 @@ function main() {
   // Path scope check
   const offlimits = files.filter((f) => {
     if (f.startsWith('.github/')) return false; // workflow / template edits validated by review only
+    if (f.startsWith('schemas/')) return false;
+    if (f.startsWith('rules/')) return false; // always-on rules — not skills; reviewed by maintainer
+    if (f === 'skills-index.json') return false;
     if (f === 'README.md' || f === 'CONTRIBUTING.md' || f === 'CHANGELOG.md' || f === 'SKILL_TEMPLATE.md' || f === 'LICENSE' || f === '.gitignore') return false;
     const top = f.split('/')[0];
     return !ALLOWED_DOMAINS.has(top);
@@ -321,6 +403,10 @@ function main() {
     validateSkillFolder(folder, errors, warnings, known);
   }
 
+  report(errors, warnings);
+}
+
+function report(errors, warnings) {
   if (warnings.length) {
     console.log('::group::Warnings');
     for (const w of warnings) console.log(`::warning::${w}`);

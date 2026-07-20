@@ -1,22 +1,19 @@
 ---
 name: wp-plugin-rewrite-rules
-description: Design and review custom WordPress URL rewrites:
+description: >-
+  Design and review custom WordPress URL rewrites:
   add_rewrite_rule, add_rewrite_tag, query_vars, CPT/taxonomy rewrite
   slugs, add_rewrite_endpoint, soft vs hard flushes, rewrite_rules cache
   behavior, and the rule that flush_rewrite_rules() must not run on every
   request. Use for custom pretty URLs, CPT permalink 404s, endpoint
   rewrites, and code containing flush_rewrite_rules or add_rewrite_rule.
-author: Soczó Kristóf
-contact: mailto:lonsdale201@hotmail.com
-plugin: wordpress
-plugin-version-tested: "6.5 - 6.9"
-php-min: "7.4"
-last-updated: "2026-04-28"
-docs:
-  - https://developer.wordpress.org/reference/functions/add_rewrite_rule/
-  - https://developer.wordpress.org/reference/functions/flush_rewrite_rules/
-  - https://developer.wordpress.org/reference/functions/add_rewrite_endpoint/
-  - https://developer.wordpress.org/reference/hooks/query_vars/
+metadata:
+  wp-skills-author: "Soczó Kristóf"
+  wp-skills-contact: "mailto:lonsdale201@hotmail.com"
+  wp-skills-plugin: "wordpress"
+  wp-skills-plugin-version-tested: "6.5 - 6.9"
+  wp-skills-php-min: "7.4"
+  wp-skills-last-updated: "2026-04-28"
 ---
 
 # WordPress plugin: rewrite rules & flush
@@ -40,7 +37,7 @@ Trigger when ANY of the following is true:
 WordPress's permalink engine works in two passes:
 
 1. **Generate**: based on registered CPTs, taxonomies, custom rules (`add_rewrite_rule`), endpoints (`add_rewrite_endpoint`), and the configured permalink structure, WP builds a big regex array. Each entry maps a URL pattern → query variables.
-2. **Cache**: this entire array is stored in the `rewrite_rules` option ([wp-includes/class-wp-rewrite.php](wp-includes/class-wp-rewrite.php) `refresh_rewrite_rules()`, since WP 6.4). Whether the option is autoloaded depends on its stored `autoload` value and newer WP autoload heuristics; do not assume every install has the same value.
+2. **Cache**: this entire array is stored in the `rewrite_rules` option (`wp-includes/class-wp-rewrite.php` `refresh_rewrite_rules()`, since WP 6.4). Whether the option is autoloaded depends on its stored `autoload` value and newer WP autoload heuristics; do not assume every install has the same value.
 3. **Match**: every request uses the cached option to figure out what query to run.
 
 Generation is expensive (iterates ALL post types, taxonomies, endpoints, custom rules). The cache is regenerated only when explicitly told to — via `flush_rewrite_rules()` or by the user saving the Permalinks settings page.
@@ -155,7 +152,7 @@ register_activation_hook( __FILE__, static function (): void {
 
 Notes on each step:
 
-- **`add_rewrite_rule( $regex, $redirect, $position )`** ([wp-includes/rewrite.php](wp-includes/rewrite.php)). `$position`: `'top'` matches before WP defaults (use for plugin endpoints that should override `?p=NN` style queries); `'bottom'` matches after (use for fallback patterns).
+- **`add_rewrite_rule( $regex, $redirect, $position )`** (`wp-includes/rewrite.php`). `$position`: `'top'` matches before WP defaults (use for plugin endpoints that should override `?p=NN` style queries); `'bottom'` matches after (use for fallback patterns).
 - **The query var IS whitelist-required.** Without the `query_vars` filter entry, `get_query_var()` returns empty even if the rule matched. If you use `add_rewrite_tag( '%myplugin_track%', '([a-z0-9]+)' )` before building rules, WordPress registers the matching public query var for you.
 - **`template_redirect` is the usual handler hook** for rendering custom output from a rewrite. `parse_request` runs earlier if you need to short-circuit before WP_Query.
 - **REST is usually a better choice** for true API endpoints — `register_rest_route` gives you typed args, permission_callback, JSON formatting, and cookie auth for free. Use `add_rewrite_rule` only when you genuinely need pretty URLs that participate in WP's permalink engine (frontend pages, redirects, content-driven routes).
@@ -179,7 +176,7 @@ add_action( 'template_redirect', static function (): void {
 } );
 ```
 
-`add_rewrite_endpoint` automatically registers a query var matching the name by default and adds rules to the relevant permastructs. Pass `false` as the third argument to skip query-var registration, or a string to use a custom query-var name. Bitmask options (verified in [wp-includes/rewrite.php](wp-includes/rewrite.php) and `EP_*` constants in `wp-includes/class-wp-rewrite.php`):
+`add_rewrite_endpoint` automatically registers a query var matching the name by default and adds rules to the relevant permastructs. Pass `false` as the third argument to skip query-var registration, or a string to use a custom query-var name. Bitmask options (verified in `wp-includes/rewrite.php` and `EP_*` constants in `wp-includes/class-wp-rewrite.php`):
 
 - `EP_PERMALINK` — single posts
 - `EP_PAGES` — pages
@@ -191,7 +188,7 @@ Same flush rule applies: register on `init`, flush on activation.
 
 ## Soft vs hard flush
 
-`flush_rewrite_rules( $hard = true )` ([wp-includes/rewrite.php](wp-includes/rewrite.php)):
+`flush_rewrite_rules( $hard = true )` (`wp-includes/rewrite.php`):
 
 - **Hard flush (`$hard = true`, default)**: rebuilds the rules array, writes the `rewrite_rules` option, AND writes `.htaccess` (Apache) / `web.config` (IIS) with the regenerated mod_rewrite directives.
 - **Soft flush (`$hard = false`)**: rebuilds rules array, writes the option only. Skips the file write.
@@ -243,7 +240,7 @@ register_activation_hook( __FILE__, static function ( bool $network_wide = false
 } );
 ```
 
-Multisite caveat: this skill's authoring environment is single-site. The pattern above is source-derived (`switch_to_blog` ([wp-includes/ms-blogs.php](wp-includes/ms-blogs.php)) is per-blog, `flush_rewrite_rules` operates on the current blog). Verify on a real network install.
+Multisite caveat: this skill's authoring environment is single-site. The pattern above is source-derived (`switch_to_blog` (`wp-includes/ms-blogs.php`) is per-blog, `flush_rewrite_rules` operates on the current blog). Verify on a real network install.
 
 ## Critical rules
 
@@ -262,7 +259,7 @@ Multisite caveat: this skill's authoring environment is single-site. The pattern
 // WRONG — flush on every request, .htaccess rewritten constantly
 add_action( 'init', function () {
     add_rewrite_rule( '^api/v1/items/?$', 'index.php?myplugin_endpoint=items', 'top' );
-    flush_rewrite_rules(); // 🔥 disaster
+    flush_rewrite_rules(); // disaster
 } );
 
 // WRONG — registers a CPT but never flushes; permalinks 404
@@ -307,8 +304,11 @@ add_action( 'update_option_myplugin_settings', 'flush_rewrite_rules' );
 
 ## References
 
-- `add_rewrite_rule`: [wp-includes/rewrite.php](wp-includes/rewrite.php)
-- `add_rewrite_endpoint`: [wp-includes/rewrite.php](wp-includes/rewrite.php) — `EP_*` bitmask constants in [wp-includes/class-wp-rewrite.php](wp-includes/class-wp-rewrite.php)
-- `flush_rewrite_rules`: [wp-includes/rewrite.php](wp-includes/rewrite.php) — wraps `WP_Rewrite::flush_rules`
-- `WP_Rewrite::refresh_rewrite_rules` (since WP 6.4): [wp-includes/class-wp-rewrite.php](wp-includes/class-wp-rewrite.php) — explains the deferred-flush behavior when `wp_loaded` hasn't fired
+- `add_rewrite_rule`: `wp-includes/rewrite.php`
+- `add_rewrite_endpoint`: `wp-includes/rewrite.php` — `EP_*` bitmask constants in `wp-includes/class-wp-rewrite.php`
+- `flush_rewrite_rules`: `wp-includes/rewrite.php` — wraps `WP_Rewrite::flush_rules`
+- `WP_Rewrite::refresh_rewrite_rules` (since WP 6.4): `wp-includes/class-wp-rewrite.php` — explains the deferred-flush behavior when `wp_loaded` hasn't fired
 - `query_vars` filter: [developer.wordpress.org/reference/hooks/query_vars/](https://developer.wordpress.org/reference/hooks/query_vars/)
+- Official documentation: <https://developer.wordpress.org/reference/functions/add_rewrite_rule/>
+- Official documentation: <https://developer.wordpress.org/reference/functions/flush_rewrite_rules/>
+- Official documentation: <https://developer.wordpress.org/reference/functions/add_rewrite_endpoint/>

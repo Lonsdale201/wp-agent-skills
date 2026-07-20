@@ -1,0 +1,4 @@
+interface:
+  display_name: "LearnDash REST API"
+  short_description: "LearnDash REST endpoints and relation APIs"
+  default_prompt: "Use $learndash-rest-api to plan a LearnDash REST integration."

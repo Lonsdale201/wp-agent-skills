@@ -1,20 +1,33 @@
 ---
 name: your-skill-name
-description: One paragraph that answers WHAT this skill does and WHEN
-  Claude should load it. List concrete triggers — function names,
-  file patterns, user phrasings — so the model picks it up without
-  being asked by name. Stay specific: "Audits WP plugin code for X
-  when reviewing PRs or files containing Y, Z" beats "Helps with WP
-  plugins". Max ~1024 characters.
-author: Your Name
-contact: mailto:you@example.com
-plugin: wordpress
-plugin-version-tested: "6.0 - 6.7"
-php-min: "7.4"
-last-updated: "2026-04-28"
-docs:
-  - https://developer.wordpress.org/...
+description: >-
+  One paragraph that answers WHAT this skill does and WHEN the agent
+  should load it. List concrete triggers — function names, file
+  patterns, user phrasings — so the model picks it up without being
+  asked by name. Stay specific: "Audits WP plugin code for X when
+  reviewing PRs or files containing Y, Z" beats "Helps with WP
+  plugins". Hard maximum 1024 characters, and no XML/HTML-tag-like
+  angle-bracket sequences (descriptions are embedded in XML prompt
+  blocks).
+metadata:
+  wp-skills-author: "Your Name"
+  wp-skills-contact: "mailto:you@example.com"
+  wp-skills-plugin: "wordpress"
+  wp-skills-plugin-version-tested: "6.0 - 6.7"
+  wp-skills-php-min: "7.4"
+  wp-skills-last-updated: "2026-04-28"
 ---
+
+<!--
+Frontmatter follows the open Agent Skills specification
+(https://agentskills.io/specification): only name, description, license,
+compatibility, metadata, and allowed-tools may appear top-level.
+Collection-specific data lives under `metadata` as string -> string pairs
+in the wp-skills-* namespace — quote every value, including versions and
+dates; no lists or nested mappings. Documentation URLs and verified source
+paths belong in the "## References" body section at the bottom, not in the
+frontmatter.
+-->
 
 # Skill title
 
@@ -89,6 +102,12 @@ Date: <YYYY-MM-DD>
 
 ## References
 
-- Detailed examples and edge cases: `reference.md` (only if the skill is split).
+- Official documentation: <https://developer.wordpress.org/...>
+- Verified source paths:
+  - `wp-content/plugins/<plugin>/includes/example.php`
+- Detailed examples and edge cases: `reference.md` or `references/` (only if the skill is split).
 - Real-world snippets: `examples/` (only if the skill has examples).
-- Official docs: [link](https://...)
+
+(Documentation URLs and source paths the skill was grounded against live
+here — the open format's `metadata` only allows string values, so lists
+like these belong in the body.)

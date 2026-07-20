@@ -14,22 +14,13 @@ description: Register a custom Query type for JetEngine's Query Builder
   inspector automatically. Use when scaffolding a custom query type
   (HPOS WC orders, third-party API source, custom DB table) for
   JetEngine listings, dynamic widgets, or REST API endpoints.
-author: Soczó Kristóf
-contact: mailto:lonsdale201@hotmail.com
-plugin: jet-engine
-plugin-version-tested: "3.8.8.2"
-php-min: "7.4"
-last-updated: "2026-05-01"
-docs:
-  - https://crocoblock.com/knowledge-base/plugins/jetengine/
-  - https://github.com/Crocoblock/developer-documentation/tree/main/01-jet-engine
-source-refs:
-  - wp-content/plugins/jet-engine/includes/components/query-builder/queries/base.php
-  - wp-content/plugins/jet-engine/includes/components/query-builder/queries/posts.php
-  - wp-content/plugins/jet-engine/includes/components/query-builder/query-factory.php
-  - wp-content/plugins/jet-engine/includes/components/query-builder/query-editor.php
-  - wp-content/plugins/jet-engine/includes/components/query-builder/editor/base.php
-  - wp-content/plugins/jet-engine/includes/components/query-builder/manager.php
+metadata:
+  wp-skills-author: "Soczó Kristóf"
+  wp-skills-contact: "mailto:lonsdale201@hotmail.com"
+  wp-skills-plugin: "jet-engine"
+  wp-skills-plugin-version-tested: "3.8.8.2"
+  wp-skills-php-min: "7.4"
+  wp-skills-last-updated: "2026-05-01"
 ---
 
 # JetEngine: register a custom Query Builder query type
@@ -592,7 +583,7 @@ class MyQuery extends Base_Query {
 
 // WRONG — reading $this->query directly
 public function build_args() {
-    $args = (array) $this->query;   // 🔴 ignores dynamic overrides
+    $args = (array) $this->query;   // WRONG: ignores dynamic overrides
     return $args;
 }
 
@@ -619,7 +610,7 @@ public function get_items_total_count() {
 // WRONG — manual macro resolution
 public function build_args() {
     $author = preg_replace( '/^%(.+)%$/', '$1', $this->final_query['author'] ?? '' );
-    // 🔴 won't resolve nested macros like %queried_post_meta|some_field%
+    // WRONG: won't resolve nested macros like %queried_post_meta|some_field%
 }
 
 // RIGHT
@@ -683,7 +674,7 @@ public function setup_query() {
         callback: addNewMetaGroup,
     }
 ]"
-// 🔴 esc_attr_e encodes ' → &#039;, so the rendered output is:
+// WRONG: esc_attr_e encodes ' → &#039;, so the rendered output is:
 //    buttonLabel: '&#039;Add new group&#039;',
 // Vue's template parser HTML-decodes this to:
 //    buttonLabel: ''Add new group'',
@@ -736,3 +727,4 @@ public function setup_query() {
 - Reference editor with meta-query group setup: [includes/components/query-builder/templates/admin/types/users.php:194-254](users.php) and the matching JS at [assets/js/admin/types/users.js:5-58](users.js). Cleaner than the Posts editor for studying the pattern.
 - Editor data globals: [includes/components/query-builder/pages/edit.php:188-218](edit.php) — `JetEngineQueryConfig` window global is localized here with `operators_list`, `data_types`, `orderby_options`, `post_types`. Reference these from your editor JS instead of re-localizing.
 - Crocoblock developer documentation: <https://github.com/Crocoblock/developer-documentation/tree/main/01-jet-engine>.
+- Official documentation: <https://crocoblock.com/knowledge-base/plugins/jetengine/>

@@ -15,21 +15,14 @@ description: Surfaces user-facing custom messages from a JetFormBuilder
   "jet-form-builder/form-messages/register", "_jf_messages",
   "dynamic_success", "add_context_once" with a message,
   "after-send" hook, or "custom action message".
-author: Soczó Kristóf
-contact: mailto:lonsdale201@hotmail.com
-plugin: jetformbuilder
-plugin-version-tested: "3.5.6"
-api-stable-since: "3.0"
-php-min: "7.4"
-last-updated: "2026-04-28"
-docs:
-  - https://github.com/Crocoblock/developer-documentation/tree/main/03-jet-form-builder
-source-refs:
-  - includes/form-messages/manager.php
-  - includes/form-messages/action-messages-manager.php
-  - includes/form-messages/actions/base-action-messages.php
-  - modules/post-type/meta/messages-meta.php
-  - modules/actions-v2/register-user/messages/register-user-messages.php
+metadata:
+  wp-skills-author: "Soczó Kristóf"
+  wp-skills-contact: "mailto:lonsdale201@hotmail.com"
+  wp-skills-plugin: "jetformbuilder"
+  wp-skills-plugin-version-tested: "3.5.6"
+  wp-skills-php-min: "7.4"
+  wp-skills-api-stable-since: "3.0"
+  wp-skills-last-updated: "2026-04-28"
 ---
 
 # JetFormBuilder: custom messages from a Form Action
@@ -334,3 +327,4 @@ Default text from your code (the `__()` fallback) typically doesn't include macr
 - Mechanism A reference (built-in): `wp-content/plugins/jetformbuilder/modules/actions-v2/register-user/messages/register-user-messages.php`
 - Mechanism B reference (success path): `wp-content/plugins/google-sheet-for-jetformbuilder/includes/Plugin.php` (`maybe_adjust_response_message`)
 - Mechanism B reference (error + success mix): `wp-content/plugins/fluent-subscriptions-for-jetformbuilder-main/src/Actions/FluentCrmSubscribeAction.php`
+- Official documentation: <https://github.com/Crocoblock/developer-documentation/tree/main/03-jet-form-builder>
