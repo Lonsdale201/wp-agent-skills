@@ -1,0 +1,4 @@
+interface:
+  display_name: "Fluent Forms submission lifecycle"
+  short_description: "Choose safe hooks from validation through confirmation"
+  default_prompt: "Use this skill to implement or audit Fluent Forms submission handling with the correct hook timing, data contract, idempotency, and Free/Pro boundary."

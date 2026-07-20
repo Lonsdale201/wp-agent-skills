@@ -27,6 +27,7 @@ body:
         - wp-rocket
         - redis-object-cache
         - fluentcrm
+        - fluentform
         - theme-development
         - translatepress
         - elementor

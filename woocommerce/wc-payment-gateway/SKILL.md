@@ -7,7 +7,7 @@ metadata:
   wp-skills-plugin: "woocommerce"
   wp-skills-plugin-version-tested: "10.9.4"
   wp-skills-php-min: "7.4"
-  wp-skills-last-updated: "2026-07-10"
+  wp-skills-last-updated: "2026-07-20"
 ---
 
 # WooCommerce payment gateway
@@ -182,7 +182,7 @@ Do not call the callback mechanism deprecated in 10.9.4; it remains used by core
 
 ## Checkout Block boundary
 
-A PHP `WC_Payment_Gateway` class supports classic checkout server behavior. Checkout Block additionally needs a JavaScript payment-method registration and can use Store API payment requirements. A gateway appearing in classic checkout does not prove Block compatibility.
+A PHP `WC_Payment_Gateway` class supports classic checkout server behavior. Checkout Block additionally needs an `AbstractPaymentMethodType` PHP adapter and a JavaScript `registerPaymentMethod()` registration. Client `paymentMethodData` can reach the existing `process_payment()` through Woo's legacy Store API bridge, or an advanced integration can own processing through `PaymentContext`/`PaymentResult`. Store API payment requirements only filter eligibility. A gateway appearing in classic checkout does not prove Block compatibility; use `wc-checkout-block-payment-method` for the complete implementation and event lifecycle.
 
 ## Security rules
 
@@ -198,7 +198,8 @@ A PHP `WC_Payment_Gateway` class supports classic checkout server behavior. Chec
 
 - `wc-order-lifecycle-and-items` for status and stock side effects.
 - `wc-payment-tokens` for saved methods.
-- `wc-store-api` for Checkout Block server requirements.
+- `wc-checkout-block-payment-method` for PHP/JavaScript Checkout Block registration and payment processing.
+- `wc-store-api` for shopper checkout identity and payment requirements.
 - `wc-hpos-compatibility` for order storage.
 
 ## References
