@@ -1,0 +1,4 @@
+interface:
+  display_name: "WordPress Metadata API"
+  short_description: "Use and audit WordPress metadata safely"
+  default_prompt: "Use $wp-metadata-api to review this WordPress metadata implementation for slashing, revisions, multi-row semantics, and serialization safety."

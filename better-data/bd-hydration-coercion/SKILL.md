@@ -15,22 +15,13 @@ description: Modify how raw values become typed property values in
   attribute-aware coercion. Triggers on changes to TypeCoercer.php,
   DataObject::coerceParameter, AttributeDrivenHydrator,
   TypeCoercionException, "hydration bug", "fromArray throws".
-author: Soczó Kristóf
-contact: mailto:lonsdale201@hotmail.com
-plugin: better-data
-plugin-version-tested: "phase-9"
-php-min: "8.3"
-last-updated: "2026-04-29"
-docs:
-  - https://github.com/lonsdale201/better-data
-source-refs:
-  - src/Internal/TypeCoercer.php
-  - src/DataObject.php
-  - src/Internal/AttributeDrivenHydrator.php
-  - src/Attribute/Encrypted.php
-  - src/Attribute/ListOf.php
-  - src/Encryption/EncryptionEngine.php
-  - src/Exception/TypeCoercionException.php
+metadata:
+  wp-skills-author: "Soczó Kristóf"
+  wp-skills-contact: "mailto:lonsdale201@hotmail.com"
+  wp-skills-plugin: "better-data"
+  wp-skills-plugin-version-tested: "phase-9"
+  wp-skills-php-min: "8.3"
+  wp-skills-last-updated: "2026-04-29"
 ---
 
 # better-data: Hydration and coercion
@@ -76,7 +67,7 @@ Trigger when ANY of the following is true:
 
 | Change type | Layer |
 |---|---|
-| New primitive (decimal type, IPv4 stored as string ↔ int) | `TypeCoercer` (pure) |
+| New primitive (decimal type, IPv4 stored as string <-> int) | `TypeCoercer` (pure) |
 | New WP-builtin handling (e.g. coerce `WP_Term` to a term ID) | `TypeCoercer` (still pure — `WP_Term` is just a class shape; check `instanceof` doesn't require WP runtime) |
 | New attribute affects coercion (`#[Slug]` lowercase before string-coerce) | `DataObject::coerceParameter` (above TypeCoercer) |
 | New attribute affects encryption / list coercion | `DataObject::coerceParameter` |
@@ -243,7 +234,7 @@ private static function toInt(string $cls, string $field, mixed $value): int
 private static function toUserId(string $cls, string $field, mixed $value): int
 {
     if (\is_string($value)) {
-        return (int) \get_user_by('login', $value)?->ID;  // 🔴 not WP-free
+        return (int) \get_user_by('login', $value)?->ID;  // WRONG: not WP-free
     }
     return self::toInt($cls, $field, $value);
 }
@@ -255,7 +246,7 @@ private static function coerceParameter(ReflectionParameter $parameter, mixed $v
 {
     $type = $parameter->getType()->getName();
     if ($type === 'int') {
-        return (int) $value;  // 🔴 reimplements toInt, loses the validation
+        return (int) $value;  // WRONG: reimplements toInt, loses the validation
     }
     // ...
 }
@@ -312,3 +303,8 @@ if (\is_string($value)
 - AttributeDrivenHydrator: [libraries/better-data/src/Internal/AttributeDrivenHydrator.php](AttributeDrivenHydrator.php) — the WP-side counterpart that uses fetcher closures and applies attribute-driven decryption / list coercion.
 - `TypeCoercionException`: [libraries/better-data/src/Exception/TypeCoercionException.php](TypeCoercionException.php) — `for($cls, $field, $target, $value)`, `unsupportedType($cls, $field, $target)`.
 - Encryption envelope detection: `EncryptionEngine::looksEncrypted` — string predicate that doesn't decrypt; safe to call on any string.
+- Official documentation: <https://github.com/lonsdale201/better-data>
+- Verified source paths:
+  - `src/Attribute/Encrypted.php`
+  - `src/Attribute/ListOf.php`
+  - `src/Encryption/EncryptionEngine.php`

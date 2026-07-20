@@ -5,21 +5,18 @@ description: Audits WordPress plugin or theme PHP code for
   use of escaped translation helpers (esc_html__, esc_attr__,
   esc_html_e), correct placeholder helpers (sprintf with translator
   comments, _n for plurals, _x for context), no variable text-domains,
-  no concatenation inside __() calls, presence of load_plugin_textdomain
-  or load_theme_textdomain, and matching declared Text Domain in the
+  no concatenation inside __() calls, correct custom translation-path loading
+  when needed, and matching declared Text Domain in the
   plugin/theme header. Use before plugin/theme release, when reviewing
   contributor PRs, when adding new strings, when migrating to a new
   text domain, or when a translator reports issues with the .pot file.
-author: Soczó Kristóf
-contact: mailto:lonsdale201@hotmail.com
-plugin: wordpress
-plugin-version-tested: "6.0 - 6.9"
-php-min: "7.4"
-last-updated: "2026-04-28"
-docs:
-  - https://developer.wordpress.org/plugins/internationalization/
-  - https://developer.wordpress.org/plugins/internationalization/how-to-internationalize-your-plugin/
-  - https://developer.wordpress.org/themes/functionality/internationalization/
+metadata:
+  wp-skills-author: "Soczó Kristóf"
+  wp-skills-contact: "mailto:lonsdale201@hotmail.com"
+  wp-skills-plugin: "wordpress"
+  wp-skills-plugin-version-tested: "6.0 - 7.0.1"
+  wp-skills-php-min: "7.4"
+  wp-skills-last-updated: "2026-07-10"
 ---
 
 # WordPress i18n audit
@@ -190,10 +187,12 @@ for wp.org-distributed plugins. Do not treat its absence as a HIGH
 finding without first establishing whether the plugin is shipped via
 wp.org.
 
-When you do call it, hook on `init` (recommended) — NOT
-`plugins_loaded`. Since WP 6.7, calling `load_plugin_textdomain()`
-before `init` triggers a `_doing_it_wrong` notice because
-just-in-time translation loading runs at `init`. Themes hook on
+When a self-hosted plugin needs a custom language path, registering it on
+`init` is a clear, safe lifecycle choice. Do not claim that calling
+`load_plugin_textdomain()` itself on `plugins_loaded` triggers the WordPress
+6.7 warning: the warning occurs when a translation is actually loaded too
+early, before `after_setup_theme`. The underlying bug is usually translating
+user-facing strings at plugin file load. Themes load their domain on
 `after_setup_theme`.
 
 ```php
@@ -209,8 +208,9 @@ add_action( 'init', function () {
 Check:
 - Domain string matches the expected domain (header or folder slug).
   **HIGH** mismatch.
-- Hooked on `init` or later — not `plugins_loaded`. **MEDIUM** if too
-  early (triggers `_doing_it_wrong` on WP 6.7+).
+- Custom path registration is on a suitable lifecycle hook and no translation
+  call executes during plugin bootstrap. Flag the actual early translation,
+  not a `load_plugin_textdomain()` call in isolation.
 - Path points to a real directory in the package. **MEDIUM** if
   missing on a self-hosted plugin; **LOW** for wp.org plugins where
   auto-loading covers it.
@@ -248,9 +248,15 @@ Flag mismatched domain between PHP and JS calls. Out of scope: deep JS audit (di
 
 ## Severity guide
 
-- **HIGH:** wrong / missing text-domain, variable text-domain, dynamic first argument to `__()`, missing `Text Domain` header.
-- **MEDIUM:** unescaped `_e` in HTML, missing translator comment on `sprintf`, concatenation across translated strings, `load_plugin_textdomain` on the wrong hook, plural handled with English `if`.
-- **LOW:** missing `Domain Path` header, ambiguous short strings without `_x` context, missing `load_plugin_textdomain` on a wp.org-distributed plugin.
+- **HIGH:** inconsistent/wrong text-domain that breaks runtime lookup, variable
+  text-domain, or dynamic first argument that extraction tools cannot find.
+- **MEDIUM:** unescaped `_e` in HTML, missing translator comment on `sprintf`,
+  concatenation across translated strings, an actual pre-`after_setup_theme`
+  translation load, or plural handled with an English-only `if`.
+- **LOW:** missing optional `Domain Path`, ambiguous short strings without `_x`
+  context, or header/tooling metadata that does not break runtime lookup.
+  Absence of `load_plugin_textdomain()` is no finding for a normal
+  wp.org-distributed plugin.
 
 ## Report format
 
@@ -281,16 +287,9 @@ Date: <YYYY-MM-DD>
 - **`wp-security-audit`** — covers escape correctness in non-translation contexts; complementary, not redundant.
 - For a release-readiness review, run `wp-security-audit`, `wp-security-secrets`, and this skill in sequence before submission.
 
-## What this skill does NOT cover
-
-- Quality of existing `.po` / `.mo` translations (linguistic review).
-- Translation memory or glossary consistency.
-- JavaScript-side i18n beyond a domain-match spot check.
-- RTL / locale-specific CSS or layout.
-- Date/number formatting beyond a `number_format_i18n` reminder.
-
 ## References
 
 - WP Plugin i18n handbook: https://developer.wordpress.org/plugins/internationalization/
 - WP Theme i18n handbook: https://developer.wordpress.org/themes/functionality/internationalization/
 - `wp i18n make-pot`: https://developer.wordpress.org/cli/commands/i18n/make-pot/
+- Official documentation: <https://developer.wordpress.org/plugins/internationalization/how-to-internationalize-your-plugin/>

@@ -1,52 +1,51 @@
 ---
 name: br-audit-enrichment
-description: Enrich better-route 0.5.0 audit events with safe operational metadata. Use when adding AuditEnricherMiddleware, AuditMiddleware context fields, auth user/provider metadata, hashed Idempotency-Key logging, resource/action audit fields, or reviewing sensitive REST write routes that need traceable but redacted audit events.
+description: Configure Better Route 1.1 audit events and safe enrichment. Use when logging route outcomes, authenticated identity, hashed idempotency keys, trusted client IPs, domain action metadata, or ensuring telemetry failures cannot change API behavior.
+metadata:
+  wp-skills-author: "Soczó Kristóf"
+  wp-skills-contact: "mailto:lonsdale201@hotmail.com"
+  wp-skills-plugin: "better-route"
+  wp-skills-plugin-version-tested: "1.1.0"
+  wp-skills-php-min: "8.1"
+  wp-skills-last-updated: "2026-07-13"
 ---
 
-# better-route: Audit enrichment
+# Better Route audit enrichment
 
-Use audit enrichment when the standard route/method/status/duration event is not enough to debug or review sensitive operations.
-
-## Pattern
+Run authentication first, enrichment second, and audit logging around the downstream handler.
 
 ```php
 use BetterRoute\Middleware\Audit\AuditEnricherMiddleware;
 use BetterRoute\Middleware\Audit\AuditMiddleware;
 
 $router->middleware([
-    $jwt,
-    new AuditEnricherMiddleware([
-        'resource' => 'account',
-        'action' => 'update',
-    ]),
+    $auth,
+    new AuditEnricherMiddleware(
+        staticFields: ['resource' => 'account', 'action' => 'update'],
+        clientIpResolver: $trustedProxyResolver,
+        includeClientIp: true
+    ),
     new AuditMiddleware($logger),
 ]);
 ```
 
-`AuditEnricherMiddleware` writes safe fields to `RequestContext::$attributes['audit']`. `AuditMiddleware` merges that array into success/error events.
+`AuditEnricherMiddleware` writes to the context `audit` attribute. It copies the normalized authentication provider, user ID, and subject; hashes an `Idempotency-Key` with SHA-1 for correlation; optionally resolves client IP; and merges reviewed static fields. Existing fields are retained, while later enrichment values with the same name win.
 
-## Fields
-
-The enricher can add:
-
-- `authProvider`
-- `authUserId`
-- `authSubject`
-- `idempotencyKey` as `sha1(raw-key)`, not the raw header
-- optional `clientIp`
-- static fields passed by the route, group, or integration
+`AuditMiddleware` logs success or error with route, method, status, duration, correlation metadata, and enrichment. Logger exceptions are swallowed deliberately: observability is best-effort and must not change a successful response or mask the application exception already in flight.
 
 ## Rules
 
-- Run auth before audit enrichment if auth fields are needed.
-- Hash idempotency keys; do not log raw keys.
-- Keep payment tokens, card data, secrets, cookies, bearer tokens, and full request bodies out of audit events.
-- Add stable domain fields such as `resource`, `action`, and public-safe resource IDs.
-- Use a private logger destination. Client error responses stay scrubbed; audit logs can be more useful but still need redaction.
+- Never include bearer tokens, cookies, nonces, application passwords, HMAC secrets/signatures, payment data, full bodies, or raw idempotency keys.
+- Treat SHA-1 here only as a non-secret correlation fingerprint, not as a security proof.
+- Use a trusted-proxy-aware resolver before recording or acting on forwarded client IPs.
+- Keep static values bounded and public-safe. Do not pass attacker-controlled payload arrays as static fields.
+- Protect the log sink with access control, retention limits, rotation, and output escaping in viewers.
+- Alert separately when the logging backend is unavailable; the request path intentionally will not fail.
 
-## Source refs
+Test successful responses, `ApiException`, unexpected exceptions, logger failure, missing authentication context, and spoofed forwarded headers.
 
-- `libraries/better-route/src/Middleware/Audit/AuditEnricherMiddleware.php`
-- `libraries/better-route/src/Middleware/Audit/AuditMiddleware.php`
-- `libraries/better-route/src/Observability/AuditEventFactory.php`
-- `libraries/better-route/tests/BuiltInMiddlewareTest.php`
+Source references: `src/Middleware/Audit/AuditEnricherMiddleware.php`, `src/Middleware/Audit/AuditMiddleware.php`, `src/Observability/AuditEventFactory.php`.
+
+## References
+
+- Official documentation: <https://lonsdale201.github.io/better-docs/docs/better-route/agents>

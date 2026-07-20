@@ -2,23 +2,19 @@
 name: wp-security-audit
 description: Audits WordPress plugin or theme PHP code for the most common
   security mistakes — missing nonce checks, capability checks, input
-  sanitization, output escaping, unslashing, SQL preparation, AJAX nopriv
+  normalization/validation, output escaping, unslashing, SQL preparation, AJAX nopriv
   exposure, file/path traversal, and unsafe redirects. Use when reviewing
   pull requests, before releasing a plugin, when the user asks "is this
   secure", or when handling code that touches $_GET / $_POST / $_REQUEST /
   $_COOKIE / $_FILES / $_SERVER, admin-ajax / admin-post, REST endpoints,
   options, user meta, custom DB queries, or file uploads.
-author: Soczó Kristóf
-contact: mailto:lonsdale201@hotmail.com
-plugin: wordpress
-plugin-version-tested: "6.0 - 6.9"
-php-min: "7.4"
-last-updated: "2026-04-28"
-docs:
-  - https://developer.wordpress.org/apis/security/
-  - https://developer.wordpress.org/plugins/security/
-  - https://developer.wordpress.org/reference/functions/wp_verify_nonce/
-  - https://developer.wordpress.org/reference/functions/current_user_can/
+metadata:
+  wp-skills-author: "Soczó Kristóf"
+  wp-skills-contact: "mailto:lonsdale201@hotmail.com"
+  wp-skills-plugin: "wordpress"
+  wp-skills-plugin-version-tested: "6.0 - 7.0.1"
+  wp-skills-php-min: "7.4"
+  wp-skills-last-updated: "2026-07-12"
 ---
 
 # WordPress security audit
@@ -61,14 +57,22 @@ user asks you to apply fixes.
 
 ### 1. Nonce verification on state-changing requests
 
-Any handler that *writes* (saves option, updates meta, deletes a post,
-sends an email, mutates anything) must verify a nonce.
+Any cookie-authenticated browser handler that *writes* (saves an option,
+updates meta, deletes a post, sends an email, or mutates anything) must
+verify request intent with a nonce.
 
 - Forms: `wp_nonce_field( 'action_name', '_wpnonce' )` →
   `check_admin_referer( 'action_name' )` in handler.
 - AJAX: `wp_create_nonce( 'action_name' )` → `check_ajax_referer( 'action_name', 'nonce' )`.
 - REST: rely on cookie auth + the built-in `_wpnonce` (`wp-api` nonce) for
   logged-in routes; for `permission_callback` use a real capability check.
+
+A nonce is not authentication or authorization. Signed webhooks,
+Application Password/OAuth clients, cron, and WP-CLI use their own trust
+boundary instead of a WordPress nonce. Guest nonces do not identify a guest;
+public writes also need abuse controls such as throttling, replay protection,
+or CAPTCHA where appropriate. A cacheable, read-only public endpoint does not
+automatically need a nonce.
 
 **Common mistake:** verifying the nonce inside an `if` whose `else` branch
 still does the write. The nonce check must short-circuit.
@@ -82,13 +86,16 @@ Authentication ≠ authorization. A logged-in subscriber is still a user.
   `manage_woocommerce` etc.).
 - Object-level actions MUST pass the object ID:
   `current_user_can( 'edit_post', $post_id )` — the ID-less form is wrong.
-- REST `permission_callback` must NEVER be `__return_true` for
-  state-changing routes. Returning `true` unconditionally is the #1 plugin
-  vulnerability pattern on wp.org.
+- REST `permission_callback` must enforce the route's actual access policy.
+  `__return_true` is dangerous on privileged writes, but can be intentional
+  for genuinely public endpoints. Signed webhook routes should verify the
+  signature before mutation, preferably in `permission_callback`.
 
-### 3. Input: unslash → sanitize → validate
+### 3. Input: unslash → normalize when needed → validate
 
-WordPress magically slashes superglobals. The pipeline is fixed:
+WordPress slashes superglobals. First recover the domain value, then choose
+lossy normalization only when the field's meaning permits it, and always
+validate the semantic contract:
 
 ```php
 $raw      = isset( $_POST['email'] ) ? wp_unslash( $_POST['email'] ) : '';
@@ -96,18 +103,20 @@ $email    = sanitize_email( $raw );
 if ( ! is_email( $email ) ) { /* reject */ }
 ```
 
-- Missing `wp_unslash` before sanitization → escaped quotes leak through.
-- Wrong sanitizer for the data type. Map by intent:
-  - text field: `sanitize_text_field`
-  - textarea: `sanitize_textarea_field`
-  - email: `sanitize_email`
-  - URL: `esc_url_raw` (storage) / `esc_url` (output)
-  - key/slug: `sanitize_key`, `sanitize_title`
-  - integer: `absint` or `(int)` with range check
-  - HTML allowed: `wp_kses_post` or `wp_kses` with explicit allowlist
-  - file path: `sanitize_file_name` + `realpath` containment check
+- Missing `wp_unslash` before normalization can leak transport slashes into
+  stored data. Do not unslash values that did not come from a slashed boundary.
+- Choose the normalizer by field meaning: text, textarea, email, URL, key,
+  integer, allowed HTML, and filesystem path need different contracts. See the
+  extended `reference.md` map.
 - Never trust `$_SERVER['HTTP_*']` headers without sanitizing; they're
   attacker-controlled.
+
+Sanitization is not a ritual and is often lossy. Migration, import/export,
+database repair, code-editor, and opaque meta-value tools may need to preserve
+HTML, percent sequences, quotes, or backslashes exactly. Do not recommend
+`sanitize_text_field()` merely to silence a sniff. Require strict type/shape,
+encoding/size/domain validation, a safe sink, and escaped output. See
+`reference.md` for the exact-preservation pattern.
 
 ### 4. Output escaping (XSS)
 
@@ -137,8 +146,10 @@ $wpdb->get_results( "SELECT * FROM x WHERE id = $id" );
 $wpdb->get_results( $wpdb->prepare( "SELECT * FROM x WHERE id = %d", $id ) );
 ```
 
-- `%d` integers, `%f` floats, `%s` strings. Table/column names CANNOT be
-  parameterized — validate against an allowlist before interpolating.
+- `%d` integers, `%f` floats, `%s` strings, `%i` table/column identifiers
+  (WordPress 6.2+). Still use a semantic allowlist for user-selected columns,
+  tables, and sort directions: `%i` quotes an identifier but does not decide
+  whether that identifier is allowed by the feature.
 - `LIKE` needs `$wpdb->esc_like()` BEFORE `prepare()`:
   `$like = '%' . $wpdb->esc_like( $term ) . '%';`
 - Prefer WP_Query / get_posts / get_users over raw SQL where possible.
@@ -154,7 +165,9 @@ Rules:
 - Register `nopriv` ONLY if the feature is genuinely meant for guests
   (e.g. public search, login form). Never copy-paste both registrations
   "to be safe".
-- Both handlers still need `check_ajax_referer()`.
+- Cookie-authenticated writes need `check_ajax_referer()`. Public read-only
+  handlers do not automatically need a nonce; use one only when it protects
+  a browser action, and never treat a guest nonce as authorization.
 - The `nopriv` handler must NOT perform actions that only logged-in users
   should do (saving prefs, accessing other users' data, etc.).
 - End with `wp_send_json_success` / `wp_send_json_error`, not `echo` + `die`.
@@ -178,7 +191,9 @@ register_rest_route( 'myplugin/v1', '/save', [
     'args' => [
         'id' => [
             'required'          => true,
-            'validate_callback' => 'is_numeric',
+            'type'              => 'integer',
+            'minimum'           => 1,
+            'validate_callback' => 'rest_validate_request_arg',
             'sanitize_callback' => 'absint',
         ],
     ],
@@ -187,7 +202,9 @@ register_rest_route( 'myplugin/v1', '/save', [
 
 Findings to flag:
 - `permission_callback` missing, or `__return_true` on a non-public route.
-- No `args` schema — input is unsanitized.
+- No `args` schema and no equivalent validation in the callback. A route may
+  validate manually, but a schema is preferred because it is discoverable
+  and runs consistently before permission and endpoint callbacks.
 - Returning raw DB rows including sensitive columns (`user_pass`,
   `user_activation_key`, private meta).
 
@@ -219,10 +236,23 @@ Findings to flag:
   performs privileged work, do not trust any "stored intent" without
   re-validating; treat persisted user input as untrusted.
 
+## False-positive guards
+
+- Accept exact preservation when its validation, sink, and output contracts are
+  explicit.
+- Do not require a nonce for read-only public endpoints, cron, WP-CLI, or signed
+  non-cookie requests; identify the actual trust boundary.
+- Do not flag code-generated `IN` placeholders as injection when the placeholder
+  string contains only generated `%s`/`%d` tokens and all values reach
+  `$wpdb->prepare()`.
+
 ## What this skill does NOT cover
 
 - Cryptographic correctness (key derivation, signing schemes).
 - Business-logic flaws (race conditions, IDOR beyond capability checks).
+- Retry/idempotency/partial-failure flaws in bulk writes — use
+  **`wp-batch-mutation-audit`**.
+- Metadata slashing/revision/multi-row/serialization — use **`wp-metadata-api`**.
 - Third-party library CVEs — run `composer audit` separately.
 - Frontend JS XSS — different skill.
 - Server / hosting hardening (file perms, disable_functions, etc.).
@@ -234,9 +264,7 @@ Findings to flag:
   **`wp-security-secrets`**. Run it whenever auth or third-party
   integrations are in scope.
 
-State this scope explicitly in the report. If the reviewed code
-clearly falls into one of the deeper categories above, recommend the
-appropriate skill in the report's footer.
+State this scope and recommend applicable deeper skills in the report footer.
 
 ## Report format
 
@@ -264,5 +292,7 @@ Date: <YYYY-MM-DD>
 
 - Detailed examples of each finding type, before/after: `reference.md`
 - Real-world snippets with the fix applied: `examples/`
-- WordPress core: [Plugin Security Handbook](https://developer.wordpress.org/plugins/security/)
-- Capability map: [Roles and Capabilities](https://wordpress.org/documentation/article/roles-and-capabilities/)
+- WordPress core: [Plugin Security Handbook](https://developer.wordpress.org/plugins/security/) and [Roles and Capabilities](https://wordpress.org/documentation/article/roles-and-capabilities/)
+- Official documentation: <https://developer.wordpress.org/apis/security/>
+- Official documentation: <https://developer.wordpress.org/reference/functions/wp_verify_nonce/>
+- Official documentation: <https://developer.wordpress.org/reference/functions/current_user_can/>

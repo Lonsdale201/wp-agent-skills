@@ -1,6 +1,7 @@
 ---
 name: bd-attribute
-description: Add a new declarative attribute to the better-data library
+description: >-
+  Add a new declarative attribute to the better-data library
   (e.g. #[ArrayOf], #[Default], domain hint). Attributes live in
   src/Attribute/ as final readonly classes with constructor-promoted
   public properties — pure data carriers, never business logic. The
@@ -15,30 +16,13 @@ description: Add a new declarative attribute to the better-data library
   src/Attribute/, applying #[Attribute(...)], references to
   AttributeDrivenHydrator / SinkProjection::prepareValue /
   RestSchemaBuilder / Presenter::sensitiveFieldNames in the diff.
-author: Soczó Kristóf
-contact: mailto:lonsdale201@hotmail.com
-plugin: better-data
-plugin-version-tested: "phase-9"
-php-min: "8.3"
-last-updated: "2026-04-29"
-docs:
-  - https://github.com/lonsdale201/better-data
-source-refs:
-  - src/Attribute/MetaKey.php
-  - src/Attribute/PostField.php
-  - src/Attribute/UserField.php
-  - src/Attribute/TermField.php
-  - src/Attribute/Column.php
-  - src/Attribute/Sensitive.php
-  - src/Attribute/Encrypted.php
-  - src/Attribute/ListOf.php
-  - src/Attribute/DateFormat.php
-  - src/Internal/AttributeDrivenHydrator.php
-  - src/Internal/SinkProjection.php
-  - src/Internal/RestSchemaBuilder.php
-  - src/Sink/OptionSink.php
-  - src/Presenter/Presenter.php
-  - src/DataObject.php
+metadata:
+  wp-skills-author: "Soczó Kristóf"
+  wp-skills-contact: "mailto:lonsdale201@hotmail.com"
+  wp-skills-plugin: "better-data"
+  wp-skills-plugin-version-tested: "phase-9"
+  wp-skills-php-min: "8.3"
+  wp-skills-last-updated: "2026-04-29"
 ---
 
 # better-data: Adding a new attribute
@@ -303,3 +287,14 @@ final readonly class Encrypted
 - Schema consumer: [libraries/better-data/src/Internal/RestSchemaBuilder.php:114-220](RestSchemaBuilder.php) — `buildProperty` + `applyRuleAttribute`.
 - Presenter consumer: [libraries/better-data/src/Presenter/Presenter.php:481](Presenter.php) (`sensitiveFieldNames`).
 - PHP Attribute docs: [https://www.php.net/manual/en/language.attributes.php](https://www.php.net/manual/en/language.attributes.php).
+- Official documentation: <https://github.com/lonsdale201/better-data>
+- Verified source paths:
+  - `src/Attribute/MetaKey.php`
+  - `src/Attribute/PostField.php`
+  - `src/Attribute/UserField.php`
+  - `src/Attribute/TermField.php`
+  - `src/Attribute/Column.php`
+  - `src/Attribute/Sensitive.php`
+  - `src/Attribute/Encrypted.php`
+  - `src/Attribute/ListOf.php`
+  - `src/Attribute/DateFormat.php`

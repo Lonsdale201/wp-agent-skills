@@ -1,39 +1,13 @@
 ---
 name: bd-better-route-bridge
-description: Compose better-data DTOs with the better-route library —
-  use BetterRouteBridge::{get, post, put, patch, delete} to register a
-  REST route that hydrates the request into a DTO, validates, calls
-  the handler with (DataObject, mixed $request), and presents returned
-  DataObject values through Presenter with PresentationContext::rest().
-  Critical contract — the bridge is method-name based (talks to Router
-  / RouteBuilder by duck-typing) so better-data does NOT take a hard
-  Composer dependency on better-route. URL-owned fields go into
-  routeFields option (e.g. ['id']) — those are merged from URL params
-  AND rejected from JSON / body / query buckets via
-  RequestParamCollisionException; this is the route-side equivalent of
-  RequestSource::noCollision. Use when wiring DTO-backed REST endpoints,
-  feeding DTO schemas into better-route's OpenAPI exporter, or moving
-  request data from a route handler into a better-data DataObject.
-  Triggers on BetterRouteBridge::get/post/put/patch/delete,
-  routeFields, RequestParamCollisionException, OpenAPI / OpenApi DTO
-  schema in better-data.
-author: Soczó Kristóf
-contact: mailto:lonsdale201@hotmail.com
-plugin: better-data
-plugin-version-tested: "phase-9"
-php-min: "8.3"
-last-updated: "2026-04-29"
-docs:
-  - https://github.com/lonsdale201/better-data
-  - https://github.com/lonsdale201/better-route
-source-refs:
-  - src/Route/BetterRouteBridge.php
-  - src/Registration/MetaKeyRegistry.php
-  - src/Source/RequestSource.php
-  - src/Internal/RestSchemaBuilder.php
-  - src/Presenter/Presenter.php
-  - src/Presenter/PresentationContext.php
-  - src/Exception/RequestParamCollisionException.php
+description: Compose better-data DTOs with the better-route library — use BetterRouteBridge::{get, post, put, patch, delete} to register a REST route that hydrates the request into a DTO, validates, calls the handler with (DataObject, mixed $request), and presents returned DataObject values through Presenter with PresentationContext::rest(). Contract — the bridge is method-name based (duck-types Router / RouteBuilder) so better-data takes no hard Composer dependency on better-route. URL-owned fields go into routeFields option — those are merged from URL params AND rejected from JSON / body / query buckets via RequestParamCollisionException; this is the route-side equivalent of RequestSource::noCollision. Use when wiring DTO-backed REST endpoints, feeding DTO schemas into better-route's OpenAPI exporter, or moving request data from a route handler into a better-data DataObject. Triggers on BetterRouteBridge::get/post/put/patch/delete, routeFields, RequestParamCollisionException, OpenAPI / OpenApi DTO schema in better-data.
+metadata:
+  wp-skills-author: "Soczó Kristóf"
+  wp-skills-contact: "mailto:lonsdale201@hotmail.com"
+  wp-skills-plugin: "better-data"
+  wp-skills-plugin-version-tested: "phase-9"
+  wp-skills-php-min: "8.3"
+  wp-skills-last-updated: "2026-04-29"
 ---
 
 # better-data: Composing with better-route
@@ -227,8 +201,8 @@ wp better-data stress --filter BridgeRoute
 // WRONG — register_rest_route directly, bypassing the bridge
 \register_rest_route('myplugin/v1', '/posts/(?P<id>\d+)', [
     'callback' => function (\WP_REST_Request $req) {
-        $dto = PostDto::fromArray((array) $req->get_params());  // 🔴 no routeFields, no validation, no projection
-        return PostDto::fromPost($dto->id)->toArray();          // 🔴 bypasses Presenter redaction
+        $dto = PostDto::fromArray((array) $req->get_params());  // WRONG: no routeFields, no validation, no projection
+        return PostDto::fromPost($dto->id)->toArray();          // WRONG: bypasses Presenter redaction
     },
 ]);
 
@@ -262,7 +236,7 @@ final readonly class PostDto extends DataObject {
         public int $id = 0,
         public string $title = '',
     ) {
-        if (!\current_user_can('edit_posts')) {  // 🔴 DTO is data shape, not auth gate
+        if (!\current_user_can('edit_posts')) {  // WRONG: DTO is data shape, not auth gate
             throw new \RuntimeException('Unauthorized');
         }
     }
@@ -323,3 +297,10 @@ $args = MetaKeyRegistry::toRestArgs($dtoClass);
 - OpenAPI integration: [BetterRouteBridge.php:349](BetterRouteBridge.php) — `openApiComponents(array $dtoClasses): array`.
 - `MetaKeyRegistry::toRestArgs` / `toJsonSchema`: [libraries/better-data/src/Registration/MetaKeyRegistry.php](MetaKeyRegistry.php) — schema generation.
 - `RequestSource::noCollision`: [libraries/better-data/src/Source/RequestSource.php](RequestSource.php) — the source-side collision guard the bridge mirrors.
+- Official documentation: <https://github.com/lonsdale201/better-data>
+- Official documentation: <https://github.com/lonsdale201/better-route>
+- Verified source paths:
+  - `src/Internal/RestSchemaBuilder.php`
+  - `src/Presenter/Presenter.php`
+  - `src/Presenter/PresentationContext.php`
+  - `src/Exception/RequestParamCollisionException.php`

@@ -13,21 +13,14 @@ description: Adds a per-form settings panel to the JetFormBuilder
   settings panel", "form-level settings", "useMetaState",
   "jet.fb.register.plugins", "jet-form-builder/editor-assets/before",
   or scaffolding a JFB companion plugin that needs per-form config.
-author: Soczó Kristóf
-contact: mailto:lonsdale201@hotmail.com
-plugin: jetformbuilder
-plugin-version-tested: "3.5.6"
-api-stable-since: "3.0"
-php-min: "7.4"
-last-updated: "2026-04-28"
-docs:
-  - https://github.com/Crocoblock/developer-documentation/tree/main/03-jet-form-builder
-  - https://developer.wordpress.org/block-editor/reference-guides/components/
-  - https://developer.wordpress.org/reference/functions/register_post_meta/
-source-refs:
-  - modules/post-type/module.php
-  - modules/post-type/meta/base-meta-type.php
-  - includes/admin/editor.php
+metadata:
+  wp-skills-author: "Soczó Kristóf"
+  wp-skills-contact: "mailto:lonsdale201@hotmail.com"
+  wp-skills-plugin: "jetformbuilder"
+  wp-skills-plugin-version-tested: "3.5.6"
+  wp-skills-php-min: "7.4"
+  wp-skills-api-stable-since: "3.0"
+  wp-skills-last-updated: "2026-04-28"
 ---
 
 # JetFormBuilder: form-level settings panel in the Gutenberg sidebar
@@ -375,3 +368,4 @@ Keep the merge logic in **one** function called from every consumer. Otherwise i
 - Real-world panel implementation: `wp-content/plugins/media-storage-for-jetformbuilder/assets/js/form-editor.js` and `includes/Plugin.php`
 - WP component catalog: https://developer.wordpress.org/block-editor/reference-guides/components/
 - `register_post_meta` reference: https://developer.wordpress.org/reference/functions/register_post_meta/
+- Official documentation: <https://github.com/Crocoblock/developer-documentation/tree/main/03-jet-form-builder>

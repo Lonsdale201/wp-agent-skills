@@ -1,0 +1,4 @@
+interface:
+  display_name: "Rank Math Plugin Compatibility"
+  short_description: "Build Rank Math-compatible WordPress plugins"
+  default_prompt: "Use $rankmath-plugin-compatibility to make this WordPress plugin integrate safely with Rank Math."

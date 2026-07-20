@@ -9,20 +9,13 @@ description: WooCommerce Memberships access, restriction, drip-content,
   wc_memberships_access_from_time, wc_memberships_user_has_member_discount,
   wc_memberships_get_member_product_discount,
   wc_memberships_get_discounted_price, or member discount badge hooks.
-author: Soczó Kristóf
-contact: mailto:lonsdale201@hotmail.com
-plugin: woocommerce-memberships
-plugin-version-tested: "1.28.1"
-php-min: "7.4"
-last-updated: "2026-04-29"
-source-refs:
-  - wp-content/plugins/woocommerce-memberships/src/class-wc-memberships-capabilities.php
-  - wp-content/plugins/woocommerce-memberships/src/Restrictions.php
-  - wp-content/plugins/woocommerce-memberships/src/Restrictions/Posts.php
-  - wp-content/plugins/woocommerce-memberships/src/Restrictions/Products.php
-  - wp-content/plugins/woocommerce-memberships/src/class-wc-memberships-member-discounts.php
-  - wp-content/plugins/woocommerce-memberships/src/functions/wc-memberships-functions-restrictions.php
-  - wp-content/plugins/woocommerce-memberships/src/functions/wc-memberships-functions-member-discounts.php
+metadata:
+  wp-skills-author: "Soczó Kristóf"
+  wp-skills-contact: "mailto:lonsdale201@hotmail.com"
+  wp-skills-plugin: "woocommerce-memberships"
+  wp-skills-plugin-version-tested: "1.29.0"
+  wp-skills-php-min: "7.4"
+  wp-skills-last-updated: "2026-07-06"
 ---
 
 # WooCommerce Memberships: access and discounts
@@ -87,6 +80,18 @@ Do not replace `wc_memberships_user_can()` with a raw membership status check wh
 | Rule access time | `wc_memberships_rule_access_start_time` | filter | `int $access_time, int $from_time, WC_Memberships_Membership_Plan_Rule $rule` | Lower-level rule access timing. |
 
 There is not a single universal `wc_memberships_user_can` result filter to "just allow access". Change the rule inputs, public-content decision, access start time, or membership status intentionally.
+
+For editor/admin automation that reads or updates per-post content restriction rows, use `wcm-abilities-api`: Memberships 1.29.0 exposes `post-restriction-rules-get` and `post-restriction-rules-update` abilities plus `/wc-memberships/v1/post-restriction-rules/{id}` routes. Those are rule-configuration APIs; `wc_memberships_user_can()` remains the final runtime access decision for frontend rendering, REST output, AJAX fragments, and headless responses.
+
+## Boot-time safety
+
+Do not call Memberships restriction APIs at file load or very early WordPress bootstrap just to decide whether to register your own plugin components. Memberships has hardened "translations loaded too early" paths during WP-Cron and WP-CLI; avoid reintroducing that pattern from integrations.
+
+Safe timing:
+
+- Register hooks/classes with a file-scope active check such as `class_exists( 'WC_Memberships_Loader' )`.
+- Perform actual access checks inside request-time callbacks, REST/AJAX handlers, template rendering, WooCommerce price filters, or after normal WordPress initialization.
+- Do not instantiate `SkyVerge\WooCommerce\Memberships\Restrictions` or read restriction mode only to decide whether your plugin should load.
 
 ## Product grants
 
@@ -191,4 +196,17 @@ add_filter( 'wc_memberships_access_from_time', function ( $from_time, $rule, $me
 ## Cross-references
 
 - Use `wcm-membership-hooks` for creation, status transitions, profile fields, REST/webhooks, members area, CSV, admin, and Subscriptions-linked membership hooks.
+- Use `wcm-data-model-subscriptions-link` when previous-purchase grant logic touches order storage; HPOS means raw `shop_order` post queries are unsafe.
 - Use `wc-variations-pricing-filters` when combining Memberships discounts with custom variation price logic and cached variation price hashes.
+
+## References
+
+- Verified source paths:
+  - `wp-content/plugins/woocommerce-memberships/src/class-wc-memberships-capabilities.php`
+  - `wp-content/plugins/woocommerce-memberships/src/Restrictions.php`
+  - `wp-content/plugins/woocommerce-memberships/src/Restrictions/Posts.php`
+  - `wp-content/plugins/woocommerce-memberships/src/Restrictions/Products.php`
+  - `wp-content/plugins/woocommerce-memberships/src/class-wc-memberships-member-discounts.php`
+  - `wp-content/plugins/woocommerce-memberships/src/functions/wc-memberships-functions-restrictions.php`
+  - `wp-content/plugins/woocommerce-memberships/src/functions/wc-memberships-functions-member-discounts.php`
+  - `wp-content/plugins/woocommerce-memberships/src/Posts/Abilities/`

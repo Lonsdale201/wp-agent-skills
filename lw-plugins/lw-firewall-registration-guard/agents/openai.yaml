@@ -1,0 +1,4 @@
+interface:
+  display_name: "LW Firewall Registration Guard"
+  short_description: "Custom signup honeypot and token integration."
+  default_prompt: "Use $lw-firewall-registration-guard to wire my custom registration form into LW Firewall spam protection."

@@ -1,38 +1,13 @@
 ---
 name: bd-source-adapter
-description: Add a new source adapter to better-data — code that reads
-  from a WordPress data store the library doesn't cover yet (comments,
-  attachments, transients, custom tables). Mirror the canonical shape
-  PostSource / UserSource / TermSource use — a non-final class with
-  static hydrate(int|object, $dtoClass) and hydrateMany(list<int>,
-  $dtoClass) methods. Critical contract — the meta fetcher closure
-  passed to the AttributeDrivenHydrator must return null when the meta
-  key does not exist (use metadata_exists guard) and the stored value
-  otherwise. Without this guard you cannot distinguish "missing meta
-  → use default" from "stored empty string → preserve emptiness", and
-  Reflection-default fallback breaks. Bulk hydration must prewarm
-  caches with the equivalent of update_meta_cache + (where applicable)
-  _prime_post_caches. Use when integrating a new WP store. Triggers on
-  creating a class in src/Source/, hydrate / hydrateMany method
-  signatures, references to AttributeDrivenHydrator from a source.
-author: Soczó Kristóf
-contact: mailto:lonsdale201@hotmail.com
-plugin: better-data
-plugin-version-tested: "phase-9"
-php-min: "8.3"
-last-updated: "2026-04-29"
-docs:
-  - https://github.com/lonsdale201/better-data
-source-refs:
-  - src/Source/HasWpSources.php
-  - src/Source/PostSource.php
-  - src/Source/UserSource.php
-  - src/Source/TermSource.php
-  - src/Source/OptionSource.php
-  - src/Source/RowSource.php
-  - src/Source/RequestSource.php
-  - src/Internal/AttributeDrivenHydrator.php
-  - src/Exception/PostNotFoundException.php
+description: Add a new source adapter to better-data — code that reads from a WordPress data store the library doesn't cover yet (comments, attachments, transients, custom tables). Mirror the canonical shape PostSource / UserSource / TermSource use — a non-final class with static hydrate(int|object, $dtoClass) and hydrateMany(int[], $dtoClass) methods. Critical contract — the meta fetcher closure passed to the AttributeDrivenHydrator must return null when the meta key does not exist (use metadata_exists guard) and the stored value otherwise. Without this guard you cannot distinguish "missing meta → use default" from "stored empty string → preserve emptiness", and Reflection-default fallback breaks. Bulk hydration must prewarm caches with the equivalent of update_meta_cache + (where applicable) _prime_post_caches. Use when integrating a new WP store. Triggers on creating a class in src/Source/, hydrate / hydrateMany method signatures, references to AttributeDrivenHydrator from a source.
+metadata:
+  wp-skills-author: "Soczó Kristóf"
+  wp-skills-contact: "mailto:lonsdale201@hotmail.com"
+  wp-skills-plugin: "better-data"
+  wp-skills-plugin-version-tested: "phase-9"
+  wp-skills-php-min: "8.3"
+  wp-skills-last-updated: "2026-04-29"
 ---
 
 # better-data: Adding a source adapter
@@ -265,7 +240,7 @@ public static function hydrate(int $id, string $dtoClass): DataObject
 {
     $comment = \get_comment($id);
     if ($comment === null) {
-        return $dtoClass::fromArray([]);  // 🔴 hydrates an empty DTO; caller can't tell
+        return $dtoClass::fromArray([]);  // WRONG: hydrates an empty DTO; caller can't tell
     }
     // ...
 }
@@ -277,7 +252,7 @@ if ($comment === null) {
 
 // WRONG — engine call inside src/Internal/
 // File: src/Internal/CommentEngine.php
-\update_meta_cache('comment', $ids);  // 🔴 src/Internal/ must be WP-free for unit testability
+\update_meta_cache('comment', $ids);  // WRONG: src/Internal/ must be WP-free for unit testability
 
 // RIGHT — keep WP calls in src/Source/
 // (the WP-free attribute-driven hydrator already lives in src/Internal/)
@@ -304,3 +279,6 @@ if ($comment === null) {
 - Hydrator engine: [libraries/better-data/src/Internal/AttributeDrivenHydrator.php](AttributeDrivenHydrator.php) — pure, WP-free; takes a fetcher closure and produces a hydrated DTO.
 - Default-fallback predicate: [libraries/better-data/src/Internal/AttributeDrivenHydrator.php:90-95](AttributeDrivenHydrator.php) — the `null`-vs-value distinction in the fetcher matters here.
 - Other sources: [libraries/better-data/src/Source/UserSource.php](UserSource.php), [libraries/better-data/src/Source/TermSource.php](TermSource.php), [libraries/better-data/src/Source/OptionSource.php](OptionSource.php), [libraries/better-data/src/Source/RowSource.php](RowSource.php), [libraries/better-data/src/Source/RequestSource.php](RequestSource.php).
+- Official documentation: <https://github.com/lonsdale201/better-data>
+- Verified source paths:
+  - `src/Exception/PostNotFoundException.php`

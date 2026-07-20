@@ -1,34 +1,13 @@
 ---
 name: wp-rocket-cache-invalidation
-description: Programmatically clear WP Rocket cache from a third-party
-  plugin / theme when data changes — the public rocket_clean_* function
-  family (rocket_clean_post, rocket_clean_files, rocket_clean_term,
-  rocket_clean_user, rocket_clean_home, rocket_clean_minify,
-  rocket_clean_cache_busting, rocket_clean_domain, rocket_clean_cache_dir).
-  Critical detection rule — WP Rocket is a PAID plugin not on Packagist;
-  always feature-detect via function_exists('rocket_clean_post') OR
-  defined('WP_ROCKET_VERSION') before calling, since not every site
-  has it. Never raw-unlink the cache directory or call wp_cache_flush()
-  expecting it to clear WP Rocket — wp_cache_flush is WP object cache,
-  WP Rocket is FILE cache. The before_*_clean_* / after_*_clean_*
-  action lifecycle hooks fire around every clean — useful for audit
-  logging, monitoring, custom invalidation chains. Use when integrating
-  cache invalidation in a companion plugin, WC integration, custom
-  data plugin. Triggers on rocket_clean_, before_rocket_clean,
-  after_rocket_clean, "WP Rocket cache invalidate / purge / clear".
-author: Soczó Kristóf
-contact: mailto:lonsdale201@hotmail.com
-plugin: wp-rocket
-plugin-version-tested: "3.21.1"
-php-min: "7.3"
-last-updated: "2026-04-29"
-docs:
-  - https://docs.wp-rocket.me/article/92-plugin-compatibility-with-wp-rocket
-  - https://docs.wp-rocket.me/article/2-getting-started
-source-refs:
-  - wp-content/plugins/wp-rocket/wp-rocket.php
-  - wp-content/plugins/wp-rocket/inc/common/purge.php
-  - wp-content/plugins/wp-rocket/inc/functions/files.php
+description: Programmatically clear WP Rocket cache from a third-party plugin / theme when data changes — the public rocket_clean_* function family (rocket_clean_post, rocket_clean_files, rocket_clean_term, rocket_clean_user, rocket_clean_home, rocket_clean_minify, rocket_clean_cache_busting, rocket_clean_domain, rocket_clean_cache_dir). Critical detection rule — WP Rocket is a PAID plugin not on Packagist; always feature-detect via function_exists('rocket_clean_post') OR defined('WP_ROCKET_VERSION') before calling, since not every site has it. Never raw-unlink the cache directory or call wp_cache_flush() expecting it to clear WP Rocket — wp_cache_flush is WP object cache, WP Rocket is FILE cache. The before_*_clean_* / after_*_clean_* action hooks fire around every clean — useful for audit logging and monitoring. Use when integrating cache invalidation from a companion or integration plugin. Triggers on rocket_clean_, before_rocket_clean, after_rocket_clean, "WP Rocket cache invalidate / purge / clear".
+metadata:
+  wp-skills-author: "Soczó Kristóf"
+  wp-skills-contact: "mailto:lonsdale201@hotmail.com"
+  wp-skills-plugin: "wp-rocket"
+  wp-skills-plugin-version-tested: "3.23"
+  wp-skills-php-min: "7.4"
+  wp-skills-last-updated: "2026-07-09"
 ---
 
 # WP Rocket: cache invalidation from third-party code
@@ -67,9 +46,9 @@ Trigger when ANY of the following is true:
 | Field | Value |
 |---|---|
 | Plugin | WP Rocket |
-| Version | 3.21.1 (Code name "Iego") |
+| Version | 3.23 (Code name "Iego") |
 | Min WP | 5.8 |
-| Min PHP | 7.3 |
+| Min PHP | 7.4 |
 | Tested up to | WP 6.3.1 |
 | Distribution | **Paid / premium** — not on Packagist, not on WP.org repo |
 | Constants | `WP_ROCKET_VERSION`, `WP_ROCKET_SLUG = 'wp_rocket_settings'`, `WP_ROCKET_PHP_VERSION`, `WP_ROCKET_WP_VERSION` |
@@ -277,7 +256,7 @@ add_action( 'after_rocket_clean_post', function ( $post, array $purge_urls ) {
 // WRONG — wp_cache_flush expecting WP Rocket to clear
 function my_save_handler( $post_id ): void {
     update_post_meta( $post_id, 'foo', 'bar' );
-    wp_cache_flush();   // 🔴 only clears object cache, not WP Rocket file cache
+    wp_cache_flush();   // WRONG: only clears object cache, not WP Rocket file cache
 }
 
 // RIGHT
@@ -291,7 +270,7 @@ function my_save_handler( $post_id ): void {
 // WRONG — raw filesystem deletion
 function my_clear() {
     $cache_dir = WP_CONTENT_DIR . '/cache/wp-rocket/example.com';
-    array_map( 'unlink', glob( $cache_dir . '/*.html' ) );   // 🔴 misses mobile / lang / qs variants
+    array_map( 'unlink', glob( $cache_dir . '/*.html' ) );   // WRONG: misses mobile / lang / qs variants
 }
 
 // RIGHT
@@ -301,7 +280,7 @@ if ( \function_exists( 'rocket_clean_domain' ) ) {
 
 // WRONG — is_plugin_active during plugins_loaded
 add_action( 'plugins_loaded', function () {
-    if ( is_plugin_active( 'wp-rocket/wp-rocket.php' ) ) {   // 🔴 fatal — function not loaded
+    if ( is_plugin_active( 'wp-rocket/wp-rocket.php' ) ) {   // WRONG: fatal — function not loaded
         // ...
     }
 } );
@@ -315,7 +294,7 @@ add_action( 'plugins_loaded', function () {
 // WRONG — clean_domain on every post save
 add_action( 'save_post', function ( $post_id ) {
     if ( \function_exists( 'rocket_clean_domain' ) ) {
-        rocket_clean_domain();   // 🔴 nukes the entire site cache for one post change
+        rocket_clean_domain();   // WRONG: nukes the entire site cache for one post change
     }
 } );
 
@@ -338,7 +317,7 @@ rocket_clean_post( $post_id );
 
 // WRONG — clean inside a clean (recursion)
 add_action( 'after_rocket_clean_post', function ( $post ) {
-    rocket_clean_files( [ get_permalink( $post->ID ) ] );   // 🔴 fires after_rocket_clean_files which can re-trigger
+    rocket_clean_files( [ get_permalink( $post->ID ) ] );   // WRONG: fires after_rocket_clean_files which can re-trigger
 } );
 
 // RIGHT — pass $run_actions = false
@@ -349,7 +328,7 @@ add_action( 'after_rocket_clean_post', function ( $post ) {
 // WRONG — bulk import without deferral
 foreach ( $records as $record ) {
     wp_insert_post( $record );
-    rocket_clean_post( /* ... */ );   // 🔴 N cache wipes for N records
+    rocket_clean_post( /* ... */ );   // WRONG: N cache wipes for N records
 }
 
 // RIGHT — defer to one nuke
@@ -374,6 +353,7 @@ foreach ( [ 'en', 'de', 'fr' ] as $lang ) {
 ## Cross-references
 
 - Run **`wp-rocket-cache-rejection-and-filters`** when the answer isn't "clear cache after change" but "PREVENT this URL / path from being cached at all".
+- Run **`wp-rocket-mcp-and-abilities`** when the task is exposing WP Rocket settings to AI/MCP (the `wp-rocket/get-options` & `wp-rocket/set-option` abilities, the `/oauth/*` MCP OAuth server, or the `rocket_mcp_*` / `rocket_enable_abilities` filters) — new in 3.23.
 - Run **`wp-plugin-cron`** when invalidation is scheduled / batched (Action Scheduler, WP-Cron) — combine with `rocket_clean_*` calls in the cron handler.
 - Run **`wcs-renewal-scheduler`** if cache-invalidation triggers come from WC Subscription renewal events.
 - Run **`wp-plugin-options-storage`** when deciding "should I cache this manually OR let WP Rocket handle it" — most often: let WP Rocket do it.
@@ -400,3 +380,4 @@ foreach ( [ 'en', 'de', 'fr' ] as $lang ) {
 - `rocket_clean_cache_dir`: [inc/functions/files.php:1060](files.php).
 - `rocket_clean_minify`: [inc/functions/files.php:354](files.php).
 - WP Rocket plugin compatibility doc: [https://docs.wp-rocket.me/article/92-plugin-compatibility-with-wp-rocket](https://docs.wp-rocket.me/article/92-plugin-compatibility-with-wp-rocket).
+- Official documentation: <https://docs.wp-rocket.me/article/2-getting-started>

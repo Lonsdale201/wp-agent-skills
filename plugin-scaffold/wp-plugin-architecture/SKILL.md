@@ -1,27 +1,28 @@
 ---
 name: wp-plugin-architecture
 description: Designs and reviews the internal architecture of a WordPress
-  plugin — folder layout, PSR-4 one-class-per-file discipline,
+  plugin — `src/` folder layout, Composer PSR-4 one-class-per-file discipline,
+  PascalCase filenames matching class names, no `class-*.php` legacy layout,
   Schema/Constants placement, composition-root vs singleton decisions,
-  conditional asset enqueueing, script config via wp_add_inline_script,
-  and prefixed custom-hook naming. Use when scaffolding includes/src,
-  reviewing class organization, asset enqueue code, repeated strings,
-  or "should I make this a singleton" decisions.
-author: Soczó Kristóf
-contact: mailto:lonsdale201@hotmail.com
-plugin: wordpress
-plugin-version-tested: "6.3 - 6.9"
-php-min: "7.4"
-last-updated: "2026-04-28"
-docs:
-  - https://developer.wordpress.org/reference/functions/wp_enqueue_script/
-  - https://developer.wordpress.org/reference/functions/wp_add_inline_script/
-  - https://developer.wordpress.org/reference/hooks/admin_enqueue_scripts/
+  conditional asset enqueueing, script config via wp_add_inline_script, and
+  prefixed custom-hook naming. Use when scaffolding `src/`, reviewing class
+  organization, migrating from `includes/class-*.php`, checking composer.json
+  namespace mappings, asset enqueue code, repeated strings, or "should I make
+  this a singleton" decisions.
+metadata:
+  wp-skills-author: "Soczó Kristóf"
+  wp-skills-contact: "mailto:lonsdale201@hotmail.com"
+  wp-skills-plugin: "wordpress"
+  wp-skills-plugin-version-tested: "6.3 - 7.0"
+  wp-skills-php-min: "7.4"
+  wp-skills-last-updated: "2026-07-09"
 ---
 
 # WordPress plugin: internal architecture
 
-How the plugin organizes itself **inside** `includes/` (or wherever the PSR-4 root lives) once the bootstrap (see `wp-plugin-bootstrap`) and lifecycle (see `wp-plugin-lifecycle`) are in place. The bootstrap is the launcher; this skill is the engine layout.
+How the plugin organizes itself **inside `src/`** once the bootstrap (see `wp-plugin-bootstrap`) and lifecycle (see `wp-plugin-lifecycle`) are in place. The bootstrap is the launcher; this skill is the engine layout.
+
+Use `src/` as the default PSR-4 root for new plugins. Treat `includes/` and `class-*.php` filenames as legacy patterns to audit or migrate, not as a scaffold target.
 
 Out of scope: bootstrap-file content, activation / deactivation / uninstall, cron specifics, REST endpoint design — covered by sibling skills.
 
@@ -29,51 +30,66 @@ Out of scope: bootstrap-file content, activation / deactivation / uninstall, cro
 
 Trigger when ANY of the following is true:
 
-- Scaffolding the `includes/` (or `src/`) folder of a new plugin.
+- Scaffolding the `src/` folder of a new plugin.
 - Reviewing the class layout in a PR — folder structure, where things live, what's reused.
+- Migrating old `includes/class-my-plugin-foo.php` files to Composer PSR-4.
 - Deciding whether a meta key / option name belongs in a class const, a `Schema.php`, or a PHP enum.
 - Reviewing asset enqueue code — wrong hook, missing dependencies, unconditional loading.
 - The user asks "should this be a singleton" or "where should this constant live".
 
 ## Folder layout — by-type or by-feature
 
-There are two reasonable organizational schemes for `includes/`. Pick one and stay consistent.
+There are two reasonable organizational schemes for `src/`. Pick one and stay consistent.
 
 **By-type** (group classes by their WP role). Works for small-to-medium plugins (≤ 15 classes, 1-3 features):
 
 ```
-includes/
+src/
 ├── Plugin.php              # composition root / wiring
 ├── Schema.php              # central constants
-├── Actions/                # JFB / WC actions
-├── Events/                 # JFB events
-├── Settings/               # admin settings
+├── Admin/                  # admin screens / list tables / settings
+├── Content/                # CPTs / taxonomies
+├── Frontend/               # shortcodes / frontend app shell / assets
 ├── Rest/                   # REST controllers
+├── Setup/                  # Activator / Deactivator
 └── Api/                    # external HTTP clients
 ```
 
 **By-feature** (group everything that belongs to a feature together). Scales better past 3-4 distinct features:
 
 ```
-includes/
+src/
 ├── Plugin.php
 ├── Schema.php
-├── Verdict/                # AI Verdict feature
-│   ├── VerdictAction.php
-│   ├── VerdictTrueEvent.php
-│   └── VerdictFalseEvent.php
-├── Enrichment/
-│   ├── EnrichmentAction.php
-│   └── EnrichmentDoneEvent.php
-├── Settings/
-│   └── SettingsTab.php
-└── Updater/
-    └── UpdateChecker.php
+├── Documents/
+│   ├── DocumentPresenter.php
+│   ├── DocumentRepository.php
+│   └── DocumentService.php
+├── Folders/
+│   └── FolderService.php
+├── Rest/
+│   ├── DocumentsController.php
+│   └── FoldersController.php
+└── Frontend/
+    ├── Assets.php
+    └── ListShortcode.php
 ```
 
 The wrong move is **mixing both** in the same plugin. A reader gets confused, an AI gets lost, and refactors become tedious. By-type is fine until it isn't — when a third feature ships and `Actions/` has 9 classes from 3 unrelated domains, switch the whole plugin to by-feature.
 
-**Hard rule across both styles:** one class per file, file name matches class name (`VerdictAction.php` → `class VerdictAction`), PSR-4 maps `<RootNamespace>\Verdict\VerdictAction` to `includes/Verdict/VerdictAction.php`. The kebab-case `class-foo-bar.php` filename is a holdover from PHPCS-WPCS-old; modern plugins use PascalCase that matches the class.
+**Hard rule across both styles:** one class per file, file name matches class name (`FolderService.php` -> `final class FolderService`), PSR-4 maps `<RootNamespace>\Folders\FolderService` to `src/Folders/FolderService.php`. The kebab-case `class-folder-service.php` filename is a holdover from old WordPress procedural scaffolds; modern Composer plugins use PascalCase files that match the class.
+
+Composer mapping:
+
+```json
+{
+    "autoload": {
+        "psr-4": {
+            "MyPlugin\\": "src/"
+        }
+    }
+}
+```
 
 ## Centralization — `Schema` / `Constants` is non-negotiable
 
@@ -173,8 +189,8 @@ When in doubt: write the class as a regular class. Promote to singleton only whe
 The wrong way: enqueue every script and stylesheet on every page load via `wp_enqueue_scripts`. The right way:
 
 1. **Pick the right hook for the right context.** Verified in WP source:
-   - **Frontend pages**: `wp_enqueue_scripts` ([wp-includes/script-loader.php:2311](wp-includes/script-loader.php))
-   - **wp-admin pages**: `admin_enqueue_scripts` ([wp-admin/admin-header.php:123](wp-admin/admin-header.php)) — receives `$hook_suffix` argument identifying the current admin page
+   - **Frontend pages**: `wp_enqueue_scripts` (`wp-includes/script-loader.php:2311`)
+   - **wp-admin pages**: `admin_enqueue_scripts` (`wp-admin/admin-header.php:123`) — receives `$hook_suffix` argument identifying the current admin page
    - **Block editor (Gutenberg)**: `enqueue_block_editor_assets`
    - **Front + back of blocks**: `enqueue_block_assets`
    - **Login screen**: `login_enqueue_scripts`
@@ -203,9 +219,9 @@ The wrong way: enqueue every script and stylesheet on every page load via `wp_en
 
 ### `wp_add_inline_script` preferred over `wp_localize_script` for new code
 
-`wp_localize_script` ([since 2.2](wp-includes/functions.wp-scripts.php)) creates a JavaScript object from an associative array. It still works, but for arbitrary runtime config it is a legacy-shaped helper: it requires an array payload and creates a top-level global. Use `wp_set_script_translations()` for JavaScript translations.
+`wp_localize_script` (since 2.2; defined in `wp-includes/functions.wp-scripts.php`) creates a JavaScript object from an associative array. It still works, but for arbitrary runtime config it is a legacy-shaped helper: it requires an array payload and creates a top-level global. Use `wp_set_script_translations()` for JavaScript translations.
 
-`wp_add_inline_script` ([since 4.5](wp-includes/functions.wp-scripts.php)) is the modern path: any JS string, before or after the registered script. Use `wp_json_encode()` to serialize structured data:
+`wp_add_inline_script` (since 4.5; defined in `wp-includes/functions.wp-scripts.php`) is the modern path: any JS string, before or after the registered script. Use `wp_json_encode()` to serialize structured data:
 
 ```php
 wp_add_inline_script(
@@ -259,7 +275,9 @@ do_action( 'myplugin/before_request', $payload );
 ## Critical rules
 
 - **One class per file**, file name matches class name, PSR-4 namespace mirrors the folder path.
-- **Pick by-type or by-feature**, never both in the same plugin. Switch styles by refactoring the whole `includes/` at once.
+- **Use `src/` as the default class root**. Keep `includes/` only when preserving an existing legacy plugin layout.
+- **Never scaffold `class-*.php` for new code**. Migrate it to `src/Domain/ClassName.php` when touching old files.
+- **Pick by-type or by-feature**, never both in the same plugin. Switch styles by refactoring the whole `src/` at once.
 - **Centralize every repeated string** (meta keys, option names, hook names, cron events, CPT slugs) in a class const, a `Schema` class, or a PHP 8.1+ enum when the plugin requires PHP 8.1+.
 - **Plugin class is a composition root; singleton is optional.** Default all other classes to regular classes; promote to singleton only with a concrete reason.
 - **Enqueue conditionally on the right hook** (`wp_enqueue_scripts` / `admin_enqueue_scripts($hook_suffix)` / `enqueue_block_editor_assets`); never enqueue unconditionally in `init`.
@@ -305,6 +323,15 @@ do_action( 'before_save', $data );  // collides with 5 other plugins
 
 // RIGHT
 do_action( 'myplugin/before_save', $data );
+
+// WRONG — legacy file/class style in a new plugin
+includes/class-folder-service.php
+class Folder_Service {}
+
+// RIGHT — Composer PSR-4
+src/Folders/FolderService.php
+namespace MyPlugin\Folders;
+final class FolderService {}
 ```
 
 ## Cross-references
@@ -323,8 +350,11 @@ do_action( 'myplugin/before_save', $data );
 
 ## References
 
-- `wp_enqueue_script`: [wp-includes/functions.wp-scripts.php](wp-includes/functions.wp-scripts.php) — note the `@since 6.3.0` on `$args` array overload.
-- `wp_add_inline_script`: [wp-includes/functions.wp-scripts.php](wp-includes/functions.wp-scripts.php) — since WP 4.5.
-- `admin_enqueue_scripts` action with `$hook_suffix`: [wp-admin/admin-header.php:123](wp-admin/admin-header.php).
-- `wp_enqueue_scripts` action: [wp-includes/script-loader.php:2311](wp-includes/script-loader.php).
+- `wp_enqueue_script`: `wp-includes/functions.wp-scripts.php` — note the `@since 6.3.0` on `$args` array overload.
+- `wp_add_inline_script`: `wp-includes/functions.wp-scripts.php` — since WP 4.5.
+- `admin_enqueue_scripts` action with `$hook_suffix`: `wp-admin/admin-header.php:123`.
+- `wp_enqueue_scripts` action: `wp-includes/script-loader.php:2311`.
 - PHP enums: [php.net/manual/en/language.enumerations.php](https://www.php.net/manual/en/language.enumerations.php).
+- Official documentation: <https://developer.wordpress.org/reference/functions/wp_enqueue_script/>
+- Official documentation: <https://developer.wordpress.org/reference/functions/wp_add_inline_script/>
+- Official documentation: <https://developer.wordpress.org/reference/hooks/admin_enqueue_scripts/>

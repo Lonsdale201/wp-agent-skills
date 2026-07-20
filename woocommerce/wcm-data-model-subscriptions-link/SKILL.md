@@ -9,22 +9,13 @@ description: WooCommerce Memberships storage and relationship map for
   _free_trial_end_date, membership plan access meta, user membership
   dates, product/order grant meta, or when an agent needs exact Memberships
   CPT/meta names and the Memberships-Subscriptions relation.
-author: Soczo Kristof
-contact: mailto:lonsdale201@hotmail.com
-plugin: woocommerce-memberships
-plugin-version-tested: "1.28.1"
-php-min: "7.4"
-last-updated: "2026-05-01"
-source-refs:
-  - wp-content/plugins/woocommerce-memberships/src/class-wc-memberships-post-types.php
-  - wp-content/plugins/woocommerce-memberships/src/class-wc-memberships-membership-plan.php
-  - wp-content/plugins/woocommerce-memberships/src/class-wc-memberships-user-membership.php
-  - wp-content/plugins/woocommerce-memberships/src/class-wc-memberships-rules.php
-  - wp-content/plugins/woocommerce-memberships/src/functions/wc-memberships-functions-orders.php
-  - wp-content/plugins/woocommerce-memberships/src/Data_Stores/Profile_Field/User_Meta.php
-  - wp-content/plugins/woocommerce-memberships/src/Data_Stores/Profile_Field_Definition/Option.php
-  - wp-content/plugins/woocommerce-memberships/src/integrations/subscriptions/class-wc-memberships-integration-subscriptions-user-membership.php
-  - wp-content/plugins/woocommerce-memberships/src/integrations/subscriptions/class-wc-memberships-integration-subscriptions.php
+metadata:
+  wp-skills-author: "Soczo Kristof"
+  wp-skills-contact: "mailto:lonsdale201@hotmail.com"
+  wp-skills-plugin: "woocommerce-memberships"
+  wp-skills-plugin-version-tested: "1.29.0"
+  wp-skills-php-min: "7.4"
+  wp-skills-last-updated: "2026-07-06"
 ---
 
 # WooCommerce Memberships: data model and Subscriptions link
@@ -110,6 +101,8 @@ Common rule fields are `id`, `membership_plan_id`, `active`, `rule_type`, `conte
 
 Use `wc_memberships()->get_rules_instance()->get_rules()`, `get_plan_rules()`, `add_rules()`, `update_rules()`, or `delete_rules()` instead of editing the option directly.
 
+Memberships 1.29.0 adds a safer admin/editor layer for per-post content restriction rules. `PostRestrictionRulesSerializer` reads the same `wc_memberships_rules` store and returns both direct and inherited rules, while `SetPostRules` replaces only direct post-specific `content_restriction` rows for one post. If you consume the GET result, filter to rows where `editable === true` before sending an update; inherited rules must be edited at the plan/post-type/taxonomy source.
+
 ## Memberships to Subscriptions relation
 
 WooCommerce Memberships links to WooCommerce Subscriptions by adding extra meta to the `wc_user_membership` post. The subscription itself is still a WCS `shop_subscription`.
@@ -158,6 +151,17 @@ Storage bridge:
 
 If an order has the same membership-granting product for several recipients, do not pick the first subscription in the order. Use the WCSG/Memberships integration logic or query recipient subscriptions before assigning `_subscription_id`.
 
+## REST and directory data boundaries
+
+Memberships REST records are API projections, not storage contracts. The v4 directory endpoint deliberately returns less than the full user membership record:
+
+- It requires a `page_id` containing a Memberships Directory block and optionally a matching `block_instance_id`.
+- It validates the viewer's access to that page/block context.
+- It whitelists response keys to `id`, `customer_data`, `plan_name`, `profile_fields`, and `meta_data`.
+- It blanks `meta_data`, filters `profile_fields` to the block's configured slugs, and removes REST links.
+
+Do not use `/wc/v4/memberships/members/directory` as an admin export or integration source. Use the admin-gated Memberships REST endpoints, public PHP APIs, or the Abilities API for privileged automation.
+
 ## Safe query patterns
 
 ```php
@@ -178,6 +182,8 @@ $memberships = get_posts( array(
 // Prefer API for normal code.
 $user_membership = wc_memberships_get_user_membership( $user_id, $plan_id );
 ```
+
+For "grant access from previous purchase" logic, do not query `shop_order` posts directly. WooCommerce order storage may be HPOS, while Memberships still stores plans/user memberships as CPTs. Use Memberships grant/order APIs and WooCommerce order APIs so previous-purchase checks work in both CPT and HPOS order storage.
 
 ## Common mistakes
 
@@ -200,4 +206,22 @@ $membership->update_status( 'active' );
 
 - Use `wcm-membership-hooks` for lifecycle hooks and REST/webhook extension points.
 - Use `wcm-access-discounts` for access checks, restrictions, drip timing, and member discounts.
+- Use `wcm-abilities-api` for Memberships 1.28+ WP Abilities API automation.
 - Use `wcs-data-model-switching-gifting` for Subscriptions order type, subscription meta, switch data, and gifting data.
+
+## References
+
+- Verified source paths:
+  - `wp-content/plugins/woocommerce-memberships/src/class-wc-memberships-post-types.php`
+  - `wp-content/plugins/woocommerce-memberships/src/class-wc-memberships-membership-plan.php`
+  - `wp-content/plugins/woocommerce-memberships/src/class-wc-memberships-user-membership.php`
+  - `wp-content/plugins/woocommerce-memberships/src/class-wc-memberships-rules.php`
+  - `wp-content/plugins/woocommerce-memberships/src/functions/wc-memberships-functions-orders.php`
+  - `wp-content/plugins/woocommerce-memberships/src/Data_Stores/Profile_Field/User_Meta.php`
+  - `wp-content/plugins/woocommerce-memberships/src/Data_Stores/Profile_Field_Definition/Option.php`
+  - `wp-content/plugins/woocommerce-memberships/src/API/Controller/User_Memberships.php`
+  - `wp-content/plugins/woocommerce-memberships/src/Helpers/Directory_Block_Validator.php`
+  - `wp-content/plugins/woocommerce-memberships/src/Posts/Actions/SetPostRules.php`
+  - `wp-content/plugins/woocommerce-memberships/src/Posts/Adapters/JsonSerializers/PostRestrictionRulesSerializer.php`
+  - `wp-content/plugins/woocommerce-memberships/src/integrations/subscriptions/class-wc-memberships-integration-subscriptions-user-membership.php`
+  - `wp-content/plugins/woocommerce-memberships/src/integrations/subscriptions/class-wc-memberships-integration-subscriptions.php`

@@ -15,28 +15,13 @@ description: Reference for the LW Site Manager plugin (lwplugins/
   abilities, advising on AI agent integration, or before extending the
   plugin (see lw-site-manager-extend-abilities). Triggers on
   site-manager/, lw-site-manager, wp-abilities/v1, AI agent + WP.
-author: Soczó Kristóf
-contact: mailto:lonsdale201@hotmail.com
-plugin: lw-site-manager
-plugin-version-tested: "1.1.22"
-php-min: "8.2"
-last-updated: "2026-04-29"
-docs:
-  - https://github.com/lwplugins/lw-site-manager
-  - https://developer.wordpress.org/apis/abilities-api/
-source-refs:
-  - wp-content/plugins/lw-site-manager/lw-site-manager.php
-  - wp-content/plugins/lw-site-manager/src/Abilities/Registrar.php
-  - wp-content/plugins/lw-site-manager/src/Abilities/PermissionManager.php
-  - wp-content/plugins/lw-site-manager/src/Abilities/Registrars/AbstractAbilitiesRegistrar.php
-  - wp-content/plugins/lw-site-manager/src/Abilities/Registrars/UpdateAbilitiesRegistrar.php
-  - wp-content/plugins/lw-site-manager/src/Abilities/Registrars/MaintenanceAbilitiesRegistrar.php
-  - wp-content/plugins/lw-site-manager/src/Abilities/Registrars/UserAbilitiesRegistrar.php
-  - wp-content/plugins/lw-site-manager/src/Abilities/Registrars/ContentAbilitiesRegistrar.php
-  - wp-content/plugins/lw-site-manager/src/Abilities/Definitions/
-  - wp-content/plugins/lw-site-manager/src/Services/
-  - wp-content/plugins/lw-site-manager/docs/abilities/
-  - wp-content/plugins/lw-site-manager/README.md
+metadata:
+  wp-skills-author: "Soczó Kristóf"
+  wp-skills-contact: "mailto:lonsdale201@hotmail.com"
+  wp-skills-plugin: "lw-site-manager"
+  wp-skills-plugin-version-tested: "1.1.22"
+  wp-skills-php-min: "8.2"
+  wp-skills-last-updated: "2026-04-29"
 ---
 
 # LW Site Manager: overview and consumer reference
@@ -281,3 +266,10 @@ $registry = wp_get_ability_categories_registry(); // pseudo — check actual reg
 - Per-ability docs: [docs/abilities/](docs/abilities/) — 14 markdown files for individual ability reference.
 - Plugin GitHub: <https://github.com/lwplugins/lw-site-manager>.
 - LW Plugins home: <https://lwplugins.com>.
+- Official documentation: <https://developer.wordpress.org/apis/abilities-api/>
+- Verified source paths:
+  - `wp-content/plugins/lw-site-manager/src/Abilities/Registrars/AbstractAbilitiesRegistrar.php`
+  - `wp-content/plugins/lw-site-manager/src/Abilities/Registrars/UpdateAbilitiesRegistrar.php`
+  - `wp-content/plugins/lw-site-manager/src/Abilities/Registrars/MaintenanceAbilitiesRegistrar.php`
+  - `wp-content/plugins/lw-site-manager/src/Abilities/Registrars/UserAbilitiesRegistrar.php`
+  - `wp-content/plugins/lw-site-manager/src/Abilities/Registrars/ContentAbilitiesRegistrar.php`

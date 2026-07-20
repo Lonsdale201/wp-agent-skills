@@ -1,0 +1,4 @@
+interface:
+  display_name: "LW Firewall Rate Limit Worker"
+  short_description: "MU-worker rate-limit and endpoint compatibility."
+  default_prompt: "Use $lw-firewall-rate-limit-worker to check whether my custom endpoint is compatible with LW Firewall."

@@ -1,0 +1,4 @@
+interface:
+  display_name: "Polylang Object Translations"
+  short_description: "Polylang post and term translation linking"
+  default_prompt: "Use $polylang-object-translations to create, link, or repair translated WordPress posts and terms with Polylang."
