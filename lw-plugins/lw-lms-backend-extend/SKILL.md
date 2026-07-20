@@ -1,23 +1,24 @@
 ---
 name: lw-lms-backend-extend
-description: Backend extension contract for LW LMS v1.5.1. Use when extending enrollment, access, progress, certificates, automation, analytics, settings tabs, companion-plugin logic, `lw_lms_after_grant`, `lw_lms_after_revoke`, `lw_lms_pre_grant`, `AccessChecker`, `AccessRepository`, `AccessQueries`, `ProgressRepository`, `ProgressQueries`, `CompletionTracker`, `wp_lms_progress`, `wp_lms_access`, `_lw_lms_*` meta, or WooCommerce Memberships/Subscriptions access.
+description: Backend extension contract for LW LMS v1.6.0. Use when extending enrollment, access, source-scoped revocation, progress, certificates, automation, analytics, settings tabs, companion-plugin logic, `lw_lms_after_grant`, `lw_lms_after_revoke`, `lw_lms_pre_grant`, `lw_lms_has_course_access`, `AccessChecker`, `AccessRepository`, `AccessQueries`, `ProgressRepository`, `ProgressQueries`, `CompletionTracker`, `wp_lms_progress`, `wp_lms_access`, `_lw_lms_*` meta, or WooCommerce Memberships/Subscriptions access.
 metadata:
   wp-skills-author: "Soczó Kristóf"
   wp-skills-contact: "mailto:lonsdale201@hotmail.com"
   wp-skills-plugin: "lw-lms"
-  wp-skills-plugin-version-tested: "1.5.1"
-  wp-skills-php-min: "8.1"
-  wp-skills-last-updated: "2026-06-15"
+  wp-skills-plugin-version-tested: "1.6.0"
+  wp-skills-php-min: "8.2"
+  wp-skills-last-updated: "2026-07-20"
 ---
 
 # LW LMS: backend extension contract
 
 For companion plugins or themes extending LW LMS from PHP: enrollment automation, certificates, progress writes, access checks, custom settings tabs, analytics, admin tooling, and integrations with WooCommerce, WooCommerce Subscriptions, or WooCommerce Memberships.
 
-> **BETA NOTICE.** The plugin README says the plugin is under active development and not recommended for production use. Pin a tested version and review `CHANGELOG.md` before upgrading. This skill is verified against local lw-lms **v1.5.1**.
+> **BETA NOTICE.** The plugin README says the plugin is under active development and not recommended for production use. Pin a tested version and review `CHANGELOG.md` before upgrading. This skill is verified against local lw-lms **v1.6.0**.
 
 ## Version deltas that matter
 
+- **v1.6.0**: `lw_lms_has_course_access` is reachable again as the final logged-in paid-course decision after all built-in checks. `AccessRepository::revoke_by_source()` adds source-scoped stored-access revocation. Minimum PHP is now 8.2.
 - **v1.5.1**: maintenance release, no functional changes.
 - **v1.5.0**: WooCommerce Memberships access. Paid courses can link membership plans through `_lw_lms_membership_plan_ids`. Active members get access at read time through `MembershipChecker`; no DB schema change and no access row is written.
 - **v1.4.0**: WP-CLI operational workflow added. Use `lw-lms-wp-cli-operations` for those commands.
@@ -25,93 +26,43 @@ For companion plugins or themes extending LW LMS from PHP: enrollment automation
 - **v1.4.0**: course REST `content` is public; only lesson content remains access-gated.
 - **v1.3.0**: enrollment/progress hook contract added or centralized: `lw_lms_pre_grant`, `lw_lms_after_grant`, `lw_lms_after_revoke`, `ProgressRepository::mark_course_completed()`, read/write splits.
 
-## Critical correction
+## v1.6.0 course-access filter contract
 
-Do **not** document `lw_lms_has_course_access` as a general paid-course override hook in v1.5.1.
+`AccessChecker::has_course_access()` now reaches `lw_lms_has_course_access` after the complete built-in paid-course cascade: access rows, parent subscriptions, variation subscriptions, WooCommerce Memberships, then legacy purchases. The callback receives the aggregate built-in result and has final say, so it can grant or deliberately deny logged-in paid-course access.
 
-`AccessChecker::has_course_access()` returns inside all standard access-type branches:
+The filter is not universal:
 
-- `open` returns `true`;
-- guest `free` or `paid` returns `false`;
-- `free` logged-in users are lazily granted `source='free'` and return `true`;
-- `paid` checks access rows, parent subscriptions, variation subscriptions, memberships, then legacy purchases and returns that result.
+- `open` returns `true` before the filter;
+- anonymous `free` or `paid` access returns `false` before the filter;
+- `free` access for a logged-in user lazily grants `source='free'` and returns `true` before the filter;
+- logged-in `paid` access reaches the filter after all built-in checks.
 
-The `lw_lms_has_course_access` filter is only reached after those branches, effectively for non-standard access types. Older skill text that said "hook this filter to grant custom memberships after the paid cascade" was wrong for the current source.
+Preserve a built-in grant unless the integration intentionally implements a denial policy:
 
-For additive access in v1.5.1, prefer one of these:
+```php
+add_filter(
+    'lw_lms_has_course_access',
+    static function ( bool $has_access, int $course_id, int $user_id ): bool {
+        if ( $has_access ) {
+            return true;
+        }
 
-- write a real row through `AccessRepository::grant()` when your integration grants access;
-- use built-in WooCommerce Memberships by populating `_lw_lms_membership_plan_ids`;
-- patch/extend the plugin if you need a true runtime access filter for paid/open/free courses.
+        return MyMembership::has_course_access( $user_id, $course_id );
+    },
+    10,
+    3
+);
+```
+
+This is a runtime decision only: returning `true` does not create an access row and does not fire grant/revoke actions. Keep the callback deterministic, side-effect-free, and fast. `CourseTransformer::transform_full()` currently calls `has_course_access()` directly and again through `get_access_info()`, so the filter runs twice while producing one full paid-course response. A time-varying result can make `access.has_access` disagree with lesson/attachment gating.
+
+Use `AccessRepository::grant()` instead when the entitlement should be durable, auditable, expirable, or should fire enrollment automation.
 
 `lw_lms_has_lesson_access` is more useful, but it is still not universal: it fires for open-course lessons and the normal course-access branch, but preview lessons return before that filter.
 
-## Plugin identity
+## Detailed contract reference
 
-| Field | Value |
-|---|---|
-| Slug | `lw-lms` |
-| Version | `1.5.1` |
-| Min WordPress | `6.0` |
-| Min PHP | `8.1` |
-| Namespace | `LightweightPlugins\LMS` |
-| Constants | `LW_LMS_VERSION`, `LW_LMS_FILE`, `LW_LMS_PATH`, `LW_LMS_URL` |
-| Text domain | `lw-lms` |
-| Meta prefix | `_lw_lms_` |
-| Options row | `lw_lms_options` |
-| DB version | `1.2.0` |
-
-## Data model
-
-Custom post types:
-
-- `course`
-- `lesson`
-
-Taxonomies:
-
-- `course_category`
-- `course_tag`
-- `course_level`
-
-Custom tables:
-
-| Table | Purpose |
-|---|---|
-| `wp_lms_progress` | Per-user lesson status: `user_id`, `course_id`, `lesson_id`, `status`, `completed_at` |
-| `wp_lms_access` | Stored access rows: `user_id`, `course_id`, `source`, `source_id`, `granted_at`, `expires_at`, `status` |
-| `wp_lms_completion_snapshots` | Lock-on-complete snapshots: `user_id`, `course_id`, `total_lessons`, `completed_at` |
-
-Access table caveat: the unique key is `(user_id, course_id, source_id)`, not `(user_id, course_id, source, source_id)`. A grant with `source_id = null` can update an existing null-source-id row regardless of the new `$source`. Avoid treating `source` alone as a unique enrollment channel.
-
-Course meta:
-
-| Meta key | Type | Purpose |
-|---|---|---|
-| `_lw_lms_access_type` | string | `open`, `free`, or `paid` |
-| `_lw_lms_product_ids` | array<int> | WooCommerce products that grant access on completed order |
-| `_lw_lms_product_durations` | object | `product_id => days`; empty/unset means unlimited |
-| `_lw_lms_subscription_ids` | array<int> | Parent subscription product IDs checked at runtime |
-| `_lw_lms_subscription_variation_ids` | array<string> | `parent_id:variation_id` pairs checked at runtime |
-| `_lw_lms_membership_plan_ids` | array<int> | WooCommerce Memberships plan IDs checked at runtime |
-| `_lw_lms_preview_lesson_ids` | array<int> | Preview lesson IDs |
-| `_lw_lms_course_sections` | array<object> | Section definitions |
-| `_lw_lms_attachments` | array<object> | Course attachments |
-| `_lw_lms_duration` | string | Display duration |
-| `_lw_lms_instructor` | string | Instructor display text |
-
-Lesson meta:
-
-| Meta key | Type | Purpose |
-|---|---|---|
-| `_lw_lms_lesson_course_id` | int | Parent course ID |
-| `_lw_lms_lesson_section_id` | string | Section ID or empty |
-| `_lw_lms_lesson_order` | int | Sort order |
-| `_lw_lms_video` | object | Parsed video data |
-| `_lw_lms_attachments` | array<object> | Lesson attachments |
-| `_lw_lms_duration` | string | Display duration |
-
-Custom capabilities are added only to `administrator` on activation. Other roles must opt in through your own activation code.
+Read [references/backend-contract-details.md](references/backend-contract-details.md) when the task needs the plugin identity, CPT/taxonomy/table/meta map, exact repository read/write examples, settings-tab implementation, or expanded wrong/right examples. The access-filter, hook, workflow, and safety rules needed for normal extension work remain below.
 
 ## Hooks
 
@@ -120,7 +71,7 @@ Custom capabilities are added only to `administrator` on activation. Other roles
 | Hook | Args | Fires |
 |---|---|---|
 | `lw_lms_after_grant` | `$user_id, $course_id, $source, $source_id, $expires_at` (5) | After `AccessRepository::grant()` inserts or updates successfully |
-| `lw_lms_after_revoke` | `$user_id, $course_id, $source` (3) | After `AccessRepository::revoke()` flips an active row to `revoked` |
+| `lw_lms_after_revoke` | `$user_id, $course_id, $source` (3) | After `revoke()` changes its first active row, or once after `revoke_by_source()` changes one or more matching rows |
 | `lw_lms_lesson_completed` | `$lesson_id, $user_id` (2) | When `ProgressRepository::upsert()` transitions a lesson to `completed` |
 | `lw_lms_course_completed` | `$course_id, $user_id` (2) | Once, when `CompletionTracker::maybe_record()` writes the completion snapshot |
 | `lw_lms_attachment_downloaded` | `$attachment_id, $user_id` (2) | After a protected attachment download passes access checks |
@@ -130,7 +81,7 @@ Custom capabilities are added only to `administrator` on activation. Other roles
 | Hook | Args | Caveat |
 |---|---|---|
 | `lw_lms_pre_grant` | `$allow, $user_id, $course_id, $source, $source_id, $expires_at` (6) | Return `false` to abort `AccessRepository::grant()` before DB write |
-| `lw_lms_has_course_access` | `$has_access, $course_id, $user_id` (3) | Not reached for normal `open`, `free`, or `paid` access types in v1.5.1 |
+| `lw_lms_has_course_access` | `$has_access, $course_id, $user_id` (3) | Final logged-in paid-course result in v1.6.0; open/free/anonymous paths return before it; may execute more than once per request |
 | `lw_lms_has_lesson_access` | `$has_access, $lesson_id, $user_id` (3) | Not reached for preview-lesson short-circuit |
 | `lw_lms_settings_tabs` | `array<TabInterface> $tabs` (1) | Add/remove/reorder settings tabs; non-`TabInterface` values are dropped |
 
@@ -156,100 +107,6 @@ add_filter( 'lw_lms_pre_grant', 'my_pre_grant_guard', 10, 6 );
 | Legacy WooCommerce purchase fallback | no | no |
 
 If downstream automation must react to subscriptions or memberships, hook WooCommerce Subscriptions or WooCommerce Memberships lifecycle events directly, or write an access row yourself through `AccessRepository::grant()` when your integration decides access should become durable.
-
-## Public PHP API
-
-### Access writes
-
-```php
-use LightweightPlugins\LMS\Access\AccessRepository;
-
-AccessRepository::grant(
-    $user_id,
-    $course_id,
-    'manual',
-    null,
-    gmdate( 'Y-m-d H:i:s', strtotime( '+30 days' ) )
-);
-
-AccessRepository::revoke( $user_id, $course_id );
-```
-
-`grant()` fires `lw_lms_pre_grant` before writing and `lw_lms_after_grant` after a successful insert/update. `revoke()` only fires `lw_lms_after_revoke` when an active row was actually changed.
-
-### Access reads
-
-```php
-use LightweightPlugins\LMS\Access\AccessChecker;
-use LightweightPlugins\LMS\Access\AccessQueries;
-
-$has_access = AccessChecker::has_course_access( $course_id, $user_id );
-$info       = AccessChecker::get_access_info( $course_id, $user_id );
-$has_row    = AccessQueries::has_active_access( $user_id, $course_id );
-$free_row   = AccessQueries::has_active_access( $user_id, $course_id, 'free' );
-$rows       = AccessQueries::get_user_enrollments( $user_id );
-```
-
-Use `AccessChecker` for the full built-in access cascade. Use `AccessQueries` only when you specifically need access-table rows.
-
-### Progress writes
-
-```php
-use LightweightPlugins\LMS\Progress\ProgressRepository;
-
-ProgressRepository::upsert( $user_id, $course_id, $lesson_id, 'completed' );
-ProgressRepository::mark_course_completed( $user_id, $course_id );
-ProgressRepository::delete( $user_id, $lesson_id );
-```
-
-`upsert()` fires `lw_lms_lesson_completed` only on transition to `completed`, then calls `CompletionTracker::maybe_record()`. `mark_course_completed()` enumerates published lessons assigned to the course and uses `upsert()` for each. `delete()` does not clear completion snapshots and does not fire hooks.
-
-### Progress reads
-
-```php
-use LightweightPlugins\LMS\Progress\ProgressCalculator;
-use LightweightPlugins\LMS\Progress\ProgressQueries;
-
-$row       = ProgressQueries::get( $user_id, $lesson_id );
-$rows      = ProgressQueries::get_course_progress( $user_id, $course_id );
-$all       = ProgressQueries::get_user_progress( $user_id );
-$completed = ProgressQueries::get_completed_lessons( $user_id, $course_id );
-$summary   = ProgressCalculator::calculate( $user_id, $course_id );
-```
-
-`ProgressCalculator::calculate()` respects `wp_lms_completion_snapshots`: once a user reaches 100%, adding more lessons does not reduce their percentage below 100%.
-
-## Settings extension
-
-Since v1.4.0, companion plugins can add settings tabs without creating a second settings form.
-
-```php
-use LightweightPlugins\LMS\Admin\Settings\TabInterface;
-use LightweightPlugins\LMS\Admin\SettingsPage;
-
-add_filter( 'lw_lms_settings_tabs', static function ( array $tabs ): array {
-    $tabs[] = new MyCompanionLmsTab();
-    return $tabs;
-} );
-
-add_action( 'admin_init', static function (): void {
-    if ( ! class_exists( SettingsPage::class ) ) {
-        return;
-    }
-
-    register_setting(
-        SettingsPage::get_settings_group(),
-        'my_companion_lms_options',
-        [
-            'type'              => 'array',
-            'sanitize_callback' => 'my_companion_sanitize_lms_options',
-            'default'           => [],
-        ]
-    );
-} );
-```
-
-The core form posts to `options.php` and calls `settings_fields( SettingsPage::get_settings_group() )`, so your registered option can save with the same nonce and submit button. Your tab object must implement `TabInterface`; otherwise `SettingsPage` filters it out.
 
 ## Common workflows
 
@@ -302,7 +159,22 @@ add_action( 'lw_lms_course_completed', static function ( int $course_id, int $us
 
 The completion snapshot makes this a one-shot event per user/course pair.
 
-### Give access from another membership system
+### Give runtime access from another membership system
+
+```php
+add_filter(
+    'lw_lms_has_course_access',
+    static function ( bool $has_access, int $course_id, int $user_id ): bool {
+        return $has_access || MyMembership::has_course_access( $user_id, $course_id );
+    },
+    10,
+    3
+);
+```
+
+Use this only for a fast, deterministic live check. It affects logged-in paid access but writes no enrollment row and fires no enrollment lifecycle action.
+
+### Persist access from another membership system
 
 ```php
 if ( MyMembership::user_joined_plan( $user_id, 'pro' ) ) {
@@ -316,74 +188,30 @@ if ( MyMembership::user_joined_plan( $user_id, 'pro' ) ) {
 }
 ```
 
-Do not rely on `lw_lms_has_course_access` for this in v1.5.1. It is not called for normal `paid` courses.
+When that membership ends, revoke only the row owned by the integration:
+
+```php
+\LightweightPlugins\LMS\Access\AccessRepository::revoke_by_source(
+    $user_id,
+    $course_id,
+    'my_membership',
+    MyMembership::membership_id( $user_id )
+);
+```
 
 ## Critical rules
 
-- Use `AccessRepository::grant()` and `revoke()` for stored access changes. Direct SQL skips hooks.
+- Use `AccessRepository::grant()` and `revoke_by_source()` for integration-owned stored access changes. The broad `revoke()` changes only the first active row regardless of origin. Direct SQL skips hooks.
 - Use `ProgressRepository::upsert()` and `mark_course_completed()` for progress changes. Direct SQL skips completion hooks and snapshots.
 - Do not call old read methods on repositories. Reads live in `AccessQueries` and `ProgressQueries`.
 - `lw_lms_after_grant` needs 5 accepted args; `lw_lms_pre_grant` needs 6; `lw_lms_after_revoke` needs 3.
 - Subscriptions, subscription variations, memberships, and legacy purchases are live checks unless your integration writes an access row.
-- The access table unique key ignores `source`; be deliberate with `source_id`.
+- The access table unique key and `grant()` lookup ignore `source`; use a stable, collision-resistant non-null `source_id` for external grants.
 - `expires_at` is enforced on read by `AccessQueries::has_active_access()`. No expiry cron fires `lw_lms_after_revoke`.
 - `ProgressRepository::delete()` does not delete completion snapshots. If an admin reset must also undo completion, call `ProgressSnapshotRepository::delete()` deliberately.
-- `lw_lms_has_course_access` is not a reliable standard access override in v1.5.1.
+- `lw_lms_has_course_access` is the final logged-in paid-course decision in v1.6.0, but open/free/anonymous paths bypass it. Keep it deterministic, side-effect-free, and cheap.
+- `revoke_by_source( ..., $source, null )` revokes every active row for that source, not only null-source-ID rows.
 - Add companion settings through `lw_lms_settings_tabs` plus `SettingsPage::get_settings_group()`, not a second unrelated form.
-
-## Common mistakes
-
-```php
-// WRONG: invented hook name.
-add_action( 'lw_lms_user_enrolled', 'my_handler', 10, 2 );
-
-// RIGHT.
-add_action( 'lw_lms_after_grant', 'my_handler', 10, 5 );
-```
-
-```php
-// WRONG: direct progress write.
-$wpdb->insert( $wpdb->prefix . 'lms_progress', [
-    'user_id' => $user_id,
-    'course_id' => $course_id,
-    'lesson_id' => $lesson_id,
-    'status' => 'completed',
-] );
-
-// RIGHT.
-\LightweightPlugins\LMS\Progress\ProgressRepository::upsert(
-    $user_id,
-    $course_id,
-    $lesson_id,
-    'completed'
-);
-```
-
-```php
-// WRONG in v1.5.1: this will not grant normal paid-course access,
-// because the course filter is not reached on the paid branch.
-add_filter( 'lw_lms_has_course_access', static function () {
-    return true;
-}, 10, 3 );
-
-// RIGHT: write an access row when your integration grants access.
-\LightweightPlugins\LMS\Access\AccessRepository::grant(
-    $user_id,
-    $course_id,
-    'my_integration',
-    $external_access_id,
-    null
-);
-```
-
-```php
-// WRONG: using source alone as an idempotency boundary.
-AccessRepository::grant( $user_id, $course_id, 'free', null, null );
-AccessRepository::grant( $user_id, $course_id, 'manual', null, null );
-
-// Both use source_id null/0 for the same user/course. Use a meaningful
-// source_id for external systems when you need separate rows.
-```
 
 ## Cross-references
 

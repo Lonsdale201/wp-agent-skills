@@ -1,23 +1,24 @@
 ---
 name: lw-lms-rest-frontend
-description: Build a custom frontend against LW LMS's headless `/wp-json/lms/v1` REST API in lw-lms v1.5.1. Use for React, Vue, Astro, mobile, or theme code that calls `/courses`, `/courses/{id}`, `/lessons/{id}`, `/progress`, `/progress/course/{id}`, or `/download/{id}` and must handle public course content, lesson/access gating, paid-course products/subscriptions/subscription_variations/memberships, progress payloads, downloads, and nonce/app-password auth.
+description: Build a custom frontend against LW LMS's headless `/wp-json/lms/v1` REST API in lw-lms v1.6.0. Use for React, Vue, Astro, mobile, or theme code that calls `/courses`, `/courses/{id}`, `/lessons/{id}`, `/progress`, `/progress/course/{id}`, or `/download/{id}` and must handle public course content, lesson/access gating, paid-course products/subscriptions/subscription_variations/memberships, custom paid-access decisions, progress payloads, downloads, and nonce/app-password auth.
 metadata:
   wp-skills-author: "Soczó Kristóf"
   wp-skills-contact: "mailto:lonsdale201@hotmail.com"
   wp-skills-plugin: "lw-lms"
-  wp-skills-plugin-version-tested: "1.5.1"
-  wp-skills-php-min: "8.1"
-  wp-skills-last-updated: "2026-06-15"
+  wp-skills-plugin-version-tested: "1.6.0"
+  wp-skills-php-min: "8.2"
+  wp-skills-last-updated: "2026-07-20"
 ---
 
 # LW LMS: REST frontend consumer
 
 For frontend developers consuming LW LMS data: course catalog, course detail, lesson player, progress dashboard, and protected downloads. The core `lw-lms` plugin ships a headless REST API; it does not ship public templates, shortcodes, or blocks.
 
-> **BETA NOTICE.** The plugin README says the plugin is under active development and not recommended for production use. Snapshot the JSON shapes in tests and review `CHANGELOG.md` before upgrading. This skill is verified against local lw-lms **v1.5.1**.
+> **BETA NOTICE.** The plugin README says the plugin is under active development and not recommended for production use. Snapshot the JSON shapes in tests and review `CHANGELOG.md` before upgrading. This skill is verified against local lw-lms **v1.6.0**.
 
 ## Version deltas that matter
 
+- **v1.6.0**: no route or JSON-schema change. A server-side `lw_lms_has_course_access` callback can now alter the final logged-in paid-course access decision after built-in access checks, which affects `access.has_access`, lesson accessibility, attachments, lesson detail, progress writes, and protected downloads.
 - **v1.5.1**: maintenance release, no functional REST changes.
 - **v1.5.0**: paid-course denied `access` payload can include `memberships` when WooCommerce Memberships is active and the course has `_lw_lms_membership_plan_ids`.
 - **v1.4.0**: course `content` in `/courses/{id}` is public marketing/about content. It is no longer gated behind `access.has_access`. Lesson content is still gated by `/lessons/{id}`.
@@ -47,6 +48,8 @@ return <PurchaseGate access={course.access} />;
 
 Lesson body content still comes from `GET /lms/v1/lessons/{id}` and returns `403 forbidden` when `AccessChecker::has_lesson_access()` denies the request.
 
+In v1.6.0, a companion plugin may provide the final logged-in paid-course decision through `lw_lms_has_course_access`. Frontend code should continue to trust the server response; it must not reproduce membership or entitlement rules in JavaScript. Backend callbacks must be deterministic: the full-course transformer checks course access twice, so a changing result can make `access.has_access` disagree with lesson/attachment gating in one response.
+
 ## REST API surface
 
 Namespace: `lms/v1`, mounted at `/wp-json/lms/v1/...`.
@@ -61,220 +64,9 @@ Namespace: `lms/v1`, mounted at `/wp-json/lms/v1/...`.
 | `POST` | `/lms/v1/progress` | logged-in + lesson access | Upsert lesson status |
 | `GET` | `/lms/v1/download/{id}` | public route, access-gated file | Stream protected attachment binary |
 
-## Course list
+## Detailed response contract
 
-```http
-GET /wp-json/lms/v1/courses?per_page=12&page=1&category=php&level=beginner&search=oop
-```
-
-Parameters:
-
-| Param | Default | Validation |
-|---|---|---|
-| `per_page` | `10` | integer `1..100` |
-| `page` | `1` | integer `>= 1` |
-| `category` | `''` | course category slug |
-| `level` | `''` | course level slug |
-| `search` | `''` | text search |
-
-List response shape:
-
-```json
-{
-  "data": [
-    {
-      "id": 42,
-      "title": "PHP Object-Oriented Fundamentals",
-      "slug": "php-oop-fundamentals",
-      "excerpt": "Short summary.",
-      "thumbnail": "https://site.test/wp-content/uploads/course.jpg",
-      "categories": [{ "id": 5, "name": "PHP", "slug": "php" }],
-      "level": { "id": 9, "name": "Beginner", "slug": "beginner" },
-      "duration": "8h",
-      "lesson_count": 24,
-      "access": { "type": "paid", "has_access": false }
-    }
-  ],
-  "meta": {
-    "total": 47,
-    "pages": 4,
-    "current_page": 1,
-    "per_page": 12
-  }
-}
-```
-
-List items do not include products, subscriptions, subscription variations, memberships, expiry, sections, attachments, or progress. Fetch the single course for those.
-
-## Course detail
-
-```http
-GET /wp-json/lms/v1/courses/42
-```
-
-Important fields:
-
-| Field | Presence |
-|---|---|
-| `content` | Always present for published courses; public marketing/about description |
-| `content_raw` | Editors only (`current_user_can( 'edit_posts' )`) |
-| `sections` | Always present; each section contains lesson list rows |
-| `lessons_without_section` | Always present; render after sections |
-| `attachments` | Populated only when `access.has_access === true`, otherwise empty array |
-| `progress` | Present for logged-in users |
-| `access.expires_at` | Paid course with access row and non-empty expiry; MySQL datetime string |
-| `access.products` | Denied paid course with linked WooCommerce products |
-| `access.subscriptions` | Denied paid course with linked parent subscription products |
-| `access.subscription_variations` | Denied paid course with linked subscription variation pairs |
-| `access.memberships` | Denied paid course with linked WooCommerce Memberships plans |
-
-Denied paid-course example:
-
-```json
-{
-  "id": 42,
-  "title": "PHP Object-Oriented Fundamentals",
-  "content": "<p>Public course description.</p>",
-  "access": {
-    "type": "paid",
-    "has_access": false,
-    "requires": "purchase",
-    "products": [
-      { "id": 200, "name": "PHP OOP Course", "price": "49.00", "price_formatted": "$49.00", "url": "...", "access_duration": 0 }
-    ],
-    "subscriptions": [
-      { "id": 201, "name": "All Access", "price": "19.00", "price_formatted": "$19.00 / month", "url": "..." }
-    ],
-    "subscription_variations": [
-      { "parent_id": 300, "variation_id": 305, "name": "All Access - Yearly", "attributes": {"attribute_plan": "yearly"}, "price": "190.00", "price_formatted": "$190.00 / year", "url": "..." }
-    ],
-    "memberships": [
-      { "id": 77, "name": "Pro Members", "join": "https://site.test/product/pro-membership/" }
-    ]
-  },
-  "sections": [
-    {
-      "id": "sec_intro",
-      "title": "Getting Started",
-      "description": "",
-      "order": 0,
-      "lessons": [
-        { "id": 100, "title": "What is OOP", "order": 0, "duration": "12 min", "preview": true, "accessible": true, "completed": false }
-      ]
-    }
-  ],
-  "lessons_without_section": [],
-  "attachments": [],
-  "progress": { "completed_lessons": 0, "total_lessons": 24, "percentage": 0 }
-}
-```
-
-Render the complete outline from both `sections[].lessons` and `lessons_without_section`. Do not hide locked lessons; render them as locked/disabled so users can see the syllabus.
-
-## Lesson detail
-
-```http
-GET /wp-json/lms/v1/lessons/100
-```
-
-The route is public, but the response is access-gated:
-
-- Open-course lessons are available to guests.
-- Free/paid course lessons require course access unless the lesson is marked preview.
-- Preview lessons require a logged-in user in the current source.
-- No access returns `403 forbidden`.
-- Missing/non-published lessons return `404 not_found`.
-
-Lesson response shape:
-
-```json
-{
-  "id": 100,
-  "title": "What is OOP",
-  "content": "<p>Lesson body.</p>",
-  "course": { "id": 42, "title": "PHP OOP Fundamentals" },
-  "section": { "id": "sec_intro", "title": "Getting Started" },
-  "order": 0,
-  "duration": "12 min",
-  "video": { "url": "https://www.youtube.com/watch?v=abc123", "provider": "youtube", "video_id": "abc123", "embed": "https://www.youtube.com/embed/abc123", "duration": "" },
-  "attachments": [
-    { "id": 250, "title": "Slides.pdf", "filename": "slides.pdf", "mime_type": "application/pdf", "size": 245678, "download_url": "https://site.test/wp-json/lms/v1/download/250" }
-  ],
-  "navigation": {
-    "previous": null,
-    "next": { "id": 101, "title": "Next lesson" }
-  }
-}
-```
-
-`video` can be `null`; `section`, `navigation.previous`, and `navigation.next` can also be `null`. Switch video rendering on `video.provider`, not URL string matching.
-
-## Progress
-
-Read all current-user progress:
-
-```http
-GET /wp-json/lms/v1/progress
-```
-
-Read current-user progress for one course:
-
-```http
-GET /wp-json/lms/v1/progress/course/42
-```
-
-The course-scoped response adds `course_progress` from `ProgressCalculator::calculate()`:
-
-```json
-{
-  "data": [
-    {
-      "user_id": 5,
-      "course_id": 42,
-      "lesson_id": 100,
-      "status": "completed",
-      "completed_at": "2026-04-15 10:30:00",
-      "created_at": "2026-04-14 09:00:00",
-      "updated_at": "2026-04-15 10:30:00"
-    }
-  ],
-  "course_progress": {
-    "completed_lessons": 5,
-    "total_lessons": 24,
-    "percentage": 21
-  }
-}
-```
-
-Write progress:
-
-```http
-POST /wp-json/lms/v1/progress
-Content-Type: application/json
-
-{
-  "course_id": 42,
-  "lesson_id": 100,
-  "status": "completed"
-}
-```
-
-Required fields are `course_id`, `lesson_id`, and `status`. Status must be `not_started`, `in_progress`, or `completed`.
-
-The server validates:
-
-- logged-in user, else `401 unauthorized`;
-- lesson access, else `403 forbidden`;
-- lesson belongs to the submitted course, else `400 invalid_request`;
-- DB write, else `500 update_failed`.
-
-Success returns the saved progress row plus authoritative `course_progress`. Use the returned summary instead of recalculating client-side.
-
-## Downloads
-
-`download_url` fields point at `/lms/v1/download/{attachment_id}` and return a binary stream, not JSON. Use an `<a href>` for normal downloads or fetch as `blob()` if you need client-side handling.
-
-The download endpoint locates the attachment by scanning `_lw_lms_attachments` on course/lesson posts, applies course/lesson access, fires `lw_lms_attachment_downloaded` on success, and then sends file headers.
+Read [references/rest-response-contract.md](references/rest-response-contract.md) when implementing request parameters, full JSON shapes, nullable fields, lesson errors, progress validation, or binary downloads. The route/auth/access decisions and client safety rules remain in this main skill.
 
 ## Authentication
 
@@ -301,7 +93,8 @@ await fetch('/wp-json/lms/v1/progress', {
 
 ## Critical rules
 
-- Course `content` is public in v1.5.1; never use it as the access gate.
+- Course `content` is public in v1.4.0+; never use it as the access gate.
+- A server-side v1.6.0 paid-access filter may change access without creating an enrollment row; the REST response remains the authority for the client.
 - Lesson detail and download endpoints are the protected surfaces.
 - Iterate both `sections` and `lessons_without_section`.
 - Render locked lessons disabled, not hidden.

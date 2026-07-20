@@ -2517,7 +2517,7 @@
       "slug": "lw-lms-abilities",
       "name": "lw-lms-abilities",
       "domain": "lw-plugins",
-      "description": "Consumer and reviewer reference for LW LMS Abilities API registrations in lw-lms v1.5.1. Use when calling or auditing `lw-lms/list-courses`, `lw-lms/get-course`, `lw-lms/get-progress`, `lw-lms/set-progress`, `lw-lms/get-options`, `/wp-json/wp-abilities/v1/abilities/lw-lms/.../run`, Site Manager bridge integration, standalone WP 6.9+ Abilities API fallback, ability `input_schema` / `output_schema`, or AI-agent access to LMS course/progress data.",
+      "description": "Consumer and reviewer reference for LW LMS Abilities API registrations in lw-lms v1.6.0. Use when calling or auditing `lw-lms/list-courses`, `lw-lms/get-course`, `lw-lms/get-progress`, `lw-lms/set-progress`, `lw-lms/get-options`, `/wp-json/wp-abilities/v1/abilities/lw-lms/.../run`, Site Manager bridge integration, standalone WP 6.9+ Abilities API fallback, ability `input_schema` / `output_schema`, or AI-agent access to LMS course/progress data.",
       "path": "lw-plugins/lw-lms-abilities",
       "skill_path": "lw-plugins/lw-lms-abilities/SKILL.md",
       "url": "https://raw.githubusercontent.com/Lonsdale201/wp-agent-skills/main/lw-plugins/lw-lms-abilities/SKILL.md",
@@ -2528,25 +2528,25 @@
         "author": "Soczó Kristóf",
         "contact": "mailto:lonsdale201@hotmail.com",
         "plugin": "lw-lms",
-        "plugin-version-tested": "1.5.1",
-        "php-min": "8.1",
-        "last-updated": "2026-06-15"
+        "plugin-version-tested": "1.6.0",
+        "php-min": "8.2",
+        "last-updated": "2026-07-20"
       },
       "resources": [],
       "has_reference": false,
       "has_examples": false,
       "has_scripts": false,
       "skill_md": {
-        "bytes": 6808,
+        "bytes": 6856,
         "lines": 129,
-        "sha256": "fd7c6cfe264da97e4451a848f10c5ad3fc32979401aeca2a323b6ec250c37a90"
+        "sha256": "c05ca53e26552292335b28dc526ca8b0750571b3914ddde0bc03e2f93ac8cb59"
       }
     },
     {
       "slug": "lw-lms-backend-extend",
       "name": "lw-lms-backend-extend",
       "domain": "lw-plugins",
-      "description": "Backend extension contract for LW LMS v1.5.1. Use when extending enrollment, access, progress, certificates, automation, analytics, settings tabs, companion-plugin logic, `lw_lms_after_grant`, `lw_lms_after_revoke`, `lw_lms_pre_grant`, `AccessChecker`, `AccessRepository`, `AccessQueries`, `ProgressRepository`, `ProgressQueries`, `CompletionTracker`, `wp_lms_progress`, `wp_lms_access`, `_lw_lms_*` meta, or WooCommerce Memberships/Subscriptions access.",
+      "description": "Backend extension contract for LW LMS v1.6.0. Use when extending enrollment, access, source-scoped revocation, progress, certificates, automation, analytics, settings tabs, companion-plugin logic, `lw_lms_after_grant`, `lw_lms_after_revoke`, `lw_lms_pre_grant`, `lw_lms_has_course_access`, `AccessChecker`, `AccessRepository`, `AccessQueries`, `ProgressRepository`, `ProgressQueries`, `CompletionTracker`, `wp_lms_progress`, `wp_lms_access`, `_lw_lms_*` meta, or WooCommerce Memberships/Subscriptions access.",
       "path": "lw-plugins/lw-lms-backend-extend",
       "skill_path": "lw-plugins/lw-lms-backend-extend/SKILL.md",
       "url": "https://raw.githubusercontent.com/Lonsdale201/wp-agent-skills/main/lw-plugins/lw-lms-backend-extend/SKILL.md",
@@ -2557,25 +2557,33 @@
         "author": "Soczó Kristóf",
         "contact": "mailto:lonsdale201@hotmail.com",
         "plugin": "lw-lms",
-        "plugin-version-tested": "1.5.1",
-        "php-min": "8.1",
-        "last-updated": "2026-06-15"
+        "plugin-version-tested": "1.6.0",
+        "php-min": "8.2",
+        "last-updated": "2026-07-20"
       },
-      "resources": [],
-      "has_reference": false,
+      "resources": [
+        {
+          "path": "references/backend-contract-details.md",
+          "repo_path": "lw-plugins/lw-lms-backend-extend/references/backend-contract-details.md",
+          "type": "reference",
+          "bytes": 8436,
+          "sha256": "059f7d58fddacc75c15fe8ced5d9f1d8ca428b9b6309142ed02725a63b759369"
+        }
+      ],
+      "has_reference": true,
       "has_examples": false,
       "has_scripts": false,
       "skill_md": {
-        "bytes": 18995,
-        "lines": 433,
-        "sha256": "2673131b84c5e94219c8b6ba60c1ed42c5cc1e0b920df3e3b804c8e339144e20"
+        "bytes": 14063,
+        "lines": 261,
+        "sha256": "1d6ef7747792530df6fff200b17626ebcc8f38e3d45f88887972dec7c788cc8e"
       }
     },
     {
       "slug": "lw-lms-learndash-migration",
       "name": "lw-lms-learndash-migration",
       "domain": "lw-plugins",
-      "description": "Plan, run, or review the LW LMS WP-CLI LearnDash migration command `wp lw-lms migrate-learndash` in lw-lms v1.5.1. Use when migrating `sfwd-courses` / `sfwd-lessons`, checking `--dry-run` / `--verbose`, verifying `_lw_lms_migrated_to` mappings, course sections, lesson order, WooCommerce product links, LearnDash video extraction, or safe reruns after partial migration.",
+      "description": "Plan, run, or review the LW LMS WP-CLI LearnDash migration command `wp lw-lms migrate-learndash` in lw-lms v1.6.0. Use when migrating `sfwd-courses` / `sfwd-lessons`, checking `--dry-run` / `--verbose`, verifying `_lw_lms_migrated_to` mappings, course sections, lesson order, WooCommerce product links, LearnDash video extraction, or safe reruns after partial migration.",
       "path": "lw-plugins/lw-lms-learndash-migration",
       "skill_path": "lw-plugins/lw-lms-learndash-migration/SKILL.md",
       "url": "https://raw.githubusercontent.com/Lonsdale201/wp-agent-skills/main/lw-plugins/lw-lms-learndash-migration/SKILL.md",
@@ -2586,25 +2594,25 @@
         "author": "Soczó Kristóf",
         "contact": "mailto:lonsdale201@hotmail.com",
         "plugin": "lw-lms",
-        "plugin-version-tested": "1.5.1",
-        "php-min": "8.1",
-        "last-updated": "2026-06-15"
+        "plugin-version-tested": "1.6.0",
+        "php-min": "8.2",
+        "last-updated": "2026-07-20"
       },
       "resources": [],
       "has_reference": false,
       "has_examples": false,
       "has_scripts": false,
       "skill_md": {
-        "bytes": 6397,
+        "bytes": 6377,
         "lines": 112,
-        "sha256": "90ac9fc1dfad8b07f9c221b8ab93f615fe35e4a7de7e744f9c9fb7b37cf0e22a"
+        "sha256": "8545d39ba93d3d041800ef912df3a838bb2af01c581d0fc6e3a6039314534b9e"
       }
     },
     {
       "slug": "lw-lms-rest-frontend",
       "name": "lw-lms-rest-frontend",
       "domain": "lw-plugins",
-      "description": "Build a custom frontend against LW LMS's headless `/wp-json/lms/v1` REST API in lw-lms v1.5.1. Use for React, Vue, Astro, mobile, or theme code that calls `/courses`, `/courses/{id}`, `/lessons/{id}`, `/progress`, `/progress/course/{id}`, or `/download/{id}` and must handle public course content, lesson/access gating, paid-course products/subscriptions/subscription_variations/memberships, progress payloads, downloads, and nonce/app-password auth.",
+      "description": "Build a custom frontend against LW LMS's headless `/wp-json/lms/v1` REST API in lw-lms v1.6.0. Use for React, Vue, Astro, mobile, or theme code that calls `/courses`, `/courses/{id}`, `/lessons/{id}`, `/progress`, `/progress/course/{id}`, or `/download/{id}` and must handle public course content, lesson/access gating, paid-course products/subscriptions/subscription_variations/memberships, custom paid-access decisions, progress payloads, downloads, and nonce/app-password auth.",
       "path": "lw-plugins/lw-lms-rest-frontend",
       "skill_path": "lw-plugins/lw-lms-rest-frontend/SKILL.md",
       "url": "https://raw.githubusercontent.com/Lonsdale201/wp-agent-skills/main/lw-plugins/lw-lms-rest-frontend/SKILL.md",
@@ -2615,25 +2623,33 @@
         "author": "Soczó Kristóf",
         "contact": "mailto:lonsdale201@hotmail.com",
         "plugin": "lw-lms",
-        "plugin-version-tested": "1.5.1",
-        "php-min": "8.1",
-        "last-updated": "2026-06-15"
+        "plugin-version-tested": "1.6.0",
+        "php-min": "8.2",
+        "last-updated": "2026-07-20"
       },
-      "resources": [],
-      "has_reference": false,
+      "resources": [
+        {
+          "path": "references/rest-response-contract.md",
+          "repo_path": "lw-plugins/lw-lms-rest-frontend/references/rest-response-contract.md",
+          "type": "reference",
+          "bytes": 6285,
+          "sha256": "a536d34670cd4f721448b9af1df83221a009a4f40bde1ed5f7edf56f5e976928"
+        }
+      ],
+      "has_reference": true,
       "has_examples": false,
       "has_scripts": false,
       "skill_md": {
-        "bytes": 15277,
-        "lines": 395,
-        "sha256": "be159778696754e9df71a7afa44bad92cf3d88b0d6a7313606428022702b305a"
+        "bytes": 9858,
+        "lines": 188,
+        "sha256": "1e1da8f2f286179ab0046c0a47a56ea5c5bd43865e075873631c9248ee5db5d0"
       }
     },
     {
       "slug": "lw-lms-wp-cli-operations",
       "name": "lw-lms-wp-cli-operations",
       "domain": "lw-plugins",
-      "description": "Use the LW LMS v1.5.1 operational WP-CLI commands added in v1.4.0. Covers `wp lw-lms course create|list|delete|set-section`, `wp lw-lms lesson create|list|assign`, `wp lw-lms enroll`, `wp lw-lms revoke`, `wp lw-lms force-complete`, argument resolution by ID/slug/login/email, enrollment hook side effects, progress hook side effects, and common CLI footguns.",
+      "description": "Use the LW LMS v1.6.0 operational WP-CLI commands added in v1.4.0. Covers `wp lw-lms course create|list|delete|set-section`, `wp lw-lms lesson create|list|assign`, `wp lw-lms enroll`, `wp lw-lms revoke`, `wp lw-lms force-complete`, argument resolution by ID/slug/login/email, enrollment/progress hook side effects, source-scoped revocation limitations, and common CLI footguns.",
       "path": "lw-plugins/lw-lms-wp-cli-operations",
       "skill_path": "lw-plugins/lw-lms-wp-cli-operations/SKILL.md",
       "url": "https://raw.githubusercontent.com/Lonsdale201/wp-agent-skills/main/lw-plugins/lw-lms-wp-cli-operations/SKILL.md",
@@ -2644,18 +2660,18 @@
         "author": "Soczó Kristóf",
         "contact": "mailto:lonsdale201@hotmail.com",
         "plugin": "lw-lms",
-        "plugin-version-tested": "1.5.1",
-        "php-min": "8.1",
-        "last-updated": "2026-06-15"
+        "plugin-version-tested": "1.6.0",
+        "php-min": "8.2",
+        "last-updated": "2026-07-20"
       },
       "resources": [],
       "has_reference": false,
       "has_examples": false,
       "has_scripts": false,
       "skill_md": {
-        "bytes": 10472,
-        "lines": 266,
-        "sha256": "588cdc6354187874fdfb651c60ca7068c5563b1ba270be009a0f7e1dc396d758"
+        "bytes": 11227,
+        "lines": 280,
+        "sha256": "78315f338b685e8d459f4656440e3bf30c4f7f51b90c0cde27c4fb39525f364a"
       }
     },
     {
