@@ -1,0 +1,4 @@
+interface:
+  display_name: "Fluent Forms custom fields"
+  short_description: "Build Free-compatible Fluent Forms field extensions"
+  default_prompt: "Use this skill to implement or review a Fluent Forms custom field, including editor schema, rendering, validation, stored values, and Free/Pro boundaries."

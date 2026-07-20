@@ -1,6 +1,6 @@
 # wp-agent-skills
 
-**207 skills · 29 plugins**
+**211 skills · 30 plugins**
 
 A community-maintained collection of **portable Agent Skills** for WordPress plugin and theme development.
 
@@ -34,6 +34,7 @@ Skills are grouped by domain. Each domain has its own README listing the skills 
 | [`wp-rocket/`](wp-rocket) | WP Rocket integration skills — cache invalidation and filter hooks for third-party plugins / themes. |
 | [`redis-object-cache/`](redis-object-cache) | Redis Object Cache (`redis-cache`) integration — drop-in lifecycle, `WP_REDIS_*` config, `wp redis` CLI, and correct `wp_cache_*` usage with persistent object caching. |
 | [`fluentcrm/`](fluentcrm) | Extending FluentCRM — funnel triggers / actions / benchmarks, `rest_selector` option lists, and the Free / Pro extension contract. |
+| [`fluentform/`](fluentform) | Extending **Fluent Forms** (`fluentform` + Pro `fluentformpro`) from a third-party plugin — custom form-builder fields (`BaseFieldManager`), the server-side submission lifecycle (parse → validate → persist → notify → confirm) and its hook timing, reading/managing entries & submission meta (`fluentFormApi`, `Submission` / `SubmissionMeta`), and configurable feed integrations (`IntegrationManagerController`, async Action Scheduler dispatch). Every skill marks the Free vs Pro boundary. |
 | [`theme-development/`](theme-development) | Classic (non-FSE) PHP theme development — structure, template hierarchy, the Loop, menus, widgets, comments, media, the Customizer, assets, i18n, accessibility, security, and classic-theme WooCommerce integration. |
 | [`translatepress/`](translatepress) | Making your own plugin/theme **TranslatePress-compatible** — translatable output and exclusions, URL/SEO/slug and Different-Domain behavior, language switchers and navigation, and recipient-language emails. Covers the free core plus the Business add-ons. |
 | [`elementor/`](elementor) | Building **Elementor** addon plugins — registering Dynamic Tags, their controls and fallback behavior, AJAX item pickers for large datasets, and auditing deprecated Elementor APIs. Extends the free base classes and feature-detects Pro. |

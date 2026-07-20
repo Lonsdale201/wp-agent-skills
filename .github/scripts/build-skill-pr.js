@@ -22,6 +22,7 @@ const ALLOWED_DOMAINS = new Set([
   'wp-rocket',
   'redis-object-cache',
   'fluentcrm',
+  'fluentform',
   'theme-development',
   'translatepress',
   'elementor',
