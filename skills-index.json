@@ -11,8 +11,8 @@
     "layout": "<domain>/<skill>/SKILL.md",
     "skill_file": "SKILL.md"
   },
-  "domain_count": 20,
-  "skill_count": 202,
+  "domain_count": 21,
+  "skill_count": 211,
   "domains": [
     {
       "slug": "better-data",
@@ -43,6 +43,12 @@
       "path": "fluentcrm",
       "readme_path": "fluentcrm/README.md",
       "skill_count": 10
+    },
+    {
+      "slug": "fluentform",
+      "path": "fluentform",
+      "readme_path": "fluentform/README.md",
+      "skill_count": 4
     },
     {
       "slug": "jet-engine",
@@ -114,7 +120,7 @@
       "slug": "woocommerce",
       "path": "woocommerce",
       "readme_path": "woocommerce/README.md",
-      "skill_count": 35
+      "skill_count": 40
     },
     {
       "slug": "wordpress",
@@ -1918,6 +1924,186 @@
         "bytes": 10047,
         "lines": 249,
         "sha256": "640ba2f5777700e8ce1996bd5977f44bb88ab1c82f28131a0f1c29ca0160e0c7"
+      }
+    },
+    {
+      "slug": "fluentform-custom-fields",
+      "name": "fluentform-custom-fields",
+      "domain": "fluentform",
+      "description": "Builds and reviews third-party Fluent Forms input fields with the Free-core BaseFieldManager API. Covers fluentform/loaded bootstrap, editor component schema, frontend rendering, input-name mapping, conditional logic, server-side normalization and validation, response formatting, accessibility, assets, and Free versus Pro feature boundaries. Use when code extends BaseFieldManager, adds fluentform/render_item_* or fluentform/validate_input_item_* hooks, creates a custom field for the form builder, or must make a field appear correctly in entries, emails, feeds, and conditional rules.",
+      "path": "fluentform/fluentform-custom-fields",
+      "skill_path": "fluentform/fluentform-custom-fields/SKILL.md",
+      "url": "https://raw.githubusercontent.com/Lonsdale201/wp-agent-skills/main/fluentform/fluentform-custom-fields/SKILL.md",
+      "raw_url": "https://raw.githubusercontent.com/Lonsdale201/wp-agent-skills/main/fluentform/fluentform-custom-fields/SKILL.md",
+      "html_url": "https://github.com/Lonsdale201/wp-agent-skills/blob/main/fluentform/fluentform-custom-fields/SKILL.md",
+      "directory_url": "https://github.com/Lonsdale201/wp-agent-skills/tree/main/fluentform/fluentform-custom-fields",
+      "metadata": {
+        "author": "Soczó Kristóf",
+        "contact": "mailto:lonsdale201@hotmail.com",
+        "plugin": "fluentform",
+        "plugin-version-tested": "6.2.7",
+        "wp-version-tested": "7.0.2",
+        "php-min": "7.4",
+        "last-updated": "2026-07-20"
+      },
+      "resources": [
+        {
+          "path": "agents/openai.yaml",
+          "repo_path": "fluentform/fluentform-custom-fields/agents/openai.yaml",
+          "type": "resource",
+          "bytes": 306,
+          "sha256": "d11338718b14a9613ab0bdf878fca8f8d13fb775e23f74b6723e4a51302ed283"
+        },
+        {
+          "path": "references/field-contract.md",
+          "repo_path": "fluentform/fluentform-custom-fields/references/field-contract.md",
+          "type": "reference",
+          "bytes": 5363,
+          "sha256": "c949fae799ec140a2b11dbc3fc3d7ad0fd1039f2056321bb4df5cb82f8600fd4"
+        }
+      ],
+      "has_reference": true,
+      "has_examples": false,
+      "has_scripts": false,
+      "skill_md": {
+        "bytes": 8359,
+        "lines": 224,
+        "sha256": "394ce85f6fe45ed5409a865a58c58caf7efe26c52e027a991f331932377d0d0e"
+      }
+    },
+    {
+      "slug": "fluentform-entries-data",
+      "name": "fluentform-entries-data",
+      "domain": "fluentform",
+      "description": "Reads, relates, updates, and audits Fluent Forms forms, submissions, entry details, and submission meta from third-party plugins. Covers fluentFormApi, FormFieldsParser, Submission and SubmissionMeta models, form-scoped queries, response JSON versus normalized detail rows, pagination, capabilities, deletion hooks, and Free versus Pro tables. Use when building entry reports, exports, dashboards, REST endpoints, submission metadata, user-facing entry views, or code touching fluentform_submissions, fluentform_entry_details, fluentform_submission_meta, fluentFormApi('submissions'), or entryInstance().",
+      "path": "fluentform/fluentform-entries-data",
+      "skill_path": "fluentform/fluentform-entries-data/SKILL.md",
+      "url": "https://raw.githubusercontent.com/Lonsdale201/wp-agent-skills/main/fluentform/fluentform-entries-data/SKILL.md",
+      "raw_url": "https://raw.githubusercontent.com/Lonsdale201/wp-agent-skills/main/fluentform/fluentform-entries-data/SKILL.md",
+      "html_url": "https://github.com/Lonsdale201/wp-agent-skills/blob/main/fluentform/fluentform-entries-data/SKILL.md",
+      "directory_url": "https://github.com/Lonsdale201/wp-agent-skills/tree/main/fluentform/fluentform-entries-data",
+      "metadata": {
+        "author": "Soczó Kristóf",
+        "contact": "mailto:lonsdale201@hotmail.com",
+        "plugin": "fluentform",
+        "plugin-version-tested": "6.2.7",
+        "wp-version-tested": "7.0.2",
+        "php-min": "7.4",
+        "last-updated": "2026-07-20"
+      },
+      "resources": [
+        {
+          "path": "agents/openai.yaml",
+          "repo_path": "fluentform/fluentform-entries-data/agents/openai.yaml",
+          "type": "resource",
+          "bytes": 299,
+          "sha256": "af27f15cc27212599815f0012c88e2c520925ce03c93af0c363765edcd598eb1"
+        },
+        {
+          "path": "references/data-contract.md",
+          "repo_path": "fluentform/fluentform-entries-data/references/data-contract.md",
+          "type": "reference",
+          "bytes": 6044,
+          "sha256": "052eeb4798714483b01d6813b5b47bddf36250375b0f8c6aee36ed0fd0a5cbe2"
+        }
+      ],
+      "has_reference": true,
+      "has_examples": false,
+      "has_scripts": false,
+      "skill_md": {
+        "bytes": 7988,
+        "lines": 201,
+        "sha256": "b327a5f24d29c4210cc74ffa3d82e0597c298256c283aa578d5ff833c688d33c"
+      }
+    },
+    {
+      "slug": "fluentform-feed-integration",
+      "name": "fluentform-feed-integration",
+      "domain": "fluentform",
+      "description": "Builds and audits configurable third-party Fluent Forms feed integrations with IntegrationManagerController. Covers addon/global settings, per-form feed UI, field mapping, conditional execution, smart-code parsing, synchronous versus asynchronous dispatch, ff_scheduled_actions, Action Scheduler, result logging, credential handling, retries, and idempotency. Use when adding a CRM, webhook, messaging, storage, or external API connector; extending fluentform/get_available_form_integrations; handling fluentform/integration_notify_*; or reviewing an integration that currently sends remote requests directly from fluentform/submission_inserted.",
+      "path": "fluentform/fluentform-feed-integration",
+      "skill_path": "fluentform/fluentform-feed-integration/SKILL.md",
+      "url": "https://raw.githubusercontent.com/Lonsdale201/wp-agent-skills/main/fluentform/fluentform-feed-integration/SKILL.md",
+      "raw_url": "https://raw.githubusercontent.com/Lonsdale201/wp-agent-skills/main/fluentform/fluentform-feed-integration/SKILL.md",
+      "html_url": "https://github.com/Lonsdale201/wp-agent-skills/blob/main/fluentform/fluentform-feed-integration/SKILL.md",
+      "directory_url": "https://github.com/Lonsdale201/wp-agent-skills/tree/main/fluentform/fluentform-feed-integration",
+      "metadata": {
+        "author": "Soczó Kristóf",
+        "contact": "mailto:lonsdale201@hotmail.com",
+        "plugin": "fluentform",
+        "plugin-version-tested": "6.2.7",
+        "wp-version-tested": "7.0.2",
+        "php-min": "7.4",
+        "last-updated": "2026-07-20"
+      },
+      "resources": [
+        {
+          "path": "agents/openai.yaml",
+          "repo_path": "fluentform/fluentform-feed-integration/agents/openai.yaml",
+          "type": "resource",
+          "bytes": 322,
+          "sha256": "977ab399737c75a936cfabcd2111e387db6ad444f37055c522201d1f7f065e71"
+        },
+        {
+          "path": "references/integration-contract.md",
+          "repo_path": "fluentform/fluentform-feed-integration/references/integration-contract.md",
+          "type": "reference",
+          "bytes": 7537,
+          "sha256": "a5442b8a3752ea55a1cc6bf0c207ae597888bbb2083033e380f82ca926f2251e"
+        }
+      ],
+      "has_reference": true,
+      "has_examples": false,
+      "has_scripts": false,
+      "skill_md": {
+        "bytes": 9178,
+        "lines": 225,
+        "sha256": "305730904a44114fe6feb70aefda5e01551286cc40e3647f087282bf995049db"
+      }
+    },
+    {
+      "slug": "fluentform-submission-lifecycle",
+      "name": "fluentform-submission-lifecycle",
+      "domain": "fluentform",
+      "description": "Implements and audits Fluent Forms server-side submission behavior from parsed field data through sanitization, validation, persistence, entry details, notifications, integrations, and confirmation. Selects the correct fluentform/input_data_*, fluentform/validation_errors, fluentform/insert_response_data, fluentform/submission_inserted, and fluentform/submission_confirmation hook and explains their timing. Use when adding cross-field validation, normalizing submitted values, reacting to an entry, debugging missing submission data, preventing duplicate side effects, or distinguishing a Pro partial draft from a completed submission.",
+      "path": "fluentform/fluentform-submission-lifecycle",
+      "skill_path": "fluentform/fluentform-submission-lifecycle/SKILL.md",
+      "url": "https://raw.githubusercontent.com/Lonsdale201/wp-agent-skills/main/fluentform/fluentform-submission-lifecycle/SKILL.md",
+      "raw_url": "https://raw.githubusercontent.com/Lonsdale201/wp-agent-skills/main/fluentform/fluentform-submission-lifecycle/SKILL.md",
+      "html_url": "https://github.com/Lonsdale201/wp-agent-skills/blob/main/fluentform/fluentform-submission-lifecycle/SKILL.md",
+      "directory_url": "https://github.com/Lonsdale201/wp-agent-skills/tree/main/fluentform/fluentform-submission-lifecycle",
+      "metadata": {
+        "author": "Soczó Kristóf",
+        "contact": "mailto:lonsdale201@hotmail.com",
+        "plugin": "fluentform",
+        "plugin-version-tested": "6.2.7",
+        "wp-version-tested": "7.0.2",
+        "php-min": "7.4",
+        "last-updated": "2026-07-20"
+      },
+      "resources": [
+        {
+          "path": "agents/openai.yaml",
+          "repo_path": "fluentform/fluentform-submission-lifecycle/agents/openai.yaml",
+          "type": "resource",
+          "bytes": 312,
+          "sha256": "55735e70435344c4ebae7a4d0b1483f2281447b0db9baf58a7a64990744583cb"
+        },
+        {
+          "path": "references/hook-order.md",
+          "repo_path": "fluentform/fluentform-submission-lifecycle/references/hook-order.md",
+          "type": "reference",
+          "bytes": 5431,
+          "sha256": "00ad4e0ac8ef54b043964a56eb69379d86a1521d39f0e4efe950a8c37cb2015b"
+        }
+      ],
+      "has_reference": true,
+      "has_examples": false,
+      "has_scripts": false,
+      "skill_md": {
+        "bytes": 8131,
+        "lines": 205,
+        "sha256": "8e33f488c175ea54163cdda18b01d8bc6707e81b5897dd25c6152f29b02685e7"
       }
     },
     {
@@ -4278,10 +4464,54 @@
       }
     },
     {
+      "slug": "wc-checkout-block-payment-method",
+      "name": "wc-checkout-block-payment-method",
+      "domain": "woocommerce",
+      "description": "Build or audit a WooCommerce Checkout Block payment-method integration. Covers the separate PHP `WC_Payment_Gateway`, Blocks `AbstractPaymentMethodType`, JavaScript `registerPaymentMethod`, stable gateway identifiers, `onPaymentSetup`, Store API `payment_data`, saved-token UI, legacy `process_payment()` bridging, advanced `PaymentContext`/`PaymentResult` processing, SDK confirmation, security, performance, and classic-versus-Block tests. Use when a gateway works in shortcode checkout but is missing or broken in Checkout Block, or when adding card fields, wallets, tokenization, redirects, or custom payment data to Blocks.",
+      "path": "woocommerce/wc-checkout-block-payment-method",
+      "skill_path": "woocommerce/wc-checkout-block-payment-method/SKILL.md",
+      "url": "https://raw.githubusercontent.com/Lonsdale201/wp-agent-skills/main/woocommerce/wc-checkout-block-payment-method/SKILL.md",
+      "raw_url": "https://raw.githubusercontent.com/Lonsdale201/wp-agent-skills/main/woocommerce/wc-checkout-block-payment-method/SKILL.md",
+      "html_url": "https://github.com/Lonsdale201/wp-agent-skills/blob/main/woocommerce/wc-checkout-block-payment-method/SKILL.md",
+      "directory_url": "https://github.com/Lonsdale201/wp-agent-skills/tree/main/woocommerce/wc-checkout-block-payment-method",
+      "metadata": {
+        "author": "Soczó Kristóf",
+        "contact": "mailto:lonsdale201@hotmail.com",
+        "plugin": "woocommerce",
+        "plugin-version-tested": "10.9.4",
+        "php-min": "7.4",
+        "last-updated": "2026-07-20"
+      },
+      "resources": [
+        {
+          "path": "agents/openai.yaml",
+          "repo_path": "woocommerce/wc-checkout-block-payment-method/agents/openai.yaml",
+          "type": "resource",
+          "bytes": 260,
+          "sha256": "707324804325b1e32c3b6106aa18db4361ae1108ced7768a6d20b279cfb515b6"
+        },
+        {
+          "path": "references/blocks-payment-lifecycle.md",
+          "repo_path": "woocommerce/wc-checkout-block-payment-method/references/blocks-payment-lifecycle.md",
+          "type": "reference",
+          "bytes": 6797,
+          "sha256": "69696b35ba1e702b154cfd10aec587291afd6461ef2e1706cce4312130b2474c"
+        }
+      ],
+      "has_reference": true,
+      "has_examples": false,
+      "has_scripts": false,
+      "skill_md": {
+        "bytes": 11407,
+        "lines": 233,
+        "sha256": "6c2bcf150410625c47ae4871f2b6f07c5e5608f30bdd626fc286284859a7fb70"
+      }
+    },
+    {
       "slug": "wc-coupon-dynamic",
       "name": "wc-coupon-dynamic",
       "domain": "woocommerce",
-      "description": "Implement dynamic or virtual WooCommerce coupons without creating `shop_coupon` posts. Covers `woocommerce_get_shop_coupon_data`, the `read_manual_coupon` field contract, precedence, validation, custom discount types, exact usage-limit behavior, idempotent usage accounting, performance, and security. Use for generated loyalty, partner, campaign, or entitlement codes resolved from an owned table or service.",
+      "description": "Build or audit WooCommerce virtual coupons resolved at runtime without a `shop_coupon` row. Covers `woocommerce_get_shop_coupon_data`, the `read_manual_coupon()` data contract, reserved code namespaces and resolver precedence, database-fallback collisions, request caching, Store API and classic checkout behavior, validation, external atomic usage accounting, order coupon snapshots, direct order application, deterministic recalculation, and security. Use for generated loyalty, referral, partner, campaign, or entitlement codes backed by an owned table/service, or when code calls these APIs. For persisted coupons, new discount-type math, or general coupon rules use `wc-coupon-types-rules`.",
       "path": "woocommerce/wc-coupon-dynamic",
       "skill_path": "woocommerce/wc-coupon-dynamic/SKILL.md",
       "url": "https://raw.githubusercontent.com/Lonsdale201/wp-agent-skills/main/woocommerce/wc-coupon-dynamic/SKILL.md",
@@ -4294,16 +4524,60 @@
         "plugin": "woocommerce",
         "plugin-version-tested": "10.9.4",
         "php-min": "7.4",
-        "last-updated": "2026-07-10"
+        "last-updated": "2026-07-20"
       },
       "resources": [],
       "has_reference": false,
       "has_examples": false,
       "has_scripts": false,
       "skill_md": {
-        "bytes": 8383,
-        "lines": 204,
-        "sha256": "6cd26d6ab08537a65a4bd8cb78f82e489fb50facdda5c4ad519983f167f48ab7"
+        "bytes": 12046,
+        "lines": 240,
+        "sha256": "cefbc586bdade59a2742dda3318658d492109587f3d91e5b0ce230e2aa7fb0b7"
+      }
+    },
+    {
+      "slug": "wc-coupon-types-rules",
+      "name": "wc-coupon-types-rules",
+      "domain": "woocommerce",
+      "description": "Implement, extend, or audit WooCommerce coupon types, persisted coupon CRUD, eligibility rules, inclusions/exclusions, stacking, usage limits, and order lifecycle behavior. Covers the complete custom discount-type contract (`woocommerce_coupon_discount_types`, product-vs-cart classification, calculation, and sort order), `WC_Coupon` setters, `WC_Discounts`, native product/category/sale/email/spend restrictions, custom validation hooks, admin fields, Store API and REST compatibility, concurrency holds, order snapshots, refunds/cancellations, taxes, and deterministic recalculation. Use when a plugin adds a coupon type or rule engine, changes which products/users qualify, creates coupons programmatically, auto-applies coupons, or produces incorrect/zero/duplicated discounts.",
+      "path": "woocommerce/wc-coupon-types-rules",
+      "skill_path": "woocommerce/wc-coupon-types-rules/SKILL.md",
+      "url": "https://raw.githubusercontent.com/Lonsdale201/wp-agent-skills/main/woocommerce/wc-coupon-types-rules/SKILL.md",
+      "raw_url": "https://raw.githubusercontent.com/Lonsdale201/wp-agent-skills/main/woocommerce/wc-coupon-types-rules/SKILL.md",
+      "html_url": "https://github.com/Lonsdale201/wp-agent-skills/blob/main/woocommerce/wc-coupon-types-rules/SKILL.md",
+      "directory_url": "https://github.com/Lonsdale201/wp-agent-skills/tree/main/woocommerce/wc-coupon-types-rules",
+      "metadata": {
+        "author": "Soczó Kristóf",
+        "contact": "mailto:lonsdale201@hotmail.com",
+        "plugin": "woocommerce",
+        "plugin-version-tested": "10.9.4",
+        "php-min": "7.4",
+        "last-updated": "2026-07-20"
+      },
+      "resources": [
+        {
+          "path": "agents/openai.yaml",
+          "repo_path": "woocommerce/wc-coupon-types-rules/agents/openai.yaml",
+          "type": "resource",
+          "bytes": 251,
+          "sha256": "a216f93ac7fc688d5c77c12bb9c89f51fa790583f0f15720fdbd2db601675e57"
+        },
+        {
+          "path": "references/coupon-contract.md",
+          "repo_path": "woocommerce/wc-coupon-types-rules/references/coupon-contract.md",
+          "type": "reference",
+          "bytes": 16130,
+          "sha256": "feafee3a2e8ad794b6e188f5f6721f87d41485009f454c5c4fcb2ce8ca4880d7"
+        }
+      ],
+      "has_reference": true,
+      "has_examples": false,
+      "has_scripts": false,
+      "skill_md": {
+        "bytes": 12185,
+        "lines": 219,
+        "sha256": "fc35a79ce80e93f2bb172ba2aa9f1d71e0dc3873c2179868688df64f4103b182"
       }
     },
     {
@@ -4333,6 +4607,50 @@
         "bytes": 8107,
         "lines": 189,
         "sha256": "27f5ccd5ecf3ddf1c0e09868b67e3d8d6fe63d1508b8c262c6979daedf087408"
+      }
+    },
+    {
+      "slug": "wc-downloadable-products",
+      "name": "wc-downloadable-products",
+      "domain": "woocommerce",
+      "description": "Implement, extend, or audit WooCommerce downloadable products and customer download access. Covers WC_Product_Download, stable download IDs, product CRUD, approved directories, the customer-download permission table and WC_Customer_Download CRUD, order-based grants and safe regeneration, limits and expiry, My Account and REST reads, bearer download URLs, download methods, logging, partial requests, and protected file storage. Use for _downloadable_files, wc_downloadable_product_permissions(), wc_downloadable_file_permission(), WC_Download_Handler, missing/duplicate/expired downloads, private digital files, or code that grants and revokes WooCommerce downloads.",
+      "path": "woocommerce/wc-downloadable-products",
+      "skill_path": "woocommerce/wc-downloadable-products/SKILL.md",
+      "url": "https://raw.githubusercontent.com/Lonsdale201/wp-agent-skills/main/woocommerce/wc-downloadable-products/SKILL.md",
+      "raw_url": "https://raw.githubusercontent.com/Lonsdale201/wp-agent-skills/main/woocommerce/wc-downloadable-products/SKILL.md",
+      "html_url": "https://github.com/Lonsdale201/wp-agent-skills/blob/main/woocommerce/wc-downloadable-products/SKILL.md",
+      "directory_url": "https://github.com/Lonsdale201/wp-agent-skills/tree/main/woocommerce/wc-downloadable-products",
+      "metadata": {
+        "author": "Soczó Kristóf",
+        "contact": "mailto:lonsdale201@hotmail.com",
+        "plugin": "woocommerce",
+        "plugin-version-tested": "10.9.4",
+        "php-min": "7.4",
+        "last-updated": "2026-07-20"
+      },
+      "resources": [
+        {
+          "path": "agents/openai.yaml",
+          "repo_path": "woocommerce/wc-downloadable-products/agents/openai.yaml",
+          "type": "resource",
+          "bytes": 239,
+          "sha256": "f25bd649640a3b8b411464fe8f17b36dc8e38621c55c3e184b826992b5df8ac0"
+        },
+        {
+          "path": "references/core-download-contract.md",
+          "repo_path": "woocommerce/wc-downloadable-products/references/core-download-contract.md",
+          "type": "reference",
+          "bytes": 10831,
+          "sha256": "44799d7558dd94e895808ee1b4e99e3605186d8df43856af026da9f40c9409f3"
+        }
+      ],
+      "has_reference": true,
+      "has_examples": false,
+      "has_scripts": false,
+      "skill_md": {
+        "bytes": 8969,
+        "lines": 159,
+        "sha256": "f82952e02454e0109e673eccf6efd695af84e94f1f674870bdfd0c99e7406af0"
       }
     },
     {
@@ -4468,23 +4786,23 @@
         "plugin": "woocommerce",
         "plugin-version-tested": "10.9.4",
         "php-min": "7.4",
-        "last-updated": "2026-07-10"
+        "last-updated": "2026-07-20"
       },
       "resources": [],
       "has_reference": false,
       "has_examples": false,
       "has_scripts": false,
       "skill_md": {
-        "bytes": 10193,
-        "lines": 214,
-        "sha256": "b9a7d627c3093699f9b73d6f5ed8f751008ff954a0e656fb2666f736f0fcb449"
+        "bytes": 10677,
+        "lines": 215,
+        "sha256": "e36f50e1593c9627bdab213d80a41a86f1e225b69b206731a835afcbfadca16d"
       }
     },
     {
       "slug": "wc-payment-tokens",
       "name": "wc-payment-tokens",
       "domain": "woocommerce",
-      "description": "Store and use WooCommerce saved payment methods through `WC_Payment_Tokens` and `WC_Payment_Token_CC` safely. Covers provider token vs card data, tokenization gateway support, creating/updating/deleting/defaulting tokens, My Account nonce and ownership checks, `get_customer_tokens`, `get_customer_default_token`, `get_order_tokens`, attaching tokens to orders, gateway ID filtering, custom token tables, hooks, HPOS-safe order use, and checkout saved-token validation. Use when building saved cards, charging a saved method, add-payment-method flows, token migrations, token deletion/default endpoints, or gateway tokenization.",
+      "description": "Store and use WooCommerce saved payment methods safely through `WC_Payment_Tokens` and polymorphic `WC_Payment_Token` subclasses. Covers provider references versus payment credentials, CC/eCheck/custom token shapes, tokenization gateway support, creating/updating/deleting/defaulting tokens, My Account nonce and ownership checks, customer/order token queries, gateway and type validation, provider reconciliation filters, hooks, HPOS-safe order use, and checkout saved-token validation. Use for saved cards or wallets, charging a saved method, add-payment-method flows, token migrations, deletion/default endpoints, custom token types, or gateway tokenization.",
       "path": "woocommerce/wc-payment-tokens",
       "skill_path": "woocommerce/wc-payment-tokens/SKILL.md",
       "url": "https://raw.githubusercontent.com/Lonsdale201/wp-agent-skills/main/woocommerce/wc-payment-tokens/SKILL.md",
@@ -4497,16 +4815,16 @@
         "plugin": "woocommerce",
         "plugin-version-tested": "10.9.4",
         "php-min": "7.4",
-        "last-updated": "2026-07-10"
+        "last-updated": "2026-07-20"
       },
       "resources": [],
       "has_reference": false,
       "has_examples": false,
       "has_scripts": false,
       "skill_md": {
-        "bytes": 11948,
-        "lines": 284,
-        "sha256": "6edfc4f315da2857d71b318673467e2d90b99fb325825a670d04c8b2a616f5ff"
+        "bytes": 13106,
+        "lines": 299,
+        "sha256": "2739516c637448e455a70bca75f2d781eca543f565f3c74479aa2b29e8af1c72"
       }
     },
     {
@@ -4718,23 +5036,23 @@
         "plugin": "woocommerce",
         "plugin-version-tested": "10.9.4",
         "php-min": "7.4",
-        "last-updated": "2026-07-10"
+        "last-updated": "2026-07-20"
       },
       "resources": [],
       "has_reference": false,
       "has_examples": false,
       "has_scripts": false,
       "skill_md": {
-        "bytes": 9448,
-        "lines": 208,
-        "sha256": "d8ff820280c352ccceab83de2e1c231749d16ceedd01cc542bae476aa43e1f76"
+        "bytes": 9736,
+        "lines": 211,
+        "sha256": "f861a3ed4d2cc8288ea65808b09a305635ed2123812e157caf5a8edb998fb468"
       }
     },
     {
       "slug": "wc-stripe-add-payment-method",
       "name": "wc-stripe-add-payment-method",
       "domain": "woocommerce",
-      "description": "Build or audit WooCommerce Stripe Gateway My Account saved-payment-method flows. Covers the canonical Woo form contract, Stripe UPE SetupIntent flow, exact selectors and POST fields, billing details, WC payment tokens, remote detach/default synchronization, custom endpoint security, and the boundary with WooCommerce Subscriptions. Use for payment-methods.php, form-add-payment-method.php, add_payment_method, wc-stripe-setup-intent, wc-stripe-upe-element, Stripe saved cards, or custom customer payment-method screens.",
+      "description": "Build or audit WooCommerce Stripe Gateway My Account saved-payment-method flows. Covers the canonical Woo form contract, Stripe UPE SetupIntents, exact selectors and POST fields, billing details, polymorphic Woo tokens including native Link, remote reconciliation/detach/default synchronization, custom endpoint security, and the Subscriptions boundary. Use for payment-methods.php, form-add-payment-method.php, add_payment_method, wc-stripe-setup-intent, wc-stripe-upe-element, Stripe saved cards or Link, or custom customer payment-method screens.",
       "path": "woocommerce/wc-stripe-add-payment-method",
       "skill_path": "woocommerce/wc-stripe-add-payment-method/SKILL.md",
       "url": "https://raw.githubusercontent.com/Lonsdale201/wp-agent-skills/main/woocommerce/wc-stripe-add-payment-method/SKILL.md",
@@ -4745,34 +5063,124 @@
         "author": "Soczo Kristof",
         "contact": "mailto:lonsdale201@hotmail.com",
         "plugin": "woocommerce-gateway-stripe",
-        "plugin-version-tested": "10.8.3",
+        "plugin-version-tested": "10.8.4",
         "woocommerce-version-tested": "10.9.4",
         "php-min": "7.4",
-        "last-updated": "2026-07-10"
+        "last-updated": "2026-07-20"
       },
       "resources": [
         {
           "path": "reference.md",
           "repo_path": "woocommerce/wc-stripe-add-payment-method/reference.md",
           "type": "reference",
-          "bytes": 2708,
-          "sha256": "184b9f1b63b1ef2ecea73c84f2a651bba7bb811bee10f95b735d47d7c5550e37"
+          "bytes": 2845,
+          "sha256": "c88fa9af8ed5909575ea58f97990d62b6d4e8d7a0e68f0ceb4795a07ec685ffb"
         }
       ],
       "has_reference": true,
       "has_examples": false,
       "has_scripts": false,
       "skill_md": {
-        "bytes": 10600,
-        "lines": 159,
-        "sha256": "d2e076f0798a06021ab6f3bfe00ce376848f354f2a4c8bd618a63ba5d4f0fc30"
+        "bytes": 12199,
+        "lines": 170,
+        "sha256": "78f9ca9e8fbeecb1188a243c886ebd76f40ed28b1628c3cf061cfef1f6c4a450"
+      }
+    },
+    {
+      "slug": "wc-stripe-future-payments",
+      "name": "wc-stripe-future-payments",
+      "domain": "woocommerce",
+      "description": "Design or audit WooCommerce Stripe payment flows that save a reusable method and charge it later. Covers SetupIntent versus PaymentIntent, charge-now-and-save, deposits and installment series, `setup_future_usage=off_session`, Stripe Customer ownership, explicit consent/mandates, later off-session PaymentIntents, SCA recovery, idempotent scheduling, Woo token projection, guest/account policy, official Woo Stripe Gateway reuse versus a custom Stripe-backed gateway, Blocks/classic checkout, Link polymorphism, webhooks, accounting, and tests. Use for installments, deposits, subscriptions outside WCS, merchant-initiated charges, future payments, saved cards, or claims that a SetupIntent also takes the first payment.",
+      "path": "woocommerce/wc-stripe-future-payments",
+      "skill_path": "woocommerce/wc-stripe-future-payments/SKILL.md",
+      "url": "https://raw.githubusercontent.com/Lonsdale201/wp-agent-skills/main/woocommerce/wc-stripe-future-payments/SKILL.md",
+      "raw_url": "https://raw.githubusercontent.com/Lonsdale201/wp-agent-skills/main/woocommerce/wc-stripe-future-payments/SKILL.md",
+      "html_url": "https://github.com/Lonsdale201/wp-agent-skills/blob/main/woocommerce/wc-stripe-future-payments/SKILL.md",
+      "directory_url": "https://github.com/Lonsdale201/wp-agent-skills/tree/main/woocommerce/wc-stripe-future-payments",
+      "metadata": {
+        "author": "Soczó Kristóf",
+        "contact": "mailto:lonsdale201@hotmail.com",
+        "plugin": "woocommerce-gateway-stripe",
+        "plugin-version-tested": "10.8.4",
+        "woocommerce-version-tested": "10.9.4",
+        "php-min": "7.4",
+        "last-updated": "2026-07-20"
+      },
+      "resources": [
+        {
+          "path": "agents/openai.yaml",
+          "repo_path": "woocommerce/wc-stripe-future-payments/agents/openai.yaml",
+          "type": "resource",
+          "bytes": 266,
+          "sha256": "5f7da84efd42406abb83dabab806439f473e9467a1503576402231063fba42a2"
+        },
+        {
+          "path": "references/stripe-future-payment-lifecycle.md",
+          "repo_path": "woocommerce/wc-stripe-future-payments/references/stripe-future-payment-lifecycle.md",
+          "type": "reference",
+          "bytes": 8265,
+          "sha256": "4d33193e47e96f639d81fe9ac556cd885878fbefcd7e7a58cae9b06871008a6f"
+        }
+      ],
+      "has_reference": true,
+      "has_examples": false,
+      "has_scripts": false,
+      "skill_md": {
+        "bytes": 12965,
+        "lines": 182,
+        "sha256": "5e920ec5d3db8714ead5d5105ae1fbb8d8c7de9b9675c021c5b44066ac4a4812"
+      }
+    },
+    {
+      "slug": "wc-stripe-link-payments",
+      "name": "wc-stripe-link-payments",
+      "domain": "woocommerce",
+      "description": "Implement or audit Stripe Link behavior in the WooCommerce Stripe Gateway, especially code that assumes every `pm_...` or `stripe` token is a card. Distinguishes native Stripe PaymentMethod `type=link` and `WC_Payment_Token_Link` from `type=card` with `card.wallet.type=link`, and covers gateway/type identifiers, Payment Element and Express Checkout, save consent, SetupIntents, remote-to-Woo token reconciliation, duplicate detection, checkout request validation, deletion/defaulting, orders, subscriptions, and Link-specific test cases. Use for Link by Stripe, `WC_Payment_Token_Link`, `link.email`, `wallet_type=link`, saved Link methods, or Stripe token type errors.",
+      "path": "woocommerce/wc-stripe-link-payments",
+      "skill_path": "woocommerce/wc-stripe-link-payments/SKILL.md",
+      "url": "https://raw.githubusercontent.com/Lonsdale201/wp-agent-skills/main/woocommerce/wc-stripe-link-payments/SKILL.md",
+      "raw_url": "https://raw.githubusercontent.com/Lonsdale201/wp-agent-skills/main/woocommerce/wc-stripe-link-payments/SKILL.md",
+      "html_url": "https://github.com/Lonsdale201/wp-agent-skills/blob/main/woocommerce/wc-stripe-link-payments/SKILL.md",
+      "directory_url": "https://github.com/Lonsdale201/wp-agent-skills/tree/main/woocommerce/wc-stripe-link-payments",
+      "metadata": {
+        "author": "Soczó Kristóf",
+        "contact": "mailto:lonsdale201@hotmail.com",
+        "plugin": "woocommerce-gateway-stripe",
+        "plugin-version-tested": "10.8.4",
+        "woocommerce-version-tested": "10.9.4",
+        "php-min": "7.4",
+        "last-updated": "2026-07-20"
+      },
+      "resources": [
+        {
+          "path": "agents/openai.yaml",
+          "repo_path": "woocommerce/wc-stripe-link-payments/agents/openai.yaml",
+          "type": "resource",
+          "bytes": 251,
+          "sha256": "d1072664096545c0bb13e5141503b68e03c46b1fec8e68cd3790b1324ae0400f"
+        },
+        {
+          "path": "references/link-contract.md",
+          "repo_path": "woocommerce/wc-stripe-link-payments/references/link-contract.md",
+          "type": "reference",
+          "bytes": 11327,
+          "sha256": "c22887f56f876b709d6e516106d0b522627a9414f26f00289c8ee8b2fde1eed9"
+        }
+      ],
+      "has_reference": true,
+      "has_examples": false,
+      "has_scripts": false,
+      "skill_md": {
+        "bytes": 11905,
+        "lines": 194,
+        "sha256": "2c1080a680478f5c73c4f554f38aca06065e52a8085c0ac42901468526f323cb"
       }
     },
     {
       "slug": "wc-stripe-subscriptions",
       "name": "wc-stripe-subscriptions",
       "domain": "woocommerce",
-      "description": "Integrate WooCommerce Stripe Gateway 10.8+ with WooCommerce Subscriptions 9.0. Covers gateway feature support, automatic renewal charges, Stripe customer/payment-method metadata, failed-renewal recovery, SCA, change-payment SetupIntents, update-all behavior, Express Checkout on the change-payment page, detached tokens, and safe test cases. Use when Stripe is a subscription gateway or code touches scheduled_subscription_payment_stripe, _stripe_source_id on WC_Subscription, change_payment_method, renewal authentication, or Stripe token migration.",
+      "description": "Integrate WooCommerce Stripe Gateway 10.8+ with WooCommerce Subscriptions 9.0. Covers gateway feature support, automatic renewals, Stripe metadata, failed-renewal recovery, SCA, change-payment SetupIntents, update-all behavior, Express Checkout, native Link and card-wallet token shapes, detached tokens, and safe tests. Use when Stripe is a subscription gateway or code touches scheduled_subscription_payment_stripe, _stripe_source_id on WC_Subscription, change_payment_method, renewal authentication, Link, or Stripe token migration.",
       "path": "woocommerce/wc-stripe-subscriptions",
       "skill_path": "woocommerce/wc-stripe-subscriptions/SKILL.md",
       "url": "https://raw.githubusercontent.com/Lonsdale201/wp-agent-skills/main/woocommerce/wc-stripe-subscriptions/SKILL.md",
@@ -4782,20 +5190,21 @@
       "metadata": {
         "author": "Soczo Kristof",
         "contact": "mailto:lonsdale201@hotmail.com",
-        "plugin": "woocommerce-gateway-stripe + woocommerce-subscriptions",
-        "plugin-version-tested": "woocommerce-gateway-stripe 10.8.3; woocommerce-subscriptions 9.0.0",
+        "plugin": "woocommerce-gateway-stripe",
+        "plugin-version-tested": "10.8.4",
+        "woocommerce-subscriptions-version-tested": "9.0.0",
         "woocommerce-version-tested": "10.9.4",
         "php-min": "7.4",
-        "last-updated": "2026-07-10"
+        "last-updated": "2026-07-20"
       },
       "resources": [],
       "has_reference": false,
       "has_examples": false,
       "has_scripts": false,
       "skill_md": {
-        "bytes": 11060,
-        "lines": 188,
-        "sha256": "0aeca6a14fb5d51d04090c6c2391f627b142069a0259be1b7f1e2f6b03d17d33"
+        "bytes": 12253,
+        "lines": 198,
+        "sha256": "531c912cbc5195361bee5e42c2db9a23ee2215f9a8cc68977b5e0fe1f3ae090e"
       }
     },
     {
@@ -4813,19 +5222,19 @@
         "author": "Soczo Kristof",
         "contact": "mailto:lonsdale201@hotmail.com",
         "plugin": "woocommerce-gateway-stripe",
-        "plugin-version-tested": "10.8.3",
+        "plugin-version-tested": "10.8.4",
         "woocommerce-version-tested": "10.9.4",
         "php-min": "7.4",
-        "last-updated": "2026-07-10"
+        "last-updated": "2026-07-20"
       },
       "resources": [],
       "has_reference": false,
       "has_examples": false,
       "has_scripts": false,
       "skill_md": {
-        "bytes": 10887,
-        "lines": 197,
-        "sha256": "1d6e00b398a871e4d6441a5ab648289bd970f0e99379e6e704b2dccc788229e5"
+        "bytes": 10993,
+        "lines": 198,
+        "sha256": "9bb0705a48c7fc98ff305119f5eb1a11faf331a0e89e9c9f9c8408e17b357637"
       }
     },
     {
@@ -5171,7 +5580,7 @@
       "slug": "wcs-subscription-downloads",
       "name": "wcs-subscription-downloads",
       "domain": "woocommerce",
-      "description": "WooCommerce Subscriptions built-in Subscription Downloads reference for linked downloadable products, the woocommerce_subscription_downloads table, file-sharing settings, permission grants/revokes, email/account lists, switch cleanup, optional zero-cost line items, and WCS Gifting ownership. Use for WC_Subscription_Downloads, shared or linked downloads, downloadable subscription access, or subscription download permissions.",
+      "description": "Implement, extend, or audit WooCommerce Subscriptions download access. Distinguishes ordinary downloadable subscription line items from the bundled linked Subscription Downloads feature; covers WCS_Download_Handler, shop_subscription-owned permissions, renewal de-duplication, new-file drip behavior, subscription status access gates, the woocommerce_subscription_downloads catalog mapping, active/cancel/expire grants and revokes, counter resets, optional zero-cost line items, projections, switching, emails, and WCS Gifting. Use for missing or duplicate subscription downloads, WC_Subscription_Downloads, linked/shared files, drip downloadable content, subscription renewal access, or downloadable permissions tied to a subscription.",
       "path": "woocommerce/wcs-subscription-downloads",
       "skill_path": "woocommerce/wcs-subscription-downloads/SKILL.md",
       "url": "https://raw.githubusercontent.com/Lonsdale201/wp-agent-skills/main/woocommerce/wcs-subscription-downloads/SKILL.md",
@@ -5182,19 +5591,19 @@
         "author": "Soczó Kristóf",
         "contact": "mailto:lonsdale201@hotmail.com",
         "plugin": "woocommerce-subscriptions",
-        "plugin-version-tested": "9.0.0",
+        "plugin-version-tested": "9.0.1",
         "woocommerce-version-tested": "10.9.4",
         "php-min": "7.4",
-        "last-updated": "2026-07-10"
+        "last-updated": "2026-07-20"
       },
       "resources": [],
       "has_reference": false,
       "has_examples": false,
       "has_scripts": false,
       "skill_md": {
-        "bytes": 8749,
-        "lines": 177,
-        "sha256": "34e1e294012e50ded25aada81d0e0fc6a54e65b363c81daf6442c3f5a23bdadd"
+        "bytes": 13688,
+        "lines": 243,
+        "sha256": "278531eb3b348b8e6098ff9cc35059ccb5d555fcae4144272c81608cfb494759"
       }
     },
     {

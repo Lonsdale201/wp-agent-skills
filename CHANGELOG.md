@@ -2,9 +2,83 @@
 
 This collection is continuously evolving — entries are date-based, not version-tagged. New skills land when they're ready; updates go in when they cover real ground (a new release of an upstream plugin, a verified misconception, a corrected example).
 
+## 2026-07-20 (fluentform: new Fluent Forms developer-extension domain)
+
+New domain `fluentform/` — four skills for extending Fluent Forms (Free `fluentform` + Pro `fluentformpro`) from a third-party plugin without bypassing its parser, lifecycle, ACL, or queue model. Grounded against Fluent Forms Free and Pro 6.2.7 on WordPress 7.0.2; every skill draws an explicit Free/Pro boundary and cites verified Free/Pro source paths (Fluent Forms is not in the wp-skills index).
+
+### Added — `fluentform/fluentform-custom-fields`
+
+Build custom form-builder inputs with the Free-core `BaseFieldManager` contract: `fluentform/loaded` bootstrap, editor component schema, safe frontend rendering, `attributes.name` input mapping, parser registration, conditional-logic support, server-side normalization and validation (`fluentform/render_item_*`, `fluentform/validate_input_item_*`), response formatting, assets, and accessibility — so a field appears correctly in entries, emails, feeds, and conditional rules. Marks the shipped phone/dynamic/chained/repeater/upload implementations as Pro without making the base API look Pro-only.
+
+### Added — `fluentform/fluentform-submission-lifecycle`
+
+Select the correct server-side hook across the real lifecycle (accepted-key parsing → recursive sanitization → validation → response/insert filters → row insert → entry details → `submission_inserted`/feeds → confirmation). Corrects the misleading idea that the post-validation `fluentform/before_insert_submission` action is the normal validation surface, flags the twice-applied `fluentform/submission_form_data` filter, non-transactional side effects, the payment-status boundary, and the Pro partial-draft lifecycle. Notes that in 6.2.7 submission nonce verification defaults off, so a public form is not authenticated by nonce alone.
+
+### Added — `fluentform/fluentform-entries-data`
+
+Read, relate, update, and audit forms/submissions with `fluentFormApi`, `FormFieldsParser`, and the `Submission` / `SubmissionMeta` models under form-scoped ACL. Explains canonical `response` JSON vs the lossy `entry_details` projection, historical field-label drift, side-effecting reads, bounded queries, consistent mutation/deletion hooks, and the separate Pro draft/payment records — for entry reports, exports, dashboards, REST endpoints, and submission metadata.
+
+### Added — `fluentform/fluentform-feed-integration`
+
+Build a configurable connector (CRM, webhook, messaging, storage, external API) with the Free-core `IntegrationManagerController`: global credentials, per-form feed schema and field mappings, conditional execution, smart-code expansion, synchronous vs asynchronous `ff_scheduled_actions` / Action Scheduler dispatch, result logging, retries, and idempotency — instead of firing remote requests directly from `fluentform/submission_inserted`. Documents the exact integration-key vs settings-key hook suffixes.
+
+New-domain wiring: `fluentform` added to the three allow-lists (`.github/scripts/validate-skill.js`, `.github/scripts/build-skill-pr.js`, and the `new-skill.yml` domain dropdown), plus a `fluentform/README.md`, the root README structure row, and the counters (skills 207 → 211, plugins 29 → 30, domains 20 → 21). `skills-index.json` regenerated.
+
+## 2026-07-20 (woocommerce: Checkout Block payment methods + Stripe future payments)
+
+A second WooCommerce batch — two new skills plus six cross-linking updates — closing the Blocks and off-session gaps around the payment skills. Verified against WooCommerce 10.9.4 (Stripe Gateway 10.8.4).
+
+### Added — `woocommerce/wc-checkout-block-payment-method`
+
+Build or audit a Checkout Block payment-method integration as an adapter around a gateway, not a replacement for it. Keeps four layers separate — `WC_Payment_Gateway` (settings/validation/server calls/classic checkout), the `AbstractPaymentMethodType` PHP adapter (registers Block assets + exposes non-secret settings), the JS `registerPaymentMethod()` UI (renders, reports availability, prepares opaque payment data, handles SDK events), and Store API processing — and insists one stable identifier ties `$id` / `$name` / `name` / `paymentMethodId` together. Covers `onPaymentSetup` (not the deprecated `onPaymentProcessing`, and always returning the unsubscribe fn), the two server paths (return `paymentMethodData` to reuse `process_payment()` via the legacy bridge, or own processing through `woocommerce_rest_checkout_process_payment_with_context` with `PaymentContext`/`PaymentResult` — never charge in both), client-secret/SDK confirmation via `PaymentResult::payment_details` + `onCheckoutSuccess`, `savedTokenComponent` receiving a local Woo token ID (resolve/verify server-side), and a classic-vs-Block audit matrix. Cross-refs `wc-payment-gateway`, `wc-store-api`, `wc-payment-tokens`, and the two Stripe skills.
+
+### Added — `woocommerce/wc-stripe-future-payments`
+
+Design or audit Stripe flows that save a reusable method and charge it later, treating save / charge-now / charge-later as three distinct operations with explicit owners. Corrects the common "a SetupIntent also takes the first payment" error: a SetupIntent never charges — use a PaymentIntent with `setup_future_usage=off_session` for charge-and-save, or a SetupIntent followed by separate PaymentIntents. Covers later off-session PaymentIntents (`off_session=true`, `confirm=true`) with idempotency keyed on an immutable installment record (not a timestamp), explicit consent/mandate snapshots, the `wc_stripe_force_save_payment_method` filter (fires with and without an order ID; hiding the save checkbox is itself treated as forced-save; refuses logged-out users), the guest→Customer first-purchase problem, a Woo-accounting model so the Stripe amount and order/refund records agree, SCA-recovery as a normal state, Woo token polymorphism (Link/card/debit — classify by provider type, not ID prefix), and a review checklist. Cross-refs the add-payment-method, Link, webhooks, Action Scheduler, and Subscriptions skills.
+
+### Updated — six payment skills (cross-linking + boundaries)
+
+`wc-payment-gateway`, `wc-store-api`, `wc-stripe-add-payment-method`, `wc-stripe-link-payments`, `wc-stripe-subscriptions`, and `wc-stripe-webhooks` now point at the two new skills and sharpen the boundaries between them — the classic gateway vs the Blocks adapter (`AbstractPaymentMethodType` + `registerPaymentMethod()`), and SetupIntent (save-only) vs PaymentIntent + `setup_future_usage` (charge-and-save). Date bumps to 2026-07-20; `wc-stripe-webhooks` to Stripe Gateway 10.8.4.
+
+Domain + root README rows and the skill counter (205 → 207) updated; `skills-index.json` regenerated (each new skill ships a `references/` file). Plugin count unchanged at 29. The two new skills' `wp-skills-author` was normalized to the canonical accented "Soczó Kristóf".
+
+## 2026-07-20 (woocommerce: Stripe Link + polymorphic payment tokens, coupon & download skills)
+
+A WooCommerce batch — three new skills plus five updates — converging on two themes: **stop assuming every saved payment method is a card**, and **keep coupon / download definition, entitlement, and delivery as separate layers**. Verified against WooCommerce 10.9.4 (Stripe Gateway 10.8.4).
+
+### Added — `woocommerce/wc-stripe-link-payments`
+
+Handle Stripe Link correctly instead of treating every `pm_...` / `stripe` token as a card. Distinguishes the two Link representations — native reusable Link (`type=link`, hydrated as `WC_Payment_Token_Link`, keyed on `link.email`) versus a card used through Link (`type=card` with `card.wallet.type=link`, hydrated as `WC_Stripe_Payment_Token_CC`) — and keeps the identifier layers separate (Stripe method type vs Woo token type vs token class vs the `stripe` gateway ID vs request markers like `express_payment_type=link`). Covers inspecting tokens polymorphically (a verified 10.8.4 quirk: `WC_Payment_Token_Link::get_payment_method_type()` returns `null` because the prop is missing from `extra_data` — classify with `get_type() === 'link'`), letting the gateway own token creation, the Link-vs-Woo-tokenization consent boundary, Payment Element / Express Checkout intent pairing, reconciliation-on-read of `get_customer_tokens()` (email-based dedup means neither Link email nor local token ID is a stable business key), and orders/subscriptions through gateway `stripe`. Cross-refs `wc-stripe-add-payment-method`, `wc-payment-tokens`, `wc-stripe-subscriptions`, `wc-stripe-webhooks`.
+
+### Added — `woocommerce/wc-coupon-types-rules`
+
+The persisted-coupon counterpart to `wc-coupon-dynamic`: implement/extend/audit coupon **types** and rule engines on real `shop_coupon` objects. Covers the complete custom discount-type contract (`woocommerce_coupon_discount_types` registration, product-vs-cart classification via `woocommerce_product_coupon_types` / `woocommerce_cart_coupon_types`, the per-unit `woocommerce_coupon_get_discount_amount` branch that returns a discount not a price, and `woocommerce_coupon_sort` stacking), `WC_Coupon` CRUD with native restrictions, the validation hook family (`woocommerce_coupon_is_valid` / `..._for_product` / `..._for_cart`, `..._get_items_to_apply`, `..._get_apply_quantity`) kept side-effect-free, core usage accounting (tentative concurrency holds, status-driven counts, `_used_by`, idempotent recorded-usage flag), order snapshots via `woocommerce_checkout_create_order_coupon_item`, and deterministic recalculation. Cross-refs `wc-coupon-dynamic`, `wc-cart-checkout-classic`, `wc-store-api`, `wc-order-lifecycle-and-items`.
+
+### Added — `woocommerce/wc-downloadable-products`
+
+Downloadable products and customer download access through the three-layer model: `WC_Product_Download` (what a product can deliver) → `WC_Customer_Download` (who may download which stable file ID, via which order, until when) → `WC_Download_Handler` (does the request pass every check). Core rule: a permission row is not access unless the related order still permits downloads. Covers stable UUID download IDs (replacing one strands old permissions), order-lifecycle grants via `wc_downloadable_product_permissions()` / `wc_downloadable_file_permission()`, safe full regeneration (the table has no unique constraint and `$force` does not purge old rows — delete via the customer-download data store first), reads via `wc_get_customer_available_downloads()`, limits/expiry, bearer-link security, and protected storage (`force` / `xsendfile` / `redirect`). Cross-refs `wcs-subscription-downloads`, `wc-order-lifecycle-and-items`, `wc-rest-api-v4`, `wc-action-scheduler-jobs`.
+
+### Updated — `woocommerce/wc-payment-tokens`
+
+Reframed around polymorphic `WC_Payment_Token` subclasses instead of a CC-centric view: provider reference vs payment credentials, CC / eCheck / custom / Link token shapes, gateway **and type** validation, provider reconciliation-on-read filters, and a new "treat token objects polymorphically" section. The data layer beneath both `wc-stripe-add-payment-method` and the new Link skill.
+
+### Updated — `woocommerce/wc-stripe-add-payment-method` and `woocommerce/wc-stripe-subscriptions`
+
+Both bumped to Stripe Gateway 10.8.4 and extended for native Link: the add-payment-method flow gains a "Link boundary" section (polymorphic Woo tokens, reconciliation/detach/default sync), and the Subscriptions skill gains a "Link token contract" section (native Link vs card-wallet token shapes on renewals and change-payment). `wc-stripe-subscriptions` also drops its combined `wp-skills-plugin` value (`woocommerce-gateway-stripe + woocommerce-subscriptions`) down to `woocommerce-gateway-stripe`, moving the Subscriptions version into a dedicated `wp-skills-woocommerce-subscriptions-version-tested` key.
+
+### Updated — `woocommerce/wc-coupon-dynamic`
+
+Rescoped from "dynamic coupons" to **virtual coupons**: the runtime `woocommerce_get_shop_coupon_data` mechanism, an owned-namespace + single-request-snapshot resolver pattern, side-effect-free validation, canonical manual data, atomic external usage accounting, and order snapshots. The persisted custom-discount-type material moved out to the new `wc-coupon-types-rules`, so the two skills no longer overlap.
+
+### Updated — `woocommerce/wcs-subscription-downloads`
+
+Restructured around the two distinct models: ordinary downloadable items on a subscription product (WC grants/drips per renewal) vs the built-in **Linked Subscription Downloads** feature (the `woocommerce_subscription_downloads` mapping is catalog data with its own permission lifecycle). Adds new-file drip behavior, a line-item display/performance projection, and a regression matrix.
+
+Domain + root README rows and the skill counter (202 → 205) updated; `skills-index.json` regenerated (the three new skills each ship a `references/` file, registered as bundled resources). Plugin count unchanged at 29 — `woocommerce-subscriptions` stays counted via the `wcs-*` skills despite `wc-stripe-subscriptions` dropping its combo `plugin` value.
+
 ## 2026-07-20 (docs + CI: woocommerce structure row, GitHub Actions bumps)
 
-Root README `Repository structure` table: the `woocommerce/` row now names the extension families that live under the domain — WooCommerce Subscriptions (`wcs-*`), WooCommerce Memberships (`wcm-*`), the WooCommerce Stripe payment gateway, and Sequential Order Numbers Pro — instead of the vague "Subscriptions, Memberships, Stripe, etc.". The folder layout is unchanged; only the domain description reads more clearly. No skill content changed, so `skills-index.json` and the skill/plugin counts are untouched.
+Root README `Repository structure` table: the `woocommerce/` domain is now broken out into its own indented sub-rows — WooCommerce Subscriptions (`wcs-*`), WooCommerce Memberships (`wcm-*`), and other extensions (the Stripe gateway, Sequential Order Numbers Pro) — each linking to its section in the woocommerce domain README, instead of one flat row that buried them in prose. The folder layout is unchanged; no skill content changed, so `skills-index.json` and the skill/plugin counts are untouched.
 
 CI maintenance: the GitHub Actions in `.github/workflows/` are bumped to their current majors — `actions/checkout` v4 → v7, `actions/setup-node` v4 → v7, `actions/github-script` v7 → v9 (the pending Dependabot proposals, applied directly on `main` since `contrib` had drifted out of sync). `contrib` was re-synced to `main` afterward.
 

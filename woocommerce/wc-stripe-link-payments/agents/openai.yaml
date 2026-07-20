@@ -1,0 +1,4 @@
+interface:
+  display_name: "WooCommerce Stripe Link Payments"
+  short_description: "Handle Stripe Link tokens and payment flows"
+  default_prompt: "Use $wc-stripe-link-payments to implement or audit Stripe Link payment-token handling in WooCommerce."

@@ -5,10 +5,10 @@ metadata:
   wp-skills-author: "Soczo Kristof"
   wp-skills-contact: "mailto:lonsdale201@hotmail.com"
   wp-skills-plugin: "woocommerce-gateway-stripe"
-  wp-skills-plugin-version-tested: "10.8.3"
+  wp-skills-plugin-version-tested: "10.8.4"
   wp-skills-woocommerce-version-tested: "10.9.4"
   wp-skills-php-min: "7.4"
-  wp-skills-last-updated: "2026-07-10"
+  wp-skills-last-updated: "2026-07-20"
 ---
 
 # WooCommerce Stripe webhooks
@@ -178,6 +178,7 @@ Stripe 10.8 contains read-only Stripe abilities, but registration is gated by `w
 
 ## Cross-references
 
+- Use `wc-stripe-future-payments` for charge-and-save and later off-session PaymentIntent state machines.
 - Use `wc-payment-gateway` for provider-neutral payment state and webhook design.
 - Use `wc-stripe-add-payment-method` for SetupIntent token creation in My Account.
 - Use `wc-stripe-subscriptions` for Stripe renewal and subscription change-payment behavior.
