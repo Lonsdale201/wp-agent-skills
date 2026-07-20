@@ -15,7 +15,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout contrib
-        uses: actions/checkout@v4
+        uses: actions/checkout@v7
         with:
           ref: contrib
           fetch-depth: 0
@@ -44,7 +44,7 @@ jobs:
 
       - name: Comment validation errors and stop
         if: steps.build.outputs.status == 'error'
-        uses: actions/github-script@v7
+        uses: actions/github-script@v9
         with:
           script: |
             const fs = require('fs');

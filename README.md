@@ -22,7 +22,7 @@ Skills are grouped by domain. Each domain has its own README listing the skills 
 |---|---|
 | [`wordpress/`](wordpress) | Core WP topics that apply to any plugin or theme — security, i18n, REST API, the Abilities API, HTML/UTF-8 helpers, query cache. |
 | [`plugin-scaffold/`](plugin-scaffold) | Building a new plugin from scratch — bootstrap, lifecycle, architecture, options storage, cron, hooks, rewrite rules, asset loading, Action Scheduler. |
-| [`woocommerce/`](woocommerce) | WooCommerce core skills + extension-family skills (Subscriptions, Memberships, Stripe, etc.). |
+| [`woocommerce/`](woocommerce) | WooCommerce core (HPOS, payment gateways, Store API, order lifecycle, cart/checkout, variations & pricing, emails, Action Scheduler, logging) **plus the extension families that live under it** — WooCommerce Subscriptions (`wcs-*`), WooCommerce Memberships (`wcm-*`), the WooCommerce Stripe payment gateway, and Sequential Order Numbers Pro. |
 | [`jetformbuilder/`](jetformbuilder) | Extending JetFormBuilder — settings tabs, form sidebar panels, custom Form Actions, action events, item decorators, external-API actions. |
 | [`jet-engine/`](jet-engine) | Extending JetEngine — Dynamic Visibility conditions, Listings callbacks, Query Builder custom query types. |
 | [`better-data/`](better-data) | **Contributor** skills for the [better-data](https://github.com/lonsdale201/better-data) PHP library. |

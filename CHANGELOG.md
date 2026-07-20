@@ -2,6 +2,12 @@
 
 This collection is continuously evolving — entries are date-based, not version-tagged. New skills land when they're ready; updates go in when they cover real ground (a new release of an upstream plugin, a verified misconception, a corrected example).
 
+## 2026-07-20 (docs + CI: woocommerce structure row, GitHub Actions bumps)
+
+Root README `Repository structure` table: the `woocommerce/` row now names the extension families that live under the domain — WooCommerce Subscriptions (`wcs-*`), WooCommerce Memberships (`wcm-*`), the WooCommerce Stripe payment gateway, and Sequential Order Numbers Pro — instead of the vague "Subscriptions, Memberships, Stripe, etc.". The folder layout is unchanged; only the domain description reads more clearly. No skill content changed, so `skills-index.json` and the skill/plugin counts are untouched.
+
+CI maintenance: the GitHub Actions in `.github/workflows/` are bumped to their current majors — `actions/checkout` v4 → v7, `actions/setup-node` v4 → v7, `actions/github-script` v7 → v9 (the pending Dependabot proposals, applied directly on `main` since `contrib` had drifted out of sync). `contrib` was re-synced to `main` afterward.
+
 ## 2026-07-20 (lw-plugins: LW LMS v1.6.0 — paid-access filter + source-scoped revocation)
 
 The five `lw-plugins/` LW LMS skills, refreshed for local lw-lms **v1.6.0** (minimum PHP now **8.2**). The release does not add REST routes, JSON schemas, WP-CLI commands, or abilities — it changes the server-side paid-course access decision and adds a source-scoped stored-access revoke to the PHP API. Two of the skills were also split for progressive disclosure.
