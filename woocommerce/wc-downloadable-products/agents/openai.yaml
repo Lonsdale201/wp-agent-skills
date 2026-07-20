@@ -1,0 +1,4 @@
+interface:
+  display_name: "WooCommerce Downloadable Products"
+  short_description: "Secure WooCommerce download permissions"
+  default_prompt: "Use $wc-downloadable-products to implement or audit WooCommerce downloadable product access."
