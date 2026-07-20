@@ -14,23 +14,13 @@ description: Extend the better-data Presenter — add a fluent builder
   withLocale() works. Use when adding mask, formatDate-like, hideIf,
   context-aware methods. Triggers on changes to Presenter.php /
   CollectionPresenter.php / PresentationContext.php / Formatter/.
-author: Soczó Kristóf
-contact: mailto:lonsdale201@hotmail.com
-plugin: better-data
-plugin-version-tested: "phase-9"
-php-min: "8.3"
-last-updated: "2026-04-29"
-docs:
-  - https://github.com/lonsdale201/better-data
-source-refs:
-  - src/Presenter/Presenter.php
-  - src/Presenter/CollectionPresenter.php
-  - src/Presenter/PresentationContext.php
-  - src/Presenter/HasPresenter.php
-  - src/Presenter/Formatter/DateFormatter.php
-  - src/Presenter/Formatter/CurrencyFormatter.php
-  - src/Secret.php
-  - src/Attribute/Sensitive.php
+metadata:
+  wp-skills-author: "Soczó Kristóf"
+  wp-skills-contact: "mailto:lonsdale201@hotmail.com"
+  wp-skills-plugin: "better-data"
+  wp-skills-plugin-version-tested: "phase-9"
+  wp-skills-php-min: "8.3"
+  wp-skills-last-updated: "2026-04-29"
 ---
 
 # better-data: Extending the Presenter
@@ -244,7 +234,7 @@ public function uppercase(string $field): static
 // WRONG — secret bypass
 public function revealAllSecrets(): static
 {
-    $this->includeSensitive = $this->sensitiveFieldNames();  // 🔴 silent reveal of all Secret fields
+    $this->includeSensitive = $this->sensitiveFieldNames();  // WRONG: silent reveal of all Secret fields
     return $this;
 }
 
@@ -325,3 +315,9 @@ $this->presets[$field] = function (mixed $value): string {
 - PresentationContext: [libraries/better-data/src/Presenter/PresentationContext.php](PresentationContext.php) — `none()`, `rest()`, `admin()`, `withLocale()`.
 - HasPresenter trait: [libraries/better-data/src/Presenter/HasPresenter.php:15-20](HasPresenter.php) — adds `->present()` to DTOs.
 - Formatters: [libraries/better-data/src/Presenter/Formatter/](Formatter/) — `DateFormatter`, `CurrencyFormatter` as templates for new helpers.
+- Official documentation: <https://github.com/lonsdale201/better-data>
+- Verified source paths:
+  - `src/Presenter/Formatter/DateFormatter.php`
+  - `src/Presenter/Formatter/CurrencyFormatter.php`
+  - `src/Secret.php`
+  - `src/Attribute/Sensitive.php`

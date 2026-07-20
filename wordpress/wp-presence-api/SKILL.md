@@ -1,7 +1,7 @@
 ---
 name: wp-presence-api
 description: Awareness-only reference for the WordPress Presence API — an
-  EXPERIMENTAL feature plugin (v0.1.x as of April 2026) that adds
+  EXPERIMENTAL feature plugin (v0.1.4 as of July 2026) that adds
   system-wide visibility of who is logged in, what admin screens they
   view, and which posts they edit, using a dedicated wp_presence table
   with a 60-second TTL plus the Heartbeat API as transport, instead of
@@ -14,21 +14,22 @@ description: Awareness-only reference for the WordPress Presence API — an
   high-frequency ephemeral state. Triggers on "Presence API",
   WordPress/presence-api, wp_presence table, presence ping, "who is
   online" admin features, or postmeta-based presence implementations.
-author: Soczó Kristóf
-contact: mailto:lonsdale201@hotmail.com
-plugin: wordpress
-plugin-version-tested: "presence-api-v0.1.2"
-php-min: "7.4"
-last-updated: "2026-04-28"
-docs:
-  - https://github.com/WordPress/presence-api
-  - https://make.wordpress.org/core/2026/04/27/presence-api-feature-plugin/
-  - https://make.wordpress.org/core/tag/presence-api/
+metadata:
+  wp-skills-author: "Soczó Kristóf"
+  wp-skills-contact: "mailto:lonsdale201@hotmail.com"
+  wp-skills-plugin: "wordpress"
+  wp-skills-plugin-version-tested: "presence-api-v0.1.4"
+  wp-skills-php-min: "7.4"
+  wp-skills-last-updated: "2026-07-10"
 ---
 
 # WordPress Presence API (experimental — awareness reference)
 
-> **Status (April 2026)**: this is an **experimental feature plugin**, not WordPress core, not a stable release. Currently at **v0.1.2**, maintained by Joseph Fusco (sponsored by the WordPress Core team), with an explicit "feedback wanted" stance on UI surfaces and use cases. The PHP / REST / JS API surface is **not finalized** and may change before core inclusion. **Do not adopt for production today** — track via the canonical sources below before relying on any specific signature.
+> **Status (July 10, 2026)**: this is an **experimental feature plugin**, not
+> WordPress core and not a stable API. The latest release is **v0.1.4**. The
+> public architecture remains experimental and may change before core
+> inclusion. Do not make it a production dependency without an explicit risk
+> decision; verify every signature against the current repository.
 
 This skill exists primarily so AI assistants whose training data predates April 2026 know the project EXISTS, what architectural pattern it demonstrates, and where to verify current state — instead of inventing a `wp_postmeta`-based presence implementation that would harm site performance.
 
@@ -66,7 +67,10 @@ Why this matters:
 - **Object cache invalidation.** Every `update_post_meta` invalidates the cached post-meta row. Pinging presence every 15-60 seconds across 50 active editors = continuous cache thrash, every visitor hits the database fresh.
 - **Autoload bloat.** Pings written to options grow the autoloaded payload over time.
 - **Schema migration pain.** Postmeta keys named `_last_seen` etc. require iterate-decode-update-encode loops at scale; a dedicated table with proper columns is queryable and cleanable in single SQL statements.
-- **No native TTL.** Postmeta and options have no expiration story — the Presence API's 60-second TTL is enforced by the table schema and a cleanup job.
+- **No native TTL.** Postmeta and options have no expiration story. Presence
+  stores an expiry value in its dedicated table and removes/excludes stale rows
+  through application cleanup; a SQL table schema does not expire rows by
+  itself.
 
 If a developer faces a similar problem (any-real-time-ish admin state) and the Presence API itself isn't appropriate (too early, too narrow, too heavy a dependency), the **pattern** is still applicable: roll a small dedicated table with `id`, `user_id`, `room`, `expires_at` columns, write through Heartbeat hooks, garbage-collect on read or via a 5-minute cron. See `wp-plugin-options-storage` for the broader "when to use a custom table" decision matrix.
 
@@ -84,14 +88,16 @@ The Presence API uses Heartbeat as its broadcast layer rather than introducing a
 
 - **Production sites** until the v1.0 / core-merge milestone is reached.
 - **Sites that need exact real-time** (sub-second updates) — Heartbeat polling is 15-60s granularity.
-- **Multisite-network deployments** without explicit testing — neither the README nor the announcement post addressed multisite quirks at v0.1.2.
+- **Multisite-network deployments** without explicit testing — verify current
+  network/site table and capability behavior against v0.1.4 source.
 - **As a JS-side dependency** before the Gutenberg-package release lands.
 
 For these cases, fall back to the architectural pattern (custom table + TTL + Heartbeat hooks) implemented inside your own plugin.
 
 ## What to ALWAYS verify against the canonical sources
 
-The skill body above is a **frozen snapshot of April 2026 information**. Anything below WILL drift; verify on the actual repo / make-blog before recommending:
+The skill body above is a **snapshot from July 10, 2026**. Anything below can
+drift; verify on the actual repo and make-blog before recommending:
 
 - Exact PHP function signatures, hook names, REST endpoint paths.
 - Multisite behavior.

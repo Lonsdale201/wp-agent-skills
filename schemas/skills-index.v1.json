@@ -1,0 +1,244 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://raw.githubusercontent.com/Lonsdale201/wp-agent-skills/main/schemas/skills-index.v1.json",
+  "title": "WP Agent Skills Index",
+  "type": "object",
+  "required": [
+    "schema_version",
+    "repository",
+    "source",
+    "domain_count",
+    "skill_count",
+    "domains",
+    "skills"
+  ],
+  "properties": {
+    "$schema": {
+      "type": "string"
+    },
+    "schema_version": {
+      "type": "string"
+    },
+    "repository": {
+      "type": "object",
+      "required": [
+        "owner",
+        "name",
+        "url",
+        "ref"
+      ],
+      "properties": {
+        "owner": {
+          "type": "string"
+        },
+        "name": {
+          "type": "string"
+        },
+        "url": {
+          "type": "string",
+          "format": "uri"
+        },
+        "ref": {
+          "type": "string"
+        }
+      },
+      "additionalProperties": false
+    },
+    "source": {
+      "type": "object",
+      "required": [
+        "layout",
+        "skill_file"
+      ],
+      "properties": {
+        "layout": {
+          "type": "string"
+        },
+        "skill_file": {
+          "type": "string"
+        }
+      },
+      "additionalProperties": false
+    },
+    "domain_count": {
+      "type": "integer",
+      "minimum": 0
+    },
+    "skill_count": {
+      "type": "integer",
+      "minimum": 0
+    },
+    "domains": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": [
+          "slug",
+          "path",
+          "readme_path",
+          "skill_count"
+        ],
+        "properties": {
+          "slug": {
+            "type": "string"
+          },
+          "path": {
+            "type": "string"
+          },
+          "readme_path": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "skill_count": {
+            "type": "integer",
+            "minimum": 0
+          }
+        },
+        "additionalProperties": false
+      }
+    },
+    "skills": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": [
+          "slug",
+          "name",
+          "domain",
+          "description",
+          "path",
+          "skill_path",
+          "url",
+          "raw_url",
+          "html_url",
+          "directory_url",
+          "metadata",
+          "resources",
+          "has_reference",
+          "has_examples",
+          "has_scripts",
+          "skill_md"
+        ],
+        "properties": {
+          "slug": {
+            "type": "string",
+            "pattern": "^[a-z0-9](?:[a-z0-9-]{0,62}[a-z0-9])?$"
+          },
+          "name": {
+            "type": "string",
+            "pattern": "^[a-z0-9](?:[a-z0-9-]{0,62}[a-z0-9])?$"
+          },
+          "domain": {
+            "type": "string"
+          },
+          "description": {
+            "type": "string"
+          },
+          "path": {
+            "type": "string"
+          },
+          "skill_path": {
+            "type": "string"
+          },
+          "url": {
+            "type": "string",
+            "format": "uri"
+          },
+          "raw_url": {
+            "type": "string",
+            "format": "uri"
+          },
+          "html_url": {
+            "type": "string",
+            "format": "uri"
+          },
+          "directory_url": {
+            "type": "string",
+            "format": "uri"
+          },
+          "metadata": {
+            "type": "object",
+            "additionalProperties": true
+          },
+          "resources": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "required": [
+                "path",
+                "repo_path",
+                "type",
+                "bytes",
+                "sha256"
+              ],
+              "properties": {
+                "path": {
+                  "type": "string"
+                },
+                "repo_path": {
+                  "type": "string"
+                },
+                "type": {
+                  "type": "string",
+                  "enum": [
+                    "asset",
+                    "example",
+                    "readme",
+                    "reference",
+                    "resource",
+                    "script"
+                  ]
+                },
+                "bytes": {
+                  "type": "integer",
+                  "minimum": 0
+                },
+                "sha256": {
+                  "type": "string",
+                  "pattern": "^[a-f0-9]{64}$"
+                }
+              },
+              "additionalProperties": false
+            }
+          },
+          "has_reference": {
+            "type": "boolean"
+          },
+          "has_examples": {
+            "type": "boolean"
+          },
+          "has_scripts": {
+            "type": "boolean"
+          },
+          "skill_md": {
+            "type": "object",
+            "required": [
+              "bytes",
+              "lines",
+              "sha256"
+            ],
+            "properties": {
+              "bytes": {
+                "type": "integer",
+                "minimum": 0
+              },
+              "lines": {
+                "type": "integer",
+                "minimum": 1
+              },
+              "sha256": {
+                "type": "string",
+                "pattern": "^[a-f0-9]{64}$"
+              }
+            },
+            "additionalProperties": false
+          }
+        },
+        "additionalProperties": false
+      }
+    }
+  },
+  "additionalProperties": false
+}

@@ -1,0 +1,4 @@
+interface:
+  display_name: "Polylang Compatibility Audit"
+  short_description: "Audit Polylang plugin/theme compatibility"
+  default_prompt: "Use $polylang-compatibility-audit to audit whether this plugin or theme is compatible with Polylang."

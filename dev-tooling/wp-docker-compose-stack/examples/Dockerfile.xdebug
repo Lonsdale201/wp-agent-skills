@@ -1,0 +1,18 @@
+# WordPress image with Xdebug (build verified; Xdebug 3.5.3 at test time).
+# Build: docker build -t wp-xdebug -f Dockerfile.xdebug .
+# Then use `image: wp-xdebug` (or a build: block) for the wordpress service.
+FROM wordpress:latest
+
+RUN pecl install xdebug \
+    && docker-php-ext-enable xdebug
+
+# start_with_request=trigger: only debugs requests carrying XDEBUG_TRIGGER
+# (cookie/GET/POST), so normal page loads stay fast.
+# host.docker.internal works on Docker Desktop; on native Linux add
+#   extra_hosts: ["host.docker.internal:host-gateway"]
+RUN { \
+        echo 'xdebug.mode=debug'; \
+        echo 'xdebug.start_with_request=trigger'; \
+        echo 'xdebug.client_host=host.docker.internal'; \
+        echo 'xdebug.client_port=9003'; \
+    } > /usr/local/etc/php/conf.d/xdebug-wp.ini

@@ -1,35 +1,13 @@
 ---
 name: je-listings-callback
-description: Register a custom Listings callback for JetEngine — the
-  per-field transform fired when a Dynamic Field widget renders meta
-  values (Format date, Format number, Get post title, Convert units,
-  …). Two registration paths are supported. Legacy 3-filter via
-  jet-engine/listings/allowed-callbacks (label),
-  jet-engine/listings/allowed-callbacks-args (control schema), and
-  jet-engine/listing/dynamic-field/callback-args (positional args at
-  runtime). Modern single-call $manager->register_callback($name,
-  $label, $args) hooked on jet-engine/callbacks/register fires the
-  three filters internally for you. Critical contract — the callback
-  identifier you register MUST be a real PHP callable string (a
-  global function name OR `Fully\\Qualified\\Class::method`). Bare
-  static method names like `'unit_converter'` fail JE's
-  is_callable() gate at apply_callback() and the rendered field
-  silently becomes empty. Use when scaffolding a JetEngine companion
-  plugin's listing-field transform, when seeing "callback applied
-  but value disappears" bugs, or when extending the field-args UI.
-author: Soczó Kristóf
-contact: mailto:lonsdale201@hotmail.com
-plugin: jet-engine
-plugin-version-tested: "3.8.8.2"
-php-min: "7.4"
-last-updated: "2026-05-01"
-docs:
-  - https://crocoblock.com/knowledge-base/plugins/jetengine/
-  - https://github.com/Crocoblock/developer-documentation/tree/main/01-jet-engine
-source-refs:
-  - wp-content/plugins/jet-engine/includes/components/listings/callbacks.php
-  - wp-content/plugins/jet-engine/includes/components/listings/render/dynamic-field.php
-  - wp-content/plugins/jet-engine/includes/core/functions.php
+description: 'Register a custom Listings callback for JetEngine — the per-field transform fired when a Dynamic Field widget renders meta values (Format date, Format number, Get post title, Convert units, …). Two registration paths: legacy 3-filter via jet-engine/listings/allowed-callbacks (label), jet-engine/listings/allowed-callbacks-args (control schema), and jet-engine/listing/dynamic-field/callback-args (positional args at runtime). Modern single-call $manager->register_callback($name, $label, $args) hooked on jet-engine/callbacks/register fires the three filters internally. Contract — the registered callback identifier MUST be a real PHP callable string (a global function name OR `Fully\\Qualified\\Class::method`). Bare static method names like `''unit_converter''` fail JE''s is_callable() gate in apply_callback() and the field silently renders empty. Use when scaffolding a JetEngine companion plugin''s listing-field transform, when seeing "callback applied but value disappears" bugs, or when extending the field-args UI.'
+metadata:
+  wp-skills-author: "Soczó Kristóf"
+  wp-skills-contact: "mailto:lonsdale201@hotmail.com"
+  wp-skills-plugin: "jet-engine"
+  wp-skills-plugin-version-tested: "3.8.8.2"
+  wp-skills-php-min: "7.4"
+  wp-skills-last-updated: "2026-05-01"
 ---
 
 # JetEngine: register a Listings callback (Dynamic Field filter)
@@ -250,7 +228,7 @@ class Convert {
     public static function units( $value, $from, $to ) { /* ... */ }
 }
 add_filter( 'jet-engine/listings/allowed-callbacks', function( $cb ) {
-    $cb['convert_units'] = 'Convert units';   // 🔴 'convert_units' is not callable
+    $cb['convert_units'] = 'Convert units';   // WRONG: 'convert_units' is not callable
     return $cb;
 } );
 // Even if every condition lines up, JE's apply_callback() returns null. Field is empty.
@@ -274,7 +252,7 @@ $args['my_decimal'] = [
     'label'   => 'Decimal',
     'type'    => 'number',
     'default' => 2,
-];   // 🔴 No condition → leaks into every callback's panel
+];   // WRONG: No condition → leaks into every callback's panel
 
 // RIGHT — scope to your callback only.
 $args['my_decimal'] = [
@@ -289,21 +267,21 @@ $args['my_decimal'] = [
 
 // WRONG — function signature in the wrong order.
 function myplugin_format_thousands_short( int $decimals, $value ) { /* ... */ }
-// 🔴 JE passes [ $value, $decimals ]. Your function receives $value as $decimals.
+// WRONG: JE passes [ $value, $decimals ]. Your function receives $value as $decimals.
 // Output is silently wrong — no error.
 
 // RIGHT — $value first, then args in declaration order.
 function myplugin_format_thousands_short( $value, int $decimals = 1, string $sep = '' ) { /* ... */ }
 
 // WRONG — arg key collision with another plugin or a JE built-in.
-$args['decimal_point'] = [ /* ... */ ];   // 🔴 conflicts with JE's number_format args
+$args['decimal_point'] = [ /* ... */ ];   // WRONG: conflicts with JE's number_format args
 
 // RIGHT — prefix every arg key.
 $args['myplugin_thousands_decimal_point'] = [ /* ... */ ];
 
 // WRONG — returning a non-scalar from the callback.
 function myplugin_get_meta_array( $value ) {
-    return [ 'a', 'b', 'c' ];   // 🔴 dynamic-field renders as "Array"
+    return [ 'a', 'b', 'c' ];   // WRONG: dynamic-field renders as "Array"
 }
 
 // RIGHT — return a string. Use a delimiter helper or implode for arrays.
@@ -332,3 +310,4 @@ function myplugin_get_meta_array( $value, string $delim = ', ' ) {
 - Field-render entry point: [includes/components/listings/render/dynamic-field.php:328](dynamic-field.php) — `render_filtered_result()` and `apply_callback()` wrapper at line 397.
 - Built-in JE callback functions: [includes/core/functions.php](functions.php) — `jet_engine_proportional()` at line 1226, `jet_engine_date()` at line 1268, `jet_engine_get_user_data_by_id()` at line 1279. All are GLOBAL functions, which is what makes them satisfy `is_callable()`.
 - Crocoblock developer documentation: <https://github.com/Crocoblock/developer-documentation/tree/main/01-jet-engine>.
+- Official documentation: <https://crocoblock.com/knowledge-base/plugins/jetengine/>

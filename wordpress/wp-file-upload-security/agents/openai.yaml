@@ -1,0 +1,4 @@
+interface:
+  display_name: "WordPress File Upload Security"
+  short_description: "Build secure WordPress upload flows"
+  default_prompt: "Use $wp-file-upload-security to implement or audit this WordPress file upload flow."

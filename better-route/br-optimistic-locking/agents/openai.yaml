@@ -1,0 +1,4 @@
+interface:
+  display_name: "Better Route Optimistic Locking"
+  short_description: "Prevent stale and concurrent REST writes with Better Route 1.1."
+  default_prompt: "Configure and review Better Route 1.1 optimistic locking for a REST write route."

@@ -1,0 +1,4 @@
+interface:
+  display_name: "WordPress Database Performance Audit"
+  short_description: "Audit WordPress SQL and data-access performance"
+  default_prompt: "Use $wp-database-performance-audit to find query, indexing, pagination, cache, and memory bottlenecks in this WordPress code."

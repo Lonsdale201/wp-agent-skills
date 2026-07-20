@@ -1,0 +1,4 @@
+interface:
+  display_name: "Polylang Strings Options"
+  short_description: "Polylang string and option translation"
+  default_prompt: "Use $polylang-strings-options to register, sanitize, and translate plugin or theme strings and option values with Polylang."
