@@ -1,0 +1,4 @@
+interface:
+  display_name: "WooCommerce Checkout Block Payments"
+  short_description: "Build Checkout Block payment integrations"
+  default_prompt: "Use $wc-checkout-block-payment-method to implement or audit a WooCommerce Checkout Block payment integration."

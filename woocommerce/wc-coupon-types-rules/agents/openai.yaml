@@ -1,0 +1,4 @@
+interface:
+  display_name: "WooCommerce Coupon Types and Rules"
+  short_description: "Extend coupon types and eligibility rules"
+  default_prompt: "Use $wc-coupon-types-rules to implement a WooCommerce coupon type with safe rules and usage handling."

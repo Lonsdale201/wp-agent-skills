@@ -1,14 +1,15 @@
 ---
 name: wc-stripe-subscriptions
-description: Integrate WooCommerce Stripe Gateway 10.8+ with WooCommerce Subscriptions 9.0. Covers gateway feature support, automatic renewal charges, Stripe customer/payment-method metadata, failed-renewal recovery, SCA, change-payment SetupIntents, update-all behavior, Express Checkout on the change-payment page, detached tokens, and safe test cases. Use when Stripe is a subscription gateway or code touches scheduled_subscription_payment_stripe, _stripe_source_id on WC_Subscription, change_payment_method, renewal authentication, or Stripe token migration.
+description: Integrate WooCommerce Stripe Gateway 10.8+ with WooCommerce Subscriptions 9.0. Covers gateway feature support, automatic renewals, Stripe metadata, failed-renewal recovery, SCA, change-payment SetupIntents, update-all behavior, Express Checkout, native Link and card-wallet token shapes, detached tokens, and safe tests. Use when Stripe is a subscription gateway or code touches scheduled_subscription_payment_stripe, _stripe_source_id on WC_Subscription, change_payment_method, renewal authentication, Link, or Stripe token migration.
 metadata:
   wp-skills-author: "Soczo Kristof"
   wp-skills-contact: "mailto:lonsdale201@hotmail.com"
-  wp-skills-plugin: "woocommerce-gateway-stripe + woocommerce-subscriptions"
-  wp-skills-plugin-version-tested: "woocommerce-gateway-stripe 10.8.3; woocommerce-subscriptions 9.0.0"
+  wp-skills-plugin: "woocommerce-gateway-stripe"
+  wp-skills-plugin-version-tested: "10.8.4"
+  wp-skills-woocommerce-subscriptions-version-tested: "9.0.0"
   wp-skills-woocommerce-version-tested: "10.9.4"
   wp-skills-php-min: "7.4"
-  wp-skills-last-updated: "2026-07-10"
+  wp-skills-last-updated: "2026-07-20"
 ---
 
 # Stripe and WooCommerce Subscriptions
@@ -115,6 +116,12 @@ Do not force the filter to `true` as a substitute for enabling/connecting Stripe
 
 The Express Checkout flow unsets automatic “update all subscriptions” consent because confirmation occurs before that checkbox is shown. A custom clone must not interpret a hidden/default checkbox as consent.
 
+### Link token contract
+
+Link does not become a separate WCS gateway. Native Stripe `type=link` uses `WC_Payment_Token_Link`; a `type=card` PaymentMethod used through Link remains `WC_Stripe_Payment_Token_CC`. Both use gateway `stripe` and may have a `pm_...` value, while `_stripe_source_id` can point to either shape. Inspect the retrieved PaymentMethod or hydrated token type before using email versus card getters; never classify it from the prefix or write `stripe_link` to the subscription.
+
+Express change-payment replaces the subscription's attached Woo token IDs with the token matching the new PaymentMethod and preserves the Link-facing title, including across redirect authentication. Do not replace this with a raw `_stripe_source_id` update. Use `wc-stripe-link-payments` for Link consent, duplicate-by-email, reconciliation, and token-class details.
+
 ## Add method and update all
 
 On My Account Add payment method, Stripe can show “Update the payment method for all of my current subscriptions”. After `woocommerce_stripe_add_payment_method`, it iterates eligible subscriptions and calls `WC_Subscriptions_Change_Payment_Gateway::update_payment_method()` with Stripe payment meta.
@@ -166,10 +173,13 @@ Test at minimum:
 6. Express Checkout change-payment enabled/disabled and update-all consent.
 7. Delete/default token with one and multiple active subscriptions.
 8. HPOS enabled; verify subscription and renewal metadata through CRUD.
+9. Native Link and card-through-Link signup, renewal, standard/Express change-payment, and redirected authentication.
 
 ## Cross-references
 
+- Use `wc-stripe-future-payments` for provider-level charge-and-save/off-session principles or a custom installment model that WCS does not own.
 - Use `wc-stripe-add-payment-method` for My Account form and token creation contracts.
+- Use `wc-stripe-link-payments` for Link token shapes, consent, reconciliation, and gateway identifiers.
 - Use `wcs-renewal-scheduler` for WCS schedule/order creation and retry timing.
 - Use `wcs-subscription-hooks` for generic gateway-change hook signatures.
 - Use `wc-stripe-webhooks` for asynchronous Stripe settlement and webhook order locking.

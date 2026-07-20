@@ -1,19 +1,18 @@
 ---
 name: wc-payment-tokens
-description: Store and use WooCommerce saved payment methods through `WC_Payment_Tokens` and `WC_Payment_Token_CC` safely. Covers provider token vs card data, tokenization gateway support, creating/updating/deleting/defaulting tokens, My Account nonce and ownership checks, `get_customer_tokens`, `get_customer_default_token`, `get_order_tokens`, attaching tokens to orders, gateway ID filtering, custom token tables, hooks, HPOS-safe order use, and checkout saved-token validation. Use when building saved cards, charging a saved method, add-payment-method flows, token migrations, token deletion/default endpoints, or gateway tokenization.
+description: Store and use WooCommerce saved payment methods safely through `WC_Payment_Tokens` and polymorphic `WC_Payment_Token` subclasses. Covers provider references versus payment credentials, CC/eCheck/custom token shapes, tokenization gateway support, creating/updating/deleting/defaulting tokens, My Account nonce and ownership checks, customer/order token queries, gateway and type validation, provider reconciliation filters, hooks, HPOS-safe order use, and checkout saved-token validation. Use for saved cards or wallets, charging a saved method, add-payment-method flows, token migrations, deletion/default endpoints, custom token types, or gateway tokenization.
 metadata:
   wp-skills-author: "Soczó Kristóf"
   wp-skills-contact: "mailto:lonsdale201@hotmail.com"
   wp-skills-plugin: "woocommerce"
   wp-skills-plugin-version-tested: "10.9.4"
   wp-skills-php-min: "7.4"
-  wp-skills-last-updated: "2026-07-10"
+  wp-skills-last-updated: "2026-07-20"
 ---
 
 # WooCommerce payment tokens
 
-Payment tokens are WooCommerce's saved-payment-method records. They connect a WooCommerce customer to a gateway-owned provider token and safe display metadata such as card type, last4, and expiry.
-
+Payment tokens are WooCommerce's saved-payment-method records. They connect a WooCommerce customer to a gateway-owned provider reference and type-specific safe display metadata. Card type, last4, and expiry exist only on card-token subclasses.
 They are not raw card storage. Never store PAN/card numbers, CVV, magnetic stripe data, or full bank credentials in WooCommerce token fields or meta.
 
 ## Misconception this skill corrects
@@ -53,6 +52,21 @@ Core token fields:
 | `user_id` | WordPress user ID, or 0 for guest/non-customer association. |
 | `is_default` | One default token per user. |
 | `type` | `CC`, `eCheck`, or a custom registered type. |
+
+### Treat token objects polymorphically
+
+Do not assume every saved method is `WC_Payment_Token_CC`. Providers can register custom token types and classes through `woocommerce_payment_token_class`; those classes may expose entirely different metadata.
+
+```php
+$type = strtolower( $token->get_type() );
+if ( 'cc' === $type && $token instanceof WC_Payment_Token_CC ) {
+    $last4 = $token->get_last4();
+} elseif ( method_exists( $token, 'get_email' ) ) {
+    $email = $token->get_email();
+}
+```
+
+Use `get_type()` plus class/capability checks before calling type-specific getters. A provider reference prefix does not prove the token's shape: for example, Stripe uses `pm_...` for both native Link and card PaymentMethods. Provider-specific token classes also require the provider plugin's class mapping to hydrate reliably.
 
 ## Gateway support flag
 
@@ -147,7 +161,7 @@ foreach ( $tokens as $token ) {
 
 When no gateway ID is passed, WooCommerce filters to currently registered gateway IDs plus an empty gateway ID. During migrations or disabled-gateway cleanup, query the explicit old gateway ID or you may not see those tokens.
 
-`get_customer_tokens()` is also limited by `woocommerce_get_customer_payment_tokens_limit` (`posts_per_page` by default). A migration that must enumerate every token should page through `WC_Payment_Tokens::get_tokens()` with explicit `user_id`, `gateway_id`, `limit`, and `page` arguments instead of assuming one call returns all rows.
+Treat `get_customer_tokens()` as a filterable integration surface, not necessarily a pure local-table read. A provider can reconcile remote methods through `woocommerce_get_customer_payment_tokens`, causing network I/O and local writes. The result is also limited by `woocommerce_get_customer_payment_tokens_limit` (`posts_per_page` by default). A migration needing raw local rows should page through `WC_Payment_Tokens::get_tokens()` with explicit `user_id`, `gateway_id`, `limit`, and `page` arguments.
 
 Use `WC_Payment_Tokens::get_order_tokens( $order_id )` when you need token objects attached to an order. In WC 10.9.4, `$order->get_payment_tokens()` returns token IDs from the order data store; `WC_Payment_Tokens::get_order_tokens()` wraps them into token objects.
 
@@ -267,6 +281,7 @@ Deleting a WooCommerce token does not automatically revoke the token at your pay
 - Gateway `process_payment()` and add-payment-method flow: `wc-payment-gateway`
 - HPOS-safe order reads/writes: `wc-hpos-compatibility`
 - Store API payment requirements: `wc-store-api`
+- Stripe Link's two token shapes and reconciliation behavior: `wc-stripe-link-payments`
 
 ## References
 

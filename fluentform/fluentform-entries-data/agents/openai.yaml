@@ -1,0 +1,4 @@
+interface:
+  display_name: "Fluent Forms entries and data"
+  short_description: "Use Fluent Forms entry APIs and storage safely"
+  default_prompt: "Use this skill to implement or review form-scoped Fluent Forms entry access, storage relationships, metadata, authorization, pagination, or mutation."
