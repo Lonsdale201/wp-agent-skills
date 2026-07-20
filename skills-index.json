@@ -11,8 +11,8 @@
     "layout": "<domain>/<skill>/SKILL.md",
     "skill_file": "SKILL.md"
   },
-  "domain_count": 20,
-  "skill_count": 207,
+  "domain_count": 21,
+  "skill_count": 211,
   "domains": [
     {
       "slug": "better-data",
@@ -43,6 +43,12 @@
       "path": "fluentcrm",
       "readme_path": "fluentcrm/README.md",
       "skill_count": 10
+    },
+    {
+      "slug": "fluentform",
+      "path": "fluentform",
+      "readme_path": "fluentform/README.md",
+      "skill_count": 4
     },
     {
       "slug": "jet-engine",
@@ -1918,6 +1924,186 @@
         "bytes": 10047,
         "lines": 249,
         "sha256": "640ba2f5777700e8ce1996bd5977f44bb88ab1c82f28131a0f1c29ca0160e0c7"
+      }
+    },
+    {
+      "slug": "fluentform-custom-fields",
+      "name": "fluentform-custom-fields",
+      "domain": "fluentform",
+      "description": "Builds and reviews third-party Fluent Forms input fields with the Free-core BaseFieldManager API. Covers fluentform/loaded bootstrap, editor component schema, frontend rendering, input-name mapping, conditional logic, server-side normalization and validation, response formatting, accessibility, assets, and Free versus Pro feature boundaries. Use when code extends BaseFieldManager, adds fluentform/render_item_* or fluentform/validate_input_item_* hooks, creates a custom field for the form builder, or must make a field appear correctly in entries, emails, feeds, and conditional rules.",
+      "path": "fluentform/fluentform-custom-fields",
+      "skill_path": "fluentform/fluentform-custom-fields/SKILL.md",
+      "url": "https://raw.githubusercontent.com/Lonsdale201/wp-agent-skills/main/fluentform/fluentform-custom-fields/SKILL.md",
+      "raw_url": "https://raw.githubusercontent.com/Lonsdale201/wp-agent-skills/main/fluentform/fluentform-custom-fields/SKILL.md",
+      "html_url": "https://github.com/Lonsdale201/wp-agent-skills/blob/main/fluentform/fluentform-custom-fields/SKILL.md",
+      "directory_url": "https://github.com/Lonsdale201/wp-agent-skills/tree/main/fluentform/fluentform-custom-fields",
+      "metadata": {
+        "author": "Soczó Kristóf",
+        "contact": "mailto:lonsdale201@hotmail.com",
+        "plugin": "fluentform",
+        "plugin-version-tested": "6.2.7",
+        "wp-version-tested": "7.0.2",
+        "php-min": "7.4",
+        "last-updated": "2026-07-20"
+      },
+      "resources": [
+        {
+          "path": "agents/openai.yaml",
+          "repo_path": "fluentform/fluentform-custom-fields/agents/openai.yaml",
+          "type": "resource",
+          "bytes": 306,
+          "sha256": "d11338718b14a9613ab0bdf878fca8f8d13fb775e23f74b6723e4a51302ed283"
+        },
+        {
+          "path": "references/field-contract.md",
+          "repo_path": "fluentform/fluentform-custom-fields/references/field-contract.md",
+          "type": "reference",
+          "bytes": 5363,
+          "sha256": "c949fae799ec140a2b11dbc3fc3d7ad0fd1039f2056321bb4df5cb82f8600fd4"
+        }
+      ],
+      "has_reference": true,
+      "has_examples": false,
+      "has_scripts": false,
+      "skill_md": {
+        "bytes": 8359,
+        "lines": 224,
+        "sha256": "394ce85f6fe45ed5409a865a58c58caf7efe26c52e027a991f331932377d0d0e"
+      }
+    },
+    {
+      "slug": "fluentform-entries-data",
+      "name": "fluentform-entries-data",
+      "domain": "fluentform",
+      "description": "Reads, relates, updates, and audits Fluent Forms forms, submissions, entry details, and submission meta from third-party plugins. Covers fluentFormApi, FormFieldsParser, Submission and SubmissionMeta models, form-scoped queries, response JSON versus normalized detail rows, pagination, capabilities, deletion hooks, and Free versus Pro tables. Use when building entry reports, exports, dashboards, REST endpoints, submission metadata, user-facing entry views, or code touching fluentform_submissions, fluentform_entry_details, fluentform_submission_meta, fluentFormApi('submissions'), or entryInstance().",
+      "path": "fluentform/fluentform-entries-data",
+      "skill_path": "fluentform/fluentform-entries-data/SKILL.md",
+      "url": "https://raw.githubusercontent.com/Lonsdale201/wp-agent-skills/main/fluentform/fluentform-entries-data/SKILL.md",
+      "raw_url": "https://raw.githubusercontent.com/Lonsdale201/wp-agent-skills/main/fluentform/fluentform-entries-data/SKILL.md",
+      "html_url": "https://github.com/Lonsdale201/wp-agent-skills/blob/main/fluentform/fluentform-entries-data/SKILL.md",
+      "directory_url": "https://github.com/Lonsdale201/wp-agent-skills/tree/main/fluentform/fluentform-entries-data",
+      "metadata": {
+        "author": "Soczó Kristóf",
+        "contact": "mailto:lonsdale201@hotmail.com",
+        "plugin": "fluentform",
+        "plugin-version-tested": "6.2.7",
+        "wp-version-tested": "7.0.2",
+        "php-min": "7.4",
+        "last-updated": "2026-07-20"
+      },
+      "resources": [
+        {
+          "path": "agents/openai.yaml",
+          "repo_path": "fluentform/fluentform-entries-data/agents/openai.yaml",
+          "type": "resource",
+          "bytes": 299,
+          "sha256": "af27f15cc27212599815f0012c88e2c520925ce03c93af0c363765edcd598eb1"
+        },
+        {
+          "path": "references/data-contract.md",
+          "repo_path": "fluentform/fluentform-entries-data/references/data-contract.md",
+          "type": "reference",
+          "bytes": 6044,
+          "sha256": "052eeb4798714483b01d6813b5b47bddf36250375b0f8c6aee36ed0fd0a5cbe2"
+        }
+      ],
+      "has_reference": true,
+      "has_examples": false,
+      "has_scripts": false,
+      "skill_md": {
+        "bytes": 7988,
+        "lines": 201,
+        "sha256": "b327a5f24d29c4210cc74ffa3d82e0597c298256c283aa578d5ff833c688d33c"
+      }
+    },
+    {
+      "slug": "fluentform-feed-integration",
+      "name": "fluentform-feed-integration",
+      "domain": "fluentform",
+      "description": "Builds and audits configurable third-party Fluent Forms feed integrations with IntegrationManagerController. Covers addon/global settings, per-form feed UI, field mapping, conditional execution, smart-code parsing, synchronous versus asynchronous dispatch, ff_scheduled_actions, Action Scheduler, result logging, credential handling, retries, and idempotency. Use when adding a CRM, webhook, messaging, storage, or external API connector; extending fluentform/get_available_form_integrations; handling fluentform/integration_notify_*; or reviewing an integration that currently sends remote requests directly from fluentform/submission_inserted.",
+      "path": "fluentform/fluentform-feed-integration",
+      "skill_path": "fluentform/fluentform-feed-integration/SKILL.md",
+      "url": "https://raw.githubusercontent.com/Lonsdale201/wp-agent-skills/main/fluentform/fluentform-feed-integration/SKILL.md",
+      "raw_url": "https://raw.githubusercontent.com/Lonsdale201/wp-agent-skills/main/fluentform/fluentform-feed-integration/SKILL.md",
+      "html_url": "https://github.com/Lonsdale201/wp-agent-skills/blob/main/fluentform/fluentform-feed-integration/SKILL.md",
+      "directory_url": "https://github.com/Lonsdale201/wp-agent-skills/tree/main/fluentform/fluentform-feed-integration",
+      "metadata": {
+        "author": "Soczó Kristóf",
+        "contact": "mailto:lonsdale201@hotmail.com",
+        "plugin": "fluentform",
+        "plugin-version-tested": "6.2.7",
+        "wp-version-tested": "7.0.2",
+        "php-min": "7.4",
+        "last-updated": "2026-07-20"
+      },
+      "resources": [
+        {
+          "path": "agents/openai.yaml",
+          "repo_path": "fluentform/fluentform-feed-integration/agents/openai.yaml",
+          "type": "resource",
+          "bytes": 322,
+          "sha256": "977ab399737c75a936cfabcd2111e387db6ad444f37055c522201d1f7f065e71"
+        },
+        {
+          "path": "references/integration-contract.md",
+          "repo_path": "fluentform/fluentform-feed-integration/references/integration-contract.md",
+          "type": "reference",
+          "bytes": 7537,
+          "sha256": "a5442b8a3752ea55a1cc6bf0c207ae597888bbb2083033e380f82ca926f2251e"
+        }
+      ],
+      "has_reference": true,
+      "has_examples": false,
+      "has_scripts": false,
+      "skill_md": {
+        "bytes": 9178,
+        "lines": 225,
+        "sha256": "305730904a44114fe6feb70aefda5e01551286cc40e3647f087282bf995049db"
+      }
+    },
+    {
+      "slug": "fluentform-submission-lifecycle",
+      "name": "fluentform-submission-lifecycle",
+      "domain": "fluentform",
+      "description": "Implements and audits Fluent Forms server-side submission behavior from parsed field data through sanitization, validation, persistence, entry details, notifications, integrations, and confirmation. Selects the correct fluentform/input_data_*, fluentform/validation_errors, fluentform/insert_response_data, fluentform/submission_inserted, and fluentform/submission_confirmation hook and explains their timing. Use when adding cross-field validation, normalizing submitted values, reacting to an entry, debugging missing submission data, preventing duplicate side effects, or distinguishing a Pro partial draft from a completed submission.",
+      "path": "fluentform/fluentform-submission-lifecycle",
+      "skill_path": "fluentform/fluentform-submission-lifecycle/SKILL.md",
+      "url": "https://raw.githubusercontent.com/Lonsdale201/wp-agent-skills/main/fluentform/fluentform-submission-lifecycle/SKILL.md",
+      "raw_url": "https://raw.githubusercontent.com/Lonsdale201/wp-agent-skills/main/fluentform/fluentform-submission-lifecycle/SKILL.md",
+      "html_url": "https://github.com/Lonsdale201/wp-agent-skills/blob/main/fluentform/fluentform-submission-lifecycle/SKILL.md",
+      "directory_url": "https://github.com/Lonsdale201/wp-agent-skills/tree/main/fluentform/fluentform-submission-lifecycle",
+      "metadata": {
+        "author": "Soczó Kristóf",
+        "contact": "mailto:lonsdale201@hotmail.com",
+        "plugin": "fluentform",
+        "plugin-version-tested": "6.2.7",
+        "wp-version-tested": "7.0.2",
+        "php-min": "7.4",
+        "last-updated": "2026-07-20"
+      },
+      "resources": [
+        {
+          "path": "agents/openai.yaml",
+          "repo_path": "fluentform/fluentform-submission-lifecycle/agents/openai.yaml",
+          "type": "resource",
+          "bytes": 312,
+          "sha256": "55735e70435344c4ebae7a4d0b1483f2281447b0db9baf58a7a64990744583cb"
+        },
+        {
+          "path": "references/hook-order.md",
+          "repo_path": "fluentform/fluentform-submission-lifecycle/references/hook-order.md",
+          "type": "reference",
+          "bytes": 5431,
+          "sha256": "00ad4e0ac8ef54b043964a56eb69379d86a1521d39f0e4efe950a8c37cb2015b"
+        }
+      ],
+      "has_reference": true,
+      "has_examples": false,
+      "has_scripts": false,
+      "skill_md": {
+        "bytes": 8131,
+        "lines": 205,
+        "sha256": "8e33f488c175ea54163cdda18b01d8bc6707e81b5897dd25c6152f29b02685e7"
       }
     },
     {

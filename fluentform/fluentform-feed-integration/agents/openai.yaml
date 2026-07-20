@@ -1,0 +1,4 @@
+interface:
+  display_name: "Fluent Forms feed integrations"
+  short_description: "Build configurable, reliable Fluent Forms connectors"
+  default_prompt: "Use this skill to design or audit a Fluent Forms IntegrationManagerController feed with secure settings, mappings, conditions, async dispatch, logs, and idempotency."

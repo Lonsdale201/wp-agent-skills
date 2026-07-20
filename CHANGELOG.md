@@ -2,6 +2,28 @@
 
 This collection is continuously evolving — entries are date-based, not version-tagged. New skills land when they're ready; updates go in when they cover real ground (a new release of an upstream plugin, a verified misconception, a corrected example).
 
+## 2026-07-20 (fluentform: new Fluent Forms developer-extension domain)
+
+New domain `fluentform/` — four skills for extending Fluent Forms (Free `fluentform` + Pro `fluentformpro`) from a third-party plugin without bypassing its parser, lifecycle, ACL, or queue model. Grounded against Fluent Forms Free and Pro 6.2.7 on WordPress 7.0.2; every skill draws an explicit Free/Pro boundary and cites verified Free/Pro source paths (Fluent Forms is not in the wp-skills index).
+
+### Added — `fluentform/fluentform-custom-fields`
+
+Build custom form-builder inputs with the Free-core `BaseFieldManager` contract: `fluentform/loaded` bootstrap, editor component schema, safe frontend rendering, `attributes.name` input mapping, parser registration, conditional-logic support, server-side normalization and validation (`fluentform/render_item_*`, `fluentform/validate_input_item_*`), response formatting, assets, and accessibility — so a field appears correctly in entries, emails, feeds, and conditional rules. Marks the shipped phone/dynamic/chained/repeater/upload implementations as Pro without making the base API look Pro-only.
+
+### Added — `fluentform/fluentform-submission-lifecycle`
+
+Select the correct server-side hook across the real lifecycle (accepted-key parsing → recursive sanitization → validation → response/insert filters → row insert → entry details → `submission_inserted`/feeds → confirmation). Corrects the misleading idea that the post-validation `fluentform/before_insert_submission` action is the normal validation surface, flags the twice-applied `fluentform/submission_form_data` filter, non-transactional side effects, the payment-status boundary, and the Pro partial-draft lifecycle. Notes that in 6.2.7 submission nonce verification defaults off, so a public form is not authenticated by nonce alone.
+
+### Added — `fluentform/fluentform-entries-data`
+
+Read, relate, update, and audit forms/submissions with `fluentFormApi`, `FormFieldsParser`, and the `Submission` / `SubmissionMeta` models under form-scoped ACL. Explains canonical `response` JSON vs the lossy `entry_details` projection, historical field-label drift, side-effecting reads, bounded queries, consistent mutation/deletion hooks, and the separate Pro draft/payment records — for entry reports, exports, dashboards, REST endpoints, and submission metadata.
+
+### Added — `fluentform/fluentform-feed-integration`
+
+Build a configurable connector (CRM, webhook, messaging, storage, external API) with the Free-core `IntegrationManagerController`: global credentials, per-form feed schema and field mappings, conditional execution, smart-code expansion, synchronous vs asynchronous `ff_scheduled_actions` / Action Scheduler dispatch, result logging, retries, and idempotency — instead of firing remote requests directly from `fluentform/submission_inserted`. Documents the exact integration-key vs settings-key hook suffixes.
+
+New-domain wiring: `fluentform` added to the three allow-lists (`.github/scripts/validate-skill.js`, `.github/scripts/build-skill-pr.js`, and the `new-skill.yml` domain dropdown), plus a `fluentform/README.md`, the root README structure row, and the counters (skills 207 → 211, plugins 29 → 30, domains 20 → 21). `skills-index.json` regenerated.
+
 ## 2026-07-20 (woocommerce: Checkout Block payment methods + Stripe future payments)
 
 A second WooCommerce batch — two new skills plus six cross-linking updates — closing the Blocks and off-session gaps around the payment skills. Verified against WooCommerce 10.9.4 (Stripe Gateway 10.8.4).
