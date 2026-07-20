@@ -7,7 +7,7 @@ metadata:
   wp-skills-plugin: "woocommerce"
   wp-skills-plugin-version-tested: "10.9.4"
   wp-skills-php-min: "7.4"
-  wp-skills-last-updated: "2026-07-10"
+  wp-skills-last-updated: "2026-07-20"
 ---
 
 # WooCommerce Store API
@@ -175,6 +175,8 @@ add_action( 'woocommerce_blocks_loaded', static function (): void {
 
 Requirements are compared with gateway `$supports`. This filters gateway eligibility; it does not register a Checkout Block payment UI or replace the PHP gateway's `process_payment()`.
 
+Use `wc-checkout-block-payment-method` for `AbstractPaymentMethodType`, `registerPaymentMethod()`, `onPaymentSetup`, `payment_data`, and the `PaymentContext`/legacy-gateway processing bridge.
+
 ## Critical rules
 
 - Use `wc/store/v1` for shopper cart/checkout, not `wc/v4`.
@@ -191,6 +193,7 @@ Requirements are compared with gateway `$supports`. This filters gateway eligibi
 
 - `wc-customer-and-sessions` for classic versus token sessions.
 - `wc-payment-gateway` for gateway support and payment completion.
+- `wc-checkout-block-payment-method` for Checkout Block payment UI and processing integration.
 - `wc-rest-api-v4` for authenticated merchant/admin CRUD.
 - `wc-hpos-compatibility` for order metadata and queries.
 

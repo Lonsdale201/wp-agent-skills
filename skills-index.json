@@ -12,7 +12,7 @@
     "skill_file": "SKILL.md"
   },
   "domain_count": 20,
-  "skill_count": 205,
+  "skill_count": 207,
   "domains": [
     {
       "slug": "better-data",
@@ -114,7 +114,7 @@
       "slug": "woocommerce",
       "path": "woocommerce",
       "readme_path": "woocommerce/README.md",
-      "skill_count": 38
+      "skill_count": 40
     },
     {
       "slug": "wordpress",
@@ -4278,6 +4278,50 @@
       }
     },
     {
+      "slug": "wc-checkout-block-payment-method",
+      "name": "wc-checkout-block-payment-method",
+      "domain": "woocommerce",
+      "description": "Build or audit a WooCommerce Checkout Block payment-method integration. Covers the separate PHP `WC_Payment_Gateway`, Blocks `AbstractPaymentMethodType`, JavaScript `registerPaymentMethod`, stable gateway identifiers, `onPaymentSetup`, Store API `payment_data`, saved-token UI, legacy `process_payment()` bridging, advanced `PaymentContext`/`PaymentResult` processing, SDK confirmation, security, performance, and classic-versus-Block tests. Use when a gateway works in shortcode checkout but is missing or broken in Checkout Block, or when adding card fields, wallets, tokenization, redirects, or custom payment data to Blocks.",
+      "path": "woocommerce/wc-checkout-block-payment-method",
+      "skill_path": "woocommerce/wc-checkout-block-payment-method/SKILL.md",
+      "url": "https://raw.githubusercontent.com/Lonsdale201/wp-agent-skills/main/woocommerce/wc-checkout-block-payment-method/SKILL.md",
+      "raw_url": "https://raw.githubusercontent.com/Lonsdale201/wp-agent-skills/main/woocommerce/wc-checkout-block-payment-method/SKILL.md",
+      "html_url": "https://github.com/Lonsdale201/wp-agent-skills/blob/main/woocommerce/wc-checkout-block-payment-method/SKILL.md",
+      "directory_url": "https://github.com/Lonsdale201/wp-agent-skills/tree/main/woocommerce/wc-checkout-block-payment-method",
+      "metadata": {
+        "author": "Soczó Kristóf",
+        "contact": "mailto:lonsdale201@hotmail.com",
+        "plugin": "woocommerce",
+        "plugin-version-tested": "10.9.4",
+        "php-min": "7.4",
+        "last-updated": "2026-07-20"
+      },
+      "resources": [
+        {
+          "path": "agents/openai.yaml",
+          "repo_path": "woocommerce/wc-checkout-block-payment-method/agents/openai.yaml",
+          "type": "resource",
+          "bytes": 260,
+          "sha256": "707324804325b1e32c3b6106aa18db4361ae1108ced7768a6d20b279cfb515b6"
+        },
+        {
+          "path": "references/blocks-payment-lifecycle.md",
+          "repo_path": "woocommerce/wc-checkout-block-payment-method/references/blocks-payment-lifecycle.md",
+          "type": "reference",
+          "bytes": 6797,
+          "sha256": "69696b35ba1e702b154cfd10aec587291afd6461ef2e1706cce4312130b2474c"
+        }
+      ],
+      "has_reference": true,
+      "has_examples": false,
+      "has_scripts": false,
+      "skill_md": {
+        "bytes": 11407,
+        "lines": 233,
+        "sha256": "6c2bcf150410625c47ae4871f2b6f07c5e5608f30bdd626fc286284859a7fb70"
+      }
+    },
+    {
       "slug": "wc-coupon-dynamic",
       "name": "wc-coupon-dynamic",
       "domain": "woocommerce",
@@ -4556,16 +4600,16 @@
         "plugin": "woocommerce",
         "plugin-version-tested": "10.9.4",
         "php-min": "7.4",
-        "last-updated": "2026-07-10"
+        "last-updated": "2026-07-20"
       },
       "resources": [],
       "has_reference": false,
       "has_examples": false,
       "has_scripts": false,
       "skill_md": {
-        "bytes": 10193,
-        "lines": 214,
-        "sha256": "b9a7d627c3093699f9b73d6f5ed8f751008ff954a0e656fb2666f736f0fcb449"
+        "bytes": 10677,
+        "lines": 215,
+        "sha256": "e36f50e1593c9627bdab213d80a41a86f1e225b69b206731a835afcbfadca16d"
       }
     },
     {
@@ -4806,16 +4850,16 @@
         "plugin": "woocommerce",
         "plugin-version-tested": "10.9.4",
         "php-min": "7.4",
-        "last-updated": "2026-07-10"
+        "last-updated": "2026-07-20"
       },
       "resources": [],
       "has_reference": false,
       "has_examples": false,
       "has_scripts": false,
       "skill_md": {
-        "bytes": 9448,
-        "lines": 208,
-        "sha256": "d8ff820280c352ccceab83de2e1c231749d16ceedd01cc542bae476aa43e1f76"
+        "bytes": 9736,
+        "lines": 211,
+        "sha256": "f861a3ed4d2cc8288ea65808b09a305635ed2123812e157caf5a8edb998fb468"
       }
     },
     {
@@ -4851,9 +4895,54 @@
       "has_examples": false,
       "has_scripts": false,
       "skill_md": {
-        "bytes": 11575,
-        "lines": 166,
-        "sha256": "c876725c73d011ccb5408661fad2b8929a93b2f9069b48d351d0cd300746f73a"
+        "bytes": 12199,
+        "lines": 170,
+        "sha256": "78f9ca9e8fbeecb1188a243c886ebd76f40ed28b1628c3cf061cfef1f6c4a450"
+      }
+    },
+    {
+      "slug": "wc-stripe-future-payments",
+      "name": "wc-stripe-future-payments",
+      "domain": "woocommerce",
+      "description": "Design or audit WooCommerce Stripe payment flows that save a reusable method and charge it later. Covers SetupIntent versus PaymentIntent, charge-now-and-save, deposits and installment series, `setup_future_usage=off_session`, Stripe Customer ownership, explicit consent/mandates, later off-session PaymentIntents, SCA recovery, idempotent scheduling, Woo token projection, guest/account policy, official Woo Stripe Gateway reuse versus a custom Stripe-backed gateway, Blocks/classic checkout, Link polymorphism, webhooks, accounting, and tests. Use for installments, deposits, subscriptions outside WCS, merchant-initiated charges, future payments, saved cards, or claims that a SetupIntent also takes the first payment.",
+      "path": "woocommerce/wc-stripe-future-payments",
+      "skill_path": "woocommerce/wc-stripe-future-payments/SKILL.md",
+      "url": "https://raw.githubusercontent.com/Lonsdale201/wp-agent-skills/main/woocommerce/wc-stripe-future-payments/SKILL.md",
+      "raw_url": "https://raw.githubusercontent.com/Lonsdale201/wp-agent-skills/main/woocommerce/wc-stripe-future-payments/SKILL.md",
+      "html_url": "https://github.com/Lonsdale201/wp-agent-skills/blob/main/woocommerce/wc-stripe-future-payments/SKILL.md",
+      "directory_url": "https://github.com/Lonsdale201/wp-agent-skills/tree/main/woocommerce/wc-stripe-future-payments",
+      "metadata": {
+        "author": "Soczó Kristóf",
+        "contact": "mailto:lonsdale201@hotmail.com",
+        "plugin": "woocommerce-gateway-stripe",
+        "plugin-version-tested": "10.8.4",
+        "woocommerce-version-tested": "10.9.4",
+        "php-min": "7.4",
+        "last-updated": "2026-07-20"
+      },
+      "resources": [
+        {
+          "path": "agents/openai.yaml",
+          "repo_path": "woocommerce/wc-stripe-future-payments/agents/openai.yaml",
+          "type": "resource",
+          "bytes": 266,
+          "sha256": "5f7da84efd42406abb83dabab806439f473e9467a1503576402231063fba42a2"
+        },
+        {
+          "path": "references/stripe-future-payment-lifecycle.md",
+          "repo_path": "woocommerce/wc-stripe-future-payments/references/stripe-future-payment-lifecycle.md",
+          "type": "reference",
+          "bytes": 8265,
+          "sha256": "4d33193e47e96f639d81fe9ac556cd885878fbefcd7e7a58cae9b06871008a6f"
+        }
+      ],
+      "has_reference": true,
+      "has_examples": false,
+      "has_scripts": false,
+      "skill_md": {
+        "bytes": 12965,
+        "lines": 182,
+        "sha256": "5e920ec5d3db8714ead5d5105ae1fbb8d8c7de9b9675c021c5b44066ac4a4812"
       }
     },
     {
@@ -4896,9 +4985,9 @@
       "has_examples": false,
       "has_scripts": false,
       "skill_md": {
-        "bytes": 11700,
+        "bytes": 11905,
         "lines": 194,
-        "sha256": "5ce8bbcef7fd8930d123bc4b66e00b0f0d6292a121ecd8c047e68b2c66658be9"
+        "sha256": "2c1080a680478f5c73c4f554f38aca06065e52a8085c0ac42901468526f323cb"
       }
     },
     {
@@ -4927,9 +5016,9 @@
       "has_examples": false,
       "has_scripts": false,
       "skill_md": {
-        "bytes": 12108,
-        "lines": 197,
-        "sha256": "31c07a2ed43a63aec8911dde157c77db5525288920ff5c925d11c9fcd95b19b7"
+        "bytes": 12253,
+        "lines": 198,
+        "sha256": "531c912cbc5195361bee5e42c2db9a23ee2215f9a8cc68977b5e0fe1f3ae090e"
       }
     },
     {
@@ -4947,19 +5036,19 @@
         "author": "Soczo Kristof",
         "contact": "mailto:lonsdale201@hotmail.com",
         "plugin": "woocommerce-gateway-stripe",
-        "plugin-version-tested": "10.8.3",
+        "plugin-version-tested": "10.8.4",
         "woocommerce-version-tested": "10.9.4",
         "php-min": "7.4",
-        "last-updated": "2026-07-10"
+        "last-updated": "2026-07-20"
       },
       "resources": [],
       "has_reference": false,
       "has_examples": false,
       "has_scripts": false,
       "skill_md": {
-        "bytes": 10887,
-        "lines": 197,
-        "sha256": "1d6e00b398a871e4d6441a5ab648289bd970f0e99379e6e704b2dccc788229e5"
+        "bytes": 10993,
+        "lines": 198,
+        "sha256": "9bb0705a48c7fc98ff305119f5eb1a11faf331a0e89e9c9f9c8408e17b357637"
       }
     },
     {

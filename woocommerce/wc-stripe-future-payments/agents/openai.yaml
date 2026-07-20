@@ -1,0 +1,4 @@
+interface:
+  display_name: "WooCommerce Stripe Future Payments"
+  short_description: "Charge now and reuse Stripe methods safely"
+  default_prompt: "Use $wc-stripe-future-payments to design or audit a WooCommerce Stripe charge-and-save or off-session payment flow."
