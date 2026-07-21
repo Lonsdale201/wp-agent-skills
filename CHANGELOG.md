@@ -2,20 +2,9 @@
 
 This collection is continuously evolving — entries are date-based, not version-tagged. New skills land when they're ready; updates go in when they cover real ground (a new release of an upstream plugin, a verified misconception, a corrected example).
 
-## 2026-07-21 (tooling: sync-skills.sh hardening after adversarial review)
+## 2026-07-21 (tooling note: sync-skills.sh added)
 
-An independent adversarial security review of `scripts/sync-skills.sh` confirmed the core defenses hold (no command/argument injection, no path-traversal or TSV field-smuggling via a hostile manifest, no redirect-following, pinned-host reconstruction works as documented, and the trust-model documentation is accurate). Two findings were fixed the same day:
-
-- **Symlink-at-target guard (the one real gap, local-precondition only):** the confinement check resolved the *parent* directory but not the target's *final component*, so on platforms whose cross-filesystem `mv` fallback follows symlinks (macOS/BSD `cp -PRp`) a locally planted symlink inside the destination could have redirected a write outside it — clobbering a victim file with (hash-verified, repo-published) content. The script now refuses to write where the target exists as a symlink or any non-regular file, failing closed with a per-entry skip.
-- **Robustness:** a failing `mkdir -p` (unwritable parent, planted blocker file) previously aborted the whole run via `set -e`; it now skips that entry and continues, preserving the non-zero exit code.
-
-Both behaviors verified by test (directory planted at a target path → skipped, run continues; blocker file at a parent path → skipped, run continues; exit 1 on any failure, 0 clean). README bullet added for the symlink refusal.
-
-## 2026-07-21 (tooling: index-driven sync-skills.sh for consumers)
-
-Adds `scripts/sync-skills.sh` — a dependency-light, defensive way for anyone to pull the collection (or selected domains) into a local skills directory straight from `skills-index.json`, with **no clone and no fork**. Tool-agnostic: the destination is a plain argument / `WP_SKILLS_DIR` env var, so it works for Claude Code (`~/.claude/skills` or `.claude/skills`) or any other Agent Skills runtime.
-
-Security posture (it writes files an agent later reads, so it fails closed): download URLs are reconstructed from a pinned repo base — the manifest can't redirect to another host; every manifest path is validated against traversal/injection and confined under the destination; every file is verified against the manifest `sha256` and byte size before it is written (mismatch = hard failure, no partial writes); HTTPS-only, no redirect-following, per-file size cap; downloaded files are non-executable and never run; add/update only, no deletion. Verified end-to-end (fresh sync, hash-skip on re-run, tamper re-fetch, path-traversal rejection). README gains a "Staying up to date" section covering usage and the trust model. Requires `curl`, `jq`, and `sha256sum`/`shasum`.
+Added `scripts/sync-skills.sh` — a small consumer helper that syncs the collection (or selected domains) into a local skills directory straight from `skills-index.json`, with no clone and no fork. It is not a skill; see the README ["Staying up to date"](README.md#staying-up-to-date) section for usage and the trust model. Changes to this helper script are not tracked in this changelog — the changelog covers the skill collection itself.
 
 ## 2026-07-21 (jetsmartfilter: new JetSmartFilters developer-integration domain)
 
