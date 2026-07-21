@@ -67,6 +67,34 @@ node .github/scripts/build-skills-index.js
 
 CI checks that `skills-index.json` stays in sync with the committed `SKILL.md` files.
 
+## Staying up to date
+
+New skills land continuously. Instead of watching the repo, you can sync the collection into a local folder straight from the [`skills-index.json`](skills-index.json) manifest — no clone, no fork, plain HTTPS. [`scripts/sync-skills.sh`](scripts/sync-skills.sh) does exactly that, and is deliberately defensive because it writes files an agent will later read:
+
+- Download URLs are **reconstructed from a pinned repo base** — the manifest is never used to decide *which host* to fetch from, so a tampered manifest cannot redirect a download elsewhere.
+- Every manifest path is **validated** (no `..`, absolute paths, backslashes, `~`, safe charset only) and **confined** under your destination directory.
+- Every file is verified against the `sha256` **and** byte size in the manifest **before** it is written; any mismatch is a hard failure and nothing partial or unverified is moved into place.
+- HTTPS only (TLS ≥ 1.2), no redirect-following, per-file size cap.
+- Downloaded files are written non-executable and the script **never runs anything it downloads** (skills are Markdown/YAML). It only adds/updates — it never deletes local files.
+
+```bash
+# sync everything into ./skills
+sh scripts/sync-skills.sh
+
+# …or point it at wherever YOUR agent runtime loads skills from — the script
+# is not tied to any single tool:
+sh scripts/sync-skills.sh ~/.claude/skills          # Claude Code, global
+sh scripts/sync-skills.sh .claude/skills            # Claude Code, per-project
+WP_SKILLS_DIR=/path/to/skills sh scripts/sync-skills.sh
+
+# only some domains (space-separated allowlist)
+WP_SKILLS_DOMAINS="woocommerce wordpress" sh scripts/sync-skills.sh ~/.claude/skills
+```
+
+Requires `curl`, `jq`, and `sha256sum` (or `shasum`). Re-running is cheap — unchanged files are detected by hash and skipped.
+
+**Trust model.** The manifest is the trust root: you are trusting *GitHub, serving this repository over TLS*. The script guarantees you receive exactly the bytes this repo published (right host, right path, matching hash) and that nothing lands outside the directory you chose — it does **not** vouch for the *content* of the skills. Review third-party skills before pointing an agent at them, the same as any untrusted prompt input.
+
 ## Using these skills
 
 ### Claude Code
