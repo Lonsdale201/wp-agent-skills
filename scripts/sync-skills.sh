@@ -21,6 +21,9 @@
 #     per-file size cap.
 #   * Files are written non-executable (0644). This script NEVER executes
 #     anything it downloads — skills are Markdown/YAML documents.
+#   * It refuses to write where the target already exists as a symlink or any
+#     non-regular file (so a planted symlink can't redirect a write), and a
+#     directory that can't be created skips that entry instead of aborting.
 #   * It only adds/updates files. It never deletes local files (no prune).
 #
 # Trust model: the manifest is the trust root. You are trusting "GitHub,
@@ -116,12 +119,20 @@ while IFS="$TAB" read -r rpath rsha rbytes; do
 
   target="${DEST_ABS}/${rpath}"
   parent="$(dirname "$target")"
-  mkdir -p "$parent"
+  if ! mkdir -p "$parent" 2>/dev/null; then
+    echo "  ! SKIP cannot create directory for: $rpath" >&2; failed=$((failed+1)); continue
+  fi
   # Confinement: the created parent must still resolve inside DEST.
   case "$(cd "$parent" && pwd -P)/" in
     "$DEST_ABS"/*) : ;;
     *) echo "  ! SKIP path escapes destination: $rpath" >&2; failed=$((failed+1)); continue ;;
   esac
+
+  # Never write through a pre-existing symlink or non-regular file (a symlink
+  # here could make mv/cp follow it outside DEST on some platforms). Fail closed.
+  if [ -L "$target" ] || { [ -e "$target" ] && [ ! -f "$target" ]; }; then
+    echo "  ! SKIP target exists and is not a regular file: $rpath" >&2; failed=$((failed+1)); continue
+  fi
 
   # Already have the exact bytes? Skip the download.
   if [ -f "$target" ] && [ "$(sha256_of "$target")" = "$rsha" ]; then

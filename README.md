@@ -76,6 +76,7 @@ New skills land continuously. Instead of watching the repo, you can sync the col
 - Every file is verified against the `sha256` **and** byte size in the manifest **before** it is written; any mismatch is a hard failure and nothing partial or unverified is moved into place.
 - HTTPS only (TLS ≥ 1.2), no redirect-following, per-file size cap.
 - Downloaded files are written non-executable and the script **never runs anything it downloads** (skills are Markdown/YAML). It only adds/updates — it never deletes local files.
+- It **refuses to write through a pre-existing symlink** (or any non-regular file) at a target path, so a planted link can't redirect a write outside the destination.
 
 ```bash
 # sync everything into ./skills
