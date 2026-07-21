@@ -16,6 +16,7 @@ const ALLOWED_DOMAINS = new Set([
   'woocommerce',
   'jetformbuilder',
   'jet-engine',
+  'jetsmartfilter',
   'better-data',
   'better-route',
   'lw-plugins',

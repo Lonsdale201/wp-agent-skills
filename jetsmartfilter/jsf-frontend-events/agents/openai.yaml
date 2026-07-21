@@ -1,0 +1,4 @@
+interface:
+  display_name: "JSF Frontend Events"
+  short_description: "Handle JSF AJAX lifecycle and DOM refresh."
+  default_prompt: "Use $jsf-frontend-events to run JavaScript at JetSmartFilters AJAX start, DOM update, and loading completion."

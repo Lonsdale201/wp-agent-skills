@@ -21,6 +21,7 @@ body:
         - woocommerce
         - jetformbuilder
         - jet-engine
+        - jetsmartfilter
         - better-data
         - better-route
         - lw-plugins
@@ -36,6 +37,7 @@ body:
         - polylang
         - wpml
         - learndash
+        - rankmath
         - other
     validations:
       required: true
