@@ -11,8 +11,8 @@
     "layout": "<domain>/<skill>/SKILL.md",
     "skill_file": "SKILL.md"
   },
-  "domain_count": 21,
-  "skill_count": 211,
+  "domain_count": 22,
+  "skill_count": 216,
   "domains": [
     {
       "slug": "better-data",
@@ -61,6 +61,12 @@
       "path": "jetformbuilder",
       "readme_path": "jetformbuilder/README.md",
       "skill_count": 7
+    },
+    {
+      "slug": "jetsmartfilter",
+      "path": "jetsmartfilter",
+      "readme_path": "jetsmartfilter/README.md",
+      "skill_count": 5
     },
     {
       "slug": "learndash",
@@ -2401,6 +2407,191 @@
         "bytes": 17540,
         "lines": 346,
         "sha256": "14871bafb3b68f70d5e7d7708307b7812102e7439efb1cd8f08adbd5bd42f633"
+      }
+    },
+    {
+      "slug": "jsf-custom-provider-query",
+      "name": "jsf-custom-provider-query",
+      "domain": "jetsmartfilter",
+      "description": "Extend JetSmartFilters with a custom provider for an unsupported renderer or a custom native JSF Listing query type for a non-post data source. Use when code must register on jet-smart-filters/providers/register or jet-smart-filters/listing/render/query-types/register, extend Jet_Smart_Filters_Provider_Base or the Listing Query_Types Base class, expose custom DOM selectors, merge filter args, or return pagination statistics.",
+      "path": "jetsmartfilter/jsf-custom-provider-query",
+      "skill_path": "jetsmartfilter/jsf-custom-provider-query/SKILL.md",
+      "url": "https://raw.githubusercontent.com/Lonsdale201/wp-agent-skills/main/jetsmartfilter/jsf-custom-provider-query/SKILL.md",
+      "raw_url": "https://raw.githubusercontent.com/Lonsdale201/wp-agent-skills/main/jetsmartfilter/jsf-custom-provider-query/SKILL.md",
+      "html_url": "https://github.com/Lonsdale201/wp-agent-skills/blob/main/jetsmartfilter/jsf-custom-provider-query/SKILL.md",
+      "directory_url": "https://github.com/Lonsdale201/wp-agent-skills/tree/main/jetsmartfilter/jsf-custom-provider-query",
+      "metadata": {
+        "author": "Soczó Kristóf",
+        "contact": "mailto:lonsdale201@hotmail.com",
+        "plugin": "jet-smart-filters",
+        "plugin-version-tested": "3.8.3.1",
+        "php-min": "7.4",
+        "last-updated": "2026-07-21"
+      },
+      "resources": [
+        {
+          "path": "agents/openai.yaml",
+          "repo_path": "jetsmartfilter/jsf-custom-provider-query/agents/openai.yaml",
+          "type": "resource",
+          "bytes": 241,
+          "sha256": "25d48d8c3021c81780e619496ade7dda59989f5519e23f2051a06d9fdb0c65b6"
+        }
+      ],
+      "has_reference": false,
+      "has_examples": false,
+      "has_scripts": false,
+      "skill_md": {
+        "bytes": 5491,
+        "lines": 164,
+        "sha256": "b6ddc056fbf4bf57771286d8d62cc27bd8fa26077aec7935c8deb855e7c07b21"
+      }
+    },
+    {
+      "slug": "jsf-frontend-events",
+      "name": "jsf-frontend-events",
+      "domain": "jetsmartfilter",
+      "description": "Handle the JetSmartFilters frontend AJAX lifecycle and reinitialize behavior after provider DOM replacement. Use when JavaScript must react when filtering starts, rendered content updates, loading ends, or JSF initializes; when integrating sliders, galleries, analytics, accessibility, or other widgets; or when code references JetSmartFilters.events, ajaxFilters/start-loading, ajaxFilters/updated, ajaxFilters/end-loading, provider/content-rendered, or jet-filter-content-rendered.",
+      "path": "jetsmartfilter/jsf-frontend-events",
+      "skill_path": "jetsmartfilter/jsf-frontend-events/SKILL.md",
+      "url": "https://raw.githubusercontent.com/Lonsdale201/wp-agent-skills/main/jetsmartfilter/jsf-frontend-events/SKILL.md",
+      "raw_url": "https://raw.githubusercontent.com/Lonsdale201/wp-agent-skills/main/jetsmartfilter/jsf-frontend-events/SKILL.md",
+      "html_url": "https://github.com/Lonsdale201/wp-agent-skills/blob/main/jetsmartfilter/jsf-frontend-events/SKILL.md",
+      "directory_url": "https://github.com/Lonsdale201/wp-agent-skills/tree/main/jetsmartfilter/jsf-frontend-events",
+      "metadata": {
+        "author": "Soczó Kristóf",
+        "contact": "mailto:lonsdale201@hotmail.com",
+        "plugin": "jet-smart-filters",
+        "plugin-version-tested": "3.8.3.1",
+        "php-min": "7.4",
+        "last-updated": "2026-07-21"
+      },
+      "resources": [
+        {
+          "path": "agents/openai.yaml",
+          "repo_path": "jetsmartfilter/jsf-frontend-events/agents/openai.yaml",
+          "type": "resource",
+          "bytes": 245,
+          "sha256": "00ea5763efd25bd21e6f43ae7e56a944fe72dd56857157764cccc96824db50c2"
+        }
+      ],
+      "has_reference": false,
+      "has_examples": false,
+      "has_scripts": false,
+      "skill_md": {
+        "bytes": 4921,
+        "lines": 139,
+        "sha256": "0ca4b6601346e7180704937e9d1f4b5352aa68b4f43f1ae2a60ae4d8d5ac152e"
+      }
+    },
+    {
+      "slug": "jsf-listing-integration",
+      "name": "jsf-listing-integration",
+      "domain": "jetsmartfilter",
+      "description": "Connect JetSmartFilters controls to a native JSF Listing or another supported listing with the correct provider, query ID, query variable, apply type, and pagination contract. Use when building a filterable listing, debugging a filter that updates the wrong widget or does nothing, configuring content_provider, _element_id, additional providers, pagination, AJAX, reload, or mixed filtering.",
+      "path": "jetsmartfilter/jsf-listing-integration",
+      "skill_path": "jetsmartfilter/jsf-listing-integration/SKILL.md",
+      "url": "https://raw.githubusercontent.com/Lonsdale201/wp-agent-skills/main/jetsmartfilter/jsf-listing-integration/SKILL.md",
+      "raw_url": "https://raw.githubusercontent.com/Lonsdale201/wp-agent-skills/main/jetsmartfilter/jsf-listing-integration/SKILL.md",
+      "html_url": "https://github.com/Lonsdale201/wp-agent-skills/blob/main/jetsmartfilter/jsf-listing-integration/SKILL.md",
+      "directory_url": "https://github.com/Lonsdale201/wp-agent-skills/tree/main/jetsmartfilter/jsf-listing-integration",
+      "metadata": {
+        "author": "Soczó Kristóf",
+        "contact": "mailto:lonsdale201@hotmail.com",
+        "plugin": "jet-smart-filters",
+        "plugin-version-tested": "3.8.3.1",
+        "php-min": "7.4",
+        "last-updated": "2026-07-21"
+      },
+      "resources": [
+        {
+          "path": "agents/openai.yaml",
+          "repo_path": "jetsmartfilter/jsf-listing-integration/agents/openai.yaml",
+          "type": "resource",
+          "bytes": 257,
+          "sha256": "8b50e30f29b2ae28e231b0112b94bf093a5bb8740df883f8cb39078675f019c0"
+        }
+      ],
+      "has_reference": false,
+      "has_examples": false,
+      "has_scripts": false,
+      "skill_md": {
+        "bytes": 4338,
+        "lines": 103,
+        "sha256": "515602aa82fb5a9db307a52fec577198f827061afb76fcf4666c427f64497a5a"
+      }
+    },
+    {
+      "slug": "jsf-overview",
+      "name": "jsf-overview",
+      "domain": "jetsmartfilter",
+      "description": "Map a JetSmartFilters integration to the correct filter, provider, query ID, listing, frontend event, or extension API. Use when planning or reviewing JSF compatibility, diagnosing a filter that targets the wrong listing, choosing between JSF Listing hooks and a custom provider, or encountering JetSmartFilters, JetSmartFilterSettings, jsf-listing, content_provider, or jet-smart-filters hooks without knowing which layer owns the behavior.",
+      "path": "jetsmartfilter/jsf-overview",
+      "skill_path": "jetsmartfilter/jsf-overview/SKILL.md",
+      "url": "https://raw.githubusercontent.com/Lonsdale201/wp-agent-skills/main/jetsmartfilter/jsf-overview/SKILL.md",
+      "raw_url": "https://raw.githubusercontent.com/Lonsdale201/wp-agent-skills/main/jetsmartfilter/jsf-overview/SKILL.md",
+      "html_url": "https://github.com/Lonsdale201/wp-agent-skills/blob/main/jetsmartfilter/jsf-overview/SKILL.md",
+      "directory_url": "https://github.com/Lonsdale201/wp-agent-skills/tree/main/jetsmartfilter/jsf-overview",
+      "metadata": {
+        "author": "Soczó Kristóf",
+        "contact": "mailto:lonsdale201@hotmail.com",
+        "plugin": "jet-smart-filters",
+        "plugin-version-tested": "3.8.3.1",
+        "php-min": "7.4",
+        "last-updated": "2026-07-21"
+      },
+      "resources": [
+        {
+          "path": "agents/openai.yaml",
+          "repo_path": "jetsmartfilter/jsf-overview/agents/openai.yaml",
+          "type": "resource",
+          "bytes": 286,
+          "sha256": "68d644a86c5d381c7e6a47725851f35c51951fd330ccf2eae82b7f020d88bfd8"
+        }
+      ],
+      "has_reference": false,
+      "has_examples": false,
+      "has_scripts": false,
+      "skill_md": {
+        "bytes": 4166,
+        "lines": 96,
+        "sha256": "97fc61f615c8ff0f9b57c569c5e1072e338f41feab1d2f09e9ccad5c11eeeb19"
+      }
+    },
+    {
+      "slug": "jsf-query-hooks",
+      "name": "jsf-query-hooks",
+      "domain": "jetsmartfilter",
+      "description": "Customize JetSmartFilters query arguments and native JSF Listing results without leaking changes across providers or listing instances. Use when adding mandatory constraints, changing posts_per_page, filtering listing items, handling a plain query variable, or reviewing jet-smart-filters/listing/render hooks, jet-smart-filters/query/request, query/add-var, query/meta-query-row, or query/final-query.",
+      "path": "jetsmartfilter/jsf-query-hooks",
+      "skill_path": "jetsmartfilter/jsf-query-hooks/SKILL.md",
+      "url": "https://raw.githubusercontent.com/Lonsdale201/wp-agent-skills/main/jetsmartfilter/jsf-query-hooks/SKILL.md",
+      "raw_url": "https://raw.githubusercontent.com/Lonsdale201/wp-agent-skills/main/jetsmartfilter/jsf-query-hooks/SKILL.md",
+      "html_url": "https://github.com/Lonsdale201/wp-agent-skills/blob/main/jetsmartfilter/jsf-query-hooks/SKILL.md",
+      "directory_url": "https://github.com/Lonsdale201/wp-agent-skills/tree/main/jetsmartfilter/jsf-query-hooks",
+      "metadata": {
+        "author": "Soczó Kristóf",
+        "contact": "mailto:lonsdale201@hotmail.com",
+        "plugin": "jet-smart-filters",
+        "plugin-version-tested": "3.8.3.1",
+        "php-min": "7.4",
+        "last-updated": "2026-07-21"
+      },
+      "resources": [
+        {
+          "path": "agents/openai.yaml",
+          "repo_path": "jetsmartfilter/jsf-query-hooks/agents/openai.yaml",
+          "type": "resource",
+          "bytes": 245,
+          "sha256": "d595605262d770be997a807a22db6f62dcee52745aa91b56ce861cdce5259136"
+        }
+      ],
+      "has_reference": false,
+      "has_examples": false,
+      "has_scripts": false,
+      "skill_md": {
+        "bytes": 4607,
+        "lines": 129,
+        "sha256": "06557aa8d442f8d3aa0ae52763aeac29de7d25a5d249bd023f5a35ad6ee7dd61"
       }
     },
     {

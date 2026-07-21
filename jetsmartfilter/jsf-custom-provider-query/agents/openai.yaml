@@ -1,0 +1,4 @@
+interface:
+  display_name: "JSF Custom Provider and Query"
+  short_description: "Add custom JSF providers and listing queries."
+  default_prompt: "Use $jsf-custom-provider-query to expose a custom listing or data source to JetSmartFilters."

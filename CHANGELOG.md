@@ -2,6 +2,32 @@
 
 This collection is continuously evolving — entries are date-based, not version-tagged. New skills land when they're ready; updates go in when they cover real ground (a new release of an upstream plugin, a verified misconception, a corrected example).
 
+## 2026-07-21 (jetsmartfilter: new JetSmartFilters developer-integration domain)
+
+New domain `jetsmartfilter/` — five skills for integrating and extending **JetSmartFilters** (`jet-smart-filters`) from a third-party plugin, grounded against the locally installed JetSmartFilters 3.8.3.1 source (the plugin is not in the wp-skills index). The frontend event bus ships minified, so source-derived event contracts should be re-smoke-tested after plugin upgrades.
+
+### Added — `jetsmartfilter/jsf-overview`
+
+Router skill: map a JetSmartFilters integration to the correct layer — filter, provider, query ID, listing, frontend event, or extension API — before reaching for a hook. Use when planning/reviewing JSF compatibility, diagnosing a filter that targets the wrong listing, or choosing between JSF Listing hooks and a custom provider.
+
+### Added — `jetsmartfilter/jsf-listing-integration`
+
+Connect JSF controls to a native JSF Listing (or another supported listing) with the correct provider, query ID, query variable, apply type, and pagination contract — without provider/query-ID collisions that update the wrong widget or nothing. Covers `content_provider`, `_element_id`, additional providers, pagination, AJAX/reload/mixed filtering.
+
+### Added — `jetsmartfilter/jsf-frontend-events`
+
+Handle the frontend AJAX lifecycle (`ajaxFilters/start-loading`, `ajaxFilters/updated`, `ajaxFilters/end-loading`, `provider/content-rendered`, `jet-filter-content-rendered`) and reinitialize third-party behavior (sliders, galleries, analytics, accessibility) after provider DOM replacement.
+
+### Added — `jetsmartfilter/jsf-query-hooks`
+
+Customize native listing and parsed JSF query arguments with provider/query-ID scoping and input bounds — mandatory constraints, `posts_per_page`, item filtering, plain query variables — via `jet-smart-filters/listing/render` hooks, `query/request`, `query/add-var`, `query/meta-query-row`, and `query/final-query`, without leaking changes across providers or listing instances.
+
+### Added — `jetsmartfilter/jsf-custom-provider-query`
+
+Register an unsupported renderer as a custom provider (`jet-smart-filters/providers/register`, `Jet_Smart_Filters_Provider_Base`) or add a non-post query type to native JSF Listings (`jet-smart-filters/listing/render/query-types/register`) — DOM selectors, filter-arg merging, and pagination statistics.
+
+New-domain wiring: `jetsmartfilter` added to the domain allow-lists in `.github/scripts/validate-skill.js` and `.github/scripts/build-skill-pr.js` and the `new-skill.yml` domain dropdown (also backfilled the missing `rankmath` dropdown option), plus a `jetsmartfilter/README.md`, the root README structure row, and the counters (skills 211 → 216, plugins 27 → 28). `skills-index.json` regenerated.
+
 ## 2026-07-21 (wordpress: security-skill reinforcements + plugin-count recount)
 
 Three `wordpress/` security skills reinforced with new failure modes, plus a definitional recount of the root README plugin counter. No new skills (still 211); `skills-index.json` regenerated for the changed descriptions/metadata.

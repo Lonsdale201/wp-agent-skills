@@ -1,6 +1,6 @@
 # wp-agent-skills
 
-**211 skills · 27 plugins**
+**216 skills · 28 plugins**
 
 A community-maintained collection of **portable Agent Skills** for WordPress plugin and theme development.
 
@@ -28,6 +28,7 @@ Skills are grouped by domain. Each domain has its own README listing the skills 
 | &nbsp;&nbsp;↳ [Other WooCommerce extensions](woocommerce#woocommerce-extensions) | The WooCommerce **Stripe** payment gateway (add-payment-method, Subscriptions integration, webhooks) and **Sequential Order Numbers Pro**. |
 | [`jetformbuilder/`](jetformbuilder) | Extending JetFormBuilder — settings tabs, form sidebar panels, custom Form Actions, action events, item decorators, external-API actions. |
 | [`jet-engine/`](jet-engine) | Extending JetEngine — Dynamic Visibility conditions, Listings callbacks, Query Builder custom query types. |
+| [`jetsmartfilter/`](jetsmartfilter) | Integrating & extending **JetSmartFilters** (`jet-smart-filters`) — the provider / query-ID contract, filterable JSF Listings, the frontend AJAX lifecycle, narrowly scoped PHP query hooks, and the custom provider / query-type APIs. |
 | [`better-data/`](better-data) | **Contributor** skills for the [better-data](https://github.com/lonsdale201/better-data) PHP library. |
 | [`better-route/`](better-route) | **Consumer** skills for the [better-route](https://github.com/Lonsdale201/better-route) PHP library. |
 | [`lw-plugins/`](lw-plugins) | LW Plugins family — LW LMS, LW Site Manager, Elállás for WooCommerce, and LW Firewall (worker/rate-limit compatibility, registration spam guard, and management/CLI/abilities). |
