@@ -6266,7 +6266,7 @@
       "slug": "wp-file-upload-security",
       "name": "wp-file-upload-security",
       "domain": "wordpress",
-      "description": "Implement or audit secure WordPress file uploads and sideloads with media_handle_upload, wp_handle_upload, wp_check_filetype_and_ext, strict MIME/extension allowlists, capability and nonce checks, size limits, attachment cleanup, SVG/archive policy, remote download cleanup, and private file storage. Use when code handles $_FILES, multipart forms, REST uploads, Media Library attachments, imported remote files, ZIP extraction, or custom download endpoints.",
+      "description": "Implement or audit secure WordPress file uploads and sideloads with media_handle_upload, wp_handle_upload, wp_check_filetype_and_ext, strict MIME/extension allowlists, capability and nonce checks, size limits, collision-safe image format conversion, EXIF orientation, attachment cleanup, SVG/archive policy, remote download cleanup, and private file storage. Use when code handles $_FILES, multipart forms, REST uploads, Media Library attachments, post-upload image conversion, imported remote files, ZIP extraction, or custom download endpoints.",
       "path": "wordpress/wp-file-upload-security",
       "skill_path": "wordpress/wp-file-upload-security/SKILL.md",
       "url": "https://raw.githubusercontent.com/Lonsdale201/wp-agent-skills/main/wordpress/wp-file-upload-security/SKILL.md",
@@ -6277,9 +6277,9 @@
         "author": "Soczó Kristóf",
         "contact": "mailto:lonsdale201@hotmail.com",
         "plugin": "wordpress",
-        "plugin-version-tested": "6.0 - 7.0.1",
+        "plugin-version-tested": "6.0 - 7.0.2",
         "php-min": "7.4",
-        "last-updated": "2026-07-10"
+        "last-updated": "2026-07-21"
       },
       "resources": [
         {
@@ -6294,9 +6294,9 @@
       "has_examples": false,
       "has_scripts": false,
       "skill_md": {
-        "bytes": 10386,
-        "lines": 255,
-        "sha256": "948cc085cf05f17e4d65a0bd7b408ef228dc9976075939895790bc0cdf984526"
+        "bytes": 12192,
+        "lines": 286,
+        "sha256": "a59309c1ae4f8699f7e6a5b6ac680ce687787fac43490eff4954284ed2e28f98"
       }
     },
     {
@@ -6675,7 +6675,7 @@
         "plugin": "wordpress",
         "plugin-version-tested": "6.0 - 7.0.1",
         "php-min": "7.4",
-        "last-updated": "2026-07-12"
+        "last-updated": "2026-07-21"
       },
       "resources": [
         {
@@ -6697,16 +6697,16 @@
       "has_examples": true,
       "has_scripts": false,
       "skill_md": {
-        "bytes": 12491,
-        "lines": 299,
-        "sha256": "11dac2fda8fc616543aeae9259619e605133d7c3d48d2d120edc3cd58bafcdd4"
+        "bytes": 13403,
+        "lines": 315,
+        "sha256": "0eb73634f2cf6097ba4f5ad1d36341d8f3d57131fa29e9d58d87a46704a14c9c"
       }
     },
     {
       "slug": "wp-security-deep",
       "name": "wp-security-deep",
       "domain": "wordpress",
-      "description": "Deep security audit for WordPress plugin/theme PHP code, covering issues beyond the basic sanitize/escape/nonce checklist — PHP object injection (unserialize), SSRF in remote requests, CSRF on state-changing GET handlers, mass assignment via $_POST loops, insecure file include / template injection, mail header injection, ZipSlip in archive extraction, type-juggling in auth comparisons, and TOCTOU race patterns in option/meta locks. Use after or alongside wp-security-audit when reviewing complex plugins, REST APIs, integrations that fetch remote URLs, file processors, or any code that handles uploads, archives, self-rolled auth tokens, remote SQL/report definitions, or private plugin update channels.",
+      "description": "Deep security audit for WordPress plugin/theme PHP code, covering issues beyond the basic sanitize/escape/nonce checklist — PHP object injection (unserialize), SSRF in remote requests, CSRF on state-changing GET handlers, mass assignment via $_POST loops, insecure file include / template injection, mail header injection, ZipSlip in archive extraction, type-juggling in auth comparisons, and TOCTOU race patterns in option/meta locks. Use after or alongside wp-security-audit when reviewing complex plugins, REST APIs, integrations that fetch remote URLs, file processors, or any code that handles uploads, archives, self-rolled auth tokens or login rate-limiters, remote SQL/report definitions, or private plugin update channels.",
       "path": "wordpress/wp-security-deep",
       "skill_path": "wordpress/wp-security-deep/SKILL.md",
       "url": "https://raw.githubusercontent.com/Lonsdale201/wp-agent-skills/main/wordpress/wp-security-deep/SKILL.md",
@@ -6719,7 +6719,7 @@
         "plugin": "wordpress",
         "plugin-version-tested": "6.0 - 7.0.1",
         "php-min": "7.4",
-        "last-updated": "2026-07-15"
+        "last-updated": "2026-07-21"
       },
       "resources": [
         {
@@ -6734,9 +6734,9 @@
       "has_examples": false,
       "has_scripts": false,
       "skill_md": {
-        "bytes": 12329,
-        "lines": 314,
-        "sha256": "c7f8ef14668e9bbc50fce6fe51c082fe95b9249dba74a1de5e20a4406a49e8c6"
+        "bytes": 14080,
+        "lines": 348,
+        "sha256": "fd2c850959f950b415bc1e11a997ab8018960740d556728cb87ba8425307647a"
       }
     },
     {
