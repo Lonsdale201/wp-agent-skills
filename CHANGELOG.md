@@ -2,6 +2,12 @@
 
 This collection is continuously evolving — entries are date-based, not version-tagged. New skills land when they're ready; updates go in when they cover real ground (a new release of an upstream plugin, a verified misconception, a corrected example).
 
+## 2026-07-21 (tooling: index-driven sync-skills.sh for consumers)
+
+Adds `scripts/sync-skills.sh` — a dependency-light, defensive way for anyone to pull the collection (or selected domains) into a local skills directory straight from `skills-index.json`, with **no clone and no fork**. Tool-agnostic: the destination is a plain argument / `WP_SKILLS_DIR` env var, so it works for Claude Code (`~/.claude/skills` or `.claude/skills`) or any other Agent Skills runtime.
+
+Security posture (it writes files an agent later reads, so it fails closed): download URLs are reconstructed from a pinned repo base — the manifest can't redirect to another host; every manifest path is validated against traversal/injection and confined under the destination; every file is verified against the manifest `sha256` and byte size before it is written (mismatch = hard failure, no partial writes); HTTPS-only, no redirect-following, per-file size cap; downloaded files are non-executable and never run; add/update only, no deletion. Verified end-to-end (fresh sync, hash-skip on re-run, tamper re-fetch, path-traversal rejection). README gains a "Staying up to date" section covering usage and the trust model. Requires `curl`, `jq`, and `sha256sum`/`shasum`.
+
 ## 2026-07-21 (jetsmartfilter: new JetSmartFilters developer-integration domain)
 
 New domain `jetsmartfilter/` — five skills for integrating and extending **JetSmartFilters** (`jet-smart-filters`) from a third-party plugin, grounded against the locally installed JetSmartFilters 3.8.3.1 source (the plugin is not in the wp-skills index). The frontend event bus ships minified, so source-derived event contracts should be re-smoke-tested after plugin upgrades.
