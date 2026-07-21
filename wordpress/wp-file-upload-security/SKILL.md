@@ -3,17 +3,18 @@ name: wp-file-upload-security
 description: Implement or audit secure WordPress file uploads and sideloads
   with media_handle_upload, wp_handle_upload, wp_check_filetype_and_ext,
   strict MIME/extension allowlists, capability and nonce checks, size limits,
-  attachment cleanup, SVG/archive policy, remote download cleanup, and private
-  file storage. Use when code handles $_FILES, multipart forms, REST uploads,
-  Media Library attachments, imported remote files, ZIP extraction, or custom
-  download endpoints.
+  collision-safe image format conversion, EXIF orientation, attachment cleanup,
+  SVG/archive policy, remote download cleanup, and private file storage. Use
+  when code handles $_FILES, multipart forms, REST uploads, Media Library
+  attachments, post-upload image conversion, imported remote files, ZIP
+  extraction, or custom download endpoints.
 metadata:
   wp-skills-author: "Soczó Kristóf"
   wp-skills-contact: "mailto:lonsdale201@hotmail.com"
   wp-skills-plugin: "wordpress"
-  wp-skills-plugin-version-tested: "6.0 - 7.0.1"
+  wp-skills-plugin-version-tested: "6.0 - 7.0.2"
   wp-skills-php-min: "7.4"
-  wp-skills-last-updated: "2026-07-10"
+  wp-skills-last-updated: "2026-07-21"
 ---
 
 # WordPress File Upload Security
@@ -118,6 +119,33 @@ Important limits:
 - Do not disable `test_type` or broaden global `upload_mimes` for one feature;
   pass a local allowlist to that upload call.
 
+## Image format conversion and derived-name collisions
+
+Core choosing a unique source name does not make a later, differently suffixed
+target unique. For example, an existing `photo.webp` does not collide with a
+new `photo.jpg` during the normal JPEG upload check. Code that later replaces
+the extension and saves to `photo.webp` can overwrite the older attachment.
+
+When converting uploads or generating derivatives:
+
+- never create the destination with only `pathinfo()` plus an extension swap;
+- run `wp_unique_filename()` against the **final target basename** immediately
+  before a custom save, and verify the returned editor path is the intended
+  unique target;
+- when product semantics permit, prefer core image-editor output-format hooks
+  so core can account for alternate output names; verify separately whether the
+  supported core version converts the original, only generated sizes, or both;
+- treat `wp_unique_filename()` as existing-name resolution, not an atomic
+  filesystem reservation; do not claim concurrent-write safety without a test
+  or an exclusive-write design;
+- validate the saved file before deleting the source, and preserve the source
+  whenever the destination or downstream upload result is incomplete.
+
+Normalize EXIF orientation before calculating resize dimensions and saving the
+replacement. Use the image editor's `maybe_exif_rotate()` path or keep the
+conversion inside the applicable core pipeline. Deleting the source before
+orientation and output validation removes the reliable recovery input.
+
 ## SVG and active content
 
 SVG is XML that can contain scripts, external references, event handlers, and
@@ -219,8 +247,11 @@ For contracts, medical records, exports, or licensed downloads:
 
 Cover empty/partial/oversized files, double extensions, mismatched real MIME,
 uppercase extensions, polyglots appropriate to supported formats, SVG/HTML,
-archive traversal/bombs, duplicate names, low-privilege users, nonce failure,
-post ownership, sideload timeout/redirect, cleanup failure, and multisite quota.
+archive traversal/bombs, duplicate names, **cross-extension derived-name
+collisions** (`photo.webp` already exists before `photo.jpg`/`photo.png`), EXIF
+orientations 2–8, conversion failure with source preservation, low-privilege
+users, nonce failure, post ownership, sideload timeout/redirect, cleanup
+failure, and multisite quota.
 Run tests with and without `fileinfo`, and with a user that has
 `unfiltered_upload` to ensure the feature allowlist still wins.
 

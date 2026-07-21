@@ -9,15 +9,16 @@ description: Deep security audit for WordPress plugin/theme PHP code,
   and TOCTOU race patterns in option/meta locks. Use after or
   alongside wp-security-audit when reviewing complex plugins, REST
   APIs, integrations that fetch remote URLs, file processors, or any
-  code that handles uploads, archives, self-rolled auth tokens, remote
-  SQL/report definitions, or private plugin update channels.
+  code that handles uploads, archives, self-rolled auth tokens or login
+  rate-limiters, remote SQL/report definitions, or private plugin update
+  channels.
 metadata:
   wp-skills-author: "Soczó Kristóf"
   wp-skills-contact: "mailto:lonsdale201@hotmail.com"
   wp-skills-plugin: "wordpress"
   wp-skills-plugin-version-tested: "6.0 - 7.0.1"
   wp-skills-php-min: "7.4"
-  wp-skills-last-updated: "2026-07-15"
+  wp-skills-last-updated: "2026-07-21"
 ---
 
 # WordPress security audit — deep checks
@@ -44,6 +45,7 @@ Trigger when the basic audit is clean but the code does any of:
 - Compares tokens, hashes, or secrets with `==` / `===` instead of
   `hash_equals`.
 - Implements its own lock / counter via `get_option` + `update_option`.
+- Implements login throttling or account lockout from unauthenticated failures.
 - Uses a remote response to choose SQL, PHP/template code, callback/class names,
   filesystem paths, redirects, or a plugin-update package URL.
 
@@ -249,7 +251,39 @@ WP options have no atomic CAS. Mitigations:
 Flag the pattern, propose the lock approach. Don't claim certainty
 about race windows without dynamic testing.
 
-### 10. Remote control-plane and executable response trust
+### 10. Rate-limit abuse and global account lockout
+
+A login defense can become an unauthenticated denial-of-service primitive. Flag
+code that lets failures supplied by one anonymous client create a global
+username/email lock which rejects the correct credential from every other
+client. A public username or email address is not proof that the account owner
+made the failed attempts.
+
+Review these invariants:
+
+- enforce blocking primarily on a bounded source/identity pair or source rate;
+  use a global account signal for alerting, step-up checks, or delay rather than
+  unconditional denial of a correct login from unrelated clients;
+- enforce the same protection at every supported authentication entry point,
+  not only a form-specific hook;
+- clear the same identifier aliases that were incremented, including canonical
+  username versus email login;
+- prevent attacker-chosen nonexistent usernames from causing unbounded durable
+  key creation or database writes;
+- keep error responses from distinguishing an existing account from an unknown
+  one;
+- apply the atomic-counter guidance in the preceding TOCTOU section rather than
+  assuming a transient read/modify/write is an exact limit.
+
+Minimum acceptance test: after client A reaches the failure threshold for a
+known account, the correct credential from client B still succeeds while A
+remains throttled. Test every supported login surface with the same invariant.
+
+This pattern can be HIGH when an anonymous caller can reliably and repeatedly
+deny a known user's correct login. State the required username knowledge,
+configured threshold, lock duration, and affected login paths.
+
+### 11. Remote control-plane and executable response trust
 
 Treat remote responses as attacker-controlled data even with valid HTTPS and a
 fixed vendor. If response fields reach SQL execution, dynamic code/templates,
@@ -259,7 +293,7 @@ and trace the complete control-plane chain. Keep executable policy local and
 versioned; accept only a small allowlisted ID plus schema-validated parameters.
 Apply `wp-http-api-client` for transport, size, redirect, and test controls.
 
-### 11. Direct file access guard
+### 12. Direct file access guard
 
 Top of every PHP file that has side effects on load:
 

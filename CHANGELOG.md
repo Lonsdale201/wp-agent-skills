@@ -2,6 +2,26 @@
 
 This collection is continuously evolving — entries are date-based, not version-tagged. New skills land when they're ready; updates go in when they cover real ground (a new release of an upstream plugin, a verified misconception, a corrected example).
 
+## 2026-07-21 (wordpress: security-skill reinforcements + plugin-count recount)
+
+Three `wordpress/` security skills reinforced with new failure modes, plus a definitional recount of the root README plugin counter. No new skills (still 211); `skills-index.json` regenerated for the changed descriptions/metadata.
+
+### Updated — `wordpress/wp-file-upload-security`
+
+New section **"Image format conversion and derived-name collisions"**: a unique *source* name does not make a differently-suffixed *target* unique (an existing `photo.webp` does not collide with a new `photo.jpg`), so extension-swap saves can silently overwrite an older attachment. Guidance to run `wp_unique_filename()` against the final target basename, prefer core image-editor output-format hooks, treat `wp_unique_filename()` as name-resolution not an atomic reservation, and preserve the source until the destination is validated. Adds EXIF-orientation normalization before resize/save. Edge-case test list expanded (cross-extension derived-name collisions, EXIF orientations 2–8, conversion failure with source preservation). Tested bumped to WordPress 6.0 – 7.0.2.
+
+### Updated — `wordpress/wp-security-audit`
+
+Adds an **evidence-status** classification separate from severity — *Reproduced* / *Source-proven* / *Environment-dependent hypothesis* — with the rule that an environment-dependent hypothesis must not be presented as a confirmed finding or promoted into a reusable skill rule until reproduced or the runtime contract is verified. Report template gains an `Evidence:` line and a **"Requires environment validation"** section.
+
+### Updated — `wordpress/wp-security-deep`
+
+New deep check **"Rate-limit abuse and global account lockout"** (numbered #10; former #10/#11 renumbered to #11/#12): a login defense can become an unauthenticated DoS primitive when anonymous failures create a global username/email lock that rejects the correct credential from every other client. Invariants — block on a bounded source/identity pair rather than unconditional global denial, enforce at every login entry point, clear the same identifier aliases (username vs email), bound nonexistent-username key creation, keep error responses account-agnostic, apply the TOCTOU atomic-counter guidance — plus a minimum acceptance test. Trigger list and description extended to login throttling / account lockout from unauthenticated failures.
+
+### Changed — root README plugin counter (30 → 27)
+
+Folded paid Pro/tier editions of the same plugin into their base for the `**N plugins**` counter (`elementor-pro → elementor`, `polylang-pro → polylang`, `translatepress-business → translatepress-multilingual`), at the user's request that Elementor Pro not count as a separate product — applied consistently to all Pro/tier pairs. Genuinely separate companion plugins (`polylang-wc`, `learndash-woocommerce`) and the bundled PHP libraries (`action-scheduler`, `better-data`, `better-route`) stay counted; `wordpress` core stays excluded. Skills unchanged (211).
+
 ## 2026-07-20 (fluentform: new Fluent Forms developer-extension domain)
 
 New domain `fluentform/` — four skills for extending Fluent Forms (Free `fluentform` + Pro `fluentformpro`) from a third-party plugin without bypassing its parser, lifecycle, ACL, or queue model. Grounded against Fluent Forms Free and Pro 6.2.7 on WordPress 7.0.2; every skill draws an explicit Free/Pro boundary and cites verified Free/Pro source paths (Fluent Forms is not in the wp-skills index).

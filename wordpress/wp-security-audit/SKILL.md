@@ -14,7 +14,7 @@ metadata:
   wp-skills-plugin: "wordpress"
   wp-skills-plugin-version-tested: "6.0 - 7.0.1"
   wp-skills-php-min: "7.4"
-  wp-skills-last-updated: "2026-07-12"
+  wp-skills-last-updated: "2026-07-21"
 ---
 
 # WordPress security audit
@@ -49,6 +49,18 @@ Work through the **Critical checks** below in order. For each finding:
 4. Show the fix.
 5. Mark severity: **HIGH** (exploitable now), **MEDIUM** (exploitable under
    conditions), **LOW** (hardening / best practice).
+6. Mark the evidence status separately from severity:
+   - **Reproduced** — a controlled test reached the sink or observed the effect;
+   - **Source-proven** — the complete deterministic path and prerequisites are
+     visible in the inspected code/core contracts;
+   - **Environment-dependent hypothesis** — the effect needs a deployment
+     property or integration that was not available to test.
+
+Do not present an environment-dependent hypothesis as a confirmed finding. Put
+it under limitations or required validation, name the missing environment, and
+do not promote it into a reusable skill rule until it is reproduced or the
+relevant runtime contract is verified. Severity describes impact and
+exploitability; it does not compensate for weak evidence.
 
 Do NOT silently rewrite the file. Produce a report first; only edit if the
 user asks you to apply fixes.
@@ -275,6 +287,7 @@ Date: <YYYY-MM-DD>
 
 ## HIGH
 1. <file>:<line> — <issue>
+   Evidence: <Reproduced | Source-proven>
    <code>
    Fix: <code>
 
@@ -286,6 +299,9 @@ Date: <YYYY-MM-DD>
 
 ## Out of scope
 - <thing not checked>
+
+## Requires environment validation
+- <hypothesis, missing deployment property, exact acceptance test>
 ```
 
 ## References
