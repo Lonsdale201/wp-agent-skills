@@ -1,13 +1,13 @@
 ---
 name: wc-logging
-description: Add production-safe WooCommerce logs with `wc_get_logger()`. Covers stable sources, severity levels and thresholds, structured context, correlation IDs, sensitive-data redaction, handler and retention behavior, volume control, custom handlers, and why logs are not durable business state. Use when adding diagnostics to gateways, webhooks, background jobs, imports, REST endpoints, or order integrations.
+description: Add production-safe WooCommerce logs with `wc_get_logger()`. Covers stable sources, severity levels and thresholds, structured JSON context, correlation IDs, sensitive-data redaction, WooCommerce 11.0 file-v2 formatting and batched retention cleanup, volume control, custom handlers, and why logs are not durable business state. Use when adding diagnostics to gateways, webhooks, background jobs, imports, REST endpoints, or order integrations.
 metadata:
   wp-skills-author: "Soczó Kristóf"
   wp-skills-contact: "mailto:lonsdale201@hotmail.com"
   wp-skills-plugin: "woocommerce"
-  wp-skills-plugin-version-tested: "10.9.4"
+  wp-skills-plugin-version-tested: "11.0.0"
   wp-skills-php-min: "7.4"
-  wp-skills-last-updated: "2026-07-10"
+  wp-skills-last-updated: "2026-08-05"
 ---
 
 # WooCommerce logging
@@ -47,7 +47,7 @@ Always set a stable, plugin-prefixed `source`. Current file logging sanitizes it
 
 Use the level methods (`debug()`, `info()`, `warning()`, `error()`) or `log()`. `WC_Logger::add()` is legacy and explicitly not the preferred API.
 
-WooCommerce can disable logging globally and can set a minimum severity threshold. In 10.9.4 the default threshold is `none`, meaning all levels are accepted, but site settings or `WC_LOG_THRESHOLD` can change that. Never make application correctness depend on a log entry being handled.
+WooCommerce can disable logging globally and can set a minimum severity threshold. In 11.0.0 the default threshold is `none`, meaning all levels are accepted, but site settings or `WC_LOG_THRESHOLD` can change that. Never make application correctness depend on a log entry being handled.
 
 ## Structured context
 
@@ -66,7 +66,7 @@ $logger->error(
 );
 ```
 
-Current file-v2 handling JSON-encodes context other than `source`. Other handlers may format it differently, so pass serializable scalars/small arrays, not `WC_Order`, HTTP response objects, exceptions, resources, or closures.
+Current file-v2 handling JSON-encodes context other than `source`. WooCommerce 11.0 writes that JSON without adding/removing slashes and preserves unescaped Unicode and URL slashes. Pass ordinary unslashed PHP values; do not call `addslashes()`/`stripslashes()` around logger context. Other handlers may format it differently, so pass serializable scalars/small arrays, not `WC_Order`, HTTP response objects, exceptions, resources, or closures.
 
 Use a request/job correlation ID that is random and non-secret. Carry it across the initial request, Action Scheduler args, provider metadata, and log context where practical. It should help joins without identifying a customer.
 
@@ -126,7 +126,7 @@ Logging itself can fail because of permissions, disk, database, handler, or glob
 
 ## Retention and handlers
 
-WooCommerce 10.9.4 defaults to file-v2 handling and 30-day retention, but merchants can change logging enabled state, handler, retention, and threshold. Cleanup runs on `woocommerce_cleanup_logs` through `wc_cleanup_logs()`.
+WooCommerce 11.0.0 defaults to file-v2 handling and 30-day retention, but merchants can change logging enabled state, handler, retention, and threshold. Cleanup runs on `woocommerce_cleanup_logs` through `wc_cleanup_logs()`. File-v2 cleanup now scans/deletes expired files in batches of 100, continuing past vetoed files; a retention filter can preserve a file without causing later expired pages to be skipped.
 
 Do not delete or rotate WooCommerce log files directly. Do not assume file paths; the active handler may use database storage or a custom implementation.
 

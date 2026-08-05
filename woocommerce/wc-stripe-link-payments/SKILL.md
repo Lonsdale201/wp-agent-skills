@@ -5,10 +5,10 @@ metadata:
   wp-skills-author: "Soczó Kristóf"
   wp-skills-contact: "mailto:lonsdale201@hotmail.com"
   wp-skills-plugin: "woocommerce-gateway-stripe"
-  wp-skills-plugin-version-tested: "10.8.4"
-  wp-skills-woocommerce-version-tested: "10.9.4"
+  wp-skills-plugin-version-tested: "10.8.5"
+  wp-skills-woocommerce-version-tested: "11.0.0"
   wp-skills-php-min: "7.4"
-  wp-skills-last-updated: "2026-07-20"
+  wp-skills-last-updated: "2026-08-05"
 ---
 
 # WooCommerce Stripe Link payments
@@ -72,9 +72,9 @@ function myplugin_describe_stripe_token( WC_Payment_Token $token ): array {
 
 Use `get_type()` and capabilities such as `method_exists()` before type-specific getters. Do not call `get_last4()`, expiry, card brand, or fingerprint methods on a Link token.
 
-### Verified 10.8.4 quirk
+### Verified 10.8.5 quirk
 
-`WC_Payment_Token_Link::set_payment_method_type()` calls `set_prop( 'payment_method_type', ... )`, but that property is absent from the class's `extra_data`. Consequently `get_payment_method_type()` returns `null` in 10.8.4. Do not use it to classify Link; use `get_type() === 'link'`. Version-guard and retest if upstream adds the property.
+`WC_Payment_Token_Link::set_payment_method_type()` calls `set_prop( 'payment_method_type', ... )`, but that property is absent from the class's `extra_data`. Consequently `get_payment_method_type()` still returns `null` in 10.8.5. Do not use it to classify Link; use `get_type() === 'link'`. Version-guard and retest if upstream adds the property.
 
 ## Let the gateway create tokens
 

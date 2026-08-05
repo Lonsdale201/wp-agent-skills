@@ -2,6 +2,120 @@
 
 This collection is continuously evolving — entries are date-based, not version-tagged. New skills land when they're ready; updates go in when they cover real ground (a new release of an upstream plugin, a verified misconception, a corrected example).
 
+## 2026-08-06 (woocommerce + plugin-scaffold: WooCommerce 11.0 / Action Scheduler 4.0 re-grounding, 3 new skills)
+
+The largest re-grounding batch so far: **three new WooCommerce skills** plus **32 updated skills** re-verified against **WooCommerce 11.0.0** (with bundled **Action Scheduler 4.0.0**), **WooCommerce Stripe Gateway 10.8.5**, and **WooCommerce Subscriptions 9.0.1**. Every touched `wp-skills-plugin-version-tested` / `wp-skills-woocommerce-version-tested` value moved to the installed release source, and `wp-skills-last-updated` to `2026-08-05`. Four long code blocks were also split out into `references/` files to keep the SKILL.md bodies within the spec's progressive-disclosure guidance.
+
+The two changes most likely to break existing extension code are **Action Scheduler 4.0's args-aware `$unique`** (3.x suppressed by hook+group only) and **WooCommerce 11.0's `product_instance_caching`** request cache (on by default for new installs).
+
+### Added — `woocommerce/wc-product-crud-cache`
+
+Read and write products through `WC_Product` CRUD while accounting for WooCommerce 11.0's `product_instance_caching` request cache — cloned reads, view vs edit context, invalidation on CRUD and on WordPress post/meta API writes (and the raw-SQL hole that bypasses both), variation-parent synchronization, taxonomy recount filtering, bounded imports, and a test matrix with the feature enabled *and* disabled. Use when code calls `wc_get_product()`, imports catalogs, or reports stale product values.
+
+### Added — `woocommerce/wc-abandoned-cart-recovery`
+
+Integrate with (or suppress) WooCommerce 11.0's experimental, default-off `abandoned_cart_recovery` checkout-recovery email — the three activation layers (feature / email / automation gate), manual order-edit action vs the two-hour Action Scheduler send, eligible pending and checkout-draft statuses, duplicate-provider suppression when an extension already sends recovery mail, the secret recovery URL, unsubscribe/privacy behavior, and HPOS-safe order access. It is an email around an existing order, not a generic serialized cart store.
+
+### Added — `woocommerce/wc-extension-upgrade-audit`
+
+Audit an extension against an *exact* WooCommerce release instead of bumping the `WC tested up to` header: diff the installed source, classify public vs `Internal\` contracts, and check hooks, CRUD timing, REST/Store API schemas, feature gates, templates, taxonomies, Action Scheduler, admin surfaces, caches, and companion gateways, then confirm with disposable runtime smoke tests. Ships `references/woocommerce-11.md` — a targeted 10.9 → 11.0 breakpoint checklist.
+
+### Updated — `plugin-scaffold/wp-action-scheduler` (Action Scheduler 3.9.3 → 4.0.0)
+
+Re-grounded against the Action Scheduler 4.0.0 copy bundled with WooCommerce 11.0. The substantive change is **`$unique` identity**: the 4.0 DBStore suppresses an insert only for a matching pending/running `hook + group + encoded args`, where JSON key order and scalar types are part of the identity — 3.x checked hook and group only, so a pending job for order 10 could block order 11. Per-entity jobs with canonical args are now legitimate `$unique` users; mixed 3.x/4.x runtimes still need an exact-args `as_has_scheduled_action()` compatibility guard, and no version makes the *callback* exactly-once. Two new sections: **table ownership and uninstall** (the four queue tables are shared infrastructure — cancel only your own group, never drop the tables from a distributed uninstaller) and **action/log retention in 4.0** (a dedicated ~03:00 daily cleanup action with bounded batches; 31-day completed/canceled retention via `action_scheduler_retention_period`, three 31-day months for failed via `action_scheduler_retention_period_for_failed`, switchable with `action_scheduler_enable_failed_action_cleanup` — so failed rows and logs are temporary diagnostics, not audit storage). `references/api-patterns.md` drops the obsolete `ReflectionFunction` arity probe; `references/operational-debugging.md` corrects `wp action-scheduler system data-store` to `wp action-scheduler data-store`.
+
+### Updated — `plugin-scaffold/wp-plugin-cron`
+
+The native-cron API walkthrough (activation/runtime/deactivation example, `WP_Error` handling, argument-sensitive deduplication, one-shot scheduling) moved into the new **`references/native-wp-cron-patterns.md`**, leaving a summary in the body. The Action Scheduler comparison table and graduation guidance were corrected for AS 4.0 (`$unique` is now args-aware; failed one-offs are not auto-retried).
+
+### Updated — `woocommerce/wc-action-scheduler-jobs`
+
+Rewritten around Action Scheduler 4.0. The headline misconception flips: the old "`$unique` is hook+group, so use exact-args checks" guidance is replaced by "4.0 keys on `hook + group + encoded args` — but that is *queue-entry* deduplication, not exactly-once execution". Adds mixed AS3/AS4 compatibility rules, the 4.0 cleanup/retention model (and the new mistake "treating failed rows as permanent evidence"), and **shared-table uninstall ownership** — WooCommerce 11.0 deliberately preserves Action Scheduler tables on uninstall unless the site owner defines `WC_REMOVE_ACTION_SCHEDULER`, and an extension must never define it. Retry telemetry, batching, and the verified WP-CLI command tree moved to **`references/retries-batches-cli.md`**.
+
+### Updated — `woocommerce/wc-hpos-compatibility`
+
+Adds the WooCommerce 11.0 distinction between `OrderUtil::custom_orders_table_data_sync_is_enabled()` (cheap setting read) and `OrderUtil::is_custom_order_tables_in_sync()` (real in-sync check that can query pending work) — different questions, different cost. New section on the **11.0 multi-status query optimization**: eligible `wc_get_orders()` multi-status queries are rewritten as `UNION ALL` branches so the `type_status_date` index serves each status, `woocommerce_orders_table_query_status_union_optimization` can only alter the enable decision after core's structural checks, and any `woocommerce_orders_table_query_sql` callback that changes the SQL disables the rewrite entirely. Also documents 11.0's acceptance of extension-injected **virtual order-meta rows** without `meta_id` via `woocommerce_data_store_wp_post_read_meta` — a read projection only (ID `0`, not persisted, never updated/deleted as a real row).
+
+### Updated — `woocommerce/wc-order-lifecycle-and-items`
+
+Four verified WooCommerce 11.0 behaviors. (1) **`remove_order_items()` now defers the database delete to the next `save()`** — the in-memory order clears immediately, so `woocommerce_remove_order_items` and `woocommerce_removed_order_items` no longer bracket one synchronous call; passing anything but a valid item-type string or `null` triggers a doing-it-wrong notice and leaves state unchanged. (2) **`wc_maybe_increase_stock_levels()` now also runs on `woocommerce_order_status_failed`**, restoring inventory reduced while an async-payment order sat on-hold. (3) Custom stored order-status keys are bounded by a 20-character schema limit measured in **bytes including the `wc-` prefix** (keep the unprefixed slug ≤ 17 ASCII chars); 11.0 emits a doing-it-wrong notice on CPT-backed saves but the schema limit still applies. (4) Prefer `wc_reserve_stock_for_order()` over the internal `ReserveStock::reserve_stock_for_order()`, whose omitted duration now silently defaults to 60 minutes — plus the fractional-stock note that 11.0 preserves sub-`1` positive quantities only when `intval` on `woocommerce_stock_amount` was genuinely *replaced* by `floatval`, not merely appended after it.
+
+### Updated — `woocommerce/wc-store-api`
+
+Five WooCommerce 11.0 additions. **Collection-count bounds**: `GET /products/collection-data` now caps `calculate_attribute_counts` and `calculate_taxonomy_counts` at 25 entries each at schema validation, and normalizes/deduplicates requested taxonomies — clients must handle the validation error rather than fanning out. **Additional checkout fields** must be registered on `woocommerce_init` or later (earlier calls now warn about premature translation loading), with the `namespace/name` ID rule, the `contact`/`address`/`order` locations (`additional` deprecated), and 11.0's fix for phone/postcode/state-shaped fields outside billing/shipping fieldsets. **JSON input is already unslashed** — never blanket-`wp_unslash()` values from `get_json_params()` or additional-field callbacks. **Paying an existing order** (`POST /checkout/<order-id>`) validates the submitted address before persisting either the order or `WC()->customer`, so extension hooks must preserve that boundary. **Disclosure guards**: a variation is no longer returned when its parent is missing/unpublished, and review collections exclude reviews of unpublished products.
+
+### Updated — `woocommerce/wc-customer-and-sessions`
+
+WooCommerce 11.0 **no longer treats account creation or login as proof for claiming matching historical guest orders** — core calls `wc_update_new_customer_past_orders()` only after the account email is verified. Documents the two stable hooks (`woocommerce_customer_email_verified`, `woocommerce_customer_verify_email_notification`), the rule that `$verify_url` is a secret single-use bearer URL that must never be logged or persisted, and that `_wc_email_verified` / `_wc_email_verification_key` / the `Internal\CustomerEmailVerification` namespace are not extension contracts. Also warns that `WC_Customer::get_meta_data()` is not a safe wholesale disclosure source (11.0 additionally excludes WordPress's `infinite_scrolling` preference) — REST/export/headless surfaces need an explicit allowlist.
+
+### Updated — `woocommerce/wc-emails-classic`
+
+Three WooCommerce 11.0 email changes: the new `woocommerce_order_status_pending_to_cancelled_notification` dispatcher hook (extensions that hand-rolled that notification must now deduplicate or administrators get two emails); the `woocommerce_notify_backorder` setting plus the per-product `woocommerce_should_send_backorder_notification` filter (which suppresses only core's internal stock-recipient mail — not backorder eligibility, shopper-facing copy, or custom emails); and the preview-only `woocommerce_email_preview_show_shipping_details` filter, which must tolerate a `null` order/email type and never leaks into real transactional templates. Cross-references the new `wc-abandoned-cart-recovery`.
+
+### Updated — `woocommerce/wc-variations-data`
+
+Adds WooCommerce 11.0 `product_instance_caching` (enabled for new installs, previous state preserved on upgrade — CRUD and WordPress post/meta writes invalidate it, raw SQL does not; never assume repeated `wc_get_product()` calls return the identical PHP object), the matching-variation AJAX endpoint's refusal to expose a non-published parent to users who cannot edit it, and REST v3 `image_size=<registered-size>` on `wc/v3/products` and `.../variations` collections (affects generated URLs and `srcset`/`sizes` only, never stored attachment IDs, defaults to `full`). Cross-references the new `wc-product-crud-cache`.
+
+### Updated — `woocommerce/wc-variation-gallery`
+
+Corrects the feature check. Reading `wc_feature_woocommerce_additional_variation_images_enabled === 'yes'` is now wrong: in WooCommerce 11.0 an **absent** option can still mean enabled, because stores in remote variant buckets 1–6 of 120 (5%) are switched on as a canary cohort. Use `FeaturesUtil::feature_is_enabled( 'variation_gallery' )`, which resolves the cohort-derived default, and do not import `Internal\VariationGallery\Package`.
+
+### Updated — `woocommerce/wc-product-attribute-swatches`
+
+Adds the WooCommerce 11.0 **attribute slug byte limit** — `wc_get_attribute_slug_max_byte_length()` (currently 29) validated with `strlen()`, so counting characters or hard-coding a limit can still produce an invalid `pa_*` taxonomy or a normalized-slug collision; return `wc_create_attribute()`'s `WP_Error` instead of truncating. Also documents the dynamic `visual` property (`{ type, value }`, types `color` / `image` / `none`) that core adds to term objects passing through `woocommerce_json_search_found_product_attribute_terms`, and why it must be read defensively. The classic-theme PHP filter and JS synchronization code moved to **`references/classic-rendering.md`**.
+
+### Updated — `woocommerce/wc-variations-pricing-filters`
+
+Adds WooCommerce 11.0's `woocommerce_variable_product_taxes_influence_price` filter: core uses taxability and configured rates to decide whether opposite display-tax variants need separate price-cache entries, so an extension whose displayed prices differ by country/tax context where Woo has no configured rates must force the split. It complements — never replaces — adding every extension-owned pricing dimension to `woocommerce_get_variation_prices_hash`.
+
+### Updated — `woocommerce/wc-rest-api-v4`
+
+The `wc/v4` release gate **did not open in WooCommerce 11.0** — `includes/react-admin/feature-config.php` still sets `rest-api-v4` to `false`, so the controllers ship but the core namespace stays unregistered. Adds the latent `POST /wc/v4/refunds/preview` route: it calculates only (no `WC_Order_Refund`, no gateway call, no restock) yet deliberately reuses the create-refund permission check so read-only credentials cannot probe refundable state; documents the per-line `line_item_id` + quantity-or-`refund_total` shape, the formatted-decimal-string response with `max_refundable`, and core's rejection of non-positive or over-refundable previews. `reference.md` re-verified against 11.0.0 with the new route added.
+
+### Updated — `woocommerce/wc-shipping-method`
+
+WooCommerce 11.0 registers `product_shipping_class` with `public => false`, `rewrite => false`, and no frontend query var. Assignment, `WC_Product::get_shipping_class_id()`, rate calculation, and admin management are unaffected; what disappears is the public archive and public taxonomy discovery. Do not build customer-facing URLs, sitemap entries, or frontend queries on it — `woocommerce_taxonomy_args_product_shipping_class` can restore the old visibility for a site-specific need, but a new public classification feature belongs in its own extension-owned taxonomy.
+
+### Updated — `woocommerce/wc-logging`
+
+WooCommerce 11.0 writes file-v2 context JSON **without adding or removing slashes** and preserves unescaped Unicode and URL slashes — so `addslashes()` / `stripslashes()` around logger context is now actively wrong. File-v2 retention cleanup also scans and deletes expired files in batches of 100 and continues past vetoed files, so a retention filter that preserves one file no longer causes later expired pages to be skipped.
+
+### Updated — `woocommerce/wc-cart-checkout-classic`
+
+Adds the WooCommerce 11.0 phone-handling split — `WC_Validation::is_phone_format()` (shape), `WC_Validation::is_phone()` / `woocommerce_validate_phone` (country-aware acceptance), and `wc_format_phone_number()` / `woocommerce_format_phone_number` (normalization) — with requiredness as a fourth, separate concern and the rule that formatting neither validates nor proves ownership. Exact filter signatures in the new **`references/phone-validation.md`**.
+
+### Updated — `woocommerce/wc-admin-inline-scripts`
+
+WooCommerce 11.0 **retires the in-core beta product editor**. Adds a boundary section: do not target its removed slots, feature flags, React routes, or private data stores just because older examples exist; the stable core product-edit surface is the classic editor and its documented PHP hooks, and separate experimental editor packages need their own version-checked compatibility contract.
+
+### Updated — `woocommerce/wc-downloadable-products`
+
+WooCommerce 11.0 resolves root-relative download paths against a **relocated or custom `WP_CONTENT_DIR`** and requires a path-segment boundary, so `/application` no longer falsely matches an `/app` content dir. Extensions must stop assuming a literal `/wp-content`, slicing a hard-coded 11 characters, or duplicating core's filesystem resolution — store paths through product CRUD and let `WC_Product_Download` resolve and validate them. Mirrored in `references/core-download-contract.md`.
+
+### Updated — `woocommerce/wc-payment-gateway`
+
+Corrects a wrong claim: the `wc-api` / `woocommerce_api_*` callback mechanism is **not** deprecated or removed in WooCommerce 11.0 — core still uses it. WP REST remains the recommendation for explicit methods, schemas, and response handling, but for the right reasons.
+
+### Updated — `woocommerce/wc-stripe-webhooks` (Stripe Gateway 10.8.5)
+
+Two verified 10.8.5 behaviors. The stored pending-webhook count is now updated **only after signature validation succeeds**, and invalid array/object/non-digit values are ignored rather than persisted — custom webhook code must not write health state from an unverified payload. And before marking a Checkout Session paid, the gateway **verifies settlement amount and currency** against the Woo order across both Stripe schemas (pre-`2025-03-31.basil` `currency_conversion.*` vs Basil top-level `currency` / `amount_total` with buyer-facing figures in `presentment_details`); on a missing or mismatched value it refuses completion, writes a diagnostic order note, and moves the order to `on-hold` so unpaid-pending cancellation cannot restock a payment Stripe may already have captured. Treat that state as manual reconciliation — never auto-`payment_complete()` or rewrite the total. Also fixes the CLI examples (`wp action-scheduler action list`, not `wp action-scheduler list`) and extends the test matrix.
+
+### Updated — Stripe / Subscriptions version re-verification
+
+- **`woocommerce/wc-stripe-add-payment-method`** (+ `reference.md`) — Stripe 10.8.5 on WooCommerce 11.0.0; the condensed template selector map gains the WooCommerce 11.0 `aria-label` on the payment-methods list, with a note that selector compatibility does not excuse dropping the accessible name.
+- **`woocommerce/wc-stripe-future-payments`** (+ `references/stripe-future-payment-lifecycle.md`) — re-verified against Stripe 10.8.5 / WooCommerce 11.0.0.
+- **`woocommerce/wc-stripe-link-payments`** (+ `references/link-contract.md`) — re-verified; the `WC_Payment_Token_Link::get_payment_method_type()` null quirk (setter writes an undeclared prop) **still** reproduces in 10.8.5, so `get_type() === 'link'` remains the classification rule.
+- **`woocommerce/wc-stripe-subscriptions`** — Stripe 10.8.5, WooCommerce Subscriptions 9.0.1, WooCommerce 11.0.0.
+- **`woocommerce/wcs-health-check-processing`** — WooCommerce 11.0.0 with a new `wp-skills-action-scheduler-version-tested: "4.0.0"` metadata key; CLI example corrected to `wp action-scheduler action list`.
+
+### Updated — version-bump-only re-verification
+
+Re-verified against WooCommerce 11.0.0 with no behavioral change to the guidance: `wc-checkout-block-payment-method` (+ `references/blocks-payment-lifecycle.md`), `wc-coupon-dynamic`, `wc-coupon-types-rules` (+ `references/coupon-contract.md`), `wc-payment-tokens`, `wc-product-search-select`, `wc-sequential-order-numbers-pro`, `wc-shipping-providers`.
+
+### Housekeeping
+
+`woocommerce/README.md` and `plugin-scaffold/README.md` rows rewritten for the new and re-scoped skills; root README structure row extended and counters bumped (skills 216 → 219, plugins unchanged at 28 — the new skills are all `woocommerce`). Four in-batch SKILL.md files had their accent-stripped `wp-skills-author: "Soczo Kristof"` normalized to the canonical `"Soczó Kristóf"` (`wp-action-scheduler`, `wc-stripe-add-payment-method`, `wc-stripe-subscriptions`, `wc-stripe-webhooks`); 12 untouched skills still carry the ASCII form and are left for a separate sweep. `skills-index.json` regenerated. All 35 touched skill folders pass both `node .github/scripts/validate-skill.js --all` (0 errors) and the official `agentskills validate` reference tool.
+
 ## 2026-07-21 (tooling note: sync-skills.sh added)
 
 Added `scripts/sync-skills.sh` — a small consumer helper that syncs the collection (or selected domains) into a local skills directory straight from `skills-index.json`, with no clone and no fork. It is not a skill; see the README ["Staying up to date"](README.md#staying-up-to-date) section for usage and the trust model. Changes to this helper script are not tracked in this changelog — the changelog covers the skill collection itself.

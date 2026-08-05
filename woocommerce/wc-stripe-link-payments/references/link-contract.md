@@ -1,6 +1,6 @@
 # Stripe Link integration contract
 
-Version scope: WooCommerce Stripe Gateway 10.8.4 with WooCommerce 10.9.4. Use this reference when a custom integration lists, stores, selects, deletes, defaults, or migrates Link methods, or changes a subscription to Link.
+Version scope: WooCommerce Stripe Gateway 10.8.5 with WooCommerce 11.0.0. Use this reference when a custom integration lists, stores, selects, deletes, defaults, or migrates Link methods, or changes a subscription to Link.
 
 ## Contents
 
@@ -25,7 +25,7 @@ Version scope: WooCommerce Stripe Gateway 10.8.4 with WooCommerce 10.9.4. Use th
 | Woo token type | `link` | `CC` |
 | Woo gateway ID | `stripe` | `stripe` |
 | Duplicate key | Link email | Stripe card fingerprint |
-| Display | `Stripe Link (email)` | ordinary card display in 10.8.4 |
+| Display | `Stripe Link (email)` | ordinary card display in 10.8.5 |
 
 The local Link class extends base `WC_Payment_Token`, not `WC_Payment_Token_CC`. Its extra data contains only `email`. It has no card brand, last4, expiry, or fingerprint contract.
 
@@ -33,7 +33,7 @@ The plugin maps lowercase token type `link` explicitly through `woocommerce_paym
 
 ### `payment_method_type` accessor caveat
 
-The Link class defines `set_payment_method_type()` and `get_payment_method_type()`, and creation code calls the setter. However, `payment_method_type` is absent from the class's `extra_data`, while `WC_Data::set_prop()` ignores undeclared properties. Runtime verification on 10.8.4 therefore yields:
+The Link class defines `set_payment_method_type()` and `get_payment_method_type()`, and creation code calls the setter. However, `payment_method_type` is absent from the class's `extra_data`, while `WC_Data::set_prop()` ignores undeclared properties. Runtime verification on 10.8.5 therefore yields:
 
 ```text
 get_type()                => "link"

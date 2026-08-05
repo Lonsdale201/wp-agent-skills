@@ -12,7 +12,7 @@
     "skill_file": "SKILL.md"
   },
   "domain_count": 22,
-  "skill_count": 216,
+  "skill_count": 219,
   "domains": [
     {
       "slug": "better-data",
@@ -126,7 +126,7 @@
       "slug": "woocommerce",
       "path": "woocommerce",
       "readme_path": "woocommerce/README.md",
-      "skill_count": 40
+      "skill_count": 43
     },
     {
       "slug": "wordpress",
@@ -3113,7 +3113,7 @@
       "slug": "wp-action-scheduler",
       "name": "wp-action-scheduler",
       "domain": "plugin-scaffold",
-      "description": "Design and review Action Scheduler jobs in WordPress plugins using Action Scheduler 3.9.x public APIs - async, single, recurring, and cron-expression actions; action_scheduler_init load timing; hook/args/group naming; unique and priority parameters; idempotent callbacks; chunked workloads; activation/deactivation cleanup; WooCommerce-bundled or standalone dependency usage; admin and WP-CLI debugging; queue runner limits; and safe operational troubleshooting. Use when a plugin schedules background jobs with as_enqueue_async_action, as_schedule_single_action, as_schedule_recurring_action, as_schedule_cron_action, as_get_scheduled_actions, or integrates with WooCommerce background queues.",
+      "description": "Design and review Action Scheduler jobs in WordPress plugins using Action Scheduler 4.0 public APIs - async, single, recurring, and cron-expression actions; action_scheduler_init load timing; hook/args/group naming; args-aware unique identity and priority; idempotent callbacks; chunked workloads; activation/deactivation cleanup; WooCommerce-bundled or standalone dependency usage; admin and WP-CLI debugging; queue runner limits; failed-action retention; and safe operational troubleshooting. Use when a plugin schedules background jobs with as_enqueue_async_action, as_schedule_single_action, as_schedule_recurring_action, as_schedule_cron_action, as_get_scheduled_actions, or integrates with WooCommerce background queues.",
       "path": "plugin-scaffold/wp-action-scheduler",
       "skill_path": "plugin-scaffold/wp-action-scheduler/SKILL.md",
       "url": "https://raw.githubusercontent.com/Lonsdale201/wp-agent-skills/main/plugin-scaffold/wp-action-scheduler/SKILL.md",
@@ -3121,36 +3121,36 @@
       "html_url": "https://github.com/Lonsdale201/wp-agent-skills/blob/main/plugin-scaffold/wp-action-scheduler/SKILL.md",
       "directory_url": "https://github.com/Lonsdale201/wp-agent-skills/tree/main/plugin-scaffold/wp-action-scheduler",
       "metadata": {
-        "author": "Soczo Kristof",
+        "author": "Soczó Kristóf",
         "contact": "mailto:lonsdale201@hotmail.com",
         "plugin": "action-scheduler",
-        "plugin-version-tested": "3.9.3",
+        "plugin-version-tested": "4.0.0",
         "php-min": "7.2",
-        "last-updated": "2026-04-29"
+        "last-updated": "2026-08-05"
       },
       "resources": [
         {
           "path": "references/api-patterns.md",
           "repo_path": "plugin-scaffold/wp-action-scheduler/references/api-patterns.md",
           "type": "reference",
-          "bytes": 6850,
-          "sha256": "05ed3860582c292c8e59234c885bf62496939f1f375efe727c42bf833649fe4c"
+          "bytes": 6938,
+          "sha256": "c0d8b0c5c9fe8640e8571f037a2df04d77cea1972f47e7801dd82a808378ceea"
         },
         {
           "path": "references/operational-debugging.md",
           "repo_path": "plugin-scaffold/wp-action-scheduler/references/operational-debugging.md",
           "type": "reference",
-          "bytes": 5929,
-          "sha256": "036402658fddc88910fe8f6bfda2d3097ca52fd9f2537c74f48cdca076ecfcec"
+          "bytes": 6448,
+          "sha256": "25dfeca84d53dc3ef5e5dce10103ad9dd02637d65b59659e1c44e728ce290975"
         }
       ],
       "has_reference": true,
       "has_examples": false,
       "has_scripts": false,
       "skill_md": {
-        "bytes": 16026,
-        "lines": 401,
-        "sha256": "53223f9364b10201185e505a7ecf9a3ac8d7bef8d7122000a28acd693d97b5ad"
+        "bytes": 17619,
+        "lines": 430,
+        "sha256": "9bb10837fbe18cf6fa16ccd9592f0791fe539867618ca62d62b1e48ee6c2a3f9"
       }
     },
     {
@@ -3257,16 +3257,24 @@
         "plugin": "wordpress",
         "plugin-version-tested": "6.5 - 6.9",
         "php-min": "7.4",
-        "last-updated": "2026-04-28"
+        "last-updated": "2026-08-05"
       },
-      "resources": [],
-      "has_reference": false,
+      "resources": [
+        {
+          "path": "references/native-wp-cron-patterns.md",
+          "repo_path": "plugin-scaffold/wp-plugin-cron/references/native-wp-cron-patterns.md",
+          "type": "reference",
+          "bytes": 2708,
+          "sha256": "b6e7afb7ec14ebb04d03c7314c0d1afad4023cc206b6d7d2561b3e7cea4e7bc1"
+        }
+      ],
+      "has_reference": true,
       "has_examples": false,
       "has_scripts": false,
       "skill_md": {
-        "bytes": 17607,
-        "lines": 334,
-        "sha256": "d75871741792a7081c894922114c8d8024281709938268405c15b720631638e2"
+        "bytes": 15049,
+        "lines": 262,
+        "sha256": "1148875354d246e4f60407daf9a05d912656a8fa457dc46d7bf21b5941a91f54"
       }
     },
     {
@@ -4568,10 +4576,47 @@
       }
     },
     {
+      "slug": "wc-abandoned-cart-recovery",
+      "name": "wc-abandoned-cart-recovery",
+      "domain": "woocommerce",
+      "description": "Integrate with or audit WooCommerce 11.0's experimental abandoned-cart recovery email. Covers feature and email gates, manual versus two-hour automatic sends, eligible order statuses, duplicate-provider suppression, recovery URL filtering, unsubscribe/privacy behavior, Action Scheduler boundaries, HPOS-safe order access, and safe tests. Use when an extension already sends cart recovery mail, needs to suppress Woo duplicates, changes recovery eligibility/URLs, observes recovery sends, or audits pending and checkout-draft orders.",
+      "path": "woocommerce/wc-abandoned-cart-recovery",
+      "skill_path": "woocommerce/wc-abandoned-cart-recovery/SKILL.md",
+      "url": "https://raw.githubusercontent.com/Lonsdale201/wp-agent-skills/main/woocommerce/wc-abandoned-cart-recovery/SKILL.md",
+      "raw_url": "https://raw.githubusercontent.com/Lonsdale201/wp-agent-skills/main/woocommerce/wc-abandoned-cart-recovery/SKILL.md",
+      "html_url": "https://github.com/Lonsdale201/wp-agent-skills/blob/main/woocommerce/wc-abandoned-cart-recovery/SKILL.md",
+      "directory_url": "https://github.com/Lonsdale201/wp-agent-skills/tree/main/woocommerce/wc-abandoned-cart-recovery",
+      "metadata": {
+        "author": "Soczó Kristóf",
+        "contact": "mailto:lonsdale201@hotmail.com",
+        "plugin": "woocommerce",
+        "plugin-version-tested": "11.0.0",
+        "php-min": "7.4",
+        "last-updated": "2026-08-05"
+      },
+      "resources": [
+        {
+          "path": "agents/openai.yaml",
+          "repo_path": "woocommerce/wc-abandoned-cart-recovery/agents/openai.yaml",
+          "type": "resource",
+          "bytes": 257,
+          "sha256": "81a8ca8fc059fd7c69550f45996eac4d486f89e2a068dbb245f76d9052e79381"
+        }
+      ],
+      "has_reference": false,
+      "has_examples": false,
+      "has_scripts": false,
+      "skill_md": {
+        "bytes": 7883,
+        "lines": 144,
+        "sha256": "c008d278e194c98684c1fc9a88537bc54bbcdcb20815c1cf794444e8d960ad69"
+      }
+    },
+    {
       "slug": "wc-action-scheduler-jobs",
       "name": "wc-action-scheduler-jobs",
       "domain": "woocommerce",
-      "description": "Queue and run WooCommerce background jobs with Action Scheduler. Covers async, single, recurring and cron actions, exact-argument checks, groups, JSON args and `array_values()` invocation, the delivery contract (due is not run; no exactly-once or FIFO), remote idempotency keys, bounded retries with backoff and failure telemetry, the AS 3.9.3 `action_scheduler_ensure_recurring_actions` daily repair hook behind `as_supports()`, WP-CLI diagnostics, lifecycle scheduling, batching, and the WC 10.9.4 DB-store rule that `$unique` guards pending/running actions by hook and group rather than argument set. Use when moving slow order/product/customer work out of requests or status hooks.",
+      "description": "Queue and run WooCommerce background jobs with Action Scheduler 4.0. Covers async, single, recurring and cron actions, args-aware `$unique` identity, exact-argument checks, groups, JSON args and positional callback delivery, at-least-once execution, remote idempotency, bounded retries, failed-action retention, the recurring-action repair hook, WP-CLI diagnostics, lifecycle scheduling, and batching. Use for `as_enqueue_async_action`, `as_schedule_single_action`, duplicate jobs, failed queues, or slow work moved out of WooCommerce requests and status hooks.",
       "path": "woocommerce/wc-action-scheduler-jobs",
       "skill_path": "woocommerce/wc-action-scheduler-jobs/SKILL.md",
       "url": "https://raw.githubusercontent.com/Lonsdale201/wp-agent-skills/main/woocommerce/wc-action-scheduler-jobs/SKILL.md",
@@ -4582,18 +4627,26 @@
         "author": "Soczó Kristóf",
         "contact": "mailto:lonsdale201@hotmail.com",
         "plugin": "woocommerce",
-        "plugin-version-tested": "10.9.4",
+        "plugin-version-tested": "11.0.0",
         "php-min": "7.4",
-        "last-updated": "2026-07-13"
+        "last-updated": "2026-08-05"
       },
-      "resources": [],
-      "has_reference": false,
+      "resources": [
+        {
+          "path": "references/retries-batches-cli.md",
+          "repo_path": "woocommerce/wc-action-scheduler-jobs/references/retries-batches-cli.md",
+          "type": "reference",
+          "bytes": 4088,
+          "sha256": "9ceb68a9b968b9cb306e0764bb003e5fafd7a26c57e1a36ce8db93f3eac0b6cb"
+        }
+      ],
+      "has_reference": true,
       "has_examples": false,
       "has_scripts": false,
       "skill_md": {
-        "bytes": 17407,
-        "lines": 343,
-        "sha256": "2f77b50db3e16f01ecb0567fc46c015871e281f0ac265dd5f81d194fa6e86465"
+        "bytes": 16585,
+        "lines": 263,
+        "sha256": "b91161c103e7d9e8af2df141c49110ef2c278daf1c0624276d7590025a1e1b2f"
       }
     },
     {
@@ -4611,18 +4664,18 @@
         "author": "Soczó Kristóf",
         "contact": "mailto:lonsdale201@hotmail.com",
         "plugin": "woocommerce",
-        "plugin-version-tested": "10.9.4",
+        "plugin-version-tested": "11.0.0",
         "php-min": "7.4",
-        "last-updated": "2026-07-10"
+        "last-updated": "2026-08-05"
       },
       "resources": [],
       "has_reference": false,
       "has_examples": false,
       "has_scripts": false,
       "skill_md": {
-        "bytes": 7147,
-        "lines": 186,
-        "sha256": "acb4ab46c61712783ff94c9d15e626b00733fa0838615eda7f54e107fd2ff4e5"
+        "bytes": 7778,
+        "lines": 192,
+        "sha256": "6cbcdf5f1686069f6b313707dbbf2d98f355ce6c97ed9205c80861ab9c0ba76a"
       }
     },
     {
@@ -4640,18 +4693,26 @@
         "author": "Soczó Kristóf",
         "contact": "mailto:lonsdale201@hotmail.com",
         "plugin": "woocommerce",
-        "plugin-version-tested": "10.9.4",
+        "plugin-version-tested": "11.0.0",
         "php-min": "7.4",
-        "last-updated": "2026-07-10"
+        "last-updated": "2026-08-05"
       },
-      "resources": [],
-      "has_reference": false,
+      "resources": [
+        {
+          "path": "references/phone-validation.md",
+          "repo_path": "woocommerce/wc-cart-checkout-classic/references/phone-validation.md",
+          "type": "reference",
+          "bytes": 1213,
+          "sha256": "cfa913e0679b18b74469fa65947c3b2ae88d27400e29e5b7bec801620ac66b58"
+        }
+      ],
+      "has_reference": true,
       "has_examples": false,
       "has_scripts": false,
       "skill_md": {
-        "bytes": 11313,
-        "lines": 282,
-        "sha256": "abd26e53c821c99343e7395030d2692fc4437d6fefee32ebd752271f9bdd16a0"
+        "bytes": 11985,
+        "lines": 287,
+        "sha256": "99f16a5c548fc49286736c81390bc3cb93da4a9ad978f0e3e23df3f5188234c7"
       }
     },
     {
@@ -4669,9 +4730,9 @@
         "author": "Soczó Kristóf",
         "contact": "mailto:lonsdale201@hotmail.com",
         "plugin": "woocommerce",
-        "plugin-version-tested": "10.9.4",
+        "plugin-version-tested": "11.0.0",
         "php-min": "7.4",
-        "last-updated": "2026-07-20"
+        "last-updated": "2026-08-05"
       },
       "resources": [
         {
@@ -4686,7 +4747,7 @@
           "repo_path": "woocommerce/wc-checkout-block-payment-method/references/blocks-payment-lifecycle.md",
           "type": "reference",
           "bytes": 6797,
-          "sha256": "69696b35ba1e702b154cfd10aec587291afd6461ef2e1706cce4312130b2474c"
+          "sha256": "e941ea40bace0a1582c699cacf638dda30b79b648acf614efd9656259ca0b58c"
         }
       ],
       "has_reference": true,
@@ -4695,7 +4756,7 @@
       "skill_md": {
         "bytes": 11407,
         "lines": 233,
-        "sha256": "6c2bcf150410625c47ae4871f2b6f07c5e5608f30bdd626fc286284859a7fb70"
+        "sha256": "216d818d75b9446e14cbed98e3d823ca7a3c4cbaca9e9760db6175669cb716fb"
       }
     },
     {
@@ -4713,9 +4774,9 @@
         "author": "Soczó Kristóf",
         "contact": "mailto:lonsdale201@hotmail.com",
         "plugin": "woocommerce",
-        "plugin-version-tested": "10.9.4",
+        "plugin-version-tested": "11.0.0",
         "php-min": "7.4",
-        "last-updated": "2026-07-20"
+        "last-updated": "2026-08-05"
       },
       "resources": [],
       "has_reference": false,
@@ -4724,7 +4785,7 @@
       "skill_md": {
         "bytes": 12046,
         "lines": 240,
-        "sha256": "cefbc586bdade59a2742dda3318658d492109587f3d91e5b0ce230e2aa7fb0b7"
+        "sha256": "32df73fdca18d0a0b5df443867a046e51ebead2b509adf11887b1fda5b9b5bf6"
       }
     },
     {
@@ -4742,9 +4803,9 @@
         "author": "Soczó Kristóf",
         "contact": "mailto:lonsdale201@hotmail.com",
         "plugin": "woocommerce",
-        "plugin-version-tested": "10.9.4",
+        "plugin-version-tested": "11.0.0",
         "php-min": "7.4",
-        "last-updated": "2026-07-20"
+        "last-updated": "2026-08-05"
       },
       "resources": [
         {
@@ -4759,7 +4820,7 @@
           "repo_path": "woocommerce/wc-coupon-types-rules/references/coupon-contract.md",
           "type": "reference",
           "bytes": 16130,
-          "sha256": "feafee3a2e8ad794b6e188f5f6721f87d41485009f454c5c4fcb2ce8ca4880d7"
+          "sha256": "278cf882f33b157fb5baa0d967450f3a9c852a7998173250f510f0e515fb46fc"
         }
       ],
       "has_reference": true,
@@ -4768,14 +4829,14 @@
       "skill_md": {
         "bytes": 12185,
         "lines": 219,
-        "sha256": "fc35a79ce80e93f2bb172ba2aa9f1d71e0dc3873c2179868688df64f4103b182"
+        "sha256": "a0d7276c41f9da50cbd15cac1f5d670343afd860b19830fbf3d1887fc4736607"
       }
     },
     {
       "slug": "wc-customer-and-sessions",
       "name": "wc-customer-and-sessions",
       "domain": "woocommerce",
-      "description": "Use WooCommerce customer objects and sessions without confusing checkout-session state with persistent account data. Covers `WC()->customer`, `WC_Customer( $user_id )`, `WC()->session`, cookie creation, shutdown persistence, guest-to-user migration, Cart-Token sessions, safe session values, and the experimental empty-session cleanup. Use when storing cart-flow state, changing billing or shipping data, creating guest sessions, or debugging values that disappear or unexpectedly alter checkout only.",
+      "description": "Use WooCommerce customer objects and sessions without confusing checkout-session state with persistent account data. Covers the `WC()` customer and session properties, `WC_Customer( $user_id )`, cookie creation, shutdown persistence, verified guest-order linking in WooCommerce 11.0, Cart-Token sessions, safe session values, and empty-session cleanup. Use when storing cart-flow state, changing billing or shipping data, linking guest orders, creating guest sessions, or debugging values that disappear or unexpectedly alter checkout only.",
       "path": "woocommerce/wc-customer-and-sessions",
       "skill_path": "woocommerce/wc-customer-and-sessions/SKILL.md",
       "url": "https://raw.githubusercontent.com/Lonsdale201/wp-agent-skills/main/woocommerce/wc-customer-and-sessions/SKILL.md",
@@ -4786,18 +4847,18 @@
         "author": "Soczó Kristóf",
         "contact": "mailto:lonsdale201@hotmail.com",
         "plugin": "woocommerce",
-        "plugin-version-tested": "10.9.4",
+        "plugin-version-tested": "11.0.0",
         "php-min": "7.4",
-        "last-updated": "2026-07-10"
+        "last-updated": "2026-08-05"
       },
       "resources": [],
       "has_reference": false,
       "has_examples": false,
       "has_scripts": false,
       "skill_md": {
-        "bytes": 8107,
-        "lines": 189,
-        "sha256": "27f5ccd5ecf3ddf1c0e09868b67e3d8d6fe63d1508b8c262c6979daedf087408"
+        "bytes": 10219,
+        "lines": 221,
+        "sha256": "e106d81d1878e4e0a29edf84d7953f6ec6c867a20fadf10002c906b25f50fe41"
       }
     },
     {
@@ -4815,9 +4876,9 @@
         "author": "Soczó Kristóf",
         "contact": "mailto:lonsdale201@hotmail.com",
         "plugin": "woocommerce",
-        "plugin-version-tested": "10.9.4",
+        "plugin-version-tested": "11.0.0",
         "php-min": "7.4",
-        "last-updated": "2026-07-20"
+        "last-updated": "2026-08-05"
       },
       "resources": [
         {
@@ -4831,24 +4892,24 @@
           "path": "references/core-download-contract.md",
           "repo_path": "woocommerce/wc-downloadable-products/references/core-download-contract.md",
           "type": "reference",
-          "bytes": 10831,
-          "sha256": "44799d7558dd94e895808ee1b4e99e3605186d8df43856af026da9f40c9409f3"
+          "bytes": 11255,
+          "sha256": "4b2645d4f22724cf38fc77b2f7b7250767f6bf571788b5b1cb2f37bb6eb86637"
         }
       ],
       "has_reference": true,
       "has_examples": false,
       "has_scripts": false,
       "skill_md": {
-        "bytes": 8969,
-        "lines": 159,
-        "sha256": "f82952e02454e0109e673eccf6efd695af84e94f1f674870bdfd0c99e7406af0"
+        "bytes": 9346,
+        "lines": 161,
+        "sha256": "b92e857b7e677d08d3355b6cf3bd6a33a11f449cb983853271217e27f6b86bac"
       }
     },
     {
       "slug": "wc-emails-classic",
       "name": "wc-emails-classic",
       "domain": "woocommerce",
-      "description": "Add or customize classic WooCommerce transactional emails with `WC_Email`. Covers registration, constructor timing, templates and theme overrides, status notification triggers, locale handling, the WooCommerce 10.9 `send_notification()` guard, disabled/skipped/sent outcome hooks, HPOS-safe order data, and one-off styled mail. Use when adding an email type, overriding email templates, or debugging sends that bypass settings and logging.",
+      "description": "Add or customize classic WooCommerce transactional emails with `WC_Email`. Covers registration, constructor timing, templates and theme overrides, status notification triggers, locale handling, `send_notification()` guards, disabled/skipped/sent outcome hooks, WooCommerce 11.0 preview shipping controls, HPOS-safe order data, and one-off styled mail. Use when adding an email type, overriding email templates, customizing previews, or debugging sends that bypass settings and logging.",
       "path": "woocommerce/wc-emails-classic",
       "skill_path": "woocommerce/wc-emails-classic/SKILL.md",
       "url": "https://raw.githubusercontent.com/Lonsdale201/wp-agent-skills/main/woocommerce/wc-emails-classic/SKILL.md",
@@ -4859,25 +4920,69 @@
         "author": "Soczó Kristóf",
         "contact": "mailto:lonsdale201@hotmail.com",
         "plugin": "woocommerce",
-        "plugin-version-tested": "10.9.4",
+        "plugin-version-tested": "11.0.0",
         "php-min": "7.4",
-        "last-updated": "2026-07-10"
+        "last-updated": "2026-08-05"
       },
       "resources": [],
       "has_reference": false,
       "has_examples": false,
       "has_scripts": false,
       "skill_md": {
-        "bytes": 8718,
-        "lines": 221,
-        "sha256": "dffe2eccf707d30a48144637cd8b630a2154a008dd36744d2cfd41cb0cf1a6c1"
+        "bytes": 10766,
+        "lines": 266,
+        "sha256": "f38722f8fc3de30661087f8d7494f0d4a9fd4845e6599db98f35ca5f1a522f44"
+      }
+    },
+    {
+      "slug": "wc-extension-upgrade-audit",
+      "name": "wc-extension-upgrade-audit",
+      "domain": "woocommerce",
+      "description": "Audit a WooCommerce extension against a target WooCommerce release by diffing installed source, mapping public contracts, finding internal API dependencies, and running version-aware smoke tests. Covers hooks, CRUD timing, REST and Store API schemas, feature gates, templates, taxonomies, Action Scheduler, admin surfaces, caches, and companion gateways. Use before raising `WC tested up to`, after updating WooCommerce, or when an extension works on one Woo version but changes behavior on another.",
+      "path": "woocommerce/wc-extension-upgrade-audit",
+      "skill_path": "woocommerce/wc-extension-upgrade-audit/SKILL.md",
+      "url": "https://raw.githubusercontent.com/Lonsdale201/wp-agent-skills/main/woocommerce/wc-extension-upgrade-audit/SKILL.md",
+      "raw_url": "https://raw.githubusercontent.com/Lonsdale201/wp-agent-skills/main/woocommerce/wc-extension-upgrade-audit/SKILL.md",
+      "html_url": "https://github.com/Lonsdale201/wp-agent-skills/blob/main/woocommerce/wc-extension-upgrade-audit/SKILL.md",
+      "directory_url": "https://github.com/Lonsdale201/wp-agent-skills/tree/main/woocommerce/wc-extension-upgrade-audit",
+      "metadata": {
+        "author": "Soczó Kristóf",
+        "contact": "mailto:lonsdale201@hotmail.com",
+        "plugin": "woocommerce",
+        "plugin-version-tested": "11.0.0",
+        "php-min": "7.4",
+        "last-updated": "2026-08-05"
+      },
+      "resources": [
+        {
+          "path": "agents/openai.yaml",
+          "repo_path": "woocommerce/wc-extension-upgrade-audit/agents/openai.yaml",
+          "type": "resource",
+          "bytes": 263,
+          "sha256": "0bc2232cb9487b660f776a5c5c750f17b86d0c8e8b82ee490619576895e2f7c8"
+        },
+        {
+          "path": "references/woocommerce-11.md",
+          "repo_path": "woocommerce/wc-extension-upgrade-audit/references/woocommerce-11.md",
+          "type": "reference",
+          "bytes": 8176,
+          "sha256": "07e4cce1bb153f9ccea4e943dfcbe6a5c738f6f66ab3728aba1893b690ec740a"
+        }
+      ],
+      "has_reference": true,
+      "has_examples": false,
+      "has_scripts": false,
+      "skill_md": {
+        "bytes": 5198,
+        "lines": 96,
+        "sha256": "3e072217c8a306f0e5a696ed36557dfb5d592049b1ef0c676d7d73ffa4508cc9"
       }
     },
     {
       "slug": "wc-hpos-compatibility",
       "name": "wc-hpos-compatibility",
       "domain": "woocommerce",
-      "description": "Make WooCommerce order integrations compatible with High-Performance Order Storage. Covers compatibility declaration, order CRUD and queries, authoritative storage, sync mode, HPOS-aware admin list/meta-box hooks, cache-safe metadata access, migrations, and dual-mode testing. Use when a plugin reads or writes orders, queries order metadata, adds order admin UI, runs SQL, or declares `custom_order_tables` compatibility.",
+      "description": "Make WooCommerce order integrations compatible with High-Performance Order Storage. Covers compatibility declaration, order CRUD and queries, authoritative storage, sync-setting versus fully-synced checks, HPOS-aware admin list/meta-box hooks, cache-safe metadata access, large-store query optimization boundaries, migrations, and dual-mode testing. Use when a plugin reads or writes orders, queries order metadata, adds order admin UI, runs SQL, or declares `custom_order_tables` compatibility.",
       "path": "woocommerce/wc-hpos-compatibility",
       "skill_path": "woocommerce/wc-hpos-compatibility/SKILL.md",
       "url": "https://raw.githubusercontent.com/Lonsdale201/wp-agent-skills/main/woocommerce/wc-hpos-compatibility/SKILL.md",
@@ -4888,25 +4993,25 @@
         "author": "Soczó Kristóf",
         "contact": "mailto:lonsdale201@hotmail.com",
         "plugin": "woocommerce",
-        "plugin-version-tested": "10.9.4",
+        "plugin-version-tested": "11.0.0",
         "php-min": "7.4",
-        "last-updated": "2026-07-10"
+        "last-updated": "2026-08-05"
       },
       "resources": [],
       "has_reference": false,
       "has_examples": false,
       "has_scripts": false,
       "skill_md": {
-        "bytes": 8371,
-        "lines": 212,
-        "sha256": "db013fb1943d9729bb1a70323fc1d79fd134184523c8c67d1ac877ac9d589315"
+        "bytes": 10652,
+        "lines": 231,
+        "sha256": "7222a21a3f1dedcfb0c59791bffbb181b919fa31944c5a46e066ca956ecbbf34"
       }
     },
     {
       "slug": "wc-logging",
       "name": "wc-logging",
       "domain": "woocommerce",
-      "description": "Add production-safe WooCommerce logs with `wc_get_logger()`. Covers stable sources, severity levels and thresholds, structured context, correlation IDs, sensitive-data redaction, handler and retention behavior, volume control, custom handlers, and why logs are not durable business state. Use when adding diagnostics to gateways, webhooks, background jobs, imports, REST endpoints, or order integrations.",
+      "description": "Add production-safe WooCommerce logs with `wc_get_logger()`. Covers stable sources, severity levels and thresholds, structured JSON context, correlation IDs, sensitive-data redaction, WooCommerce 11.0 file-v2 formatting and batched retention cleanup, volume control, custom handlers, and why logs are not durable business state. Use when adding diagnostics to gateways, webhooks, background jobs, imports, REST endpoints, or order integrations.",
       "path": "woocommerce/wc-logging",
       "skill_path": "woocommerce/wc-logging/SKILL.md",
       "url": "https://raw.githubusercontent.com/Lonsdale201/wp-agent-skills/main/woocommerce/wc-logging/SKILL.md",
@@ -4917,18 +5022,18 @@
         "author": "Soczó Kristóf",
         "contact": "mailto:lonsdale201@hotmail.com",
         "plugin": "woocommerce",
-        "plugin-version-tested": "10.9.4",
+        "plugin-version-tested": "11.0.0",
         "php-min": "7.4",
-        "last-updated": "2026-07-10"
+        "last-updated": "2026-08-05"
       },
       "resources": [],
       "has_reference": false,
       "has_examples": false,
       "has_scripts": false,
       "skill_md": {
-        "bytes": 8841,
+        "bytes": 9286,
         "lines": 183,
-        "sha256": "0e33fd316f60c1ac529db62b842fac8b10b22c7223ccc54733789cbd1908bd70"
+        "sha256": "ecd03f2130dd8564f7c373ac83c9886668fdc200584effeb8433941011593b3e"
       }
     },
     {
@@ -4946,18 +5051,18 @@
         "author": "Soczó Kristóf",
         "contact": "mailto:lonsdale201@hotmail.com",
         "plugin": "woocommerce",
-        "plugin-version-tested": "10.9.4",
+        "plugin-version-tested": "11.0.0",
         "php-min": "7.4",
-        "last-updated": "2026-07-15"
+        "last-updated": "2026-08-05"
       },
       "resources": [],
       "has_reference": false,
       "has_examples": false,
       "has_scripts": false,
       "skill_md": {
-        "bytes": 11495,
-        "lines": 248,
-        "sha256": "58b449668a5afaf873cfafeca17ed96be9b8f9d2851792ca646c8c223d9005d8"
+        "bytes": 14420,
+        "lines": 277,
+        "sha256": "a9ae912b1b4d2b60c75abcfb46f355ca5ed01bae2cd0d1d3a92612b288ed7ecb"
       }
     },
     {
@@ -4975,18 +5080,18 @@
         "author": "Soczó Kristóf",
         "contact": "mailto:lonsdale201@hotmail.com",
         "plugin": "woocommerce",
-        "plugin-version-tested": "10.9.4",
+        "plugin-version-tested": "11.0.0",
         "php-min": "7.4",
-        "last-updated": "2026-07-20"
+        "last-updated": "2026-08-05"
       },
       "resources": [],
       "has_reference": false,
       "has_examples": false,
       "has_scripts": false,
       "skill_md": {
-        "bytes": 10677,
+        "bytes": 10701,
         "lines": 215,
-        "sha256": "e36f50e1593c9627bdab213d80a41a86f1e225b69b206731a835afcbfadca16d"
+        "sha256": "4078850834275799fa27ec27c4c9c32a7a07df4554961da5da69cc9e4de3b306"
       }
     },
     {
@@ -5004,25 +5109,25 @@
         "author": "Soczó Kristóf",
         "contact": "mailto:lonsdale201@hotmail.com",
         "plugin": "woocommerce",
-        "plugin-version-tested": "10.9.4",
+        "plugin-version-tested": "11.0.0",
         "php-min": "7.4",
-        "last-updated": "2026-07-20"
+        "last-updated": "2026-08-05"
       },
       "resources": [],
       "has_reference": false,
       "has_examples": false,
       "has_scripts": false,
       "skill_md": {
-        "bytes": 13106,
+        "bytes": 13115,
         "lines": 299,
-        "sha256": "2739516c637448e455a70bca75f2d781eca543f565f3c74479aa2b29e8af1c72"
+        "sha256": "c2b28df18cb0c4e8ee1696a872f8d98273ca2c78fd34cf4f78f87aa9fcbf94ea"
       }
     },
     {
       "slug": "wc-product-attribute-swatches",
       "name": "wc-product-attribute-swatches",
       "domain": "woocommerce",
-      "description": "Build or audit WooCommerce 10.9+ product attribute swatch integrations around the experimental `wc-visual` attribute type. Covers feature-flag gating, global `pa_*` attribute taxonomy type, color/image term meta, Store API `__experimental_visual` / `__experimentalVisual`, classic variation dropdown fallbacks, and safe plugin/theme rendering. Use when code or requests mention variation swatches, visual attributes, `wc-visual`, `wc_visual_attribute_type`, `term_color`, `term_image`, `__experimental_visual`, `ProductAttributeTerms`, or custom swatch UI.",
+      "description": "Build or audit WooCommerce product attribute swatch integrations around the experimental `wc-visual` attribute type. Covers feature gating, global `pa_*` attribute taxonomies, the WooCommerce 11 slug byte limit, color/image term meta, visual admin search results, Store API `__experimental_visual` / `__experimentalVisual`, classic dropdown fallbacks, and safe rendering. Use for variation swatches, visual attributes, `wc-visual`, `term_color`, `term_image`, `woocommerce_json_search_found_product_attribute_terms`, or custom swatch UI.",
       "path": "woocommerce/wc-product-attribute-swatches",
       "skill_path": "woocommerce/wc-product-attribute-swatches/SKILL.md",
       "url": "https://raw.githubusercontent.com/Lonsdale201/wp-agent-skills/main/woocommerce/wc-product-attribute-swatches/SKILL.md",
@@ -5033,18 +5138,63 @@
         "author": "Soczó Kristóf",
         "contact": "mailto:lonsdale201@hotmail.com",
         "plugin": "woocommerce",
-        "plugin-version-tested": "10.9.4",
+        "plugin-version-tested": "11.0.0",
         "php-min": "7.4",
-        "last-updated": "2026-07-10"
+        "last-updated": "2026-08-05"
       },
-      "resources": [],
+      "resources": [
+        {
+          "path": "references/classic-rendering.md",
+          "repo_path": "woocommerce/wc-product-attribute-swatches/references/classic-rendering.md",
+          "type": "reference",
+          "bytes": 4101,
+          "sha256": "354508b3a45768a73969c7dfe33dedbc1b20167a831874f9c57813aefc4ef93e"
+        }
+      ],
+      "has_reference": true,
+      "has_examples": false,
+      "has_scripts": false,
+      "skill_md": {
+        "bytes": 11259,
+        "lines": 215,
+        "sha256": "dd15faf00fc65d009704e5e1593962e185adb1ebadf5c154f43e7c671a1b3fe2"
+      }
+    },
+    {
+      "slug": "wc-product-crud-cache",
+      "name": "wc-product-crud-cache",
+      "domain": "woocommerce",
+      "description": "Read and write WooCommerce products safely through `WC_Product` CRUD while accounting for the WooCommerce 11.0 `product_instance_caching` request cache. Covers view versus edit context, save and invalidation boundaries, direct WordPress meta writes, raw SQL hazards, variation-parent synchronization, taxonomy recount filtering, bulk jobs, and tests with the feature both enabled and disabled. Use when code calls `wc_get_product()`, mutates product or variation data, imports catalogs, changes product term counts, reports stale values, or depends on repeated product loads returning fresh objects.",
+      "path": "woocommerce/wc-product-crud-cache",
+      "skill_path": "woocommerce/wc-product-crud-cache/SKILL.md",
+      "url": "https://raw.githubusercontent.com/Lonsdale201/wp-agent-skills/main/woocommerce/wc-product-crud-cache/SKILL.md",
+      "raw_url": "https://raw.githubusercontent.com/Lonsdale201/wp-agent-skills/main/woocommerce/wc-product-crud-cache/SKILL.md",
+      "html_url": "https://github.com/Lonsdale201/wp-agent-skills/blob/main/woocommerce/wc-product-crud-cache/SKILL.md",
+      "directory_url": "https://github.com/Lonsdale201/wp-agent-skills/tree/main/woocommerce/wc-product-crud-cache",
+      "metadata": {
+        "author": "Soczó Kristóf",
+        "contact": "mailto:lonsdale201@hotmail.com",
+        "plugin": "woocommerce",
+        "plugin-version-tested": "11.0.0",
+        "php-min": "7.4",
+        "last-updated": "2026-08-05"
+      },
+      "resources": [
+        {
+          "path": "agents/openai.yaml",
+          "repo_path": "woocommerce/wc-product-crud-cache/agents/openai.yaml",
+          "type": "resource",
+          "bytes": 260,
+          "sha256": "4a6468282af118d105da3972745e5ac61f00b4ed12b6894bd75162330a4b38ae"
+        }
+      ],
       "has_reference": false,
       "has_examples": false,
       "has_scripts": false,
       "skill_md": {
-        "bytes": 13815,
-        "lines": 303,
-        "sha256": "6243c08a92dde961159bdc0f1f650a8d54065c39d33fabb72317b87cca0b3599"
+        "bytes": 7086,
+        "lines": 142,
+        "sha256": "5685420fdd4f9ae3db0e188f07aed629c2e3c8775c8b21d67d78d596987874f7"
       }
     },
     {
@@ -5062,9 +5212,9 @@
         "author": "Soczó Kristóf",
         "contact": "mailto:lonsdale201@hotmail.com",
         "plugin": "woocommerce",
-        "plugin-version-tested": "10.9.4",
+        "plugin-version-tested": "11.0.0",
         "php-min": "7.4",
-        "last-updated": "2026-07-10"
+        "last-updated": "2026-08-05"
       },
       "resources": [],
       "has_reference": false,
@@ -5073,14 +5223,14 @@
       "skill_md": {
         "bytes": 16356,
         "lines": 267,
-        "sha256": "90ad652d21488703ed3d17f7e435f3020b06f2f4b89dee70298804b23d97b5e3"
+        "sha256": "2dd3c5c7ae8098d14d27df4e504d1f388ab92d87609e71100a873426d7b2a77f"
       }
     },
     {
       "slug": "wc-rest-api-v4",
       "name": "wc-rest-api-v4",
       "domain": "woocommerce",
-      "description": "Audit WooCommerce's source-gated `wc/v4` REST API. In WooCommerce 10.9.4 the core v4 controllers exist but the release build sets `rest-api-v4` false, so core routes are not registered by default. Covers runtime discovery, safe v3 fallback, latent v4 routes, settings paths, hook prefixes, authentication, fulfillments, and internal caching. Use when code targets `/wc/v4` or assumes source files mean a live public API.",
+      "description": "Audit WooCommerce's source-gated `wc/v4` REST API. In WooCommerce 11.0.0 the core v4 controllers exist but the release build still sets `rest-api-v4` false, so core routes are not registered by default. Covers runtime discovery, safe v3 fallback, latent routes including refund preview, settings paths, hook prefixes, authentication, fulfillments, and internal caching. Use when code targets `/wc/v4` or assumes source files mean a live public API.",
       "path": "woocommerce/wc-rest-api-v4",
       "skill_path": "woocommerce/wc-rest-api-v4/SKILL.md",
       "url": "https://raw.githubusercontent.com/Lonsdale201/wp-agent-skills/main/woocommerce/wc-rest-api-v4/SKILL.md",
@@ -5091,33 +5241,33 @@
         "author": "Soczó Kristóf",
         "contact": "mailto:lonsdale201@hotmail.com",
         "plugin": "woocommerce",
-        "plugin-version-tested": "10.9.4",
+        "plugin-version-tested": "11.0.0",
         "php-min": "7.4",
-        "last-updated": "2026-07-10"
+        "last-updated": "2026-08-05"
       },
       "resources": [
         {
           "path": "reference.md",
           "repo_path": "woocommerce/wc-rest-api-v4/reference.md",
           "type": "reference",
-          "bytes": 3023,
-          "sha256": "c184013bcad6157e6cebecd95e6549bfb092598c7c01ce0dbd192005b71431db"
+          "bytes": 3074,
+          "sha256": "339b28f8b1c31d729a094d3853d2a6983f650b777fb59ccdde999eed22cf578f"
         }
       ],
       "has_reference": true,
       "has_examples": false,
       "has_scripts": false,
       "skill_md": {
-        "bytes": 10513,
-        "lines": 222,
-        "sha256": "36fb9e70c7cb9f6115bc46dc9acfea7f8c7f1c3e4e679a6f064a37c053026050"
+        "bytes": 11741,
+        "lines": 242,
+        "sha256": "6c962205cd967a7e9f196e4ba84745c8942eee99114f9b2dec396e5232098f3e"
       }
     },
     {
       "slug": "wc-sequential-order-numbers-pro",
       "name": "wc-sequential-order-numbers-pro",
       "domain": "woocommerce",
-      "description": "Build or audit compatibility with WooCommerce Sequential Order Numbers Pro. Use when code prints, stores, searches, imports, exports, invoices, emails, syncs, or filters WooCommerce order numbers, especially around $order->get_order_number(), wc_seq_order_number_pro(), find_order_by_order_number(), _order_number, _order_number_formatted, wc_sequential_order_numbers_formatted_order_number, HPOS order meta, REST-created orders, Checkout Block draft orders, free-order sequences, or WooCommerce Subscriptions renewal orders.",
+      "description": "Build or audit compatibility with WooCommerce Sequential Order Numbers Pro. Use when code prints, stores, searches, imports, exports, invoices, emails, syncs, or filters WooCommerce order numbers, especially around the order object's get_order_number(), wc_seq_order_number_pro(), find_order_by_order_number(), _order_number, _order_number_formatted, wc_sequential_order_numbers_formatted_order_number, HPOS order meta, REST-created orders, Checkout Block draft orders, free-order sequences, or WooCommerce Subscriptions renewal orders.",
       "path": "woocommerce/wc-sequential-order-numbers-pro",
       "skill_path": "woocommerce/wc-sequential-order-numbers-pro/SKILL.md",
       "url": "https://raw.githubusercontent.com/Lonsdale201/wp-agent-skills/main/woocommerce/wc-sequential-order-numbers-pro/SKILL.md",
@@ -5147,16 +5297,16 @@
       "has_examples": false,
       "has_scripts": false,
       "skill_md": {
-        "bytes": 10756,
+        "bytes": 10767,
         "lines": 299,
-        "sha256": "be8eb80dc8bca37f0481f39da63efc08bf9620b2662a156ccce0440574ddce62"
+        "sha256": "dcb1a0230a09d8a9d5322fc9a5164a99dfec98e83b855ecc5ecb1dc281f7a6d4"
       }
     },
     {
       "slug": "wc-shipping-method",
       "name": "wc-shipping-method",
       "domain": "woocommerce",
-      "description": "Build a zone-based WooCommerce shipping method with `WC_Shipping_Method`. Covers deferred class loading, registration, instance settings and modal support flags, package-based calculation, unique rate IDs, decimal/tax handling, availability, save behavior, caching, and testing. Use when adding carrier rates, custom shipping rules, a feature-only settings modal, or a method with no per-zone settings UI.",
+      "description": "Build a zone-based WooCommerce shipping method with `WC_Shipping_Method`. Covers deferred class loading, registration, instance settings and modal support flags, package-based calculation, unique rate IDs, decimal/tax handling, availability, save behavior, caching, WooCommerce 11's private `product_shipping_class` taxonomy boundary, and testing. Use when adding carrier rates, shipping-class rules, custom shipping logic, a feature-only settings modal, or a method with no per-zone settings UI.",
       "path": "woocommerce/wc-shipping-method",
       "skill_path": "woocommerce/wc-shipping-method/SKILL.md",
       "url": "https://raw.githubusercontent.com/Lonsdale201/wp-agent-skills/main/woocommerce/wc-shipping-method/SKILL.md",
@@ -5167,18 +5317,18 @@
         "author": "Soczó Kristóf",
         "contact": "mailto:lonsdale201@hotmail.com",
         "plugin": "woocommerce",
-        "plugin-version-tested": "10.9.4",
+        "plugin-version-tested": "11.0.0",
         "php-min": "7.4",
-        "last-updated": "2026-07-10"
+        "last-updated": "2026-08-05"
       },
       "resources": [],
       "has_reference": false,
       "has_examples": false,
       "has_scripts": false,
       "skill_md": {
-        "bytes": 8917,
-        "lines": 218,
-        "sha256": "f83bee860812855a3a44b8473d7cba2eac04b525af593caa82c348d7825bb0d2"
+        "bytes": 10125,
+        "lines": 225,
+        "sha256": "ff207e65cd138818d1bf0d37320c2c1273e4e2678fdeba6066424422058da505"
       }
     },
     {
@@ -5196,9 +5346,9 @@
         "author": "Soczó Kristóf",
         "contact": "mailto:lonsdale201@hotmail.com",
         "plugin": "woocommerce",
-        "plugin-version-tested": "10.9.4",
+        "plugin-version-tested": "11.0.0",
         "php-min": "7.4",
-        "last-updated": "2026-07-10"
+        "last-updated": "2026-08-05"
       },
       "resources": [],
       "has_reference": false,
@@ -5207,14 +5357,14 @@
       "skill_md": {
         "bytes": 7770,
         "lines": 205,
-        "sha256": "3c9a9289eda78d5db64e37aa2583bb7530189c87664cef92a279609a9e217938"
+        "sha256": "6a6b2b1afb0c3c2cf590bda97a92ff54214d5f997d49eb929c2e26b48c1edda0"
       }
     },
     {
       "slug": "wc-store-api",
       "name": "wc-store-api",
       "domain": "woocommerce",
-      "description": "Build shopper-facing WooCommerce integrations with the Store API. Covers `/wc/store/v1`, public product reads, cart Nonce and Cart-Token authentication, CORS, Store API sessions, endpoint data and cart update extensions, add-to-cart validation, payment requirements, checkout draft timing, and feature-gated routes. Use for headless carts, Checkout Block server integration, Store API response extensions, cart mutations, or debugging nonce/session/order timing.",
+      "description": "Build shopper-facing WooCommerce integrations with the Store API. Covers `/wc/store/v1`, public product reads, cart Nonce and Cart-Token authentication, CORS, Store API sessions, endpoint data and cart update extensions, collection-count query bounds, JSON input handling, add-to-cart validation, payment requirements, checkout draft timing, existing-order payment validation, and feature-gated routes. Use for headless carts, Checkout Block server integration, Store API extensions, cart mutations, or nonce/session/order timing bugs.",
       "path": "woocommerce/wc-store-api",
       "skill_path": "woocommerce/wc-store-api/SKILL.md",
       "url": "https://raw.githubusercontent.com/Lonsdale201/wp-agent-skills/main/woocommerce/wc-store-api/SKILL.md",
@@ -5225,18 +5375,18 @@
         "author": "Soczó Kristóf",
         "contact": "mailto:lonsdale201@hotmail.com",
         "plugin": "woocommerce",
-        "plugin-version-tested": "10.9.4",
+        "plugin-version-tested": "11.0.0",
         "php-min": "7.4",
-        "last-updated": "2026-07-20"
+        "last-updated": "2026-08-05"
       },
       "resources": [],
       "has_reference": false,
       "has_examples": false,
       "has_scripts": false,
       "skill_md": {
-        "bytes": 9736,
-        "lines": 211,
-        "sha256": "f861a3ed4d2cc8288ea65808b09a305635ed2123812e157caf5a8edb998fb468"
+        "bytes": 13824,
+        "lines": 258,
+        "sha256": "393cbd84eb49b3d20c20fbb2f0ec9808de73ecc96405e78df1410cf8d382171f"
       }
     },
     {
@@ -5251,13 +5401,13 @@
       "html_url": "https://github.com/Lonsdale201/wp-agent-skills/blob/main/woocommerce/wc-stripe-add-payment-method/SKILL.md",
       "directory_url": "https://github.com/Lonsdale201/wp-agent-skills/tree/main/woocommerce/wc-stripe-add-payment-method",
       "metadata": {
-        "author": "Soczo Kristof",
+        "author": "Soczó Kristóf",
         "contact": "mailto:lonsdale201@hotmail.com",
         "plugin": "woocommerce-gateway-stripe",
-        "plugin-version-tested": "10.8.4",
-        "woocommerce-version-tested": "10.9.4",
+        "plugin-version-tested": "10.8.5",
+        "woocommerce-version-tested": "11.0.0",
         "php-min": "7.4",
-        "last-updated": "2026-07-20"
+        "last-updated": "2026-08-05"
       },
       "resources": [
         {
@@ -5265,16 +5415,16 @@
           "repo_path": "woocommerce/wc-stripe-add-payment-method/reference.md",
           "type": "reference",
           "bytes": 2845,
-          "sha256": "c88fa9af8ed5909575ea58f97990d62b6d4e8d7a0e68f0ceb4795a07ec685ffb"
+          "sha256": "9114c55123e7ed113eb1dbe353b1aa649a87cc9f87092f16920eedf426382641"
         }
       ],
       "has_reference": true,
       "has_examples": false,
       "has_scripts": false,
       "skill_md": {
-        "bytes": 12199,
-        "lines": 170,
-        "sha256": "78f9ca9e8fbeecb1188a243c886ebd76f40ed28b1628c3cf061cfef1f6c4a450"
+        "bytes": 12396,
+        "lines": 171,
+        "sha256": "68c97d7f517a92a2f6c9230c9c2ec8beb3700139deab335c8703fe6f96eb2945"
       }
     },
     {
@@ -5292,10 +5442,10 @@
         "author": "Soczó Kristóf",
         "contact": "mailto:lonsdale201@hotmail.com",
         "plugin": "woocommerce-gateway-stripe",
-        "plugin-version-tested": "10.8.4",
-        "woocommerce-version-tested": "10.9.4",
+        "plugin-version-tested": "10.8.5",
+        "woocommerce-version-tested": "11.0.0",
         "php-min": "7.4",
-        "last-updated": "2026-07-20"
+        "last-updated": "2026-08-05"
       },
       "resources": [
         {
@@ -5310,7 +5460,7 @@
           "repo_path": "woocommerce/wc-stripe-future-payments/references/stripe-future-payment-lifecycle.md",
           "type": "reference",
           "bytes": 8265,
-          "sha256": "4d33193e47e96f639d81fe9ac556cd885878fbefcd7e7a58cae9b06871008a6f"
+          "sha256": "b10541d52fe495c18a22fc5b1a06cf0ce05b75d8c05519ee46b6295b6015c7ba"
         }
       ],
       "has_reference": true,
@@ -5319,7 +5469,7 @@
       "skill_md": {
         "bytes": 12965,
         "lines": 182,
-        "sha256": "5e920ec5d3db8714ead5d5105ae1fbb8d8c7de9b9675c021c5b44066ac4a4812"
+        "sha256": "2f058589b1efd5ef90ee51930c2d8d34b100c1236db228e57993a05ac69c94d2"
       }
     },
     {
@@ -5337,10 +5487,10 @@
         "author": "Soczó Kristóf",
         "contact": "mailto:lonsdale201@hotmail.com",
         "plugin": "woocommerce-gateway-stripe",
-        "plugin-version-tested": "10.8.4",
-        "woocommerce-version-tested": "10.9.4",
+        "plugin-version-tested": "10.8.5",
+        "woocommerce-version-tested": "11.0.0",
         "php-min": "7.4",
-        "last-updated": "2026-07-20"
+        "last-updated": "2026-08-05"
       },
       "resources": [
         {
@@ -5355,23 +5505,23 @@
           "repo_path": "woocommerce/wc-stripe-link-payments/references/link-contract.md",
           "type": "reference",
           "bytes": 11327,
-          "sha256": "c22887f56f876b709d6e516106d0b522627a9414f26f00289c8ee8b2fde1eed9"
+          "sha256": "040dff3c25ddbeb619fc8de030cdf20897d12c7e1ca595832610b51d0d4fec59"
         }
       ],
       "has_reference": true,
       "has_examples": false,
       "has_scripts": false,
       "skill_md": {
-        "bytes": 11905,
+        "bytes": 11911,
         "lines": 194,
-        "sha256": "2c1080a680478f5c73c4f554f38aca06065e52a8085c0ac42901468526f323cb"
+        "sha256": "752abc4685821c4c7bec2330f15a3f6683283a9d9f5b2b86e9a34f23a4ebc092"
       }
     },
     {
       "slug": "wc-stripe-subscriptions",
       "name": "wc-stripe-subscriptions",
       "domain": "woocommerce",
-      "description": "Integrate WooCommerce Stripe Gateway 10.8+ with WooCommerce Subscriptions 9.0. Covers gateway feature support, automatic renewals, Stripe metadata, failed-renewal recovery, SCA, change-payment SetupIntents, update-all behavior, Express Checkout, native Link and card-wallet token shapes, detached tokens, and safe tests. Use when Stripe is a subscription gateway or code touches scheduled_subscription_payment_stripe, _stripe_source_id on WC_Subscription, change_payment_method, renewal authentication, Link, or Stripe token migration.",
+      "description": "Integrate WooCommerce Stripe Gateway 10.8+ with WooCommerce Subscriptions 9.0+. Covers gateway feature support, automatic renewals, Stripe metadata, failed-renewal recovery, SCA, change-payment SetupIntents, update-all behavior, Express Checkout, native Link and card-wallet token shapes, detached tokens, and safe tests. Use when Stripe is a subscription gateway or code touches scheduled_subscription_payment_stripe, _stripe_source_id on WC_Subscription, change_payment_method, renewal authentication, Link, or Stripe token migration.",
       "path": "woocommerce/wc-stripe-subscriptions",
       "skill_path": "woocommerce/wc-stripe-subscriptions/SKILL.md",
       "url": "https://raw.githubusercontent.com/Lonsdale201/wp-agent-skills/main/woocommerce/wc-stripe-subscriptions/SKILL.md",
@@ -5379,30 +5529,30 @@
       "html_url": "https://github.com/Lonsdale201/wp-agent-skills/blob/main/woocommerce/wc-stripe-subscriptions/SKILL.md",
       "directory_url": "https://github.com/Lonsdale201/wp-agent-skills/tree/main/woocommerce/wc-stripe-subscriptions",
       "metadata": {
-        "author": "Soczo Kristof",
+        "author": "Soczó Kristóf",
         "contact": "mailto:lonsdale201@hotmail.com",
         "plugin": "woocommerce-gateway-stripe",
-        "plugin-version-tested": "10.8.4",
-        "woocommerce-subscriptions-version-tested": "9.0.0",
-        "woocommerce-version-tested": "10.9.4",
+        "plugin-version-tested": "10.8.5",
+        "woocommerce-subscriptions-version-tested": "9.0.1",
+        "woocommerce-version-tested": "11.0.0",
         "php-min": "7.4",
-        "last-updated": "2026-07-20"
+        "last-updated": "2026-08-05"
       },
       "resources": [],
       "has_reference": false,
       "has_examples": false,
       "has_scripts": false,
       "skill_md": {
-        "bytes": 12253,
+        "bytes": 12256,
         "lines": 198,
-        "sha256": "531c912cbc5195361bee5e42c2db9a23ee2215f9a8cc68977b5e0fe1f3ae090e"
+        "sha256": "a0dd3afd36e98ad10e1a7289f2a758213d51466a2af4d8d08822d427fdde01e4"
       }
     },
     {
       "slug": "wc-stripe-webhooks",
       "name": "wc-stripe-webhooks",
       "domain": "woocommerce",
-      "description": "Build or audit integrations around WooCommerce Stripe Gateway webhooks and asynchronous payment settlement. Covers the canonical wc-api endpoint, Stripe-Signature validation, order resolution, PaymentIntent and Checkout Session deferral, Action Scheduler, order locks, idempotency, safe extension hooks, Adaptive Pricing dependence, unexpected-charge detection, logging, and deprecated Stripe hooks/classes. Use for wc_stripe_webhook_received, payment_intent events, checkout.session events, pending Stripe orders, duplicate settlement, custom webhook observers, or Stripe reconciliation.",
+      "description": "Build or audit integrations around WooCommerce Stripe Gateway webhooks and asynchronous payment settlement. Covers the canonical wc-api endpoint, Stripe-Signature validation, trusted webhook health state, order resolution, PaymentIntent and Checkout Session deferral, settlement amount/currency integrity, Action Scheduler, order locks, idempotency, safe observer hooks, Adaptive Pricing, unexpected charges, logging, and deprecated Stripe surfaces. Use for `wc_stripe_webhook_received`, `payment_intent` or `checkout.session` events, on-hold Stripe orders, duplicate settlement, custom observers, or reconciliation.",
       "path": "woocommerce/wc-stripe-webhooks",
       "skill_path": "woocommerce/wc-stripe-webhooks/SKILL.md",
       "url": "https://raw.githubusercontent.com/Lonsdale201/wp-agent-skills/main/woocommerce/wc-stripe-webhooks/SKILL.md",
@@ -5410,29 +5560,29 @@
       "html_url": "https://github.com/Lonsdale201/wp-agent-skills/blob/main/woocommerce/wc-stripe-webhooks/SKILL.md",
       "directory_url": "https://github.com/Lonsdale201/wp-agent-skills/tree/main/woocommerce/wc-stripe-webhooks",
       "metadata": {
-        "author": "Soczo Kristof",
+        "author": "Soczó Kristóf",
         "contact": "mailto:lonsdale201@hotmail.com",
         "plugin": "woocommerce-gateway-stripe",
-        "plugin-version-tested": "10.8.4",
-        "woocommerce-version-tested": "10.9.4",
+        "plugin-version-tested": "10.8.5",
+        "woocommerce-version-tested": "11.0.0",
         "php-min": "7.4",
-        "last-updated": "2026-07-20"
+        "last-updated": "2026-08-05"
       },
       "resources": [],
       "has_reference": false,
       "has_examples": false,
       "has_scripts": false,
       "skill_md": {
-        "bytes": 10993,
-        "lines": 198,
-        "sha256": "9bb0705a48c7fc98ff305119f5eb1a11faf331a0e89e9c9f9c8408e17b357637"
+        "bytes": 12765,
+        "lines": 212,
+        "sha256": "90fb30ff37cf327e701d490d017e4094d0c0ed94c7d733285ec36d8f33e9fae2"
       }
     },
     {
       "slug": "wc-variation-gallery",
       "name": "wc-variation-gallery",
       "domain": "woocommerce",
-      "description": "Build or audit WooCommerce 10.9+ native variation gallery integrations. Covers the experimental `variation_gallery` feature flag, variation `image` vs `gallery_image_ids`, `_product_image_gallery` storage, REST v3 variation payloads, classic product gallery replacement/reset behavior, theme override compatibility, and Additional Variation Images legacy migration. Use when code mentions variation galleries, multiple variation images, `set_gallery_image_ids`, `gallery_images_html`, `gallery_image_ids`, `wc_feature_woocommerce_additional_variation_images_enabled`, `_wc_additional_variation_images`, or `wc-product-gallery-before-destroy`.",
+      "description": "Build or audit WooCommerce 11.0+ native variation gallery integrations. Covers the experimental `variation_gallery` feature flag and 5% canary rollout, variation `image` vs `gallery_image_ids`, `_product_image_gallery` storage, REST v3 variation payloads, classic product gallery replacement/reset behavior, theme override compatibility, and Additional Variation Images legacy migration. Use when code mentions variation galleries, multiple variation images, `set_gallery_image_ids`, `gallery_images_html`, `gallery_image_ids`, `wc_feature_woocommerce_additional_variation_images_enabled`, `_wc_additional_variation_images`, or `wc-product-gallery-before-destroy`.",
       "path": "woocommerce/wc-variation-gallery",
       "skill_path": "woocommerce/wc-variation-gallery/SKILL.md",
       "url": "https://raw.githubusercontent.com/Lonsdale201/wp-agent-skills/main/woocommerce/wc-variation-gallery/SKILL.md",
@@ -5443,25 +5593,25 @@
         "author": "Soczó Kristóf",
         "contact": "mailto:lonsdale201@hotmail.com",
         "plugin": "woocommerce",
-        "plugin-version-tested": "10.9.4",
+        "plugin-version-tested": "11.0.0",
         "php-min": "7.4",
-        "last-updated": "2026-07-10"
+        "last-updated": "2026-08-05"
       },
       "resources": [],
       "has_reference": false,
       "has_examples": false,
       "has_scripts": false,
       "skill_md": {
-        "bytes": 10909,
-        "lines": 200,
-        "sha256": "dc12a11dfe98ee5e794d3042c1dfdbd976dd3fbbcb056114f0d1662465cf55a9"
+        "bytes": 11493,
+        "lines": 204,
+        "sha256": "cec5bccf6281cfd54398c95d593eea4faecbb1c1e311bc92d9b6f1ee952831eb"
       }
     },
     {
       "slug": "wc-variations-data",
       "name": "wc-variations-data",
       "domain": "woocommerce",
-      "description": "Read, query, and write WooCommerce product variations through `WC_Product_Variation` and `WC_Product_Variable`. Covers parent/child storage, cached variation prices, CRUD creation, WooCommerce 10.9 deferred parent synchronization, stock inheritance, frontend variation data, and raw versus display-tax price reads. Use when creating, importing, querying, or debugging stale variation data.",
+      "description": "Read, query, and write WooCommerce product variations through `WC_Product_Variation` and `WC_Product_Variable`. Covers parent/child storage, cached variation prices, deferred parent synchronization, WooCommerce 11.0 product instance caching, stock inheritance, frontend variation data, and raw versus display-tax price reads. Use when creating, importing, querying, or debugging stale variation data.",
       "path": "woocommerce/wc-variations-data",
       "skill_path": "woocommerce/wc-variations-data/SKILL.md",
       "url": "https://raw.githubusercontent.com/Lonsdale201/wp-agent-skills/main/woocommerce/wc-variations-data/SKILL.md",
@@ -5472,25 +5622,25 @@
         "author": "Soczó Kristóf",
         "contact": "mailto:lonsdale201@hotmail.com",
         "plugin": "woocommerce",
-        "plugin-version-tested": "10.9.4",
+        "plugin-version-tested": "11.0.0",
         "php-min": "7.4",
-        "last-updated": "2026-07-10"
+        "last-updated": "2026-08-05"
       },
       "resources": [],
       "has_reference": false,
       "has_examples": false,
       "has_scripts": false,
       "skill_md": {
-        "bytes": 16134,
-        "lines": 268,
-        "sha256": "80e59b09c35a6960f5635ab557a6ea7dc5fdbe70ef5a5b09f38db3410de268b6"
+        "bytes": 17604,
+        "lines": 279,
+        "sha256": "812a03285c4c162f19dfa9adfe47dd0c731c59301dc1b716b4fca40e4336bf85"
       }
     },
     {
       "slug": "wc-variations-pricing-filters",
       "name": "wc-variations-pricing-filters",
       "domain": "woocommerce",
-      "description": "Customize WooCommerce variation prices without stale or cross-user parent price caches. Covers direct variation getter filters, parent aggregation filters, the `woocommerce_get_variation_prices_hash` cache contract, bounded pricing contexts, role checks, tax/display separation, cache invalidation, and when stored CRUD prices are preferable. Use for B2B, role, segment, campaign, or context-dependent variation pricing.",
+      "description": "Customize WooCommerce variation prices without stale or cross-user parent price caches. Covers direct variation getter filters, parent aggregation filters, `woocommerce_get_variation_prices_hash`, WooCommerce 11.0 tax-influence cache partitioning, bounded pricing contexts, role checks, cache invalidation, and when stored CRUD prices are preferable. Use for B2B, role, segment, campaign, tax/location, or context-dependent variation pricing.",
       "path": "woocommerce/wc-variations-pricing-filters",
       "skill_path": "woocommerce/wc-variations-pricing-filters/SKILL.md",
       "url": "https://raw.githubusercontent.com/Lonsdale201/wp-agent-skills/main/woocommerce/wc-variations-pricing-filters/SKILL.md",
@@ -5501,18 +5651,18 @@
         "author": "Soczó Kristóf",
         "contact": "mailto:lonsdale201@hotmail.com",
         "plugin": "woocommerce",
-        "plugin-version-tested": "10.9.4",
+        "plugin-version-tested": "11.0.0",
         "php-min": "7.4",
-        "last-updated": "2026-07-10"
+        "last-updated": "2026-08-05"
       },
       "resources": [],
       "has_reference": false,
       "has_examples": false,
       "has_scripts": false,
       "skill_md": {
-        "bytes": 7988,
-        "lines": 194,
-        "sha256": "b2b77e338ccb85cbb678450681e38bcf65187210abf5dce1e37064b8f50b4885"
+        "bytes": 8809,
+        "lines": 209,
+        "sha256": "bfc40abc29b277c45f0b3a1b985d078fcc9887c1adc0373915dda04064e7ed36"
       }
     },
     {
@@ -5685,18 +5835,19 @@
         "contact": "mailto:lonsdale201@hotmail.com",
         "plugin": "woocommerce-subscriptions",
         "plugin-version-tested": "9.0.0",
-        "woocommerce-version-tested": "10.9.4",
+        "woocommerce-version-tested": "11.0.0",
+        "action-scheduler-version-tested": "4.0.0",
         "php-min": "7.4",
-        "last-updated": "2026-07-10"
+        "last-updated": "2026-08-05"
       },
       "resources": [],
       "has_reference": false,
       "has_examples": false,
       "has_scripts": false,
       "skill_md": {
-        "bytes": 11731,
-        "lines": 191,
-        "sha256": "cf93eed1fab8e49796a7302d255ed37e2b4572d7bb6768051b4c0fca8bfc68b7"
+        "bytes": 11791,
+        "lines": 192,
+        "sha256": "ae740e0419612181b137014cff4fa3a1a9c1a513fe7434ac0155759fa7a895a8"
       }
     },
     {

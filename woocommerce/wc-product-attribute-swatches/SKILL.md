@@ -1,20 +1,20 @@
 ---
 name: wc-product-attribute-swatches
-description: Build or audit WooCommerce 10.9+ product attribute swatch integrations around the experimental `wc-visual` attribute type. Covers feature-flag gating, global `pa_*` attribute taxonomy type, color/image term meta, Store API `__experimental_visual` / `__experimentalVisual`, classic variation dropdown fallbacks, and safe plugin/theme rendering. Use when code or requests mention variation swatches, visual attributes, `wc-visual`, `wc_visual_attribute_type`, `term_color`, `term_image`, `__experimental_visual`, `ProductAttributeTerms`, or custom swatch UI.
+description: Build or audit WooCommerce product attribute swatch integrations around the experimental `wc-visual` attribute type. Covers feature gating, global `pa_*` attribute taxonomies, the WooCommerce 11 slug byte limit, color/image term meta, visual admin search results, Store API `__experimental_visual` / `__experimentalVisual`, classic dropdown fallbacks, and safe rendering. Use for variation swatches, visual attributes, `wc-visual`, `term_color`, `term_image`, `woocommerce_json_search_found_product_attribute_terms`, or custom swatch UI.
 metadata:
   wp-skills-author: "Soczó Kristóf"
   wp-skills-contact: "mailto:lonsdale201@hotmail.com"
   wp-skills-plugin: "woocommerce"
-  wp-skills-plugin-version-tested: "10.9.4"
+  wp-skills-plugin-version-tested: "11.0.0"
   wp-skills-php-min: "7.4"
-  wp-skills-last-updated: "2026-07-10"
+  wp-skills-last-updated: "2026-08-05"
 ---
 
 # WooCommerce product attribute swatches
 
-Use this skill when a plugin or theme needs to read, write, render, or audit WooCommerce visual product attributes. In WooCommerce 10.9.4 this is not a mature "classic variation swatches" template API. It is an experimental `wc-visual` product attribute type with color/image term metadata, consumed by selected block UI and optionally exposed by Store API.
+Use this skill when a plugin or theme needs to read, write, render, or audit WooCommerce visual product attributes. In WooCommerce 11.0 this is not a mature "classic variation swatches" template API. It is an experimental `wc-visual` product attribute type with color/image term metadata, consumed by selected block UI and optionally exposed by Store API.
 
-## Source-verified status in 10.9.4
+## Source-verified status in 11.0.0
 
 - Feature ID: `wc-visual-attribute`.
 - Feature option: `woocommerce_feature_wc_visual_attribute_enabled`.
@@ -134,7 +134,13 @@ if ( array_key_exists( 'wc-visual', wc_get_attribute_types() ) ) {
 }
 ```
 
-Do not force-create visual attributes on classic-theme stores just to get swatches. In 10.9.4 WooCommerce intentionally hides the feature setting UI outside block themes unless a visual attribute already exists.
+Do not force-create visual attributes on classic-theme stores just to get swatches. In 11.0 WooCommerce intentionally hides the feature setting UI outside block themes unless a visual attribute already exists.
+
+### Attribute slug byte limit in WooCommerce 11.0
+
+WordPress limits taxonomy names to 32 bytes and Woo prefixes global product attributes with `pa_`. WooCommerce 11.0 exposes `wc_get_attribute_slug_max_byte_length()`, currently 29 bytes, and validates with `strlen()` rather than a character count.
+
+Use the helper when validating/importing attribute slugs and return the `WP_Error` from `wc_create_attribute()` instead of truncating blindly. A 29-character multibyte slug can exceed 29 bytes; truncating by characters can still create an invalid taxonomy or collide with another normalized slug.
 
 ## Store API
 
@@ -168,117 +174,23 @@ Rules:
 - Do not rely on this field as a stable non-experimental API until WooCommerce removes the experimental prefix.
 - WC REST `/wc/v3/products/attributes` exposes the attribute `type`, but do not assume the classic REST attribute-term endpoints expose the visual payload.
 
+## Admin AJAX term-search shape in WooCommerce 11.0
+
+For a visual taxonomy, WooCommerce enriches valid term objects returned through `woocommerce_json_search_found_product_attribute_terms` with a dynamic `visual` property shaped as `{ type, value }`. Types are `color`, `image`, or `none`; image values are thumbnail URLs.
+
+Treat the property defensively: the core enrichment callback is internal, non-visual taxonomies do not receive it, earlier Woo versions omit it, and another filter may return an error or nonstandard entries. Do not mutate the public filter's results into a different base shape that breaks Woo's admin selector.
+
 ## Classic theme rendering
 
-For classic templates, keep the core select in place. The variation form JS reads `.variations select`, the `attribute_pa_*` field names, and `change` events. Swatch buttons should drive the select, not replace the submission contract.
+Keep the native `.variations select` and `attribute_pa_*` field as the authoritative submission/accessibility contract. Swatch buttons are progressive enhancement: drive the select, trigger `change`, and synchronize selection and disabled states after Woo's `woocommerce_update_variation_values` and `reset_data` events.
 
-Append swatches through `woocommerce_dropdown_variation_attribute_options_html`:
-
-```php
-add_filter(
-    'woocommerce_dropdown_variation_attribute_options_html',
-    function ( string $html, array $args ): string {
-        $product   = $args['product'] ?? null;
-        $taxonomy  = isset( $args['attribute'] ) ? (string) $args['attribute'] : '';
-        $options   = isset( $args['options'] ) && is_array( $args['options'] ) ? $args['options'] : array();
-        $selected  = isset( $args['selected'] ) ? (string) $args['selected'] : '';
-
-        if ( ! $product instanceof WC_Product || ! taxonomy_exists( $taxonomy ) ) {
-            return $html;
-        }
-
-        if ( ! myplugin_is_wc_visual_attribute_taxonomy( $taxonomy ) ) {
-            return $html;
-        }
-
-        $terms = wc_get_product_terms( $product->get_id(), $taxonomy, array( 'fields' => 'all' ) );
-        if ( empty( $terms ) || is_wp_error( $terms ) ) {
-            return $html;
-        }
-
-        $out = '<div class="myplugin-wc-swatches" role="group" aria-label="' . esc_attr( wc_attribute_label( $taxonomy ) ) . '">';
-
-        foreach ( $terms as $term ) {
-            if ( ! in_array( $term->slug, $options, true ) ) {
-                continue;
-            }
-
-            $visual = myplugin_get_wc_term_visual( (int) $term->term_id );
-            $style  = '';
-
-            if ( 'color' === $visual['type'] ) {
-                $style = 'background-color:' . esc_attr( $visual['value'] );
-            } elseif ( 'image' === $visual['type'] ) {
-                $style = "background-image:url('" . esc_url( $visual['value'] ) . "')";
-            }
-
-            $out .= sprintf(
-                '<button type="button" class="myplugin-wc-swatch" data-value="%1$s" aria-pressed="%2$s" aria-label="%3$s"><span class="myplugin-wc-swatch__visual" style="%4$s" aria-hidden="true"></span><span class="screen-reader-text">%5$s</span></button>',
-                esc_attr( $term->slug ),
-                $selected === $term->slug ? 'true' : 'false',
-                esc_attr( sprintf( '%s: %s', wc_attribute_label( $taxonomy ), $term->name ) ),
-                esc_attr( $style ),
-                esc_html( $term->name )
-            );
-        }
-
-        $out .= '</div>';
-
-        return $html . $out;
-    },
-    20,
-    2
-);
-```
-
-Then sync button clicks to the native select:
-
-```js
-jQuery( function ( $ ) {
-    $( document ).on( 'click', '.myplugin-wc-swatch', function () {
-        var $button = $( this );
-        var $wrap = $button.closest( '.value' );
-        var $select = $wrap.find( 'select' );
-
-        $select.val( $button.data( 'value' ) ).trigger( 'change' );
-        $wrap.find( '.myplugin-wc-swatch' ).attr( 'aria-pressed', 'false' );
-        $button.attr( 'aria-pressed', 'true' );
-    } );
-
-    $( '.variations_form' ).on( 'woocommerce_update_variation_values reset_data', function () {
-        $( this ).find( '.value' ).each( function () {
-            var $wrap = $( this );
-            var $select = $wrap.find( 'select' );
-
-            $wrap.find( '.myplugin-wc-swatch' ).each( function () {
-                var value = String( $( this ).data( 'value' ) );
-                var enabled = $select.find( 'option' ).filter( function () {
-                    return this.value === value && ! this.disabled;
-                } ).length > 0;
-
-                $( this ).prop( 'disabled', ! enabled );
-            } );
-
-            $wrap.find( '.myplugin-wc-swatch' ).attr( 'aria-pressed', 'false' )
-                .filter( function () {
-                    return String( $( this ).data( 'value' ) ) === String( $select.val() || '' );
-                } )
-                .attr( 'aria-pressed', 'true' );
-        } );
-    } );
-
-    $( document ).on( 'change', '.variations_form .variations select', function () {
-        $( this ).closest( '.variations_form' ).trigger( 'woocommerce_update_variation_values' );
-    } );
-} );
-```
-
-Keep the native select available as the authoritative accessible control. Swatches are enhancement buttons: use `type="button"`, an accessible name, synchronized `aria-pressed`, visible focus styles, and disabled states matching the select. If a design hides the native select, replace this shortcut pattern with a complete radio-group implementation including arrow-key behavior; visual buttons alone are not an accessible select replacement.
+Use `type="button"`, accessible names, synchronized `aria-pressed`, visible focus, and disabled states matching the select. If the design removes the select, implement a complete accessible radio-group including keyboard behavior. See [references/classic-rendering.md](references/classic-rendering.md) for the PHP filter and JavaScript synchronization pattern.
 
 ## Common mistakes
-- Calling this "variation swatches" and storing data on `product_variation` posts. In core 10.9.4 the swatch data belongs to attribute terms, not variations.
+- Calling this "variation swatches" and storing data on `product_variation` posts. In core 11.0 the swatch data belongs to attribute terms, not variations.
 - Removing the select from classic variation forms. Core JS and POST handling expect `attribute_pa_*` select values.
-- Creating `wc-visual` attributes on classic-theme stores and assuming the feature is supported. The 10.9.4 UI gate is deliberate.
+- Creating `wc-visual` attributes on classic-theme stores and assuming the feature is supported. The 11.0 UI gate is deliberate.
+- Counting attribute slug characters instead of UTF-8 bytes or hardcoding a limit instead of calling `wc_get_attribute_slug_max_byte_length()`.
 - Importing internal Woo classes as if they were stable public APIs.
 - Assuming Store API visual data is returned by default. It requires `__experimental_visual=true`.
 - Treating image swatches as attachment arrays in Store API. The value is a URL string.

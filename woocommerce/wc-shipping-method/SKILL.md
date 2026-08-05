@@ -1,13 +1,13 @@
 ---
 name: wc-shipping-method
-description: Build a zone-based WooCommerce shipping method with `WC_Shipping_Method`. Covers deferred class loading, registration, instance settings and modal support flags, package-based calculation, unique rate IDs, decimal/tax handling, availability, save behavior, caching, and testing. Use when adding carrier rates, custom shipping rules, a feature-only settings modal, or a method with no per-zone settings UI.
+description: Build a zone-based WooCommerce shipping method with `WC_Shipping_Method`. Covers deferred class loading, registration, instance settings and modal support flags, package-based calculation, unique rate IDs, decimal/tax handling, availability, save behavior, caching, WooCommerce 11's private `product_shipping_class` taxonomy boundary, and testing. Use when adding carrier rates, shipping-class rules, custom shipping logic, a feature-only settings modal, or a method with no per-zone settings UI.
 metadata:
   wp-skills-author: "Soczó Kristóf"
   wp-skills-contact: "mailto:lonsdale201@hotmail.com"
   wp-skills-plugin: "woocommerce"
-  wp-skills-plugin-version-tested: "10.9.4"
+  wp-skills-plugin-version-tested: "11.0.0"
   wp-skills-php-min: "7.4"
-  wp-skills-last-updated: "2026-07-10"
+  wp-skills-last-updated: "2026-08-05"
 ---
 
 # WooCommerce shipping method
@@ -185,6 +185,12 @@ Without suffixes, later rates can collide. Never use a translated label as an ID
 
 Return no rates when requirements are not met. If overriding `is_available()`, retain parent/zone enablement behavior and evaluate only package-relevant rules. Sanitize destination data before sending it to a carrier.
 
+## Shipping-class taxonomy visibility in WooCommerce 11.0
+
+WooCommerce 11.0 registers `product_shipping_class` with `public => false`, `rewrite => false`, and no frontend query variable. Product/variation assignment, `WC_Product::get_shipping_class_id()`, rate calculations, and admin management continue to work; the change removes shipping-class public archives and public taxonomy discovery.
+
+Use product CRUD and term APIs for shipping logic. Do not build customer-facing URLs, sitemap entries, or frontend queries that depend on `product_shipping_class` being public. If a site-specific integration deliberately needs the old visibility, it can alter registration through `woocommerce_taxonomy_args_product_shipping_class` or WordPress's `register_product_shipping_class_taxonomy_args`, but test rewrite/query exposure and information disclosure explicitly. For a new public classification feature, prefer a separate extension-owned taxonomy rather than repurposing shipping configuration as storefront content.
+
 ## Testing
 
 Test:
@@ -204,6 +210,7 @@ Test:
 - Sanitize settings and decimal values at the boundary.
 - Do not perform unbounded carrier calls on every recalculation.
 - Do not rely on a settings action for per-zone AJAX persistence.
+- Do not use `product_shipping_class` as a public archive or sitemap taxonomy in WooCommerce 11.0.
 
 ## References
 

@@ -5,9 +5,9 @@ metadata:
   wp-skills-author: "Soczó Kristóf"
   wp-skills-contact: "mailto:lonsdale201@hotmail.com"
   wp-skills-plugin: "woocommerce"
-  wp-skills-plugin-version-tested: "10.9.4"
+  wp-skills-plugin-version-tested: "11.0.0"
   wp-skills-php-min: "7.4"
-  wp-skills-last-updated: "2026-07-10"
+  wp-skills-last-updated: "2026-08-05"
 ---
 
 # WooCommerce classic cart and checkout
@@ -252,6 +252,10 @@ add_action(
 
 Use Woo order APIs for HPOS compatibility. Never write checkout order data with `update_post_meta( $order_id, ... )`.
 
+## Phone validation and formatting in WooCommerce 11.0
+
+WooCommerce 11.0 separates shape checking (`WC_Validation::is_phone_format()`), filterable country-aware acceptance (`WC_Validation::is_phone()` / `woocommerce_validate_phone`), and normalization (`wc_format_phone_number()` / `woocommerce_format_phone_number`). Requiredness is separate, and formatting never proves ownership or changes validation by itself. See [references/phone-validation.md](references/phone-validation.md) for the exact filter signatures and integration rules.
+
 ## Common mistakes
 
 - Adding random cart item data unintentionally prevents quantity merging.
@@ -261,6 +265,7 @@ Use Woo order APIs for HPOS compatibility. Never write checkout order data with 
 - Expecting `woocommerce_checkout_fields` to render in Checkout Block.
 - Saving line-item data in order meta instead of `woocommerce_checkout_create_order_line_item`.
 - Trusting posted product/checkout fields without sanitizing and validating.
+- Using `wc_format_phone_number()` as the acceptance check or forgetting that phone requiredness is separate from shape validation.
 - Using `$_SESSION`; use `WC()->session` for cart/session state.
 
 ## Cross-skill routing

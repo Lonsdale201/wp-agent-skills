@@ -1,13 +1,13 @@
 ---
 name: wc-emails-classic
-description: Add or customize classic WooCommerce transactional emails with `WC_Email`. Covers registration, constructor timing, templates and theme overrides, status notification triggers, locale handling, the WooCommerce 10.9 `send_notification()` guard, disabled/skipped/sent outcome hooks, HPOS-safe order data, and one-off styled mail. Use when adding an email type, overriding email templates, or debugging sends that bypass settings and logging.
+description: Add or customize classic WooCommerce transactional emails with `WC_Email`. Covers registration, constructor timing, templates and theme overrides, status notification triggers, locale handling, `send_notification()` guards, disabled/skipped/sent outcome hooks, WooCommerce 11.0 preview shipping controls, HPOS-safe order data, and one-off styled mail. Use when adding an email type, overriding email templates, customizing previews, or debugging sends that bypass settings and logging.
 metadata:
   wp-skills-author: "Soczó Kristóf"
   wp-skills-contact: "mailto:lonsdale201@hotmail.com"
   wp-skills-plugin: "woocommerce"
-  wp-skills-plugin-version-tested: "10.9.4"
+  wp-skills-plugin-version-tested: "11.0.0"
   wp-skills-php-min: "7.4"
-  wp-skills-last-updated: "2026-07-10"
+  wp-skills-last-updated: "2026-08-05"
 ---
 
 # WooCommerce classic transactional emails
@@ -154,6 +154,25 @@ For a plugin-owned domain event, emit a stable action ending in `_notification` 
 
 Non-notification status hooks are valid for business logic, but they are not a drop-in replacement for WooCommerce's email dispatch pipeline.
 
+WooCommerce 11.0 adds `woocommerce_order_status_pending_to_cancelled_notification` to the core dispatcher and the cancelled-order admin email. Extensions that manually emitted a cancelled notification for pending → cancelled must remove or deduplicate that workaround, or administrators can receive two emails.
+
+## WooCommerce 11.0 backorder notification gate
+
+Core backorder stock mail now has a merchant setting (`woocommerce_notify_backorder`) and a per-product filter before `wp_mail()`:
+
+```php
+add_filter(
+    'woocommerce_should_send_backorder_notification',
+    static function ( bool $send, int $product_id ): bool {
+        return $send && ! myplugin_supplier_handles_backorders( $product_id );
+    },
+    10,
+    2
+);
+```
+
+This filter suppresses WooCommerce's internal stock-recipient notification; it does not change whether the product accepts backorders, what the shopper sees, or any custom transactional email. Preserve the incoming `$send` value, keep the callback side-effect free, and do not use the filter as a replacement for stock/order state.
+
 ## The 10.9 send guards
 
 `WC_Email::send_notification()` is protected for normal triggered emails. It:
@@ -184,6 +203,27 @@ Relevant logging controls include `woocommerce_email_log_enabled`, `woocommerce_
 
 Read orders through `WC_Order` getters and `get_meta()`. Never use post meta in email classes; HPOS may be authoritative.
 
+## WooCommerce 11.0 email preview shipping details
+
+The admin email preview can show shipping details independently of a real send. WooCommerce 11.0 adds a public filter for that preview-only decision:
+
+```php
+add_filter(
+    'woocommerce_email_preview_show_shipping_details',
+    static function ( bool $show, ?WC_Order $order, ?string $email_type ): bool {
+        if ( 'myplugin_shipment_ready' === $email_type ) {
+            return false;
+        }
+
+        return $show;
+    },
+    10,
+    3
+);
+```
+
+This filter does not suppress shipping rows in actual transactional messages. Keep real-email template logic and preview customization separate, and tolerate a `null` preview order or email type.
+
 ## One-off styled mail
 
 For a truly one-off message that does not need its own settings/enable state:
@@ -210,6 +250,7 @@ Do not use this shortcut for a recurring transactional type that merchants shoul
 - Keep HTML and plain-text templates functional.
 - Use order CRUD for HPOS compatibility.
 - Treat outcome hooks as observability only.
+- Keep backorder-email suppression separate from product backorder eligibility and stock state.
 
 ## References
 
@@ -218,3 +259,7 @@ Do not use this shortcut for a recurring transactional type that merchants shoul
 - Canonical trigger implementation: `includes/emails/class-wc-email-customer-processing-order.php`.
 - Outcome logger: `src/Internal/Email/EmailLogger.php`.
 - Official documentation: <https://woocommerce.com/document/template-structure/>
+
+## Cross-references
+
+- `wc-abandoned-cart-recovery` for WooCommerce 11.0 recovery scheduling, suppression, and unsubscribe behavior.

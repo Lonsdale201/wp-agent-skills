@@ -1,14 +1,14 @@
 ---
 name: wc-stripe-webhooks
-description: Build or audit integrations around WooCommerce Stripe Gateway webhooks and asynchronous payment settlement. Covers the canonical wc-api endpoint, Stripe-Signature validation, order resolution, PaymentIntent and Checkout Session deferral, Action Scheduler, order locks, idempotency, safe extension hooks, Adaptive Pricing dependence, unexpected-charge detection, logging, and deprecated Stripe hooks/classes. Use for wc_stripe_webhook_received, payment_intent events, checkout.session events, pending Stripe orders, duplicate settlement, custom webhook observers, or Stripe reconciliation.
+description: Build or audit integrations around WooCommerce Stripe Gateway webhooks and asynchronous payment settlement. Covers the canonical wc-api endpoint, Stripe-Signature validation, trusted webhook health state, order resolution, PaymentIntent and Checkout Session deferral, settlement amount/currency integrity, Action Scheduler, order locks, idempotency, safe observer hooks, Adaptive Pricing, unexpected charges, logging, and deprecated Stripe surfaces. Use for `wc_stripe_webhook_received`, `payment_intent` or `checkout.session` events, on-hold Stripe orders, duplicate settlement, custom observers, or reconciliation.
 metadata:
-  wp-skills-author: "Soczo Kristof"
+  wp-skills-author: "Soczó Kristóf"
   wp-skills-contact: "mailto:lonsdale201@hotmail.com"
   wp-skills-plugin: "woocommerce-gateway-stripe"
-  wp-skills-plugin-version-tested: "10.8.4"
-  wp-skills-woocommerce-version-tested: "10.9.4"
+  wp-skills-plugin-version-tested: "10.8.5"
+  wp-skills-woocommerce-version-tested: "11.0.0"
   wp-skills-php-min: "7.4"
-  wp-skills-last-updated: "2026-07-20"
+  wp-skills-last-updated: "2026-08-05"
 ---
 
 # WooCommerce Stripe webhooks
@@ -33,6 +33,8 @@ For normal Stripe events it verifies:
 - timestamp within five minutes
 
 Never parse `php://input`, trust `metadata.order_id`, or update an order before the installed handler validates the request. Agentic Commerce uses the same URL but a separate secret and event family; do not treat its delegated checkout payload as an ordinary order webhook.
+
+Stripe Gateway 10.8.5 updates the stored pending-webhook count only after signature validation succeeds. Do not write health/status counters from an unverified payload in custom webhook code. Webhook timestamps and pending counts are scalar non-negative integer state; 10.8.5 ignores invalid array/object/non-digit values instead of persisting them.
 
 ## Event families
 
@@ -128,6 +130,17 @@ For custom order fields:
 - Do not create an order from an unmatched Adaptive Pricing session; the gateway intentionally refuses to route it into agentic order creation.
 - Reconcile presentment currency/amount from gateway helpers rather than replacing the Woo order currency/total.
 
+### Settlement amount and currency integrity in 10.8.5
+
+Before marking a Checkout Session paid, the gateway now compares the settlement amount/currency with the Woo order total/currency. It understands both Stripe schemas:
+
+- before the `2025-03-31.basil` API version, settlement values for Adaptive Pricing are under `currency_conversion.source_currency` and `currency_conversion.amount_total`;
+- Basil and later use top-level `currency` and `amount_total` for settlement, while buyer-facing figures can live in `presentment_details`.
+
+On a missing or mismatched settlement value, the gateway refuses payment completion, writes a diagnostic order note with the Checkout Session and available PaymentIntent reference, and moves the order to `on-hold`. Holding prevents Woo's unpaid-pending cancellation from restoring stock for a payment Stripe may already have captured.
+
+Treat this state as a manual-reconciliation signal. Do not auto-call `payment_complete()`, rewrite the order total/currency, or move the order back to pending merely because Stripe reported `checkout.session.completed`. Resolve the Stripe object, Woo order, API-version schema, and amount conversion first; make any operator remediation explicit and auditable.
+
 ## Unexpected charges
 
 Stripe 10.8 detects a captured Stripe charge for an order already paid by another gateway. It writes an order note, deduplicates by PaymentIntent, and fires:
@@ -147,7 +160,7 @@ Stripe 10.8 adds `wc_stripe_logger_can_log` for targeted **enablement** when ver
 Useful checks:
 
 ```bash
-wp action-scheduler list --hook=wc_stripe_deferred_webhook --status=pending
+wp action-scheduler action list --hook=wc_stripe_deferred_webhook --status=pending
 wp option get woocommerce_stripe_settings --format=json
 ```
 
@@ -170,11 +183,12 @@ Stripe 10.8 contains read-only Stripe abilities, but registration is gated by `w
 1. Valid, missing, stale, and wrong webhook signatures.
 2. Duplicate event delivery and duplicate checkout return.
 3. PaymentIntent success before and after order meta persistence.
-4. Checkout Session success, async success/failure, and expiration.
+4. Checkout Session success, async success/failure, expiration, and amount/currency mismatch across pre-Basil and Basil schemas.
 5. Lock collision followed by deferred retry.
 6. Redirect/SCA, capture, refund, dispute, and failed payment.
 7. Adaptive Pricing enabled with healthy/disabled webhooks.
-8. HPOS and Action Scheduler worker/cron delays.
+8. Invalid webhook-state values and pending-count updates only after a valid signature.
+9. HPOS and Action Scheduler worker/cron delays.
 
 ## Cross-references
 

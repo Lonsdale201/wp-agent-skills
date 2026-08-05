@@ -1,6 +1,6 @@
 # Action Scheduler API patterns
 
-These examples target Action Scheduler 3.9.3 and use the public procedural API.
+These examples target Action Scheduler 4.0.0 and use the public procedural API.
 Keep hook names and groups plugin-prefixed.
 
 ## Async one-shot
@@ -22,14 +22,11 @@ final class MyPlugin_Order_Jobs {
         }
 
         $args = array( 'order_id' => $order_id );
-        if ( function_exists( 'as_has_scheduled_action' ) && as_has_scheduled_action( self::HOOK_PROCESS_ORDER, $args, self::GROUP ) ) {
-            return 0;
-        }
-
         return as_enqueue_async_action(
             self::HOOK_PROCESS_ORDER,
             $args,
-            self::GROUP
+            self::GROUP,
+            true
         );
     }
 
@@ -229,20 +226,19 @@ $pending_ids = as_get_scheduled_actions(
 Prefer `as_has_scheduled_action()` for existence checks. Use
 `as_get_scheduled_actions()` when building debug/admin views or migration tools.
 
-## Global unique action compatibility
+## Unique action compatibility
 
-Use this only for global hook+group uniqueness, not for per-entity jobs whose
-args differ.
+On Action Scheduler 4.0 DBStore, this suppresses the exact pending/running
+`hook + group + encoded args` identity, so canonical per-entity args work. On
+Action Scheduler 3.x DBStore, the same flag suppresses by hook+group and can
+incorrectly block another entity. Use the exact-args pre-check when supporting
+both generations, but keep the callback idempotent because this is not an
+exactly-once guarantee.
 
 ```php
-function myplugin_enqueue_unique( string $hook, array $args, string $group ): int {
+function myplugin_enqueue_exact_compat( string $hook, array $args, string $group ): int {
     if ( ! function_exists( 'as_enqueue_async_action' ) ) {
         return 0;
-    }
-
-    $ref = new ReflectionFunction( 'as_enqueue_async_action' );
-    if ( $ref->getNumberOfParameters() >= 4 ) {
-        return as_enqueue_async_action( $hook, $args, $group, true );
     }
 
     if ( function_exists( 'as_has_scheduled_action' ) && as_has_scheduled_action( $hook, $args, $group ) ) {
@@ -253,5 +249,6 @@ function myplugin_enqueue_unique( string $hook, array $args, string $group ): in
 }
 ```
 
-For plugins that require Action Scheduler 3.9.3+, skip the reflection branch
-and call the modern signature directly.
+The mixed-version guard can race because check and insert are separate. For
+plugins that require Action Scheduler 4.0+, call the modern signature directly
+with `$unique = true` for atomic DBStore suppression of the exact identity.

@@ -2,13 +2,13 @@
 name: wc-stripe-add-payment-method
 description: Build or audit WooCommerce Stripe Gateway My Account saved-payment-method flows. Covers the canonical Woo form contract, Stripe UPE SetupIntents, exact selectors and POST fields, billing details, polymorphic Woo tokens including native Link, remote reconciliation/detach/default synchronization, custom endpoint security, and the Subscriptions boundary. Use for payment-methods.php, form-add-payment-method.php, add_payment_method, wc-stripe-setup-intent, wc-stripe-upe-element, Stripe saved cards or Link, or custom customer payment-method screens.
 metadata:
-  wp-skills-author: "Soczo Kristof"
+  wp-skills-author: "Soczó Kristóf"
   wp-skills-contact: "mailto:lonsdale201@hotmail.com"
   wp-skills-plugin: "woocommerce-gateway-stripe"
-  wp-skills-plugin-version-tested: "10.8.4"
-  wp-skills-woocommerce-version-tested: "10.9.4"
+  wp-skills-plugin-version-tested: "10.8.5"
+  wp-skills-woocommerce-version-tested: "11.0.0"
   wp-skills-php-min: "7.4"
-  wp-skills-last-updated: "2026-07-20"
+  wp-skills-last-updated: "2026-08-05"
 ---
 
 # WooCommerce Stripe: saved payment methods
@@ -21,7 +21,7 @@ Do not rebuild Stripe Elements markup or submit raw card data to WordPress. Keep
 
 This skill covers saving without a purchase on the My Account Add payment method screen. A SetupIntent creates no charge. For checkout that takes an initial payment and saves the same reusable method for installments or other future off-session charges, use `wc-stripe-future-payments`; for a custom Checkout Block gateway adapter, also use `wc-checkout-block-payment-method`.
 
-Stripe 10.8.4 uses `WC_Stripe_UPE_Payment_Gateway` as the main `stripe` gateway. `WC_Gateway_Stripe` is only a deprecated compatibility subclass. Optimized Checkout is deliberately disabled on Add payment method and Subscriptions Change payment method pages; those pages use the standard UPE flow. Express Checkout on a subscription change-payment page is a separate Stripe 10.8+ feature covered by `wc-stripe-subscriptions`.
+Stripe 10.8.5 uses `WC_Stripe_UPE_Payment_Gateway` as the main `stripe` gateway. `WC_Gateway_Stripe` is only a deprecated compatibility subclass. Optimized Checkout is deliberately disabled on Add payment method and Subscriptions Change payment method pages; those pages use the standard UPE flow. Express Checkout on a subscription change-payment page is a separate Stripe 10.8+ feature covered by `wc-stripe-subscriptions`.
 
 ## Canonical Woo form
 
@@ -30,7 +30,7 @@ Prefer Woo's template unchanged. The following is a condensed selector map, not 
 ```php
 <form id="add_payment_method" method="post">
     <div id="payment" class="woocommerce-Payment">
-        <ul class="woocommerce-PaymentMethods payment_methods methods">
+        <ul class="woocommerce-PaymentMethods payment_methods methods" aria-label="<?php esc_attr_e( 'Payment methods', 'woocommerce' ); ?>">
             <li class="woocommerce-PaymentMethod payment_method_<?php echo esc_attr( $gateway->id ); ?>">
                 <input
                     id="payment_method_<?php echo esc_attr( $gateway->id ); ?>"
@@ -55,6 +55,7 @@ Prefer Woo's template unchanged. The following is a condensed selector map, not 
 Required contracts:
 
 - `form#add_payment_method` is watched by Woo and Stripe scripts.
+- Preserve the WooCommerce 11.0 payment-method list `aria-label`; selector compatibility does not replace accessible naming.
 - The gateway radio must use `name="payment_method"`, `.input-radio`, and `id="payment_method_{gateway_id}"`.
 - The box must retain `.payment_box.payment_method_{gateway_id}`.
 - The nonce action/name are `woocommerce-add-payment-method` and `woocommerce-add-payment-method-nonce`.
