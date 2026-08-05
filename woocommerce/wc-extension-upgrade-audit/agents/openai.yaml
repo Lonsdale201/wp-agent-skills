@@ -1,0 +1,4 @@
+interface:
+  display_name: "WooCommerce Extension Upgrade Audit"
+  short_description: "Audit extensions against WooCommerce release contract changes."
+  default_prompt: "Use $wc-extension-upgrade-audit to audit a WooCommerce extension for release compatibility."

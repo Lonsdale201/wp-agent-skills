@@ -1,6 +1,6 @@
 # WooCommerce REST API v4 reference
 
-Source-verified against WooCommerce 10.9.4. These are latent core controller routes: the 10.9.4 release build disables `rest-api-v4`, so they are absent unless the build feature is altered. Methods can be narrowed by permissions; use exact runtime route discovery and authenticated `OPTIONS` when available.
+Source-verified against WooCommerce 11.0.0. These are latent core controller routes: the 11.0.0 release build disables `rest-api-v4`, so they are absent unless the build feature is altered. Methods can be narrowed by permissions; use exact runtime route discovery and authenticated `OPTIONS` when available.
 
 ## Route catalog
 
@@ -10,6 +10,7 @@ Source-verified against WooCommerce 10.9.4. These are latent core controller rou
 | Orders | `/wc/v4/orders`, `/wc/v4/orders/<id>` |
 | Order notes | `/wc/v4/order-notes?order_id=<id>`, `/wc/v4/order-notes/<note_id>` |
 | Refunds | `/wc/v4/refunds?order_id=<id>`, `/wc/v4/refunds/<refund_id>` |
+| Refund preview | `POST /wc/v4/refunds/preview` |
 | Products | `/wc/v4/products`, `/wc/v4/products/<id>`, `/wc/v4/products/batch` |
 | Suggested products | `/wc/v4/products/suggested-products` |
 | Related products | `/wc/v4/products/<id>/related` |
@@ -31,7 +32,7 @@ Source-verified against WooCommerce 10.9.4. These are latent core controller rou
 
 ## Deliberate absences
 
-These common v3 surfaces are not v4 routes in WooCommerce 10.9.4:
+These common v3 surfaces are not v4 routes in WooCommerce 11.0.0:
 
 - Product categories/tags/attributes and product variations.
 - Coupons, taxes, shipping classes, reports, and system status.
@@ -62,4 +63,4 @@ Append `collection_params`, `item_schema`, or `item_response` only when the conc
 
 ## Cache status
 
-The v4 products controller wraps `get_suggested_products()` with `RestApiCache::with_cache()`. The feature can emit Woo cache status headers when enabled, but no code should assume a particular header or cache backend is present. Other v4 controllers in 10.9.4 do not call `with_cache()`.
+The v4 products controller wraps `get_suggested_products()` with `RestApiCache::with_cache()`. The feature can emit Woo cache status headers when enabled, but no code should assume a particular header or cache backend is present. Other v4 controllers in 11.0.0 do not call `with_cache()`.

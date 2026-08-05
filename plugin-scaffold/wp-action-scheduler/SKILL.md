@@ -1,22 +1,22 @@
 ---
 name: wp-action-scheduler
 description: Design and review Action Scheduler jobs in WordPress plugins
-  using Action Scheduler 3.9.x public APIs - async, single, recurring, and
+  using Action Scheduler 4.0 public APIs - async, single, recurring, and
   cron-expression actions; action_scheduler_init load timing; hook/args/group
-  naming; unique and priority parameters; idempotent callbacks; chunked
+  naming; args-aware unique identity and priority; idempotent callbacks; chunked
   workloads; activation/deactivation cleanup; WooCommerce-bundled or
   standalone dependency usage; admin and WP-CLI debugging; queue runner limits;
-  and safe operational troubleshooting. Use when a plugin schedules background
+  failed-action retention; and safe operational troubleshooting. Use when a plugin schedules background
   jobs with as_enqueue_async_action, as_schedule_single_action,
   as_schedule_recurring_action, as_schedule_cron_action,
   as_get_scheduled_actions, or integrates with WooCommerce background queues.
 metadata:
-  wp-skills-author: "Soczo Kristof"
+  wp-skills-author: "Soczó Kristóf"
   wp-skills-contact: "mailto:lonsdale201@hotmail.com"
   wp-skills-plugin: "action-scheduler"
-  wp-skills-plugin-version-tested: "3.9.3"
+  wp-skills-plugin-version-tested: "4.0.0"
   wp-skills-php-min: "7.2"
-  wp-skills-last-updated: "2026-04-29"
+  wp-skills-last-updated: "2026-08-05"
 ---
 
 # WordPress plugin: Action Scheduler
@@ -73,7 +73,7 @@ Action Scheduler can be present as:
 
 Do not assume your plugin owns the loaded version. Action Scheduler registers
 available versions and initializes the latest registered version. In local
-3.9.3, registration happens on `plugins_loaded` priority `0`, initialization
+4.0.0, registration happens on `plugins_loaded` priority `0`, initialization
 loads the procedural API, and `action_scheduler_init` fires when the store,
 logger, runner, admin view, and recurring scheduler are ready.
 
@@ -105,7 +105,7 @@ add_action( 'action_scheduler_init', static function (): void {
 } );
 ```
 
-## Public API in Action Scheduler 3.9.3
+## Public API in Action Scheduler 4.0.0
 
 Scheduling functions return an action ID as `int`; `0` means scheduling failed.
 
@@ -121,17 +121,17 @@ Scheduling functions return an action ID as `int`; `0` means scheduling failed.
 | `as_has_scheduled_action( $hook, $args = null, $group = '' )` | Efficient boolean check for pending/running actions. |
 | `as_get_scheduled_actions( $args = array(), $return_format = OBJECT )` | Query actions by hook, group, status, date, etc. |
 | `as_get_datetime_object( $date_string = null, $timezone = 'UTC' )` | Build AS DateTime object for queries. |
-| `as_supports( $feature )` | Feature detection. In 3.9.3 it supports `ensure_recurring_actions_hook`. |
+| `as_supports( $feature )` | Feature detection. In 4.0.0 it supports `ensure_recurring_actions_hook`. |
 
 The `$priority` parameter is queue priority, not callback priority. Lower
-numbers run first; 3.9.3 expects `0-255` and defaults to `10`.
+numbers run first; 4.0.0 expects `0-255` and defaults to `10`.
 
 ## Hook, args, and group rules
 
 - Use namespaced hook names: `myplugin/process_order`, not `process_order`.
 - Use one stable group per plugin or feature: `myplugin`, `myplugin-import`,
   `myplugin-webhooks`.
-- Keep action args small and JSON-serializable. The 3.9.3 DB store can keep
+- Keep action args small and JSON-serializable. The 4.0.0 DB store can keep
   larger encoded args in `extended_args`, but validates against an 8000-character
   encoded limit and still hashes/indexes args for lookup.
 - Pass identifiers, not large DTOs, `WC_Order` objects, full API payloads, or
@@ -162,19 +162,21 @@ add_action(
 
 ## Unique actions
 
-In 3.9.3, the scheduling functions support `$unique`. The public docs in the
-local source say a unique action is not scheduled when another pending or
-running action has the same hook and group parameters. The 3.9.3 DB store
-matches pending/running uniqueness by hook and group, not by args.
+In Action Scheduler 4.0's DBStore, `$unique = true` suppresses insertion when a
+pending or running action has the same `hook + group + encoded args`. The JSON
+representation is part of the identity: key insertion order and scalar types
+matter. Large args use the stored hash in the indexed `args` column.
 
-Use `$unique = true` only for "only one pending/running copy of this hook+group
-should exist", such as a global reindex, import coordinator, or recurring sync.
-Do not use it for per-order or per-user jobs under one hook/group unless only
-one outstanding job for the whole group is intended.
+This changed from Action Scheduler 3.x, whose DBStore checked hook and group but
+not args. Do not claim one meaning across unknown active versions or alternative
+stores. Inspect the runtime version/source and use exact
+`as_has_scheduled_action( $hook, $args, $group )` checks as a compatibility
+guard when supporting mixed 3.x/4.x environments.
 
-For per-entity duplicate suppression, check the exact args with
-`as_has_scheduled_action()` and still make the callback idempotent. That guard is
-not a substitute for durable state because it is not a hard business lock.
+On 4.0, `$unique = true` is useful for both global empty-arg coordinators and
+per-entity queue rows with canonical args. It is still not a durable business
+lock or exactly-once guarantee: callbacks remain idempotent and remote side
+effects need provider idempotency or an owned atomic state transition.
 
 ```php
 if ( function_exists( 'as_enqueue_async_action' ) ) {
@@ -260,7 +262,7 @@ add_action( 'action_scheduler_ensure_recurring_actions', static function (): voi
 
 ## Statuses, tables, and runner model
 
-Core statuses in 3.9.3:
+Core statuses in 4.0.0:
 
 - `pending`
 - `in-progress`
@@ -279,6 +281,12 @@ Do not write direct SQL for normal plugin behavior. Use the public API, admin
 UI, or WP-CLI. Direct SQL is acceptable only for emergency diagnostics with a
 backup and site-specific approval.
 
+The tables are shared infrastructure, not automatically owned by whichever
+plugin loaded Action Scheduler first. On deactivation or uninstall, cancel only
+actions in your plugin's exclusive group (or exact hook/args sets). Never drop
+the shared tables from a distributed plugin uninstaller: another active plugin
+may depend on the same queue.
+
 The default queue runner schedules WP-Cron hook `action_scheduler_run_queue`
 every minute and can dispatch async admin-context requests on shutdown. Default
 web runner batch size is filterable through
@@ -288,7 +296,7 @@ web runner batch size is filterable through
 
 Admin UI: Tools -> Scheduled Actions.
 
-Common WP-CLI commands in 3.9.3:
+Common WP-CLI commands in 4.0.0:
 
 ```bash
 wp action-scheduler action list --group=myplugin --status=pending
@@ -304,6 +312,22 @@ wp action-scheduler fix-schema
 Use WP-CLI for deterministic local/dev runs and for production debugging when
 the web runner is too slow or loopback requests are blocked.
 
+## Action and log retention in 4.0
+
+Action Scheduler 4.0 deletes old rows through a dedicated daily scheduled task,
+normally around 03:00 site-local time, with bounded batches and continuation
+actions. The cleaner implementation and its action hooks are internal; do not
+call them from extension code.
+
+- Completed/canceled actions default to 31-day retention through
+  `action_scheduler_retention_period`.
+- Failed actions default to three 31-day months through
+  `action_scheduler_retention_period_for_failed`.
+- `action_scheduler_enable_failed_action_cleanup` can disable failed cleanup.
+
+Queue rows/logs are operational evidence, not permanent audit storage. Copy any
+required accounting or external-delivery record into plugin-owned durable state.
+
 ## Critical rules
 
 - Use `action_scheduler_init` as the safe runtime scheduling point.
@@ -312,12 +336,15 @@ the web runner is too slow or loopback requests are blocked.
 - Keep args small, scalar/array, JSON-serializable, and non-sensitive.
 - Treat args as positional callback params; array keys are not named params.
 - Prefer plugin-prefixed hook names and stable group names.
-- Use `$unique = true` only for hook+group singleton suppression; still make
-  callbacks idempotent.
+- On AS 4.0 DBStore, understand `$unique` as exact hook+group+encoded-args queue
+  suppression; version-detect before relying on that identity across AS 3.x.
+- Never treat `$unique` as exactly-once execution; still make callbacks
+  idempotent.
 - Use `as_has_scheduled_action()` for a boolean guard; use
   `as_next_scheduled_action()` only when you need the timestamp.
 - Throw for real job failures; return for permanent no-op cases.
 - Do not mutate AS tables directly in normal plugin code.
+- Do not delete shared Action Scheduler tables during plugin uninstall.
 - For large workloads, enqueue chunks/cursors instead of one massive action.
 
 ## Common mistakes
@@ -383,14 +410,16 @@ as_unschedule_all_actions( '', array(), 'myplugin' );
 
 ## Source notes
 
-Validated against the local Action Scheduler 3.9.3 plugin installed at
-`wp-content/plugins/action-scheduler` on 2026-04-29:
+Validated against Action Scheduler 4.0.0 bundled with local WooCommerce 11.0.0
+on 2026-08-05:
 
 - `functions.php` public API signatures.
 - `ActionScheduler::init()` and `action_scheduler_init` timing.
 - `ActionScheduler_Action::execute()` positional arg delivery.
 - `ActionScheduler_Store` statuses and DB store args length behavior.
 - `ActionScheduler_QueueRunner` runner hook and batch size.
+- `ActionScheduler_DBStore` args-aware unique insert.
+- `ActionScheduler_QueueCleaner` dedicated cleanup and failed retention.
 - WP-CLI command classes under `classes/WP_CLI`.
 
 ## References

@@ -1,20 +1,20 @@
 ---
 name: wc-rest-api-v4
-description: Audit WooCommerce's source-gated `wc/v4` REST API. In WooCommerce 10.9.4 the core v4 controllers exist but the release build sets `rest-api-v4` false, so core routes are not registered by default. Covers runtime discovery, safe v3 fallback, latent v4 routes, settings paths, hook prefixes, authentication, fulfillments, and internal caching. Use when code targets `/wc/v4` or assumes source files mean a live public API.
+description: Audit WooCommerce's source-gated `wc/v4` REST API. In WooCommerce 11.0.0 the core v4 controllers exist but the release build still sets `rest-api-v4` false, so core routes are not registered by default. Covers runtime discovery, safe v3 fallback, latent routes including refund preview, settings paths, hook prefixes, authentication, fulfillments, and internal caching. Use when code targets `/wc/v4` or assumes source files mean a live public API.
 metadata:
   wp-skills-author: "Soczó Kristóf"
   wp-skills-contact: "mailto:lonsdale201@hotmail.com"
   wp-skills-plugin: "woocommerce"
-  wp-skills-plugin-version-tested: "10.9.4"
+  wp-skills-plugin-version-tested: "11.0.0"
   wp-skills-php-min: "7.4"
-  wp-skills-last-updated: "2026-07-10"
+  wp-skills-last-updated: "2026-08-05"
 ---
 
 # WooCommerce REST API v4
 
-WooCommerce contains an authenticated merchant/integration API implementation under `wc/v4`. It is not the shopper-facing Store API and, in the 10.9.4 release build, it is not a generally available core API.
+WooCommerce contains an authenticated merchant/integration API implementation under `wc/v4`. It is not the shopper-facing Store API and, in the 11.0.0 release build, it is not a generally available core API.
 
-## Release gate in 10.9.4
+## Release gate in 11.0.0
 
 Core registers its v4 controllers only when both conditions pass:
 
@@ -23,7 +23,7 @@ wc_rest_should_load_namespace( 'wc/v4' )
 Automattic\WooCommerce\Admin\Features\Features::is_enabled( 'rest-api-v4' )
 ```
 
-`includes/react-admin/feature-config.php` sets `rest-api-v4` to `false` in WooCommerce 10.9.4. On a normal release install, core customers/orders/products/settings/fulfillment v4 routes are therefore absent even though their controller source files ship.
+`includes/react-admin/feature-config.php` sets `rest-api-v4` to `false` in WooCommerce 11.0.0. On a normal release install, core customers/orders/products/settings/fulfillment/refund-preview v4 routes are therefore absent even though their controller source files ship.
 
 Other extensions can independently register routes under `/wc/v4`; seeing that namespace in the REST index does not prove WooCommerce core v4 is enabled. Check each exact route.
 
@@ -36,7 +36,7 @@ Do not force the build feature on with `woocommerce_admin_get_feature_config` in
 - `wc/v3` is not deprecated. Migrate endpoint by endpoint, not by global search/replace.
 - Discover schemas and methods with authenticated `OPTIONS /wp-json/wc/v4/<route>` against the deployed store.
 
-The complete latent WooCommerce-core 10.9.4 route catalog is in [reference.md](reference.md). It describes controller source, not routes guaranteed to be registered by the release build.
+The complete latent WooCommerce-core 11.0.0 route catalog is in [reference.md](reference.md). It describes controller source, not routes guaranteed to be registered by the release build.
 
 Runtime discovery must run after route registration:
 
@@ -78,7 +78,27 @@ GET|PUT /wc/v4/settings/payment-gateways/<gateway-id>
 GET     /wc/v4/settings/payments/offline-methods
 ```
 
-Do not invent `/settings/payment-gateways` collection or `/settings/offline-payment-methods`; neither is registered in 10.9.4.
+Do not invent `/settings/payment-gateways` collection or `/settings/offline-payment-methods`; neither is registered in 11.0.0.
+
+## WooCommerce 11.0 latent refund preview
+
+WooCommerce 11.0 adds `POST /wc/v4/refunds/preview`. It calculates a preview and does not create a `WC_Order_Refund`, call the gateway, or restock items. Despite being read-only in effect, it deliberately uses the same create-refund permission check as refund creation so read-only API credentials cannot probe refundable order state.
+
+Request shape:
+
+```json
+{
+  "order_id": 123,
+  "line_items": [
+    { "line_item_id": 77, "quantity": 1 },
+    { "line_item_id": 81, "refund_total": 12.50 }
+  ]
+}
+```
+
+Each line requires `line_item_id` and either a positive quantity or a non-zero tax-inclusive `refund_total` with the same sign as the original line. The response contains product/shipping/fee breakdowns plus `subtotal`, `tax`, `total`, and `max_refundable`, all as formatted decimal strings. Core rejects non-positive aggregate previews and totals above the order's remaining refundable amount.
+
+The route remains behind the entire `rest-api-v4` build gate. Do not build a production extension that assumes this endpoint exists merely because WooCommerce 11.0 source contains it; discover the exact route and retain a supported fallback.
 
 V4 also exposes the legacy-compatible generic setting-option wrapper under `/settings/<group_id>`, `/settings/<group_id>/<id>`, and `/settings/<group_id>/batch`. It redirects the v3 settings option controller into the v4 namespace; do not confuse it with the newer dedicated settings controllers.
 
@@ -159,7 +179,7 @@ All v4 controllers are under `Automattic\WooCommerce\Internal`. Do not extend `V
 
 ## Fulfillments have two gates
 
-The whole core v4 namespace first needs `rest-api-v4`; fulfillment behavior additionally needs the `fulfillments` feature, which is disabled by default in 10.9.4. Route classes existing on disk does not guarantee a store exposes usable fulfillment behavior.
+The whole core v4 namespace first needs `rest-api-v4`; fulfillment behavior additionally needs the `fulfillments` feature, which is disabled by default in 11.0.0. Route classes existing on disk does not guarantee a store exposes usable fulfillment behavior.
 
 ```php
 use Automattic\WooCommerce\Utilities\FeaturesUtil;
@@ -187,7 +207,7 @@ The order item route also accepts action-style update parameters such as `paymen
 
 `Automattic\WooCommerce\Internal\Traits\RestApiCache` is experimental and feature-gated by `rest_api_caching`. Backend caching also requires `woocommerce_rest_api_enable_backend_caching = yes`.
 
-In the 10.9.4 v4 controllers, `with_cache()` is used for the `GET /products/suggested-products` callback, not as a blanket cache around all v4 resources. Do not promise cache hits for customers, orders, or arbitrary v4 routes.
+In the 11.0.0 v4 controllers, `with_cache()` is used for the `GET /products/suggested-products` callback, not as a blanket cache around all v4 resources. Do not promise cache hits for customers, orders, or arbitrary v4 routes.
 
 The trait is internal; plugin routes should use stable WordPress cache APIs and explicit invalidation/versioning.
 

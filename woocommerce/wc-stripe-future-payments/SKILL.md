@@ -5,10 +5,10 @@ metadata:
   wp-skills-author: "Soczó Kristóf"
   wp-skills-contact: "mailto:lonsdale201@hotmail.com"
   wp-skills-plugin: "woocommerce-gateway-stripe"
-  wp-skills-plugin-version-tested: "10.8.4"
-  wp-skills-woocommerce-version-tested: "10.9.4"
+  wp-skills-plugin-version-tested: "10.8.5"
+  wp-skills-woocommerce-version-tested: "11.0.0"
   wp-skills-php-min: "7.4"
-  wp-skills-last-updated: "2026-07-20"
+  wp-skills-last-updated: "2026-08-05"
 ---
 
 # WooCommerce Stripe future payments
@@ -54,7 +54,7 @@ Use `wc-checkout-block-payment-method` for the Blocks adapter. Link support is a
 
 ## Force saving through Woo Stripe carefully
 
-Woo Stripe 10.8.4 exposes:
+Woo Stripe 10.8.5 exposes:
 
 ```php
 add_filter(

@@ -1,6 +1,6 @@
 # WooCommerce core download contract
 
-Version scope: WooCommerce 10.9.4, PHP 7.4+. Use this reference when auditing persistence, request authorization, delivery, REST exposure, or lifecycle maintenance.
+Version scope: WooCommerce 11.0.0, PHP 7.4+. Use this reference when auditing persistence, request authorization, delivery, REST exposure, or lifecycle maintenance.
 
 ## Product definition and storage
 
@@ -27,6 +27,8 @@ For new/changed files, `check_is_valid()` enforces:
 Absolute remote HTTP(S) URLs are considered remote and are not fetched to confirm existence. Shortcodes are allowed; approved-directory validation resolves them by default, but the shortcode provider remains responsible for safe output.
 
 An invalid existing path is retained as disabled during hydration; a new or changed invalid path raises a product error. Never silently re-enable it.
+
+For a stored path of `relative` type, WooCommerce 11.0 resolves ordinary/`..` relative forms against `ABSPATH` and root-relative paths under the actual `WP_CONTENT_DIR`. The content-directory comparison is segment-aware, so a custom `/app` directory does not falsely match `/application`. Extensions must not hard-code `/wp-content`, assume `WP_CONTENT_DIR` sits below `ABSPATH`, or duplicate core's filesystem resolution.
 
 ## Approved directories and storage protection
 

@@ -5,9 +5,9 @@ metadata:
   wp-skills-author: "Soczó Kristóf"
   wp-skills-contact: "mailto:lonsdale201@hotmail.com"
   wp-skills-plugin: "woocommerce"
-  wp-skills-plugin-version-tested: "10.9.4"
+  wp-skills-plugin-version-tested: "11.0.0"
   wp-skills-php-min: "7.4"
-  wp-skills-last-updated: "2026-07-20"
+  wp-skills-last-updated: "2026-08-05"
 ---
 
 # WooCommerce downloadable products
@@ -54,6 +54,8 @@ $product->save();
 ```
 
 `set_downloads()` validates new or changed paths. Local files must exist, use an allowed type, and pass Approved Download Directory checks when that feature is enabled. Remote absolute URLs are accepted without a remote existence request; shortcode providers must enforce their own validation.
+
+WooCommerce 11.0 correctly resolves root-relative content paths against relocated/custom `WP_CONTENT_DIR` locations and requires a path-segment boundary. Do not assume content is literally `/wp-content`, slice a hard-coded 11 characters, or treat `/application` as if it were under `/app`. Store paths through product CRUD and let `WC_Product_Download` resolve/validate them.
 
 For an existing file, reuse its ID:
 

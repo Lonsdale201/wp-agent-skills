@@ -6,9 +6,10 @@ metadata:
   wp-skills-contact: "mailto:lonsdale201@hotmail.com"
   wp-skills-plugin: "woocommerce-subscriptions"
   wp-skills-plugin-version-tested: "9.0.0"
-  wp-skills-woocommerce-version-tested: "10.9.4"
+  wp-skills-woocommerce-version-tested: "11.0.0"
+  wp-skills-action-scheduler-version-tested: "4.0.0"
   wp-skills-php-min: "7.4"
-  wp-skills-last-updated: "2026-07-10"
+  wp-skills-last-updated: "2026-08-05"
 ---
 
 # WooCommerce Subscriptions: Health Check and processing reliability
@@ -142,7 +143,7 @@ Check logs by source:
 Useful local checks:
 
 ```bash
-wp action-scheduler list --group=wc_subscription_scheduled_event --status=pending
+wp action-scheduler action list --group=wc_subscription_scheduled_event --status=pending
 wp option get woocommerce_subscriptions_version
 wp db query "SELECT status, signal_type, COUNT(*) FROM wp_wcs_health_check_candidates GROUP BY status, signal_type"
 ```

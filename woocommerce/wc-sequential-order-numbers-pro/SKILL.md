@@ -4,7 +4,7 @@ description: >-
   Build or audit compatibility with WooCommerce Sequential Order Numbers Pro.
   Use when code prints, stores, searches, imports, exports, invoices, emails,
   syncs, or filters WooCommerce order numbers, especially around
-  $order->get_order_number(), wc_seq_order_number_pro(),
+  the order object's get_order_number(), wc_seq_order_number_pro(),
   find_order_by_order_number(), _order_number, _order_number_formatted,
   wc_sequential_order_numbers_formatted_order_number, HPOS order meta,
   REST-created orders, Checkout Block draft orders, free-order sequences, or

@@ -50,7 +50,7 @@ confirm=true
 
 Never reuse the first successful PaymentIntent as the next installment. It represents one payment lifecycle and one amount/state history.
 
-## Installed Woo Stripe Gateway 10.8.4 contract
+## Installed Woo Stripe Gateway 10.8.5 contract
 
 The installed gateway's behavior is source-verified as follows:
 
