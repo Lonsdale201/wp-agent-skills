@@ -1,0 +1,4 @@
+interface:
+  display_name: "FluentCart subscriptions and renewals"
+  short_description: "Handle recurring billing across all collection modes"
+  default_prompt: "Use $fluentcart-subscriptions-renewals to implement or audit this recurring workflow across lifecycle events, billing ownership, retries, and access validity."

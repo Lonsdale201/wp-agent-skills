@@ -1,0 +1,4 @@
+interface:
+  display_name: "FluentCart cart and checkout"
+  short_description: "Extend checkout without trusting browser totals"
+  default_prompt: "Use $fluentcart-cart-checkout to implement or audit this cart or checkout flow with server-owned prices, validation, ownership, and retry safety."

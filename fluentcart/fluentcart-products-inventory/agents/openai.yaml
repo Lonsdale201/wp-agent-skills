@@ -1,0 +1,4 @@
+interface:
+  display_name: "FluentCart products and inventory"
+  short_description: "Keep products, variants, pricing, and stock coherent"
+  default_prompt: "Use $fluentcart-products-inventory to implement or audit this FluentCart catalog or inventory change without desynchronizing the product aggregate."

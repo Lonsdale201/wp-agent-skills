@@ -1,0 +1,4 @@
+interface:
+  display_name: "FluentCart REST and headless"
+  short_description: "Build secure FluentCart APIs and external clients"
+  default_prompt: "Use $fluentcart-rest-headless to implement or audit this FluentCart REST, AJAX, headless, or mobile integration against the installed route and authorization contract."

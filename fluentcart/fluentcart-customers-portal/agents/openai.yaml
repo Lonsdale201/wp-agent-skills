@@ -1,0 +1,4 @@
+interface:
+  display_name: "FluentCart customers and portal"
+  short_description: "Protect customer identity, ownership, and portal data"
+  default_prompt: "Use $fluentcart-customers-portal to implement or audit this customer or portal feature with correct Customer/WP_User identity, ownership, and cache scope."
