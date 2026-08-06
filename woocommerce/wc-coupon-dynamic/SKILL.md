@@ -229,11 +229,12 @@ Prefer simple normalized code characters. The Store API's coupon endpoints and o
 - `wc-order-lifecycle-and-items`: safe idempotent order status and refund side effects.
 - `wc-cart-checkout-classic`: classic cart calculation and checkout transfer.
 
-## Verified sources
+## References
 
-- `wp-content/plugins/woocommerce/includes/class-wc-coupon.php`
-- `wp-content/plugins/woocommerce/includes/class-wc-discounts.php`
-- `wp-content/plugins/woocommerce/includes/abstracts/abstract-wc-order.php`
-- `wp-content/plugins/woocommerce/includes/class-wc-order.php`
-- `wp-content/plugins/woocommerce/includes/wc-coupon-functions.php`
-- `wp-content/plugins/woocommerce/src/StoreApi/Utilities/CartController.php`
+- Verified source paths:
+  - `wp-content/plugins/woocommerce/includes/class-wc-coupon.php`
+  - `wp-content/plugins/woocommerce/includes/class-wc-discounts.php`
+  - `wp-content/plugins/woocommerce/includes/abstracts/abstract-wc-order.php`
+  - `wp-content/plugins/woocommerce/includes/class-wc-order.php`
+  - `wp-content/plugins/woocommerce/includes/wc-coupon-functions.php`
+  - `wp-content/plugins/woocommerce/src/StoreApi/Utilities/CartController.php`
