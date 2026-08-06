@@ -38,6 +38,19 @@ The client must still send the Store API Nonce or Cart-Token and preserve the re
 
 Do not save these hidden inputs from an unrelated form without reproducing the product editor nonce/capability checks and APFS normalization.
 
+## Renewal alignment REST shape
+
+`subscription_payment_sync_date` is always an object on the REST boundary:
+
+| Billing period | Request shape |
+|---|---|
+| Disabled | `{"day":0}` |
+| Week | `{"day":1}` through `{"day":7}` |
+| Month | `{"day":1}` through `{"day":28}` |
+| Year | `{"day":N,"month":M}` with a valid non-leap-year calendar date |
+
+Internal APFS storage is mixed (`0`, integer, or `{day, month}`), but clients must not mirror that mixed representation. For yearly schedules both fields are required; February 29 is rejected deliberately.
+
 ## Bulk edit
 
 - `_wcsatt_bulk_purchase_option`: `inherit`, `override`, or `disable`.

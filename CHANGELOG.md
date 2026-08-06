@@ -2,6 +2,72 @@
 
 This collection is continuously evolving — entries are date-based, not version-tagged. New skills land when they're ready; updates go in when they cover real ground (a new release of an upstream plugin, a verified misconception, a corrected example).
 
+## 2026-08-06 (woocommerce + learndash: WCS 9.1 and LearnDash 5.1.9 re-grounding, 2 new skills)
+
+**Two new skills** plus **12 updated skills** re-verified against **WooCommerce Subscriptions 9.1.0** (on WooCommerce 11.0.0) and **LearnDash LMS 5.1.9** local source. All touched `wp-skills-plugin-version-tested` / `wp-skills-woocommerce-version-tested` values moved to the installed release, `wp-skills-last-updated` to `2026-08-06`.
+
+Two themes run through the batch. On the WCS side, 9.1 tightens **authorization and shape boundaries** that extensions used to treat as loose: paying an existing switch order now needs a full guard set (not just a valid order key), relationship REST routes filter per object, and `payment_details` writes only land in gateway-declared slots. On the LearnDash side, the recurring point is that **access is not progress** — the new progress skill separates the completion/activity lifecycle from the enrollment skills, and 5.1.8+ changes the managed-group branch from *replace* to *union*.
+
+### Added — `woocommerce/wcs-cart-checkout-coupons`
+
+The missing WCS cart/checkout/coupon layer. Covers the **two-level cart model** (master `WC_Cart` = due today; the cloned, calculated `WC()->cart->recurring_carts` projections, `WC_Subscriptions_Cart::get_calculation_type()`, and why recurring carts must never be persisted or mutated as records), the four merchant-facing coupon types (`recurring_fee`, `recurring_percent`, `sign_up_fee`, `sign_up_fee_percent`) versus WCS's **internal transport types** (`renewal_fee`, `renewal_percent`, `renewal_cart`, `initial_cart` — never merchant-authored, never a durable identifier), eligibility extension without blanket-`true` on `woocommerce_coupon_is_valid` (and what `woocommerce_subscriptions_validate_coupon_type` actually switches off), **limited recurring coupons as payment limits** (`_wcs_number_payments` counted from paid, non-fully-refunded related orders with a non-zero matching discount — so never increment a custom counter at checkout), renewal-cart reconstruction and its pseudo coupon (9.1 compares coupon-line totals at Woo precision with a one-minor-unit tolerance — raw float equality misclassifies tax-inclusive recurring percentages as manual discounts), classic vs Cart/Checkout-block rendering with the Store API `extensions.subscriptions` / `subscriptions_cart_meta.hidden_coupon_codes` projections, and the **9.1 due-today subtotal contract**: WCS builds item subtotals on `woocommerce_cart_item_subtotal` at priority `1`, no longer filters `woocommerce_cart_product_subtotal`, and deprecates `get_formatted_product_subtotal()` / `get_due_today_subtotal()`. Ships `references/cart-checkout-contract.md` (calculation contexts, coupon-type matrix, hook signatures, renewal reconstruction, Store API shape, 9.1 regression assertions).
+
+### Added — `learndash/learndash-course-progress`
+
+Learner progress and completion as a **coordinated lifecycle** — progress usermeta, quiz attempts, activity tables, completion timestamps, parent steps, hooks, and group progress — instead of one usermeta write. Covers the operation-selection table, reading summaries/status without parsing display labels, single-step completion (`learndash_process_mark_complete`) versus bulk/administrative updates (`learndash_process_user_course_progress_update`, `learndash_user_course_complete_all_steps`), force and shared-step boundaries, the **5.1.8+ `learndash_user_progress_get_previous_incomplete_step()` contract**, safe mark-incomplete/reset paths (`learndash_delete_course_progress`, challenge-exam reset), completion and activity hooks, and the read-only REST progress boundary. Cross-linked from all four existing LearnDash skills.
+
+### Updated — `woocommerce/wcs-data-model-switching-gifting`
+
+Three 9.1 sections. **Paying an existing switch order**: `WCS_Cart_Switch::maybe_setup_cart()` rebuilds the cart only after order key `hash_equals()`, pending/failed status, a real switch relation *and* payload, login, `pay_for_order` on the order, `switch_shop_subscription` on every referenced subscription, and a bidirectional match between relation results and every `_subscription_switch_data` entry — an order key or payment capability alone is not authorization (full checklist in `switching-reference.md`). **HPOS-safe data copying**: values returned from `wc_subscriptions_subscription_data` / `..._renewal_order_data` / `wc_subscriptions_object_data` are copied without an extra `maybe_unserialize()` pass on HPOS while CPT values are decoded after the filters run — return the destination setter's PHP type, never pre-serialize, and regression-test both storages when a text field is itself serialized-looking. **Trash and restore**: restoring a parent restores trashed child subscriptions on both storages; on CPT, 9.1 restores to the recorded `_wp_trash_meta_status` instead of WordPress's `draft` (which `WC_Subscription` would expose as `pending`); never overwrite that meta or bypass `wp_untrash_post()`.
+
+### Updated — `woocommerce/wcs-subscription-plans-apfs`
+
+Four additions. Legacy `subscription` / `variable-subscription` product types are off by default since 9.0 and 9.1 **removes the obsolete activation walkthrough** that pointed at them — never use the presence of that onboarding UI as a feature check. `subscription_payment_sync_date` is always an **object** on the REST boundary (`{"day":0}` disabled, `{"day":N}` week/month, `{"day":N,"month":M}` yearly with a calendar-valid non-leap date); 9.1 fixes the admin path but API clients must still send a valid pair. New **sign-up-fee display filtering** section: APFS plan rows now pass fees through `woocommerce_subscriptions_product_sign_up_fee` with a third `$scheme` argument while native WCS still fires it with two — a required third parameter can fatal, so declare it optional. The long reference moved to `references/headless-admin-reference.md` (progressive-disclosure layout) and gained the renewal-alignment REST shape table.
+
+### Updated — `woocommerce/wcs-rest-api`
+
+9.1 tightens two boundaries. **Object-level relationship reads**: `/subscriptions/<id>/orders` omits related orders the caller cannot read and `/orders/<id>/subscriptions` omits subscriptions failing `shop_subscription` read permission — a collection-level capability is not a substitute in custom aggregate endpoints. **Payment-meta allowlist**: the v2/v3 controllers overlay request values only onto table/key slots declared for that gateway by `woocommerce_subscription_payment_meta`; unknown keys are ignored, malformed declarations are not written, and an empty/non-array `payment_details` returns an empty meta set without querying gateways — `post_meta` / `user_meta` is a gateway-declared shape, not a metadata tunnel. Also documents that `WCS_REST_Payment_Method_Meta` is an internal controller trait, not an extension base.
+
+### Updated — `woocommerce/wcs-renewal-scheduler`
+
+The 9.0 date-validation section becomes **9.0-9.1**: the admin schedule form now posts the render-time subscription status and skips schedule writes if the status changed meanwhile — preserve that guard in custom/extended editors, because a stale pending-cancel form can otherwise restore cancelled/end dates and delete `next_payment`. When an active subscription is legitimately saved, the 9.1 editor deletes a stale cancelled date first, so a corrupted schedule can be repaired. Cross-references the new `wcs-cart-checkout-coupons` for renewal-cart reconstruction and block payment totals.
+
+### Updated — `woocommerce/wcs-health-check-processing`
+
+The external web-cron route is **registered only while `woocommerce_subscriptions_external_trigger_enabled` is `yes`** — with Web cron off, a request gets route-not-found rather than a public disabled endpoint. 9.1 also fixes first-time enablement (URL/token generated on the first settings save) and makes the regeneration confirmation a one-shot user-scoped notice, so a missing URL on 9.1 is a configuration/cache problem, not expected bootstrap behavior — do not build a resave/regenerate workaround. Routine **skipped dedicated-queue runs are no longer logged as failures**: alert on explicit error context and stalled actions, not on a skipped-rotation message.
+
+### Updated — `woocommerce/wcs-subscription-hooks`
+
+Adds the 9.1 REST payment-meta allowlist note next to the existing `woocommerce_subscription_validate_payment_meta` / `..._{gateway_id}` argument-count rules, and cross-references `wcs-cart-checkout-coupons` for initial/recurring cart contexts, WCS coupon types, recurring fees, pseudo renewal coupons, and block checkout totals.
+
+### Updated — `woocommerce/wcs-subscription-downloads`
+
+The direct-SQL permission-deletion defect (orphan `wc_download_log` rows after revoke/regrant, no foreign-key cascade) was **rechecked against 9.1.0 source and still reproduces** — the entry is now version-accurate rather than reading as a fixed 9.0.1 issue.
+
+### Updated — `woocommerce/wc-stripe-subscriptions`
+
+Re-verified for WooCommerce Subscriptions **9.1.0** (Stripe Gateway 10.8.5, WooCommerce 11.0.0); description and `wp-skills-woocommerce-subscriptions-version-tested` updated, guidance unchanged.
+
+### Updated — `learndash/learndash-group-access`
+
+New **Managed Groups auto-enrollment (5.1.8+)** section: with `groups_autoenroll_managed` enabled, a Group Leader's effective group IDs are the *union* of explicit `learndash_group_users_*` memberships and `learndash_get_administrators_group_ids()` — before 5.1.8 the managed branch *replaced* explicit memberships, so custom portals and caches must stop reproducing the old behavior. Documents the one-minute `learndash_user_groups_{$user_id}` transient, the bypass argument, and the 5.1.9 gap where `ld_update_group_access()` clears that cache but `ld_update_leader_group_access()` does not — invalidate explicitly with `LDLMS_Transients::delete()` after leader, hierarchy, or setting changes.
+
+### Updated — `learndash/learndash-rest-api`
+
+Two source-verified additions. **Course custom pagination (5.1.7+)**: `lessons_per_page`, `lesson_per_page_custom`, and `topic_per_page_custom` need positive integers; empty/zero normalizes to the global setting and then to `LEARNDASH_LMS_DEFAULT_WIDGET_PER_PAGE`, so zero is not "show all" — disable custom pagination to inherit globals. **Progress routes are read-only**: in 5.1.9 `/users/{id}/course-progress`, `/{course}`, `/{course}/steps`, and `/{course}/exam` register no general write method — do not infer a PATCH contract from the response schema; authorize the actor and call LearnDash's completion APIs instead.
+
+### Updated — `learndash/learndash-course-access`
+
+Re-grounded on 5.1.9 (including the still-forced `$bypass_transient` in `learndash_user_get_enrolled_courses()`), with a cross-reference to the new `learndash-course-progress` for step completion, status, resets, activity, and incomplete-step navigation.
+
+### Updated — `learndash/learndash-woocommerce-access`
+
+Re-verified against LearnDash WooCommerce 2.0.2 + LearnDash LMS 5.1.9, and the combined `wp-skills-plugin-version-tested: "LearnDash WooCommerce 2.0.2 + LearnDash LMS 5.1.6.1"` string split into a clean `"2.0.2"` plus a new `wp-skills-learndash-version-tested: "5.1.9"` key (the old prose value did not match the validator's version-shape rule). Cross-references the progress skill for distinguishing order-driven access from resetting or completing learner progress.
+
+### Housekeeping
+
+`learndash/README.md` intro and rows rewritten around the access-versus-progress split; `woocommerce/README.md` gains the `wcs-cart-checkout-coupons` row; root README counters bumped (skills 233 → 235, plugins unchanged at 30 — both new skills use existing `sfwd-lms` / `woocommerce-subscriptions` products) and the Subscriptions / LearnDash structure rows extended. `wcs-subscription-plans-apfs/headless-admin-reference.md` was superseded by `references/headless-admin-reference.md` and removed. Three in-batch SKILL.md files had their accent-stripped `wp-skills-author: "Soczo Kristof"` normalized back to `"Soczó Kristóf"` (`wc-stripe-subscriptions`, `wcs-data-model-switching-gifting`, `wcs-rest-api`); 10 untouched skills still carry the ASCII form and remain for a separate sweep. `skills-index.json` regenerated; all touched skill folders pass `node .github/scripts/validate-skill.js --all` and the official `agentskills validate` reference tool.
+
 ## 2026-08-06 (fluentcart: new FluentCart developer-extension domain)
 
 New domain `fluentcart/` — **14 skills** for building and auditing third-party extensions, gateways, integrations, headless clients, and migrations against **FluentCart**. Grounded against the installed FluentCart Free 1.6.0, FluentCart Pro 1.6.0, and FluentCart Migrator 1.0.0 source on WordPress 7.0.2 / PHP 8.3.30, with runtime smoke tests in a mixed-plugin environment that selected Action Scheduler 4.0.0. Every skill marks its Free / Pro / Migrator boundary.

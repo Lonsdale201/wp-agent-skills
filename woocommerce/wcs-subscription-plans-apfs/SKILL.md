@@ -5,10 +5,10 @@ metadata:
   wp-skills-author: "Soczó Kristóf"
   wp-skills-contact: "mailto:lonsdale201@hotmail.com"
   wp-skills-plugin: "woocommerce-subscriptions"
-  wp-skills-plugin-version-tested: "9.0.0"
-  wp-skills-woocommerce-version-tested: "10.9.4"
+  wp-skills-plugin-version-tested: "9.1.0"
+  wp-skills-woocommerce-version-tested: "11.0.0"
   wp-skills-php-min: "7.4"
-  wp-skills-last-updated: "2026-07-10"
+  wp-skills-last-updated: "2026-08-06"
 ---
 
 # WooCommerce Subscriptions: APFS subscription plans
@@ -41,6 +41,8 @@ WCS initializes APFS from `WC_Subscriptions_Plugin::init_apfs()`:
 - The global instance is stored as `$GLOBALS['woocommerce_subscribe_all_the_things'] = WCS_ATT();`.
 
 Compatibility rule: integrations may check `function_exists( 'WCS_ATT' )`, but do not manually include APFS files.
+
+Since WCS 9.0, the legacy `subscription` and `variable-subscription` product types are off by default while Subscription Plans are the primary creation path. WCS 9.1 removes the obsolete activation walkthrough that pointed at those hidden types. Never treat the presence or absence of the old onboarding UI as a feature check; inspect `WCS_ATT`, supported product types, and the actual product plan configuration.
 
 ## Product mode vs pricing mode
 
@@ -156,6 +158,8 @@ Core plan fields:
 
 Product plans also support `subscription_pricing_method: "override"` with `subscription_regular_price` and `subscription_sale_price`. Storewide plans support `inherit` and `fixed_discount`, not `override`.
 
+`subscription_payment_sync_date` always uses an object in REST: `{"day":0}` disables alignment; week/month use `{"day":N}`; yearly alignment requires both `{"day":N,"month":M}`. Do not send a month-only yearly value or assume changing the month makes an existing day valid. WCS 9.1 fixes the admin/UI path, but API clients must still send a calendar-valid day/month pair.
+
 The manager constructor accepts only the plan type. This is the correct product call shape:
 
 ```php
@@ -203,6 +207,23 @@ The persisted line-item meta is `_wcsatt_scheme`; `_wcsatt_scheme_id` is legacy.
 
 For trial plans, APFS can add `_has_trial` at line-item creation time if the WCS core trial detector missed the runtime APFS scheme meta. Do not reimplement sign-up fee or trial math from raw line totals.
 
+### Sign-up-fee display filtering in WCS 9.1
+
+APFS product-page plan rows and preselected-plan details now pass plan sign-up fees through `woocommerce_subscriptions_product_sign_up_fee`, including a third `$scheme` argument. The same filter is also fired by native WCS code with only `$fee, $product`, so make the scheme parameter optional:
+
+```php
+add_filter(
+    'woocommerce_subscriptions_product_sign_up_fee',
+    function ( $fee, WC_Product $product, $scheme = null ) {
+        return my_convert_fee( $fee, $product, $scheme );
+    },
+    10,
+    3
+);
+```
+
+A required third parameter can fatal on the native two-argument call path. Filter the raw fee; let WCS apply shop/cart tax display formatting afterward.
+
 ## Store API and headless flows
 
 APFS does not create a public Store API management surface for plans. Plan management is WC REST `wc/v3`, not `/wc/store/v1`.
@@ -215,7 +236,7 @@ What APFS does add to Store API:
 
 Headless clients must preserve the selected plan when adding to cart. Use the same request shape the frontend expects: `convert_to_sub_<product_id>` on product add-to-cart or `convert_to_sub` for cart item updates. Then read the Store API cart response and keep the returned cart key/token flow intact.
 
-For JSON Store API clients, add an explicit `woocommerce_store_api_add_to_cart_data` bridge because APFS itself reads classic `$_REQUEST` keys. The bridge must parse the key with `WCS_ATT_Product_Schemes::parse_subscription_scheme_key()` and set `cart_item_data.wcsatt_data.active_subscription_scheme`. See [headless-admin-reference.md](headless-admin-reference.md) for the complete example.
+For JSON Store API clients, add an explicit `woocommerce_store_api_add_to_cart_data` bridge because APFS itself reads classic `$_REQUEST` keys. The bridge must parse the key with `WCS_ATT_Product_Schemes::parse_subscription_scheme_key()` and set `cart_item_data.wcsatt_data.active_subscription_scheme`. See [references/headless-admin-reference.md](references/headless-admin-reference.md) for the complete example.
 
 If the client posts form/query params, the classic `convert_to_sub_<product_id>` path can still work through `$_REQUEST`; explicit cart item data is the robust JSON contract.
 
@@ -225,7 +246,7 @@ For checkout order meta, remember WC 10.8+ deferred draft order creation: `wooco
 
 The product screen adds a Subscriptions tab to supported ordinary products and stores plan/mode fields through its save handler. Bulk edit uses `_wcsatt_bulk_purchase_option` (`inherit`, `override`, `disable`) and `_wcsatt_bulk_allow_one_off`; it skips override without custom plans and saves the product itself.
 
-Use APFS filters rather than replacing its admin save path. High-value hooks include `wcsatt_supported_product_types`, `wcsatt_product_subscription_schemes`, `wcsatt_cart_item_subscription_schemes`, `wcsatt_set_product_subscription_scheme`, `wcsatt_cart_item`, `wcsatt_processed_cart_scheme_data`, and `wcsatt_processed_scheme_data`. Exact fields and the extended hook map are in [headless-admin-reference.md](headless-admin-reference.md).
+Use APFS filters rather than replacing its admin save path. High-value hooks include `wcsatt_supported_product_types`, `wcsatt_product_subscription_schemes`, `wcsatt_cart_item_subscription_schemes`, `wcsatt_set_product_subscription_scheme`, `wcsatt_cart_item`, `wcsatt_processed_cart_scheme_data`, and `wcsatt_processed_scheme_data`. Exact fields and the extended hook map are in [references/headless-admin-reference.md](references/headless-admin-reference.md).
 
 ## Gifting
 
@@ -262,6 +283,7 @@ $plan_data['subscription_pricing_method'] = WCS_ATT_Scheme::MODE_FIXED_DISCOUNT;
 
 - Run `wcs-subscription-hooks` when choosing lifecycle, renewal, switch, gift, Store API, or status hooks around subscriptions created from APFS plans.
 - Run `wcs-data-model-switching-gifting` when exact switch/gift storage and recipient behavior matters.
+- Run `wcs-cart-checkout-coupons` for recurring totals, due-today display, sign-up-fee coupons, renewal pseudo coupons, and block checkout.
 - Run `wc-store-api` for Store API nonce/token/session/deferred checkout rules.
 - Run `wc-hpos-compatibility` before querying orders, subscriptions, renewal orders, switch orders, or resubscribe orders.
 
@@ -276,6 +298,7 @@ $plan_data['subscription_pricing_method'] = WCS_ATT_Scheme::MODE_FIXED_DISCOUNT;
   - `wp-content/plugins/woocommerce-subscriptions/includes/apfs/product/class-wcs-att-product-schemes.php`
   - `wp-content/plugins/woocommerce-subscriptions/includes/apfs/class-wcs-att-cart.php`
   - `wp-content/plugins/woocommerce-subscriptions/includes/apfs/class-wcs-att-order.php`
+  - `wp-content/plugins/woocommerce-subscriptions/includes/apfs/display/class-wcs-att-display-product.php`
   - `wp-content/plugins/woocommerce-subscriptions/includes/apfs/api/class-wcs-att-store-api.php`
   - `wp-content/plugins/woocommerce-subscriptions/includes/apfs/admin/class-wcs-att-plans-manager.php`
   - `wp-content/plugins/woocommerce-subscriptions/includes/apfs/admin/class-wcs-att-rest-plans-controller.php`

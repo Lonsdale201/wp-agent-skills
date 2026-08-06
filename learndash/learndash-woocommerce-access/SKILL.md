@@ -15,9 +15,10 @@ metadata:
   wp-skills-author: "Soczó Kristóf"
   wp-skills-contact: "mailto:lonsdale201@hotmail.com"
   wp-skills-plugin: "learndash-woocommerce"
-  wp-skills-plugin-version-tested: "LearnDash WooCommerce 2.0.2 + LearnDash LMS 5.1.6.1"
+  wp-skills-plugin-version-tested: "2.0.2"
+  wp-skills-learndash-version-tested: "5.1.9"
   wp-skills-php-min: "7.4"
-  wp-skills-last-updated: "2026-07-07"
+  wp-skills-last-updated: "2026-08-06"
 ---
 
 # LearnDash WooCommerce access
@@ -195,12 +196,14 @@ For an admin/import tool:
   course grant/revoke behavior.
 - Use `learndash-group-access` for group membership and group-course relation
   behavior.
+- Use `learndash-course-progress` when order-driven access must be distinguished
+  from preserving, resetting, or completing learner progress.
 - Use WooCommerce skills for generic HPOS, order lifecycle, subscriptions, and
   payment gateway behavior.
 
 ## References
 
-Validated against LearnDash WooCommerce 2.0.2 and LearnDash LMS 5.1.6.1 local
+Validated against LearnDash WooCommerce 2.0.2 and LearnDash LMS 5.1.9 local
 source:
 
 - `learndash-woocommerce/learndash_woocommerce.php`

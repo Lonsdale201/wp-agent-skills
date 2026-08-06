@@ -5,10 +5,10 @@ metadata:
   wp-skills-author: "Soczó Kristóf"
   wp-skills-contact: "mailto:lonsdale201@hotmail.com"
   wp-skills-plugin: "woocommerce-subscriptions"
-  wp-skills-plugin-version-tested: "9.0.1"
-  wp-skills-woocommerce-version-tested: "10.9.4"
+  wp-skills-plugin-version-tested: "9.1.0"
+  wp-skills-woocommerce-version-tested: "11.0.0"
   wp-skills-php-min: "7.4"
-  wp-skills-last-updated: "2026-07-20"
+  wp-skills-last-updated: "2026-08-06"
 ---
 
 # WooCommerce Subscriptions downloads
@@ -123,7 +123,7 @@ Two consequences matter:
 - Reactivating a subscription resets linked-file counts and expiry because permissions are deleted and recreated.
 - Saving/updating a linked downloadable product causes the product handler to revoke related permissions and regrant them when the product status is public. This can also reset counts/expiry even if the file list did not materially change.
 
-There is also a confirmed cleanup defect in WCS 9.0.1: `WCS_Download_Handler::revoke_downloadable_file_permission()`, permanent subscription cleanup, and linked-product revoke handlers delete permission rows with direct SQL. `wc_download_log` has no foreign key cascade, so tracked permissions can leave orphan log rows after revocation/regrant. A local smoke run reproduced this during linked active refresh.
+There is also a confirmed cleanup defect still present in WCS 9.1.0: `WCS_Download_Handler::revoke_downloadable_file_permission()`, permanent subscription cleanup, and linked-product revoke handlers delete permission rows with direct SQL. `wc_download_log` has no foreign key cascade, so tracked permissions can leave orphan log rows after revocation/regrant. A local smoke run originally reproduced this during linked active refresh; the 9.1 source was rechecked and retains the direct deletes.
 
 Do not copy this deletion pattern. Extension code should resolve the affected permission IDs and delete them through the Woo customer-download data store, which removes their logs, or perform an explicitly transactional logs-first cleanup. Audit existing data read-only with:
 

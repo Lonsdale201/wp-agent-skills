@@ -12,9 +12,9 @@ metadata:
   wp-skills-author: "Soczó Kristóf"
   wp-skills-contact: "mailto:lonsdale201@hotmail.com"
   wp-skills-plugin: "sfwd-lms"
-  wp-skills-plugin-version-tested: "5.1.6.1"
+  wp-skills-plugin-version-tested: "5.1.9"
   wp-skills-php-min: "7.4"
-  wp-skills-last-updated: "2026-07-07"
+  wp-skills-last-updated: "2026-08-06"
 ---
 
 # LearnDash course access
@@ -23,7 +23,7 @@ Use this when a plugin, theme, migration, checkout bridge, import, or custom
 frontend needs to decide whether a user can access a LearnDash course or must
 grant/revoke direct course enrollment.
 
-Do not reduce LearnDash access to one usermeta key. In LearnDash 5.1.6.1, course
+Do not reduce LearnDash access to one usermeta key. In LearnDash 5.1.9, course
 access can come from direct enrollment, group enrollment, open courses, sample
 steps, admin auto-enroll, free/paynow settings, start/end dates, expiration
 rules, and legacy access-list mode.
@@ -125,7 +125,7 @@ Important query caveats:
   unless admin users are excluded by the query settings.
 - `learndash_user_get_enrolled_courses()` merges auto-enroll, open courses,
   legacy access-list courses, direct access meta, and group courses.
-- In 5.1.6.1, the `$bypass_transient` parameter in
+- In 5.1.9, the `$bypass_transient` parameter in
   `learndash_user_get_enrolled_courses()` is effectively forced to true before
   the function rebuilds the list. Do not build logic that depends on a cached
   response from that parameter.
@@ -184,10 +184,12 @@ For course outline reads, use:
   enrollment and LearnDash WooCommerce counters.
 - Use `learndash-rest-api` for REST endpoints that enroll users, update course
   steps, or expose course data to headless clients.
+- Use `learndash-course-progress` for step completion, course status, resets,
+  progress activity, and incomplete-step navigation.
 
 ## References
 
-Validated against LearnDash LMS 5.1.6.1 local source:
+Validated against LearnDash LMS 5.1.9 local source:
 
 - `includes/course/ld-course-user-functions.php`
 - `includes/ld-users.php`

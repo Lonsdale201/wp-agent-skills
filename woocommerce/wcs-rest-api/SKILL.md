@@ -2,13 +2,13 @@
 name: wcs-rest-api
 description: Integrate with WooCommerce Subscriptions REST API v3. Covers subscription CRUD, status versus transition_status, GMT schedule fields, payment_details validation, related-order and order-to-subscriptions routes, notes, batch operations, creating subscriptions from an order, HPOS-safe behavior, APFS plan route boundaries, authentication, idempotency, and Store API separation. Use for /wc/v3/subscriptions, headless subscription administration, external subscription sync, or code attempting to expose subscription writes through the Store API.
 metadata:
-  wp-skills-author: "Soczo Kristof"
+  wp-skills-author: "Soczó Kristóf"
   wp-skills-contact: "mailto:lonsdale201@hotmail.com"
   wp-skills-plugin: "woocommerce-subscriptions"
-  wp-skills-plugin-version-tested: "9.0.0"
-  wp-skills-woocommerce-version-tested: "10.9.4"
+  wp-skills-plugin-version-tested: "9.1.0"
+  wp-skills-woocommerce-version-tested: "11.0.0"
   wp-skills-php-min: "7.4"
-  wp-skills-last-updated: "2026-07-10"
+  wp-skills-last-updated: "2026-08-06"
 ---
 
 # WooCommerce Subscriptions REST API
@@ -51,6 +51,8 @@ Use `wcs-subscription-plans-apfs` for plan payloads. A subscription resource is 
 Use WooCommerce REST authentication over HTTPS or trusted WordPress application authentication. Controllers inherit Woo order permission checks; write operations require suitable order-management capabilities.
 
 The statuses route intentionally permits public reads because it contains labels only. Do not infer that subscription collection/item routes are public.
+
+WCS 9.1 tightened object-level reads on relationship routes. `/subscriptions/<id>/orders` omits related orders the caller cannot read, and `/orders/<id>/subscriptions` omits subscription objects failing `shop_subscription` read permission. Preserve those per-object checks in custom aggregate endpoints; a collection-level capability alone is not a substitute.
 
 A custom customer endpoint must additionally require:
 
@@ -118,6 +120,10 @@ For automatic renewal, do not invent gateway metadata. Use a gateway-supported p
 ## Payment details
 
 When `payment_method` is supplied, the controller calls gateway/WCS payment-meta validation. The schema separates `post_meta` and `user_meta`; exact keys are gateway-specific. For Stripe, use the installed Stripe change-payment flow rather than posting guessed `_stripe_customer_id`/`_stripe_source_id` values.
+
+In WCS 9.1, the v2 and v3 controllers overlay request values only onto table/key slots declared for that gateway by `woocommerce_subscription_payment_meta`. Unknown request keys are ignored. Malformed gateway declarations are not written, and an empty/non-array `payment_details` request returns an empty meta set without querying gateways. Treat `post_meta` and `user_meta` as a gateway-declared allowlist shape, not an arbitrary metadata tunnel.
+
+`WCS_REST_Payment_Method_Meta` is an internal controller trait. Do not call it from an extension. Declare fields through the filter, validate them through the hooks below, and use the installed gateway's setup/change-payment flow whenever remote token ownership or SCA is involved.
 
 The generic validation action receives three arguments:
 
@@ -202,6 +208,7 @@ The Woo WP-CLI resource name is `shop_subscription`. `--user` is a WordPress use
 - Verified source paths:
   - `wp-content/plugins/woocommerce-subscriptions/includes/class-wcs-api.php`
   - `wp-content/plugins/woocommerce-subscriptions/includes/api/class-wc-rest-subscriptions-controller.php`
+  - `wp-content/plugins/woocommerce-subscriptions/includes/api/trait-wcs-rest-payment-method-meta.php`
   - `wp-content/plugins/woocommerce-subscriptions/includes/api/class-wc-rest-subscription-notes-controller.php`
   - `wp-content/plugins/woocommerce-subscriptions/includes/api/v2/class-wc-rest-subscriptions-v2-controller.php`
   - `wp-content/plugins/woocommerce-subscriptions/includes/core/class-wc-subscription.php`

@@ -5,11 +5,11 @@ metadata:
   wp-skills-author: "Soczó Kristóf"
   wp-skills-contact: "mailto:lonsdale201@hotmail.com"
   wp-skills-plugin: "woocommerce-subscriptions"
-  wp-skills-plugin-version-tested: "9.0.0"
+  wp-skills-plugin-version-tested: "9.1.0"
   wp-skills-woocommerce-version-tested: "11.0.0"
   wp-skills-action-scheduler-version-tested: "4.0.0"
   wp-skills-php-min: "7.4"
-  wp-skills-last-updated: "2026-08-05"
+  wp-skills-last-updated: "2026-08-06"
 ---
 
 # WooCommerce Subscriptions: Health Check and processing reliability
@@ -102,7 +102,9 @@ The external route is:
 /wp-json/wc/v3/subscriptions/job-queue?wcs_token=<token>
 ```
 
-It accepts `GET`, `POST`, and `PUT`. On a valid, non-rate-limited request, it returns `{"status":"dispatched"}` and dispatches the queue on `shutdown`. If the subscription Action Scheduler group does not exist yet, it returns `{"status":"not_dispatched","hint":"..."}` instead of trying to claim a non-existent group.
+The route is registered only while the `woocommerce_subscriptions_external_trigger_enabled` option is `yes`; when Web cron support is off, a normal request gets route-not-found rather than a public disabled endpoint. It accepts `GET`, `POST`, and `PUT`. On a valid, non-rate-limited request, it returns `{"status":"dispatched"}` and dispatches the queue on `shutdown`. If the subscription Action Scheduler group does not exist yet, it returns `{"status":"not_dispatched","hint":"..."}` instead of trying to claim a non-existent group.
+
+WCS 9.1 fixes first-time web-cron enablement so the URL/token is generated on the first settings save, and makes the regeneration confirmation a one-shot user-scoped notice. Do not build a workaround that repeatedly resaves the option or regenerates tokens. A missing URL on 9.1 should be diagnosed as configuration/cache/state, not treated as expected bootstrap behavior.
 
 The route has a public REST permission callback because authentication happens through the generated `wcs_token` in the handler. Treat the full URL as a secret: do not expose it in frontend markup, analytics, support screenshots, or shared logs.
 
@@ -139,6 +141,8 @@ Check logs by source:
 | `woocommerce-subscriptions-queue-isolator` | Regular queue isolation applied/skipped/deferred. |
 | `woocommerce-subscriptions-external-trigger` | External trigger dispatched, invalid token, disabled, rate limited, or group absent. |
 | `woocommerce-subscriptions` | Shared WCS warnings, including queue group lookup failures. |
+
+In WCS 9.1 routine skipped dedicated-queue runs are no longer logged as failures. Alert on explicit error/failure context and stalled actions, not on the mere presence of a skipped rotation message.
 
 Useful local checks:
 

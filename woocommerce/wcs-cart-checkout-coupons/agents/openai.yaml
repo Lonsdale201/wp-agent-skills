@@ -1,0 +1,4 @@
+interface:
+  display_name: "WCS Cart, Checkout and Coupons"
+  short_description: "Build safe subscription checkout and coupon flows"
+  default_prompt: "Use $wcs-cart-checkout-coupons to implement or audit WooCommerce Subscriptions cart, checkout, and coupon behavior."
