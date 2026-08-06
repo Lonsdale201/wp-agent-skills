@@ -178,16 +178,17 @@ On Express Checkout change-payment, the plugin replaces the subscription's attac
 - `wc-stripe-subscriptions`: renewal, WCS change-payment, SCA, and detached-token behavior.
 - `wc-stripe-webhooks`: asynchronous settlement and idempotent order transitions.
 
-## Verified sources
+## References
 
-- `wp-content/plugins/woocommerce-gateway-stripe/includes/payment-methods/class-wc-stripe-upe-payment-method-link.php`
-- `wp-content/plugins/woocommerce-gateway-stripe/includes/payment-methods/class-wc-stripe-upe-payment-method-cc.php`
-- `wp-content/plugins/woocommerce-gateway-stripe/includes/payment-methods/class-wc-stripe-upe-payment-gateway.php`
-- `wp-content/plugins/woocommerce-gateway-stripe/includes/payment-methods/class-wc-stripe-express-checkout-element.php`
-- `wp-content/plugins/woocommerce-gateway-stripe/includes/payment-methods/class-wc-stripe-express-checkout-helper.php`
-- `wp-content/plugins/woocommerce-gateway-stripe/includes/payment-tokens/class-wc-stripe-link-payment-token.php`
-- `wp-content/plugins/woocommerce-gateway-stripe/includes/payment-tokens/class-wc-stripe-cc-payment-token.php`
-- `wp-content/plugins/woocommerce-gateway-stripe/includes/payment-tokens/class-wc-stripe-payment-tokens.php`
-- `wp-content/plugins/woocommerce-gateway-stripe/includes/class-wc-stripe-customer.php`
-- `wp-content/plugins/woocommerce-gateway-stripe/includes/class-wc-stripe-intent-controller.php`
-- `wp-content/plugins/woocommerce-gateway-stripe/includes/compat/trait-wc-stripe-subscriptions.php`
+- Verified source paths:
+  - `wp-content/plugins/woocommerce-gateway-stripe/includes/payment-methods/class-wc-stripe-upe-payment-method-link.php`
+  - `wp-content/plugins/woocommerce-gateway-stripe/includes/payment-methods/class-wc-stripe-upe-payment-method-cc.php`
+  - `wp-content/plugins/woocommerce-gateway-stripe/includes/payment-methods/class-wc-stripe-upe-payment-gateway.php`
+  - `wp-content/plugins/woocommerce-gateway-stripe/includes/payment-methods/class-wc-stripe-express-checkout-element.php`
+  - `wp-content/plugins/woocommerce-gateway-stripe/includes/payment-methods/class-wc-stripe-express-checkout-helper.php`
+  - `wp-content/plugins/woocommerce-gateway-stripe/includes/payment-tokens/class-wc-stripe-link-payment-token.php`
+  - `wp-content/plugins/woocommerce-gateway-stripe/includes/payment-tokens/class-wc-stripe-cc-payment-token.php`
+  - `wp-content/plugins/woocommerce-gateway-stripe/includes/payment-tokens/class-wc-stripe-payment-tokens.php`
+  - `wp-content/plugins/woocommerce-gateway-stripe/includes/class-wc-stripe-customer.php`
+  - `wp-content/plugins/woocommerce-gateway-stripe/includes/class-wc-stripe-intent-controller.php`
+  - `wp-content/plugins/woocommerce-gateway-stripe/includes/compat/trait-wc-stripe-subscriptions.php`

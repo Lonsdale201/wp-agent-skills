@@ -205,14 +205,15 @@ For an existing order, use `$order->apply_coupon( $coupon_or_code )` and inspect
 - Use `wc-store-api` for Blocks/headless cart mutation and Cart-Token/Nonce behavior.
 - Use `wc-order-lifecycle-and-items` for order status and refund side effects.
 
-## Verified sources
+## References
 
-- `wp-content/plugins/woocommerce/includes/class-wc-coupon.php`
-- `wp-content/plugins/woocommerce/includes/class-wc-discounts.php`
-- `wp-content/plugins/woocommerce/includes/class-wc-cart.php`
-- `wp-content/plugins/woocommerce/includes/class-wc-cart-totals.php`
-- `wp-content/plugins/woocommerce/includes/abstracts/abstract-wc-order.php`
-- `wp-content/plugins/woocommerce/includes/wc-coupon-functions.php`
-- `wp-content/plugins/woocommerce/includes/wc-order-functions.php`
-- `wp-content/plugins/woocommerce/includes/data-stores/class-wc-coupon-data-store-cpt.php`
-- `wp-content/plugins/woocommerce/src/StoreApi/Utilities/CartController.php`
+- Verified source paths:
+  - `wp-content/plugins/woocommerce/includes/class-wc-coupon.php`
+  - `wp-content/plugins/woocommerce/includes/class-wc-discounts.php`
+  - `wp-content/plugins/woocommerce/includes/class-wc-cart.php`
+  - `wp-content/plugins/woocommerce/includes/class-wc-cart-totals.php`
+  - `wp-content/plugins/woocommerce/includes/abstracts/abstract-wc-order.php`
+  - `wp-content/plugins/woocommerce/includes/wc-coupon-functions.php`
+  - `wp-content/plugins/woocommerce/includes/wc-order-functions.php`
+  - `wp-content/plugins/woocommerce/includes/data-stores/class-wc-coupon-data-store-cpt.php`
+  - `wp-content/plugins/woocommerce/src/StoreApi/Utilities/CartController.php`

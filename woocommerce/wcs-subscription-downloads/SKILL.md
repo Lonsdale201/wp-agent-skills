@@ -229,14 +229,15 @@ Test both models separately:
 - Use `wcs-subscription-hooks` for status, renewal, switch, and gifting hooks.
 - Use `wcs-renewal-scheduler` for renewal payment timing and failure recovery.
 
-## Verified sources
+## References
 
-- `wp-content/plugins/woocommerce-subscriptions/changelog.txt`
-- `wp-content/plugins/woocommerce-subscriptions/includes/core/class-wcs-download-handler.php`
-- `wp-content/plugins/woocommerce-subscriptions/includes/class-wcs-drip-downloads-manager.php`
-- `wp-content/plugins/woocommerce-subscriptions/includes/core/class-wc-subscription.php`
-- `wp-content/plugins/woocommerce-subscriptions/includes/downloads/class-wc-subscription-downloads.php`
-- `wp-content/plugins/woocommerce-subscriptions/includes/downloads/class-wc-subscription-downloads-order.php`
-- `wp-content/plugins/woocommerce-subscriptions/includes/downloads/class-wc-subscription-downloads-products.php`
-- `wp-content/plugins/woocommerce-subscriptions/includes/downloads/class-wc-subscription-downloads-settings.php`
-- `wp-content/plugins/woocommerce-subscriptions/includes/gifting/class-wcsg-download-handler.php`
+- Verified source paths:
+  - `wp-content/plugins/woocommerce-subscriptions/changelog.txt`
+  - `wp-content/plugins/woocommerce-subscriptions/includes/core/class-wcs-download-handler.php`
+  - `wp-content/plugins/woocommerce-subscriptions/includes/class-wcs-drip-downloads-manager.php`
+  - `wp-content/plugins/woocommerce-subscriptions/includes/core/class-wc-subscription.php`
+  - `wp-content/plugins/woocommerce-subscriptions/includes/downloads/class-wc-subscription-downloads.php`
+  - `wp-content/plugins/woocommerce-subscriptions/includes/downloads/class-wc-subscription-downloads-order.php`
+  - `wp-content/plugins/woocommerce-subscriptions/includes/downloads/class-wc-subscription-downloads-products.php`
+  - `wp-content/plugins/woocommerce-subscriptions/includes/downloads/class-wc-subscription-downloads-settings.php`
+  - `wp-content/plugins/woocommerce-subscriptions/includes/gifting/class-wcsg-download-handler.php`

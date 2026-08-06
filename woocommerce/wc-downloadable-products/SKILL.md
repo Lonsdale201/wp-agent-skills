@@ -147,14 +147,15 @@ Woo download links contain the order key, customer email (or hash), product ID, 
 - Use `wc-rest-api-v4` for the authenticated administrative Woo REST boundary.
 - Use `wc-action-scheduler-jobs` for partial-download tracking or background reconciliation.
 
-## Verified sources
+## References
 
-- `wp-content/plugins/woocommerce/includes/abstracts/abstract-wc-product.php`
-- `wp-content/plugins/woocommerce/includes/class-wc-product-download.php`
-- `wp-content/plugins/woocommerce/includes/class-wc-customer-download.php`
-- `wp-content/plugins/woocommerce/includes/class-wc-download-handler.php`
-- `wp-content/plugins/woocommerce/includes/wc-order-functions.php`
-- `wp-content/plugins/woocommerce/includes/wc-user-functions.php`
-- `wp-content/plugins/woocommerce/includes/data-stores/class-wc-customer-download-data-store.php`
-- `wp-content/plugins/woocommerce/src/Internal/ProductDownloads/`
-- `wp-content/plugins/woocommerce/src/Internal/RestApi/Routes/V4/Orders/ActionController.php`
+- Verified source paths:
+  - `wp-content/plugins/woocommerce/includes/abstracts/abstract-wc-product.php`
+  - `wp-content/plugins/woocommerce/includes/class-wc-product-download.php`
+  - `wp-content/plugins/woocommerce/includes/class-wc-customer-download.php`
+  - `wp-content/plugins/woocommerce/includes/class-wc-download-handler.php`
+  - `wp-content/plugins/woocommerce/includes/wc-order-functions.php`
+  - `wp-content/plugins/woocommerce/includes/wc-user-functions.php`
+  - `wp-content/plugins/woocommerce/includes/data-stores/class-wc-customer-download-data-store.php`
+  - `wp-content/plugins/woocommerce/src/Internal/ProductDownloads/`
+  - `wp-content/plugins/woocommerce/src/Internal/RestApi/Routes/V4/Orders/ActionController.php`

@@ -164,13 +164,14 @@ For WCS 9.1 compatibility, include a subscription originally purchased through r
 - Use `wcs-renewal-scheduler` for scheduled renewal creation and payment success/failure.
 - Use `wcs-data-model-switching-gifting` for switch/resubscribe payloads.
 
-## Verified sources
+## References
 
-- `wp-content/plugins/woocommerce-subscriptions/changelog.txt`
-- `wp-content/plugins/woocommerce-subscriptions/includes/core/class-wc-subscriptions-cart.php`
-- `wp-content/plugins/woocommerce-subscriptions/includes/core/class-wc-subscriptions-coupon.php`
-- `wp-content/plugins/woocommerce-subscriptions/includes/class-wcs-limited-recurring-coupon-manager.php`
-- `wp-content/plugins/woocommerce-subscriptions/includes/core/class-wcs-cart-renewal.php`
-- `wp-content/plugins/woocommerce-subscriptions/includes/core/class-wcs-cart-initial-payment.php`
-- `wp-content/plugins/woocommerce-subscriptions/includes/core/class-wc-subscriptions-extend-store-endpoint.php`
-- `wp-content/plugins/woocommerce-subscriptions/includes/core/class-wc-subscriptions-checkout.php`
+- Verified source paths:
+  - `wp-content/plugins/woocommerce-subscriptions/changelog.txt`
+  - `wp-content/plugins/woocommerce-subscriptions/includes/core/class-wc-subscriptions-cart.php`
+  - `wp-content/plugins/woocommerce-subscriptions/includes/core/class-wc-subscriptions-coupon.php`
+  - `wp-content/plugins/woocommerce-subscriptions/includes/class-wcs-limited-recurring-coupon-manager.php`
+  - `wp-content/plugins/woocommerce-subscriptions/includes/core/class-wcs-cart-renewal.php`
+  - `wp-content/plugins/woocommerce-subscriptions/includes/core/class-wcs-cart-initial-payment.php`
+  - `wp-content/plugins/woocommerce-subscriptions/includes/core/class-wc-subscriptions-extend-store-endpoint.php`
+  - `wp-content/plugins/woocommerce-subscriptions/includes/core/class-wc-subscriptions-checkout.php`

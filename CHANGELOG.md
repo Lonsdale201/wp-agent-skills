@@ -2,6 +2,10 @@
 
 This collection is continuously evolving — entries are date-based, not version-tagged. New skills land when they're ready; updates go in when they cover real ground (a new release of an upstream plugin, a verified misconception, a corrected example).
 
+## 2026-08-06 (housekeeping: `## References` section unified)
+
+Six `woocommerce` skills ended their body with a `## Verified sources` heading and a flat path list instead of the collection's standard Agent-Skills `## References` section with a `- Verified source paths:` sub-list — a leftover from the 2026-07-13 format migration that later batches kept reproducing. Normalized in `wc-coupon-dynamic`, `wc-coupon-types-rules`, `wc-downloadable-products`, `wc-stripe-link-payments`, `wcs-cart-checkout-coupons`, and `wcs-subscription-downloads`. Heading and list structure only — no path was added, removed, or re-verified, and no guidance changed. All 235 skills now use the same section name.
+
 ## 2026-08-06 (woocommerce + learndash: WCS 9.1 and LearnDash 5.1.9 re-grounding, 2 new skills)
 
 **Two new skills** plus **12 updated skills** re-verified against **WooCommerce Subscriptions 9.1.0** (on WooCommerce 11.0.0) and **LearnDash LMS 5.1.9** local source. All touched `wp-skills-plugin-version-tested` / `wp-skills-woocommerce-version-tested` values moved to the installed release, `wp-skills-last-updated` to `2026-08-06`.
