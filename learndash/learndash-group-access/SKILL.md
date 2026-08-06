@@ -12,9 +12,9 @@ metadata:
   wp-skills-author: "Soczó Kristóf"
   wp-skills-contact: "mailto:lonsdale201@hotmail.com"
   wp-skills-plugin: "sfwd-lms"
-  wp-skills-plugin-version-tested: "5.1.6.1"
+  wp-skills-plugin-version-tested: "5.1.9"
   wp-skills-php-min: "7.4"
-  wp-skills-last-updated: "2026-07-07"
+  wp-skills-last-updated: "2026-08-06"
 ---
 
 # LearnDash group access
@@ -24,7 +24,7 @@ manage group leaders, or answer "does this user get course access through a
 group?"
 
 LearnDash groups are not just taxonomy terms and not just post meta on a group.
-In 5.1.6.1 the access model is three separate relationships:
+In 5.1.9 the access model is three separate relationships:
 
 - User -> group membership.
 - Group -> course access.
@@ -163,6 +163,29 @@ the returned group IDs through validated child groups. That means:
 If the task is about reporting direct memberships, say so explicitly. If the
 task is about access, use LearnDash's group APIs.
 
+## Managed Groups auto-enrollment in 5.1.8+
+
+When `groups_autoenroll_managed` is enabled, a Group Leader's effective group
+IDs are the union of:
+
+- explicit learner memberships stored under `learndash_group_users_*`; and
+- groups returned by `learndash_get_administrators_group_ids()` for that
+  leader.
+
+Before 5.1.8, the managed-group branch replaced the explicit memberships. Do
+not reproduce that old behavior in a custom portal or cache. Keep leader-to-
+group administration and learner-to-group membership as separate relations,
+then use `learndash_get_users_group_ids()` when effective access is required.
+
+The effective list is cached for one minute in
+`learndash_user_groups_{$user_id}`. Pass `true` as the second argument to
+`learndash_get_users_group_ids()` when the caller requires a fresh result.
+`ld_update_group_access()` clears this cache, but in 5.1.9
+`ld_update_leader_group_access()` does not. After changing a leader assignment,
+hierarchy, or the Managed Groups setting, explicitly invalidate the transient
+with `LDLMS_Transients::delete( 'learndash_user_groups_' . $user_id )` or use
+the bypass until LearnDash's one-minute entry expires.
+
 ## Cache and transient caveats
 
 Some older function signatures still expose `$bypass_transient`, but LearnDash
@@ -200,10 +223,12 @@ changes.
   grant LearnDash group access.
 - Use `learndash-rest-api` for REST routes that manage group users, group
   courses, or user groups.
+- Use `learndash-course-progress` for learner completion and group-course
+  progress synchronization.
 
 ## References
 
-Validated against LearnDash LMS 5.1.6.1 local source:
+Validated against LearnDash LMS 5.1.9 local source:
 
 - `includes/ld-groups.php`
 - `includes/course/ld-course-user-functions.php`

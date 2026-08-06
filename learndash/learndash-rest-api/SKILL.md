@@ -12,9 +12,9 @@ metadata:
   wp-skills-author: "Soczó Kristóf"
   wp-skills-contact: "mailto:lonsdale201@hotmail.com"
   wp-skills-plugin: "sfwd-lms"
-  wp-skills-plugin-version-tested: "5.1.6.1"
+  wp-skills-plugin-version-tested: "5.1.9"
   wp-skills-php-min: "7.4"
-  wp-skills-last-updated: "2026-07-07"
+  wp-skills-last-updated: "2026-08-06"
 ---
 
 # LearnDash REST API
@@ -22,7 +22,7 @@ metadata:
 Use this when building or reviewing a REST/headless integration for LearnDash.
 Prefer source-verified routes and schemas over guessed endpoint shapes.
 
-LearnDash 5.1.6.1 exposes two relevant REST surfaces:
+LearnDash 5.1.9 exposes two relevant REST surfaces:
 
 - Classic LearnDash content/relationship endpoints under `ldlms/v2`.
 - Newer manifest/OpenAPI/documentation endpoints under `learndash/v1`.
@@ -91,7 +91,7 @@ Learndash-Experimental-Rest-Api: allow
 ```
 
 The manifest and OpenAPI documentation endpoints are public and not
-experimental in 5.1.6.1.
+experimental in 5.1.9.
 
 ## Course steps endpoint
 
@@ -140,6 +140,17 @@ topic, and quiz IDs are object keys, not list items:
 
 Common bug: sending `[123, 456]` arrays. The controller expects nested objects
 where IDs are keys.
+
+## Course custom pagination in 5.1.7+
+
+Course REST fields expose `lessons_per_page`, `lesson_per_page_custom`, and
+`topic_per_page_custom`. When custom pagination is enabled, use positive
+integers for both custom values. LearnDash 5.1.7+ normalizes empty or zero
+values to the corresponding global setting, then to
+`LEARNDASH_LMS_DEFAULT_WIDGET_PER_PAGE` if the global value is also invalid.
+
+Do not use zero to mean "show all" for these course-specific fields. Disable
+custom pagination when the course should inherit the global values.
 
 ## Enrollment and relation endpoints
 
@@ -196,6 +207,17 @@ For custom fields on LearnDash posts:
 - Keep permission callbacks explicit. Do not expose course progress or
   enrollment writes publicly.
 
+## Progress routes are read-only
+
+The v2 user progress routes expose course headers, ordered steps, quiz
+progress, and challenge-exam state through GET requests. In 5.1.9,
+`/users/{id}/course-progress`, its `/{course}` route, `/{course}/steps`, and
+`/{course}/exam` do not register a general progress-write method.
+
+Do not invent a PATCH contract from the response schema. For a custom mutation
+endpoint, authorize the actor against the target user and call LearnDash's
+completion/progress APIs; use `learndash-course-progress` for that lifecycle.
+
 ## Headless integration checklist
 
 1. Check REST is enabled in constants and LearnDash settings.
@@ -229,11 +251,13 @@ For custom fields on LearnDash posts:
 - Use `learndash-group-access` for group membership and group-course relation
   behavior.
 - Use `learndash-woocommerce-access` for Woo-driven access changes.
+- Use `learndash-course-progress` for server-side completion, reset, activity,
+  and progress-write behavior.
 - Use `wp-rest-api` for general WordPress REST security and schema patterns.
 
 ## References
 
-Validated against LearnDash LMS 5.1.6.1 local source:
+Validated against LearnDash LMS 5.1.9 local source:
 
 - `includes/rest-api/class-ld-rest-api.php`
 - `includes/settings/settings-sections/class-ld-settings-section-general-rest-api.php`
@@ -243,6 +267,8 @@ Validated against LearnDash LMS 5.1.6.1 local source:
 - `includes/rest-api/v2/class-ld-rest-groups-courses-controller.php`
 - `includes/rest-api/v2/class-ld-rest-groups-users-controller.php`
 - `includes/rest-api/v2/class-ld-rest-users-groups-controller.php`
+- `includes/rest-api/v2/class-ld-rest-users-course-progress-controller.php`
+- `includes/settings/settings-metaboxes/class-ld-settings-metabox-course-display-content.php`
 - `src/Core/Modules/REST/V1/`
 - `src/Core/Modules/REST/Documentation_Migration/`
 - Official documentation: <https://developers.learndash.com/>

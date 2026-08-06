@@ -12,7 +12,7 @@
     "skill_file": "SKILL.md"
   },
   "domain_count": 23,
-  "skill_count": 233,
+  "skill_count": 235,
   "domains": [
     {
       "slug": "better-data",
@@ -78,7 +78,7 @@
       "slug": "learndash",
       "path": "learndash",
       "readme_path": "learndash/README.md",
-      "skill_count": 4
+      "skill_count": 5
     },
     {
       "slug": "lw-plugins",
@@ -132,7 +132,7 @@
       "slug": "woocommerce",
       "path": "woocommerce",
       "readme_path": "woocommerce/README.md",
-      "skill_count": 43
+      "skill_count": 44
     },
     {
       "slug": "wordpress",
@@ -3245,9 +3245,9 @@
         "author": "Soczó Kristóf",
         "contact": "mailto:lonsdale201@hotmail.com",
         "plugin": "sfwd-lms",
-        "plugin-version-tested": "5.1.6.1",
+        "plugin-version-tested": "5.1.9",
         "php-min": "7.4",
-        "last-updated": "2026-07-07"
+        "last-updated": "2026-08-06"
       },
       "resources": [
         {
@@ -3262,9 +3262,46 @@
       "has_examples": false,
       "has_scripts": false,
       "skill_md": {
-        "bytes": 8296,
-        "lines": 198,
-        "sha256": "7d4e21c35493c80229df5718f013f3d3536dd3ba67655507eabac2cb24da0de0"
+        "bytes": 8419,
+        "lines": 200,
+        "sha256": "f797729e37ae5676d36e9be0d3d5eb16b3e5d5def7d8184fce20689a79000d1d"
+      }
+    },
+    {
+      "slug": "learndash-course-progress",
+      "name": "learndash-course-progress",
+      "domain": "learndash",
+      "description": "Build or audit LearnDash learner progress, step completion, course completion, quiz progress, resets, activity synchronization, and progress hooks. Use when code mentions learndash_process_mark_complete, learndash_process_mark_incomplete, learndash_process_user_course_progress_update, learndash_user_get_course_progress, learndash_user_progress_get_previous_incomplete_step, learndash_user_course_complete_all_steps, learndash_delete_course_progress, _sfwd-course_progress, _sfwd-quizzes, course_completed_*, learndash_user_activity, challenge-exam reset, or custom LMS progress APIs.",
+      "path": "learndash/learndash-course-progress",
+      "skill_path": "learndash/learndash-course-progress/SKILL.md",
+      "url": "https://raw.githubusercontent.com/Lonsdale201/wp-agent-skills/main/learndash/learndash-course-progress/SKILL.md",
+      "raw_url": "https://raw.githubusercontent.com/Lonsdale201/wp-agent-skills/main/learndash/learndash-course-progress/SKILL.md",
+      "html_url": "https://github.com/Lonsdale201/wp-agent-skills/blob/main/learndash/learndash-course-progress/SKILL.md",
+      "directory_url": "https://github.com/Lonsdale201/wp-agent-skills/tree/main/learndash/learndash-course-progress",
+      "metadata": {
+        "author": "Soczó Kristóf",
+        "contact": "mailto:lonsdale201@hotmail.com",
+        "plugin": "sfwd-lms",
+        "plugin-version-tested": "5.1.9",
+        "php-min": "7.4",
+        "last-updated": "2026-08-06"
+      },
+      "resources": [
+        {
+          "path": "agents/openai.yaml",
+          "repo_path": "learndash/learndash-course-progress/agents/openai.yaml",
+          "type": "resource",
+          "bytes": 244,
+          "sha256": "cbade980be300f7fdaeae4f5a6999092a9d12f9cd7c5c5a09a379d14b8f38d51"
+        }
+      ],
+      "has_reference": false,
+      "has_examples": false,
+      "has_scripts": false,
+      "skill_md": {
+        "bytes": 10367,
+        "lines": 246,
+        "sha256": "687b07151097f47183ac7bf63ca3c633400871d131048daf6930ba91d8e93264"
       }
     },
     {
@@ -3282,9 +3319,9 @@
         "author": "Soczó Kristóf",
         "contact": "mailto:lonsdale201@hotmail.com",
         "plugin": "sfwd-lms",
-        "plugin-version-tested": "5.1.6.1",
+        "plugin-version-tested": "5.1.9",
         "php-min": "7.4",
-        "last-updated": "2026-07-07"
+        "last-updated": "2026-08-06"
       },
       "resources": [
         {
@@ -3299,9 +3336,9 @@
       "has_examples": false,
       "has_scripts": false,
       "skill_md": {
-        "bytes": 7634,
-        "lines": 215,
-        "sha256": "716b627bf485413951be822f37cead9ed67a6d97ac44bb24a43cd6936a505dfb"
+        "bytes": 8891,
+        "lines": 240,
+        "sha256": "a4a214c54a97312c1fd96687ea379cc2e23d70816821e64ebe74198ec92d67ec"
       }
     },
     {
@@ -3319,9 +3356,9 @@
         "author": "Soczó Kristóf",
         "contact": "mailto:lonsdale201@hotmail.com",
         "plugin": "sfwd-lms",
-        "plugin-version-tested": "5.1.6.1",
+        "plugin-version-tested": "5.1.9",
         "php-min": "7.4",
-        "last-updated": "2026-07-07"
+        "last-updated": "2026-08-06"
       },
       "resources": [
         {
@@ -3336,9 +3373,9 @@
       "has_examples": false,
       "has_scripts": false,
       "skill_md": {
-        "bytes": 8937,
-        "lines": 252,
-        "sha256": "2659089274cdf3ab6e2fd4679957299c77e0a6f4f1006a416b06869a056c03af"
+        "bytes": 10297,
+        "lines": 278,
+        "sha256": "71b5498d7bd3db9debb513efd35fe82068d74949c20471ae305792b0bacc2fe6"
       }
     },
     {
@@ -3356,9 +3393,10 @@
         "author": "Soczó Kristóf",
         "contact": "mailto:lonsdale201@hotmail.com",
         "plugin": "learndash-woocommerce",
-        "plugin-version-tested": "LearnDash WooCommerce 2.0.2 + LearnDash LMS 5.1.6.1",
+        "plugin-version-tested": "2.0.2",
+        "learndash-version-tested": "5.1.9",
         "php-min": "7.4",
-        "last-updated": "2026-07-07"
+        "last-updated": "2026-08-06"
       },
       "resources": [
         {
@@ -3373,9 +3411,9 @@
       "has_examples": false,
       "has_scripts": false,
       "skill_md": {
-        "bytes": 9295,
-        "lines": 217,
-        "sha256": "45bcb4ef8625bb077574c17632b46ecc70c055471870dccd4d06c425a883948d"
+        "bytes": 9436,
+        "lines": 220,
+        "sha256": "3e915d5736024fcf63c718cd08b2a6051c6f6096d0a72a3abec79f246d539558"
       }
     },
     {
@@ -6157,7 +6195,7 @@
       "slug": "wc-stripe-subscriptions",
       "name": "wc-stripe-subscriptions",
       "domain": "woocommerce",
-      "description": "Integrate WooCommerce Stripe Gateway 10.8+ with WooCommerce Subscriptions 9.0+. Covers gateway feature support, automatic renewals, Stripe metadata, failed-renewal recovery, SCA, change-payment SetupIntents, update-all behavior, Express Checkout, native Link and card-wallet token shapes, detached tokens, and safe tests. Use when Stripe is a subscription gateway or code touches scheduled_subscription_payment_stripe, _stripe_source_id on WC_Subscription, change_payment_method, renewal authentication, Link, or Stripe token migration.",
+      "description": "Integrate WooCommerce Stripe Gateway 10.8+ with WooCommerce Subscriptions 9.1+. Covers gateway feature support, automatic renewals, Stripe metadata, failed-renewal recovery, SCA, change-payment SetupIntents, update-all behavior, Express Checkout, native Link and card-wallet token shapes, detached tokens, and safe tests. Use when Stripe is a subscription gateway or code touches scheduled_subscription_payment_stripe, _stripe_source_id on WC_Subscription, change_payment_method, renewal authentication, Link, or Stripe token migration.",
       "path": "woocommerce/wc-stripe-subscriptions",
       "skill_path": "woocommerce/wc-stripe-subscriptions/SKILL.md",
       "url": "https://raw.githubusercontent.com/Lonsdale201/wp-agent-skills/main/woocommerce/wc-stripe-subscriptions/SKILL.md",
@@ -6169,10 +6207,10 @@
         "contact": "mailto:lonsdale201@hotmail.com",
         "plugin": "woocommerce-gateway-stripe",
         "plugin-version-tested": "10.8.5",
-        "woocommerce-subscriptions-version-tested": "9.0.1",
+        "woocommerce-subscriptions-version-tested": "9.1.0",
         "woocommerce-version-tested": "11.0.0",
         "php-min": "7.4",
-        "last-updated": "2026-08-05"
+        "last-updated": "2026-08-06"
       },
       "resources": [],
       "has_reference": false,
@@ -6181,7 +6219,7 @@
       "skill_md": {
         "bytes": 12256,
         "lines": 198,
-        "sha256": "a0dd3afd36e98ad10e1a7289f2a758213d51466a2af4d8d08822d427fdde01e4"
+        "sha256": "62be3ba084b3900e21ebcef47cba2374721eb7b1e8aec404131a0d0dd2250f58"
       }
     },
     {
@@ -6418,6 +6456,51 @@
       }
     },
     {
+      "slug": "wcs-cart-checkout-coupons",
+      "name": "wcs-cart-checkout-coupons",
+      "domain": "woocommerce",
+      "description": "Implement or audit WooCommerce Subscriptions 9.1 cart, classic checkout, Checkout block, Store API, recurring totals, sign-up fees, subscription coupon types, limited-payment coupons, renewal payment carts, and internal pseudo coupons. Use when code touches WC_Subscriptions_Cart, recurring_carts, recurring_fee, recurring_percent, sign_up_fee, _wcs_number_payments, renewal_fee, renewal_percent, renewal_cart, subscriptions_cart_meta, manual renewal checkout, due-today display, or subscription fee/coupon calculations.",
+      "path": "woocommerce/wcs-cart-checkout-coupons",
+      "skill_path": "woocommerce/wcs-cart-checkout-coupons/SKILL.md",
+      "url": "https://raw.githubusercontent.com/Lonsdale201/wp-agent-skills/main/woocommerce/wcs-cart-checkout-coupons/SKILL.md",
+      "raw_url": "https://raw.githubusercontent.com/Lonsdale201/wp-agent-skills/main/woocommerce/wcs-cart-checkout-coupons/SKILL.md",
+      "html_url": "https://github.com/Lonsdale201/wp-agent-skills/blob/main/woocommerce/wcs-cart-checkout-coupons/SKILL.md",
+      "directory_url": "https://github.com/Lonsdale201/wp-agent-skills/tree/main/woocommerce/wcs-cart-checkout-coupons",
+      "metadata": {
+        "author": "Soczó Kristóf",
+        "contact": "mailto:lonsdale201@hotmail.com",
+        "plugin": "woocommerce-subscriptions",
+        "plugin-version-tested": "9.1.0",
+        "woocommerce-version-tested": "11.0.0",
+        "php-min": "7.4",
+        "last-updated": "2026-08-06"
+      },
+      "resources": [
+        {
+          "path": "agents/openai.yaml",
+          "repo_path": "woocommerce/wcs-cart-checkout-coupons/agents/openai.yaml",
+          "type": "resource",
+          "bytes": 269,
+          "sha256": "73dbaf03eca5012bbcdb76112a6e818cf4f1f6803680f46ddcca793ec684860f"
+        },
+        {
+          "path": "references/cart-checkout-contract.md",
+          "repo_path": "woocommerce/wcs-cart-checkout-coupons/references/cart-checkout-contract.md",
+          "type": "reference",
+          "bytes": 8477,
+          "sha256": "29a89a097a658b3c8f6368faa15bc8e9bd9e39938d5cd69bdc2b5ef6a0ff2090"
+        }
+      ],
+      "has_reference": true,
+      "has_examples": false,
+      "has_scripts": false,
+      "skill_md": {
+        "bytes": 12252,
+        "lines": 177,
+        "sha256": "c1390a9bb44b761866c5c960634c32169a377d5f3442d07b589b2bc8b7f1b9e2"
+      }
+    },
+    {
       "slug": "wcs-data-model-switching-gifting",
       "name": "wcs-data-model-switching-gifting",
       "domain": "woocommerce",
@@ -6429,30 +6512,30 @@
       "html_url": "https://github.com/Lonsdale201/wp-agent-skills/blob/main/woocommerce/wcs-data-model-switching-gifting/SKILL.md",
       "directory_url": "https://github.com/Lonsdale201/wp-agent-skills/tree/main/woocommerce/wcs-data-model-switching-gifting",
       "metadata": {
-        "author": "Soczo Kristof",
+        "author": "Soczó Kristóf",
         "contact": "mailto:lonsdale201@hotmail.com",
         "plugin": "woocommerce-subscriptions",
-        "plugin-version-tested": "9.0.0",
-        "woocommerce-version-tested": "10.9.4",
+        "plugin-version-tested": "9.1.0",
+        "woocommerce-version-tested": "11.0.0",
         "php-min": "7.4",
-        "last-updated": "2026-07-10"
+        "last-updated": "2026-08-06"
       },
       "resources": [
         {
           "path": "switching-reference.md",
           "repo_path": "woocommerce/wcs-data-model-switching-gifting/switching-reference.md",
           "type": "resource",
-          "bytes": 4222,
-          "sha256": "70f08b803b8374a47281bce439eac371406a323659494fb76fd5e626576da142"
+          "bytes": 5226,
+          "sha256": "0c66736184bede0280457a7537505490496d60f5c2961a431436688db6c6c6fe"
         }
       ],
       "has_reference": false,
       "has_examples": false,
       "has_scripts": false,
       "skill_md": {
-        "bytes": 16860,
-        "lines": 241,
-        "sha256": "8864311fd032ca63ffa408aa386381d614fb7093b13ef6a9f4b426d30bfc0718"
+        "bytes": 19697,
+        "lines": 266,
+        "sha256": "1f4ba775c0b9b5238dca4c17e1bd97cc476d6a277a6de124c6b444ff1dff4266"
       }
     },
     {
@@ -6470,20 +6553,20 @@
         "author": "Soczó Kristóf",
         "contact": "mailto:lonsdale201@hotmail.com",
         "plugin": "woocommerce-subscriptions",
-        "plugin-version-tested": "9.0.0",
+        "plugin-version-tested": "9.1.0",
         "woocommerce-version-tested": "11.0.0",
         "action-scheduler-version-tested": "4.0.0",
         "php-min": "7.4",
-        "last-updated": "2026-08-05"
+        "last-updated": "2026-08-06"
       },
       "resources": [],
       "has_reference": false,
       "has_examples": false,
       "has_scripts": false,
       "skill_md": {
-        "bytes": 11791,
-        "lines": 192,
-        "sha256": "ae740e0419612181b137014cff4fa3a1a9c1a513fe7434ac0155759fa7a895a8"
+        "bytes": 12582,
+        "lines": 196,
+        "sha256": "8b3cb27c355370d440c6282a8695dd26769399b4fa7244351975eb8d970e8d82"
       }
     },
     {
@@ -6501,10 +6584,10 @@
         "author": "Soczó Kristóf",
         "contact": "mailto:lonsdale201@hotmail.com",
         "plugin": "woocommerce-subscriptions",
-        "plugin-version-tested": "9.0.0",
-        "woocommerce-version-tested": "10.9.4",
+        "plugin-version-tested": "9.1.0",
+        "woocommerce-version-tested": "11.0.0",
         "php-min": "7.4",
-        "last-updated": "2026-07-10"
+        "last-updated": "2026-08-06"
       },
       "resources": [
         {
@@ -6519,9 +6602,9 @@
       "has_examples": false,
       "has_scripts": false,
       "skill_md": {
-        "bytes": 16396,
-        "lines": 290,
-        "sha256": "e61d733aa54c8002a2029d435c55c9ab99f0babfc68928f896a0fe1f6c19d5ed"
+        "bytes": 17145,
+        "lines": 294,
+        "sha256": "d77ec4b1837f1983001b7208d9b401f888072d916073e44b290655abc3b40a1d"
       }
     },
     {
@@ -6536,22 +6619,22 @@
       "html_url": "https://github.com/Lonsdale201/wp-agent-skills/blob/main/woocommerce/wcs-rest-api/SKILL.md",
       "directory_url": "https://github.com/Lonsdale201/wp-agent-skills/tree/main/woocommerce/wcs-rest-api",
       "metadata": {
-        "author": "Soczo Kristof",
+        "author": "Soczó Kristóf",
         "contact": "mailto:lonsdale201@hotmail.com",
         "plugin": "woocommerce-subscriptions",
-        "plugin-version-tested": "9.0.0",
-        "woocommerce-version-tested": "10.9.4",
+        "plugin-version-tested": "9.1.0",
+        "woocommerce-version-tested": "11.0.0",
         "php-min": "7.4",
-        "last-updated": "2026-07-10"
+        "last-updated": "2026-08-06"
       },
       "resources": [],
       "has_reference": false,
       "has_examples": false,
       "has_scripts": false,
       "skill_md": {
-        "bytes": 10986,
-        "lines": 211,
-        "sha256": "08c508c7b82e6403e4e70556216e59302acfaa0220b6efacb2a9295bb03dad31"
+        "bytes": 12185,
+        "lines": 218,
+        "sha256": "69086b94545a3c47dda54cacb2fbb649ad3f3282b3dadc232bb2a1a07d83bf1d"
       }
     },
     {
@@ -6569,19 +6652,19 @@
         "author": "Soczó Kristóf",
         "contact": "mailto:lonsdale201@hotmail.com",
         "plugin": "woocommerce-subscriptions",
-        "plugin-version-tested": "9.0.1",
-        "woocommerce-version-tested": "10.9.4",
+        "plugin-version-tested": "9.1.0",
+        "woocommerce-version-tested": "11.0.0",
         "php-min": "7.4",
-        "last-updated": "2026-07-20"
+        "last-updated": "2026-08-06"
       },
       "resources": [],
       "has_reference": false,
       "has_examples": false,
       "has_scripts": false,
       "skill_md": {
-        "bytes": 13688,
+        "bytes": 13774,
         "lines": 243,
-        "sha256": "278531eb3b348b8e6098ff9cc35059ccb5d555fcae4144272c81608cfb494759"
+        "sha256": "e975205388199d5ddc371f882047bb2e0277fe26a49a77179a36488742b51ed0"
       }
     },
     {
@@ -6599,19 +6682,19 @@
         "author": "Soczó Kristóf",
         "contact": "mailto:lonsdale201@hotmail.com",
         "plugin": "woocommerce-subscriptions",
-        "plugin-version-tested": "9.0.0",
-        "woocommerce-version-tested": "10.9.4",
+        "plugin-version-tested": "9.1.0",
+        "woocommerce-version-tested": "11.0.0",
         "php-min": "7.4",
-        "last-updated": "2026-07-10"
+        "last-updated": "2026-08-06"
       },
       "resources": [],
       "has_reference": false,
       "has_examples": false,
       "has_scripts": false,
       "skill_md": {
-        "bytes": 25250,
-        "lines": 265,
-        "sha256": "bb4e1e36dde7a07b704b96181807f000b9447a162d3180e1bbb6af14af0fb84e"
+        "bytes": 25622,
+        "lines": 268,
+        "sha256": "06bcd7887b91b8d3dd160ff533f090a2bc4f628fac30f2d56f1082ff25aff9a3"
       }
     },
     {
@@ -6629,27 +6712,27 @@
         "author": "Soczó Kristóf",
         "contact": "mailto:lonsdale201@hotmail.com",
         "plugin": "woocommerce-subscriptions",
-        "plugin-version-tested": "9.0.0",
-        "woocommerce-version-tested": "10.9.4",
+        "plugin-version-tested": "9.1.0",
+        "woocommerce-version-tested": "11.0.0",
         "php-min": "7.4",
-        "last-updated": "2026-07-10"
+        "last-updated": "2026-08-06"
       },
       "resources": [
         {
-          "path": "headless-admin-reference.md",
-          "repo_path": "woocommerce/wcs-subscription-plans-apfs/headless-admin-reference.md",
-          "type": "resource",
-          "bytes": 2922,
-          "sha256": "704a0e86cb07de2b5a63486a908a8d30ec0f4cef4f22ec307677c822a519dbc0"
+          "path": "references/headless-admin-reference.md",
+          "repo_path": "woocommerce/wcs-subscription-plans-apfs/references/headless-admin-reference.md",
+          "type": "reference",
+          "bytes": 3473,
+          "sha256": "61a19b1eb202ea8d26a6b8938916258fbdc0e47a701bee0691c00b9618a4b753"
         }
       ],
-      "has_reference": false,
+      "has_reference": true,
       "has_examples": false,
       "has_scripts": false,
       "skill_md": {
-        "bytes": 15901,
-        "lines": 286,
-        "sha256": "9191dc1d6c0f62309aeb0bca96956d2970b6ca671ff4c3969528f9dce1b10270"
+        "bytes": 17696,
+        "lines": 309,
+        "sha256": "d0b643c573e64b33b3ef20edf5e438512e2c90524bd58aa52145f661fc4499d1"
       }
     },
     {

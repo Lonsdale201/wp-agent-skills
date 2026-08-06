@@ -1,15 +1,15 @@
 ---
 name: wc-stripe-subscriptions
-description: Integrate WooCommerce Stripe Gateway 10.8+ with WooCommerce Subscriptions 9.0+. Covers gateway feature support, automatic renewals, Stripe metadata, failed-renewal recovery, SCA, change-payment SetupIntents, update-all behavior, Express Checkout, native Link and card-wallet token shapes, detached tokens, and safe tests. Use when Stripe is a subscription gateway or code touches scheduled_subscription_payment_stripe, _stripe_source_id on WC_Subscription, change_payment_method, renewal authentication, Link, or Stripe token migration.
+description: Integrate WooCommerce Stripe Gateway 10.8+ with WooCommerce Subscriptions 9.1+. Covers gateway feature support, automatic renewals, Stripe metadata, failed-renewal recovery, SCA, change-payment SetupIntents, update-all behavior, Express Checkout, native Link and card-wallet token shapes, detached tokens, and safe tests. Use when Stripe is a subscription gateway or code touches scheduled_subscription_payment_stripe, _stripe_source_id on WC_Subscription, change_payment_method, renewal authentication, Link, or Stripe token migration.
 metadata:
   wp-skills-author: "Soczó Kristóf"
   wp-skills-contact: "mailto:lonsdale201@hotmail.com"
   wp-skills-plugin: "woocommerce-gateway-stripe"
   wp-skills-plugin-version-tested: "10.8.5"
-  wp-skills-woocommerce-subscriptions-version-tested: "9.0.1"
+  wp-skills-woocommerce-subscriptions-version-tested: "9.1.0"
   wp-skills-woocommerce-version-tested: "11.0.0"
   wp-skills-php-min: "7.4"
-  wp-skills-last-updated: "2026-08-05"
+  wp-skills-last-updated: "2026-08-06"
 ---
 
 # Stripe and WooCommerce Subscriptions

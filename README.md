@@ -1,6 +1,6 @@
 # wp-agent-skills
 
-**233 skills · 30 plugins**
+**235 skills · 30 plugins**
 
 A community-maintained collection of **portable Agent Skills** for WordPress plugin and theme development.
 
@@ -23,7 +23,7 @@ Skills are grouped by domain. Each domain has its own README listing the skills 
 | [`wordpress/`](wordpress) | Core WP topics that apply to any plugin or theme — security, i18n, REST API, the Abilities API, HTML/UTF-8 helpers, query cache. |
 | [`plugin-scaffold/`](plugin-scaffold) | Building a new plugin from scratch — bootstrap, lifecycle, architecture, options storage, cron, hooks, rewrite rules, asset loading, Action Scheduler. |
 | [`woocommerce/`](woocommerce) | WooCommerce **core** ([`wc-*`](woocommerce#woocommerce-core)) — HPOS, payment gateways, Store API, order lifecycle, cart/checkout, variations & pricing, product CRUD & request caching, emails, Action Scheduler, logging, and per-release extension upgrade audits. The extension families below live in the same folder. |
-| &nbsp;&nbsp;↳ [WooCommerce Subscriptions](woocommerce#woocommerce-subscriptions) | `wcs-*` — subscription hooks, renewal scheduler, data model / switching / gifting, 8.8+ health-check & processing, subscription downloads, All Products for Subscriptions, and the WCS REST API. |
+| &nbsp;&nbsp;↳ [WooCommerce Subscriptions](woocommerce#woocommerce-subscriptions) | `wcs-*` — subscription hooks, renewal scheduler, data model / switching / gifting, 8.8+ health-check & processing, subscription downloads, All Products for Subscriptions, cart / checkout / recurring coupons, and the WCS REST API. |
 | &nbsp;&nbsp;↳ [WooCommerce Memberships](woocommerce#woocommerce-memberships) | `wcm-*` — membership hooks, access & discounts, the data model + WCS-linked memberships, and the 1.29+ Abilities API surface. |
 | &nbsp;&nbsp;↳ [Other WooCommerce extensions](woocommerce#woocommerce-extensions) | The WooCommerce **Stripe** payment gateway (add-payment-method, Subscriptions integration, webhooks) and **Sequential Order Numbers Pro**. |
 | [`jetformbuilder/`](jetformbuilder) | Extending JetFormBuilder — settings tabs, form sidebar panels, custom Form Actions, action events, item decorators, external-API actions. |
@@ -44,7 +44,7 @@ Skills are grouped by domain. Each domain has its own README listing the skills 
 | [`dev-tooling/`](dev-tooling) | Testing & QA tooling for plugins/themes — PHPUnit (scaffold, harness, CI, writing tests), PHP_CodeSniffer + WordPress Coding Standards, PHPStan, Strauss namespace prefixing for bundled Composer dependencies, and local Docker environments (wp-env, custom compose stacks with Redis/Mailpit/Xdebug), wired through Composer. The developer pipeline beside the code, not WP runtime APIs. |
 | [`polylang/`](polylang) | Making your own plugin/theme **Polylang-compatible** — the guarded public language API, translated post/term groups via the model (not raw DB writes), Pro slugs / sync / ACF behavior, REST & headless `lang` semantics, string/option translation, and Polylang for WooCommerce data stores. Covers the free core plus Polylang Pro and Polylang for WooCommerce. |
 | [`wpml/`](wpml) | Making your own plugin/theme **WPML-compatible** — the "WPML translates copies" model, detecting the base plugin vs the String Translation / Media / Translation Management add-ons, declaring translatable content in `wpml-config.xml`, the runtime language hook API (`wpml_object_id`, `wpml_switch_language`, `wpml_permalink`), and registering/translating dynamic strings. |
-| [`learndash/`](learndash) | Making your own plugin, theme, or integration cooperate with **LearnDash LMS** (`sfwd-lms`) and the **LearnDash WooCommerce** bridge — course and group access/enrollment through the public access APIs (not raw usermeta), the user/course/group/leader relationship model and hierarchical groups, Woo order/subscription/refund-driven enrollment with the access counter, and the `ldlms/v2` + `learndash/v1` REST surfaces. |
+| [`learndash/`](learndash) | Making your own plugin, theme, or integration cooperate with **LearnDash LMS** (`sfwd-lms`) and the **LearnDash WooCommerce** bridge — course and group access/enrollment through the public access APIs (not raw usermeta), the user/course/group/leader relationship model and hierarchical groups, learner progress / completion / reset lifecycle and activity synchronization, Woo order/subscription/refund-driven enrollment with the access counter, and the `ldlms/v2` + `learndash/v1` REST surfaces. |
 | [`rankmath/`](rankmath) | Making your own plugin/theme **Rank Math**-compatible — safe bootstrap around `rank_math/loaded`, frontend metadata filters (title / robots / canonical / Open Graph), replacement variables and content-analysis fields, extending the JSON-LD Schema `@graph`, and XML sitemap entries, providers, and cache invalidation. |
 
 New domain folders follow the same convention: top-level folder per plugin (or plugin family), one subfolder per skill, each containing at minimum a `SKILL.md`. Larger skills may also include `reference.md`, `examples/`, or `scripts/`.
