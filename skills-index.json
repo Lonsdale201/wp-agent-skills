@@ -11,8 +11,8 @@
     "layout": "<domain>/<skill>/SKILL.md",
     "skill_file": "SKILL.md"
   },
-  "domain_count": 22,
-  "skill_count": 219,
+  "domain_count": 23,
+  "skill_count": 233,
   "domains": [
     {
       "slug": "better-data",
@@ -37,6 +37,12 @@
       "path": "elementor",
       "readme_path": "elementor/README.md",
       "skill_count": 5
+    },
+    {
+      "slug": "fluentcart",
+      "path": "fluentcart",
+      "readme_path": "fluentcart/README.md",
+      "skill_count": 14
     },
     {
       "slug": "fluentcrm",
@@ -1630,6 +1636,636 @@
         "bytes": 13991,
         "lines": 183,
         "sha256": "5eee674c51a4a75896b854c15bcf9bf406e8d34229c6d9be0f1d39b182331244"
+      }
+    },
+    {
+      "slug": "fluentcart-cart-checkout",
+      "name": "fluentcart-cart-checkout",
+      "domain": "fluentcart",
+      "description": "Implements and audits FluentCart cart mutation, custom/ghost items, fees, coupons, checkout fields, validation, shipping recalculation, order placement, and duplicate-submit protection. Use when working with CartResource, Cart, cart_hash or fct_cart_hash, fluent_cart_checkout_routes, fluent_cart_place_order, fluent_cart/cart/* or fluent_cart/checkout/* hooks, instant checkout, headless checkout, or any code that must prevent the browser from choosing price, entitlement, stock, shipping, tax, or ownership.",
+      "path": "fluentcart/fluentcart-cart-checkout",
+      "skill_path": "fluentcart/fluentcart-cart-checkout/SKILL.md",
+      "url": "https://raw.githubusercontent.com/Lonsdale201/wp-agent-skills/main/fluentcart/fluentcart-cart-checkout/SKILL.md",
+      "raw_url": "https://raw.githubusercontent.com/Lonsdale201/wp-agent-skills/main/fluentcart/fluentcart-cart-checkout/SKILL.md",
+      "html_url": "https://github.com/Lonsdale201/wp-agent-skills/blob/main/fluentcart/fluentcart-cart-checkout/SKILL.md",
+      "directory_url": "https://github.com/Lonsdale201/wp-agent-skills/tree/main/fluentcart/fluentcart-cart-checkout",
+      "metadata": {
+        "author": "Soczó Kristóf",
+        "contact": "mailto:lonsdale201@hotmail.com",
+        "plugin": "fluent-cart",
+        "plugin-version-tested": "1.6.0",
+        "wp-version-tested": "7.0.2",
+        "php-min": "7.4",
+        "last-updated": "2026-08-06"
+      },
+      "resources": [
+        {
+          "path": "agents/openai.yaml",
+          "repo_path": "fluentcart/fluentcart-cart-checkout/agents/openai.yaml",
+          "type": "resource",
+          "bytes": 295,
+          "sha256": "da92d0cfdbd143d7680c036975ac49d9652f3f7a0b6de10426bbf27f55a79b18"
+        },
+        {
+          "path": "references/checkout-contract.md",
+          "repo_path": "fluentcart/fluentcart-cart-checkout/references/checkout-contract.md",
+          "type": "reference",
+          "bytes": 2519,
+          "sha256": "95e58ff17f6a927e635cb7c1c7ca82bf9ebfb307db539b12eb85fcc057abc222"
+        }
+      ],
+      "has_reference": true,
+      "has_examples": false,
+      "has_scripts": false,
+      "skill_md": {
+        "bytes": 5540,
+        "lines": 126,
+        "sha256": "c6c965e912b6ba93ed52c335b2e9e1d35f155fd2d661acd4a12eee39dd50821f"
+      }
+    },
+    {
+      "slug": "fluentcart-coupons-discounts",
+      "name": "fluentcart-coupons-discounts",
+      "domain": "fluentcart",
+      "description": "Implements and audits FluentCart coupon creation, fixed/percentage calculation, eligibility conditions, stacking/priority, usage limits, recurring discounts, order snapshots, and virtual coupon resolution. Use when working with CouponResource, DiscountService, fct_coupons, fct_applied_coupons, fluent_cart/coupon/resolve_coupons, can_use_coupon, will_skip_item, discount/pre_apply, custom promotion codes, or investigating rounding, double application, and per-customer usage errors.",
+      "path": "fluentcart/fluentcart-coupons-discounts",
+      "skill_path": "fluentcart/fluentcart-coupons-discounts/SKILL.md",
+      "url": "https://raw.githubusercontent.com/Lonsdale201/wp-agent-skills/main/fluentcart/fluentcart-coupons-discounts/SKILL.md",
+      "raw_url": "https://raw.githubusercontent.com/Lonsdale201/wp-agent-skills/main/fluentcart/fluentcart-coupons-discounts/SKILL.md",
+      "html_url": "https://github.com/Lonsdale201/wp-agent-skills/blob/main/fluentcart/fluentcart-coupons-discounts/SKILL.md",
+      "directory_url": "https://github.com/Lonsdale201/wp-agent-skills/tree/main/fluentcart/fluentcart-coupons-discounts",
+      "metadata": {
+        "author": "Soczó Kristóf",
+        "contact": "mailto:lonsdale201@hotmail.com",
+        "plugin": "fluent-cart",
+        "plugin-version-tested": "1.6.0",
+        "wp-version-tested": "7.0.2",
+        "php-min": "7.4",
+        "last-updated": "2026-08-06"
+      },
+      "resources": [
+        {
+          "path": "agents/openai.yaml",
+          "repo_path": "fluentcart/fluentcart-coupons-discounts/agents/openai.yaml",
+          "type": "resource",
+          "bytes": 311,
+          "sha256": "e296f33fdae54381a6059ccaa3e241c9685cded61ae398e38bfa76fd73ee6030"
+        },
+        {
+          "path": "references/coupon-pipeline.md",
+          "repo_path": "fluentcart/fluentcart-coupons-discounts/references/coupon-pipeline.md",
+          "type": "reference",
+          "bytes": 2075,
+          "sha256": "efb1fa660eeece1e8c1b95d7525e33c3ec4b636c4f3bc88b073e9a62ccc04e76"
+        }
+      ],
+      "has_reference": true,
+      "has_examples": false,
+      "has_scripts": false,
+      "skill_md": {
+        "bytes": 5532,
+        "lines": 130,
+        "sha256": "071bbe324e8103bfbd2bb15527047f7ccbf497fba5cf5346794561c2fb9246af"
+      }
+    },
+    {
+      "slug": "fluentcart-customers-portal",
+      "name": "fluentcart-customers-portal",
+      "domain": "fluentcart",
+      "description": "Implements and audits FluentCart customer identity, WP_User linkage, addresses, ownership checks, account creation, customer-scoped queries, and custom portal endpoints. Use when working with Customer, CustomerResource, getCurrentCustomer(), fct_customers, customer-profile REST routes, fluent_cart_api() customer-dashboard endpoint registration, customer merges or email changes, portal menus, order/subscription ownership, or long-running tests that switch users.",
+      "path": "fluentcart/fluentcart-customers-portal",
+      "skill_path": "fluentcart/fluentcart-customers-portal/SKILL.md",
+      "url": "https://raw.githubusercontent.com/Lonsdale201/wp-agent-skills/main/fluentcart/fluentcart-customers-portal/SKILL.md",
+      "raw_url": "https://raw.githubusercontent.com/Lonsdale201/wp-agent-skills/main/fluentcart/fluentcart-customers-portal/SKILL.md",
+      "html_url": "https://github.com/Lonsdale201/wp-agent-skills/blob/main/fluentcart/fluentcart-customers-portal/SKILL.md",
+      "directory_url": "https://github.com/Lonsdale201/wp-agent-skills/tree/main/fluentcart/fluentcart-customers-portal",
+      "metadata": {
+        "author": "Soczó Kristóf",
+        "contact": "mailto:lonsdale201@hotmail.com",
+        "plugin": "fluent-cart",
+        "plugin-version-tested": "1.6.0",
+        "wp-version-tested": "7.0.2",
+        "php-min": "7.4",
+        "last-updated": "2026-08-06"
+      },
+      "resources": [
+        {
+          "path": "agents/openai.yaml",
+          "repo_path": "fluentcart/fluentcart-customers-portal/agents/openai.yaml",
+          "type": "resource",
+          "bytes": 313,
+          "sha256": "4f250db6e3e63b238ff667d74206053468f1ee57bc1f8d84eddddffd88c5b455"
+        },
+        {
+          "path": "references/customer-identity.md",
+          "repo_path": "fluentcart/fluentcart-customers-portal/references/customer-identity.md",
+          "type": "reference",
+          "bytes": 1919,
+          "sha256": "d1032cb609d21d6fac81e4692e28606484d4f8b491f68fb2aec9097ee7404476"
+        }
+      ],
+      "has_reference": true,
+      "has_examples": false,
+      "has_scripts": false,
+      "skill_md": {
+        "bytes": 5036,
+        "lines": 123,
+        "sha256": "7856865efc17eaf2523ad0c8c424407e6f2904687c12b9854b59107bd88e665d"
+      }
+    },
+    {
+      "slug": "fluentcart-downloads-storage",
+      "name": "fluentcart-downloads-storage",
+      "domain": "fluentcart",
+      "description": "Implements and audits FluentCart downloadable products, entitlement checks, signed delivery URLs, download limits/expiry logs, Local/S3 storage, custom storage drivers, and Pro R2 behavior. Use when working with ProductDownload, OrderDownloadPermission, generateDownloadFileLink(), FileDownloader, fluent_cart/product_download/can_be_downloaded, fluent_cart/register_storage_drivers, customer download pages, subscription- gated files, private object storage, or preventing raw file-path disclosure.",
+      "path": "fluentcart/fluentcart-downloads-storage",
+      "skill_path": "fluentcart/fluentcart-downloads-storage/SKILL.md",
+      "url": "https://raw.githubusercontent.com/Lonsdale201/wp-agent-skills/main/fluentcart/fluentcart-downloads-storage/SKILL.md",
+      "raw_url": "https://raw.githubusercontent.com/Lonsdale201/wp-agent-skills/main/fluentcart/fluentcart-downloads-storage/SKILL.md",
+      "html_url": "https://github.com/Lonsdale201/wp-agent-skills/blob/main/fluentcart/fluentcart-downloads-storage/SKILL.md",
+      "directory_url": "https://github.com/Lonsdale201/wp-agent-skills/tree/main/fluentcart/fluentcart-downloads-storage",
+      "metadata": {
+        "author": "Soczó Kristóf",
+        "contact": "mailto:lonsdale201@hotmail.com",
+        "plugin": "fluent-cart",
+        "plugin-version-tested": "1.6.0",
+        "wp-version-tested": "7.0.2",
+        "php-min": "7.4",
+        "last-updated": "2026-08-06"
+      },
+      "resources": [
+        {
+          "path": "agents/openai.yaml",
+          "repo_path": "fluentcart/fluentcart-downloads-storage/agents/openai.yaml",
+          "type": "resource",
+          "bytes": 305,
+          "sha256": "ad50e1fd0574287533d8e139e805d15007dd491513cb003825c1278c4f82a72c"
+        },
+        {
+          "path": "references/download-delivery.md",
+          "repo_path": "fluentcart/fluentcart-downloads-storage/references/download-delivery.md",
+          "type": "reference",
+          "bytes": 2873,
+          "sha256": "b8bb2b62a5634fecf49f7fa0f4035db181d6b41197a73affc7c20208f3cbbd4c"
+        }
+      ],
+      "has_reference": true,
+      "has_examples": false,
+      "has_scripts": false,
+      "skill_md": {
+        "bytes": 5984,
+        "lines": 128,
+        "sha256": "5cfd0876d328ba63fbb397640651cbc13f9519244d3995a3e3b79f2a347062e1"
+      }
+    },
+    {
+      "slug": "fluentcart-extension-architecture",
+      "name": "fluentcart-extension-architecture",
+      "domain": "fluentcart",
+      "description": "Designs and audits third-party FluentCart extensions against the real 1.6.0 bootstrap, hybrid WordPress-post/custom-table data model, monetary units, Free/Pro boundary, and public helper APIs. Use when starting a FluentCart addon, choosing between hooks, models, Resource APIs, REST, or direct WordPress APIs, checking fluentcart_loaded or fluent_cart/init timing, diagnosing missing classes, or reviewing code that reads or writes fct_* commerce records.",
+      "path": "fluentcart/fluentcart-extension-architecture",
+      "skill_path": "fluentcart/fluentcart-extension-architecture/SKILL.md",
+      "url": "https://raw.githubusercontent.com/Lonsdale201/wp-agent-skills/main/fluentcart/fluentcart-extension-architecture/SKILL.md",
+      "raw_url": "https://raw.githubusercontent.com/Lonsdale201/wp-agent-skills/main/fluentcart/fluentcart-extension-architecture/SKILL.md",
+      "html_url": "https://github.com/Lonsdale201/wp-agent-skills/blob/main/fluentcart/fluentcart-extension-architecture/SKILL.md",
+      "directory_url": "https://github.com/Lonsdale201/wp-agent-skills/tree/main/fluentcart/fluentcart-extension-architecture",
+      "metadata": {
+        "author": "Soczó Kristóf",
+        "contact": "mailto:lonsdale201@hotmail.com",
+        "plugin": "fluent-cart",
+        "plugin-version-tested": "1.6.0",
+        "wp-version-tested": "7.0.2",
+        "php-min": "7.4",
+        "last-updated": "2026-08-06"
+      },
+      "resources": [
+        {
+          "path": "agents/openai.yaml",
+          "repo_path": "fluentcart/fluentcart-extension-architecture/agents/openai.yaml",
+          "type": "resource",
+          "bytes": 313,
+          "sha256": "790f87718bce60afc9e21c34b0229beefc0456cc7138f388a4f9252089bce025"
+        },
+        {
+          "path": "references/data-and-lifecycle-map.md",
+          "repo_path": "fluentcart/fluentcart-extension-architecture/references/data-and-lifecycle-map.md",
+          "type": "reference",
+          "bytes": 4049,
+          "sha256": "e71ec6041b11204f4f11dc271345c906da30d6225410a545e93ecc30f89ff847"
+        }
+      ],
+      "has_reference": true,
+      "has_examples": false,
+      "has_scripts": false,
+      "skill_md": {
+        "bytes": 5979,
+        "lines": 135,
+        "sha256": "cf829a26cd48b46dea6a44e061d50d89b6e441d53c92ff5da785281cc03bc019"
+      }
+    },
+    {
+      "slug": "fluentcart-integrations-jobs",
+      "name": "fluentcart-integrations-jobs",
+      "domain": "fluentcart",
+      "description": "Builds and audits FluentCart product/global integration feeds, CRM/LMS/ webhook automations, BaseIntegrationManager providers, lifecycle-triggered provisioning, fct_scheduled_actions, Action Scheduler dispatch, retries, replay protection, logs, and maintenance jobs. Use when registering fluent_cart/integration/order_integrations, integration/run/* handlers, asynchronous order actions, background notifications, external API calls, order_paid_done provisioning, revoke events, scheduled cleanup, or debugging pending/running integration jobs.",
+      "path": "fluentcart/fluentcart-integrations-jobs",
+      "skill_path": "fluentcart/fluentcart-integrations-jobs/SKILL.md",
+      "url": "https://raw.githubusercontent.com/Lonsdale201/wp-agent-skills/main/fluentcart/fluentcart-integrations-jobs/SKILL.md",
+      "raw_url": "https://raw.githubusercontent.com/Lonsdale201/wp-agent-skills/main/fluentcart/fluentcart-integrations-jobs/SKILL.md",
+      "html_url": "https://github.com/Lonsdale201/wp-agent-skills/blob/main/fluentcart/fluentcart-integrations-jobs/SKILL.md",
+      "directory_url": "https://github.com/Lonsdale201/wp-agent-skills/tree/main/fluentcart/fluentcart-integrations-jobs",
+      "metadata": {
+        "author": "Soczó Kristóf",
+        "contact": "mailto:lonsdale201@hotmail.com",
+        "plugin": "fluent-cart",
+        "plugin-version-tested": "1.6.0",
+        "wp-version-tested": "7.0.2",
+        "php-min": "7.4",
+        "last-updated": "2026-08-06"
+      },
+      "resources": [
+        {
+          "path": "agents/openai.yaml",
+          "repo_path": "fluentcart/fluentcart-integrations-jobs/agents/openai.yaml",
+          "type": "resource",
+          "bytes": 330,
+          "sha256": "9a0b67a31c7003f819fc20186e93d332f5591937ae7d8f6996179920ab668742"
+        },
+        {
+          "path": "references/integration-queue-map.md",
+          "repo_path": "fluentcart/fluentcart-integrations-jobs/references/integration-queue-map.md",
+          "type": "reference",
+          "bytes": 3168,
+          "sha256": "0e8fcfa3814938fb09bb70203cc6a8baece60c2c63db417be0d99873df88ce67"
+        }
+      ],
+      "has_reference": true,
+      "has_examples": false,
+      "has_scripts": false,
+      "skill_md": {
+        "bytes": 6266,
+        "lines": 135,
+        "sha256": "fa4e4b1ee5b93b550ceb40a90f8e7d581273b65e35eb7598b8dd0c22503223a1"
+      }
+    },
+    {
+      "slug": "fluentcart-licensing-pro",
+      "name": "fluentcart-licensing-pro",
+      "domain": "fluentcart",
+      "description": "Implements and audits FluentCart Pro product licensing, license generation, activation limits, site activation/deactivation, customer/admin access, subscription validity, refunds, update checks, package delivery, and legacy EDD-compatible clients. Use when working with the Pro Licensing module, LicenseManager, LicenseHelper, fct_licenses, fct_license_activations, fluent_cart_action_* license endpoints, license lifecycle hooks, protected plugin downloads, local/staging activations, or license migrations.",
+      "path": "fluentcart/fluentcart-licensing-pro",
+      "skill_path": "fluentcart/fluentcart-licensing-pro/SKILL.md",
+      "url": "https://raw.githubusercontent.com/Lonsdale201/wp-agent-skills/main/fluentcart/fluentcart-licensing-pro/SKILL.md",
+      "raw_url": "https://raw.githubusercontent.com/Lonsdale201/wp-agent-skills/main/fluentcart/fluentcart-licensing-pro/SKILL.md",
+      "html_url": "https://github.com/Lonsdale201/wp-agent-skills/blob/main/fluentcart/fluentcart-licensing-pro/SKILL.md",
+      "directory_url": "https://github.com/Lonsdale201/wp-agent-skills/tree/main/fluentcart/fluentcart-licensing-pro",
+      "metadata": {
+        "author": "Soczó Kristóf",
+        "contact": "mailto:lonsdale201@hotmail.com",
+        "plugin": "fluent-cart-pro",
+        "plugin-version-tested": "1.6.0",
+        "wp-version-tested": "7.0.2",
+        "php-min": "7.4",
+        "last-updated": "2026-08-06"
+      },
+      "resources": [
+        {
+          "path": "agents/openai.yaml",
+          "repo_path": "fluentcart/fluentcart-licensing-pro/agents/openai.yaml",
+          "type": "resource",
+          "bytes": 325,
+          "sha256": "69b3718ba7515f5d4e05222f0eaa38fcbf5b69947193b6f58eb55a76c23a719b"
+        },
+        {
+          "path": "references/licensing-protocol.md",
+          "repo_path": "fluentcart/fluentcart-licensing-pro/references/licensing-protocol.md",
+          "type": "reference",
+          "bytes": 2875,
+          "sha256": "94b5052133827cec12475bd8b6e9ae4669f380bfb66ddd4444c7d40c3f701133"
+        }
+      ],
+      "has_reference": true,
+      "has_examples": false,
+      "has_scripts": false,
+      "skill_md": {
+        "bytes": 6068,
+        "lines": 125,
+        "sha256": "4a84db0f4cfa4ed6acefd924626da098dcf21d7db99f99abd422b211143e201c"
+      }
+    },
+    {
+      "slug": "fluentcart-migration",
+      "name": "fluentcart-migration",
+      "domain": "fluentcart",
+      "description": "Plans, runs, extends, and audits migrations into FluentCart with the FluentCart Migrator companion plugin or Free-core WooCommerce migrator. Covers EDD 3 products, tax rates, coupons, customers, orders, transactions, subscriptions, downloads and licenses; source-to-target ID maps, resumable batches, WP-CLI, recount/verification, legacy endpoint compatibility, rollback, and destructive reset controls. Use for EDD/WooCommerce imports, custom source adapters, large-store cutovers, or migration integrity reviews.",
+      "path": "fluentcart/fluentcart-migration",
+      "skill_path": "fluentcart/fluentcart-migration/SKILL.md",
+      "url": "https://raw.githubusercontent.com/Lonsdale201/wp-agent-skills/main/fluentcart/fluentcart-migration/SKILL.md",
+      "raw_url": "https://raw.githubusercontent.com/Lonsdale201/wp-agent-skills/main/fluentcart/fluentcart-migration/SKILL.md",
+      "html_url": "https://github.com/Lonsdale201/wp-agent-skills/blob/main/fluentcart/fluentcart-migration/SKILL.md",
+      "directory_url": "https://github.com/Lonsdale201/wp-agent-skills/tree/main/fluentcart/fluentcart-migration",
+      "metadata": {
+        "author": "Soczó Kristóf",
+        "contact": "mailto:lonsdale201@hotmail.com",
+        "plugin": "fluent-cart-migrator",
+        "plugin-version-tested": "1.0.0",
+        "wp-version-tested": "7.0.2",
+        "php-min": "7.4",
+        "last-updated": "2026-08-06"
+      },
+      "resources": [
+        {
+          "path": "agents/openai.yaml",
+          "repo_path": "fluentcart/fluentcart-migration/agents/openai.yaml",
+          "type": "resource",
+          "bytes": 315,
+          "sha256": "98489aa3fb1d3fd20436a0f6b85534a2fcd535b15b6c7d38bf10098ecd2fbf0a"
+        },
+        {
+          "path": "references/migration-runbook.md",
+          "repo_path": "fluentcart/fluentcart-migration/references/migration-runbook.md",
+          "type": "reference",
+          "bytes": 3545,
+          "sha256": "4e77ab6cfa33d5382ce43dc65be80005c1b4678a62cd9322f3b192f2a68c5345"
+        }
+      ],
+      "has_reference": true,
+      "has_examples": false,
+      "has_scripts": false,
+      "skill_md": {
+        "bytes": 6209,
+        "lines": 138,
+        "sha256": "8e1f9ce7d8bc97b42c83985976abc1529b0b1a35a90e09d625a5429cab58e81f"
+      }
+    },
+    {
+      "slug": "fluentcart-orders-transactions",
+      "name": "fluentcart-orders-transactions",
+      "domain": "fluentcart",
+      "description": "Implements and audits FluentCart order, order-item, transaction, status, payment-settlement, refund, renewal-order, and lifecycle-hook behavior. Use when reading or mutating fct_orders or fct_order_transactions, selecting order_created, order_paid, order_paid_done, order_payment_failed, order_refunded, or dynamic status hooks, marking an order paid, reconciling a webhook, refunding money, or preventing duplicate fulfillment and incorrect status transitions.",
+      "path": "fluentcart/fluentcart-orders-transactions",
+      "skill_path": "fluentcart/fluentcart-orders-transactions/SKILL.md",
+      "url": "https://raw.githubusercontent.com/Lonsdale201/wp-agent-skills/main/fluentcart/fluentcart-orders-transactions/SKILL.md",
+      "raw_url": "https://raw.githubusercontent.com/Lonsdale201/wp-agent-skills/main/fluentcart/fluentcart-orders-transactions/SKILL.md",
+      "html_url": "https://github.com/Lonsdale201/wp-agent-skills/blob/main/fluentcart/fluentcart-orders-transactions/SKILL.md",
+      "directory_url": "https://github.com/Lonsdale201/wp-agent-skills/tree/main/fluentcart/fluentcart-orders-transactions",
+      "metadata": {
+        "author": "Soczó Kristóf",
+        "contact": "mailto:lonsdale201@hotmail.com",
+        "plugin": "fluent-cart",
+        "plugin-version-tested": "1.6.0",
+        "wp-version-tested": "7.0.2",
+        "php-min": "7.4",
+        "last-updated": "2026-08-06"
+      },
+      "resources": [
+        {
+          "path": "agents/openai.yaml",
+          "repo_path": "fluentcart/fluentcart-orders-transactions/agents/openai.yaml",
+          "type": "resource",
+          "bytes": 325,
+          "sha256": "0f8cc12fcded0a7b19203ac19e006ee5a927d379a41a6dda75b5eb44a9bf7a1a"
+        },
+        {
+          "path": "references/order-event-map.md",
+          "repo_path": "fluentcart/fluentcart-orders-transactions/references/order-event-map.md",
+          "type": "reference",
+          "bytes": 2513,
+          "sha256": "266ed47d60c0fb8547898dd77eb4e34e82c9a17a405ed5cf5065918bd58ae09c"
+        }
+      ],
+      "has_reference": true,
+      "has_examples": false,
+      "has_scripts": false,
+      "skill_md": {
+        "bytes": 5487,
+        "lines": 130,
+        "sha256": "0f0901433b50eee2aa4b2329ee60c658ba75bac7d088361057665f7ef83c5f9f"
+      }
+    },
+    {
+      "slug": "fluentcart-payment-gateways",
+      "name": "fluentcart-payment-gateways",
+      "domain": "fluentcart",
+      "description": "Builds and audits third-party FluentCart payment gateways using AbstractPaymentGateway, BaseGatewaySettings, PaymentInstance, GatewayManager, frontend fluent_cart_load_payments_* events, transaction reconciliation, refunds, signed webhooks, and optional subscription capabilities. Use when registering fluent_cart/register_payment_methods, implementing meta(), fields(), makePaymentFromPaymentInstance(), handleIPN(), provider redirects, saved methods, off-session renewal charging, or debugging a gateway that is visible but cannot safely settle an order.",
+      "path": "fluentcart/fluentcart-payment-gateways",
+      "skill_path": "fluentcart/fluentcart-payment-gateways/SKILL.md",
+      "url": "https://raw.githubusercontent.com/Lonsdale201/wp-agent-skills/main/fluentcart/fluentcart-payment-gateways/SKILL.md",
+      "raw_url": "https://raw.githubusercontent.com/Lonsdale201/wp-agent-skills/main/fluentcart/fluentcart-payment-gateways/SKILL.md",
+      "html_url": "https://github.com/Lonsdale201/wp-agent-skills/blob/main/fluentcart/fluentcart-payment-gateways/SKILL.md",
+      "directory_url": "https://github.com/Lonsdale201/wp-agent-skills/tree/main/fluentcart/fluentcart-payment-gateways",
+      "metadata": {
+        "author": "Soczó Kristóf",
+        "contact": "mailto:lonsdale201@hotmail.com",
+        "plugin": "fluent-cart",
+        "plugin-version-tested": "1.6.0",
+        "wp-version-tested": "7.0.2",
+        "php-min": "7.4",
+        "last-updated": "2026-08-06"
+      },
+      "resources": [
+        {
+          "path": "agents/openai.yaml",
+          "repo_path": "fluentcart/fluentcart-payment-gateways/agents/openai.yaml",
+          "type": "resource",
+          "bytes": 327,
+          "sha256": "3b84af0f789e44aa69bfc0233327aa682ef18dc087ddf946f3d0c46ca2e57b62"
+        },
+        {
+          "path": "references/gateway-contract.md",
+          "repo_path": "fluentcart/fluentcart-payment-gateways/references/gateway-contract.md",
+          "type": "reference",
+          "bytes": 2821,
+          "sha256": "f51ed1cf1cee41c97f6f187dc63d7259ee2e1ac4e77fef746cc0c3c3d24f7718"
+        }
+      ],
+      "has_reference": true,
+      "has_examples": false,
+      "has_scripts": false,
+      "skill_md": {
+        "bytes": 6524,
+        "lines": 147,
+        "sha256": "a5b781a6436c2a592a0fea40b3d601b7249c7b072101b9b7c4bfabd656f1ed75"
+      }
+    },
+    {
+      "slug": "fluentcart-products-inventory",
+      "name": "fluentcart-products-inventory",
+      "domain": "fluentcart",
+      "description": "Implements and audits FluentCart products, details, variations, pricing, custom attributes, taxonomies, downloadable flags, bundles, and stock movements. Use when creating or updating fluent-products records, calling ProductResource or ProductVariationResource, adding variation types, syncing product-categories or product-brands, reacting to product_updated, product_variations_changed, product_stock_changed, or preventing direct fct_product_* writes from desynchronizing inventory.",
+      "path": "fluentcart/fluentcart-products-inventory",
+      "skill_path": "fluentcart/fluentcart-products-inventory/SKILL.md",
+      "url": "https://raw.githubusercontent.com/Lonsdale201/wp-agent-skills/main/fluentcart/fluentcart-products-inventory/SKILL.md",
+      "raw_url": "https://raw.githubusercontent.com/Lonsdale201/wp-agent-skills/main/fluentcart/fluentcart-products-inventory/SKILL.md",
+      "html_url": "https://github.com/Lonsdale201/wp-agent-skills/blob/main/fluentcart/fluentcart-products-inventory/SKILL.md",
+      "directory_url": "https://github.com/Lonsdale201/wp-agent-skills/tree/main/fluentcart/fluentcart-products-inventory",
+      "metadata": {
+        "author": "Soczó Kristóf",
+        "contact": "mailto:lonsdale201@hotmail.com",
+        "plugin": "fluent-cart",
+        "plugin-version-tested": "1.6.0",
+        "wp-version-tested": "7.0.2",
+        "php-min": "7.4",
+        "last-updated": "2026-08-06"
+      },
+      "resources": [
+        {
+          "path": "agents/openai.yaml",
+          "repo_path": "fluentcart/fluentcart-products-inventory/agents/openai.yaml",
+          "type": "resource",
+          "bytes": 307,
+          "sha256": "49f37bd549bcd2ce5dee44934ced12d8d39d1acc3839b007853f2d7c71082fed"
+        },
+        {
+          "path": "references/product-contract.md",
+          "repo_path": "fluentcart/fluentcart-products-inventory/references/product-contract.md",
+          "type": "reference",
+          "bytes": 2459,
+          "sha256": "760c13854725b5acf9e2a1cffa009a3e4774ce81d31492c7639097012cd78903"
+        }
+      ],
+      "has_reference": true,
+      "has_examples": false,
+      "has_scripts": false,
+      "skill_md": {
+        "bytes": 5544,
+        "lines": 129,
+        "sha256": "eee3b282bec02c32667400185aef962bd6aae47d4437f345ee1c7ce6c2e23eff"
+      }
+    },
+    {
+      "slug": "fluentcart-rest-headless",
+      "name": "fluentcart-rest-headless",
+      "domain": "fluentcart",
+      "description": "Implements and audits FluentCart REST, AJAX, headless, mobile, and external client integrations. Covers the source-verified /fluent-cart/v2 routes, FluentCart router policies, WordPress cookie/nonces and application passwords, customer ownership, public checkout endpoints, cart-hash trust, custom register_rest_route endpoints, schema validation, pagination, rate limits, cache resets, and documentation drift. Use for REST clients, SPA or mobile storefronts, customer portals, webhooks, custom resources, or exposed FluentCart data.",
+      "path": "fluentcart/fluentcart-rest-headless",
+      "skill_path": "fluentcart/fluentcart-rest-headless/SKILL.md",
+      "url": "https://raw.githubusercontent.com/Lonsdale201/wp-agent-skills/main/fluentcart/fluentcart-rest-headless/SKILL.md",
+      "raw_url": "https://raw.githubusercontent.com/Lonsdale201/wp-agent-skills/main/fluentcart/fluentcart-rest-headless/SKILL.md",
+      "html_url": "https://github.com/Lonsdale201/wp-agent-skills/blob/main/fluentcart/fluentcart-rest-headless/SKILL.md",
+      "directory_url": "https://github.com/Lonsdale201/wp-agent-skills/tree/main/fluentcart/fluentcart-rest-headless",
+      "metadata": {
+        "author": "Soczó Kristóf",
+        "contact": "mailto:lonsdale201@hotmail.com",
+        "plugin": "fluent-cart",
+        "plugin-version-tested": "1.6.0",
+        "wp-version-tested": "7.0.2",
+        "php-min": "7.4",
+        "last-updated": "2026-08-06"
+      },
+      "resources": [
+        {
+          "path": "agents/openai.yaml",
+          "repo_path": "fluentcart/fluentcart-rest-headless/agents/openai.yaml",
+          "type": "resource",
+          "bytes": 319,
+          "sha256": "46d32205a31b5fe47f7a07b0e9564daf66460293a8dd58985a0134188342771f"
+        },
+        {
+          "path": "references/route-auth-map.md",
+          "repo_path": "fluentcart/fluentcart-rest-headless/references/route-auth-map.md",
+          "type": "reference",
+          "bytes": 2739,
+          "sha256": "349b088445dae1ee2c8c0b64d31fdce173f169787c53ed662af840d7ff6e40b6"
+        }
+      ],
+      "has_reference": true,
+      "has_examples": false,
+      "has_scripts": false,
+      "skill_md": {
+        "bytes": 5880,
+        "lines": 128,
+        "sha256": "e25cd5ddf20b9aa3dd11ecbf3a0fdeb0ac93ad825e236079708211eb4ec65657"
+      }
+    },
+    {
+      "slug": "fluentcart-shipping-tax",
+      "name": "fluentcart-shipping-tax",
+      "domain": "fluentcart",
+      "description": "Implements and audits FluentCart shipping zones, methods, classes, checkout address matching, tax classes/rates, inclusive and exclusive prices, compound and shipping tax, per-variation overrides, EU VAT validation, and reverse charge. Use when extending ShippingMethod, ShippingZone, TaxCalculator, TaxManager, TaxModule, fct_shipping_methods, fct_tax_rates, fluent_cart/tax/validate_eu_vat_number, checkout shipping selection, carrier quotes, taxable fees, or historical order tax snapshots.",
+      "path": "fluentcart/fluentcart-shipping-tax",
+      "skill_path": "fluentcart/fluentcart-shipping-tax/SKILL.md",
+      "url": "https://raw.githubusercontent.com/Lonsdale201/wp-agent-skills/main/fluentcart/fluentcart-shipping-tax/SKILL.md",
+      "raw_url": "https://raw.githubusercontent.com/Lonsdale201/wp-agent-skills/main/fluentcart/fluentcart-shipping-tax/SKILL.md",
+      "html_url": "https://github.com/Lonsdale201/wp-agent-skills/blob/main/fluentcart/fluentcart-shipping-tax/SKILL.md",
+      "directory_url": "https://github.com/Lonsdale201/wp-agent-skills/tree/main/fluentcart/fluentcart-shipping-tax",
+      "metadata": {
+        "author": "Soczó Kristóf",
+        "contact": "mailto:lonsdale201@hotmail.com",
+        "plugin": "fluent-cart",
+        "plugin-version-tested": "1.6.0",
+        "wp-version-tested": "7.0.2",
+        "php-min": "7.4",
+        "last-updated": "2026-08-06"
+      },
+      "resources": [
+        {
+          "path": "agents/openai.yaml",
+          "repo_path": "fluentcart/fluentcart-shipping-tax/agents/openai.yaml",
+          "type": "resource",
+          "bytes": 313,
+          "sha256": "f3da6c99b03d0f29878342341767c6be1f194acf168ce0328714e672c8e0b29e"
+        },
+        {
+          "path": "references/shipping-tax-pipeline.md",
+          "repo_path": "fluentcart/fluentcart-shipping-tax/references/shipping-tax-pipeline.md",
+          "type": "reference",
+          "bytes": 2777,
+          "sha256": "7cd51403c6282c08d78d8abd4ec296f60cff4ca83d30663c7fbba6fc3209e489"
+        }
+      ],
+      "has_reference": true,
+      "has_examples": false,
+      "has_scripts": false,
+      "skill_md": {
+        "bytes": 5103,
+        "lines": 113,
+        "sha256": "41fa75bd7ca4d3872ac5e1550364443322074bb8217a4959b72eb7b13d6b6878"
+      }
+    },
+    {
+      "slug": "fluentcart-subscriptions-renewals",
+      "name": "fluentcart-subscriptions-renewals",
+      "domain": "fluentcart",
+      "description": "Implements and audits FluentCart recurring plans, Subscription models, automatic, manual, and system collection methods, gateway-managed versus store-managed billing, renewal invoices, off-session retries, pause/resume/ cancel/reactivate operations, and subscription lifecycle hooks. Use when extending subscription_activated, subscription_renewed, renewal_paid, SystemChargeService, RenewalService, next billing dates, saved payment methods, installments, dunning, or access tied to recurring validity.",
+      "path": "fluentcart/fluentcart-subscriptions-renewals",
+      "skill_path": "fluentcart/fluentcart-subscriptions-renewals/SKILL.md",
+      "url": "https://raw.githubusercontent.com/Lonsdale201/wp-agent-skills/main/fluentcart/fluentcart-subscriptions-renewals/SKILL.md",
+      "raw_url": "https://raw.githubusercontent.com/Lonsdale201/wp-agent-skills/main/fluentcart/fluentcart-subscriptions-renewals/SKILL.md",
+      "html_url": "https://github.com/Lonsdale201/wp-agent-skills/blob/main/fluentcart/fluentcart-subscriptions-renewals/SKILL.md",
+      "directory_url": "https://github.com/Lonsdale201/wp-agent-skills/tree/main/fluentcart/fluentcart-subscriptions-renewals",
+      "metadata": {
+        "author": "Soczó Kristóf",
+        "contact": "mailto:lonsdale201@hotmail.com",
+        "plugin": "fluent-cart",
+        "plugin-version-tested": "1.6.0",
+        "wp-version-tested": "7.0.2",
+        "php-min": "7.4",
+        "last-updated": "2026-08-06"
+      },
+      "resources": [
+        {
+          "path": "agents/openai.yaml",
+          "repo_path": "fluentcart/fluentcart-subscriptions-renewals/agents/openai.yaml",
+          "type": "resource",
+          "bytes": 322,
+          "sha256": "2cef265dbed9ff3863ff503ebcb5686ad16bb41d3e7c102907a560ae94ff41e4"
+        },
+        {
+          "path": "references/subscription-lifecycle.md",
+          "repo_path": "fluentcart/fluentcart-subscriptions-renewals/references/subscription-lifecycle.md",
+          "type": "reference",
+          "bytes": 1954,
+          "sha256": "b0c89fd3f3f7bf2e68812dca2ea3e95bb34f776bfe29fccd82f5e8a8467dcdb5"
+        }
+      ],
+      "has_reference": true,
+      "has_examples": false,
+      "has_scripts": false,
+      "skill_md": {
+        "bytes": 6011,
+        "lines": 135,
+        "sha256": "57cbf3d1663378d3e53473b9f6caf07ede68cfe848b06755dd222451b26304d1"
       }
     },
     {

@@ -2,6 +2,70 @@
 
 This collection is continuously evolving — entries are date-based, not version-tagged. New skills land when they're ready; updates go in when they cover real ground (a new release of an upstream plugin, a verified misconception, a corrected example).
 
+## 2026-08-06 (fluentcart: new FluentCart developer-extension domain)
+
+New domain `fluentcart/` — **14 skills** for building and auditing third-party extensions, gateways, integrations, headless clients, and migrations against **FluentCart**. Grounded against the installed FluentCart Free 1.6.0, FluentCart Pro 1.6.0, and FluentCart Migrator 1.0.0 source on WordPress 7.0.2 / PHP 8.3.30, with runtime smoke tests in a mixed-plugin environment that selected Action Scheduler 4.0.0. Every skill marks its Free / Pro / Migrator boundary.
+
+The batch's recurring warning is **documentation drift**: FluentCart's public developer documentation is orientation, not a versioned contract. The 1.6.0 runtime route inventory is `/fluent-cart/v2` and does not register the documented generic `/cart/add`, `/cart/update`, `/cart/remove` examples; gateway registration demands more metadata and response structure than the shortest public example shows; and accepted coupon enums do not prove a calculation implementation exists behind them. The affected skills therefore require a source/runtime inventory after every upgrade.
+
+### Added — `fluentcart/fluentcart-extension-architecture`
+
+Design and audit an addon against the real 1.6.0 bootstrap, the hybrid WordPress-post / custom-table (`fct_*`) data model, integer minor-unit money, store mode, and the public helper APIs. Covers `fluentcart_loaded` vs `fluent_cart/init` timing, choosing between hooks, models, Resource APIs, REST, or plain WordPress APIs, and the direct-write / cache / version-boundary errors that corrupt commerce records.
+
+### Added — `fluentcart/fluentcart-products-inventory`
+
+Extend products, details, variations, pricing, custom attributes, taxonomies, downloadable flags, and bundles with correct parent/child identity. Covers `ProductResource` / `ProductVariationResource`, `product-categories` / `product-brands` sync, the `product_updated`, `product_variations_changed` and `product_stock_changed` events, server-owned prices, atomic stock movements, and why direct `fct_product_*` writes desynchronize inventory.
+
+### Added — `fluentcart/fluentcart-cart-checkout`
+
+Add cart mutations, custom/ghost items, fees, checkout fields, and validation without letting the browser choose price, entitlement, stock, shipping, tax, or ownership. Covers `CartResource`, the `cart_hash` / `fct_cart_hash` trust boundary, `fluent_cart_checkout_routes`, `fluent_cart_place_order`, the `fluent_cart/cart/*` and `fluent_cart/checkout/*` hooks, recalculation, rate limiting, MySQL cart locking, retry behavior, and duplicate-submit protection.
+
+### Added — `fluentcart/fluentcart-orders-transactions`
+
+Read and mutate orders, order items, transactions and refunds through the lifecycle services, with independent order / payment / shipping statuses. Covers `fct_orders` and `fct_order_transactions`, choosing between `order_created`, `order_paid`, `order_paid_done`, `order_payment_failed`, `order_refunded` and the dynamic status hooks, webhook reconciliation, and replay-safe fulfillment that survives duplicate settlement.
+
+### Added — `fluentcart/fluentcart-payment-gateways`
+
+Implement a third-party gateway on `AbstractPaymentGateway` / `PaymentGatewayInterface` with `BaseGatewaySettings`, `PaymentInstance`, and `GatewayManager`. Covers `fluent_cart/register_payment_methods`, the required `meta()` / `fields()` metadata, `makePaymentFromPaymentInstance()`, `handleIPN()`, the `fluent_cart_load_payments_*` frontend confirmation events, signed webhooks and idempotency, refunds, saved methods, off-session renewal charging, and the "visible but cannot settle" failure mode.
+
+### Added — `fluentcart/fluentcart-subscriptions-renewals`
+
+Model recurring plans across automatic, manual and system collection, and across gateway-managed vs store-managed billing. Covers the `Subscription` model, renewal invoices, `SystemChargeService` / `RenewalService`, saved-method system charges, off-session retries and dunning, pause / resume / cancel / reactivate, `subscription_activated` / `subscription_renewed` / `renewal_paid`, next billing dates, installments, and access tied to recurring validity.
+
+### Added — `fluentcart/fluentcart-customers-portal`
+
+Resolve FluentCart customers as their own identity rather than as WP users. Covers `Customer` / `CustomerResource`, `getCurrentCustomer()`, `fct_customers`, email/user ownership enforcement on customer-profile routes, `fluent_cart_api()` customer-dashboard endpoint registration, portal menus, merges, guest linking and email changes, and isolating the request-static caches that break long-running tests which switch users.
+
+### Added — `fluentcart/fluentcart-downloads-storage`
+
+Configure product downloads, order permissions and subscription/license gating, then deliver files without exposing paths. Covers `ProductDownload`, `OrderDownloadPermission`, `generateDownloadFileLink()`, `FileDownloader`, expiring order-bound links, download limit/expiry logs, `fluent_cart/product_download/can_be_downloaded`, and extending Local / S3 or Pro R2 storage via `fluent_cart/register_storage_drivers`.
+
+### Added — `fluentcart/fluentcart-coupons-discounts`
+
+Build fixed, percentage and virtual coupons with eligibility rules, priority/stacking, per-customer usage limits, recurring discounts and order snapshots. Covers `CouponResource`, `DiscountService`, `fct_coupons`, `fct_applied_coupons`, `fluent_cart/coupon/resolve_coupons`, `can_use_coupon`, `will_skip_item`, `discount/pre_apply` — and warns that an accepted coupon enum does not prove a calculation implementation.
+
+### Added — `fluentcart/fluentcart-shipping-tax`
+
+Extend shipping zones, methods and classes plus tax classes and rates, including checkout address matching. Covers `ShippingMethod`, `ShippingZone`, `TaxCalculator`, `TaxManager`, `TaxModule`, `fct_shipping_methods`, `fct_tax_rates`, inclusive / exclusive / mixed pricing, compound and shipping tax, per-variation overrides, carrier quotes, taxable fees, EU VAT validation via `fluent_cart/tax/validate_eu_vat_number`, reverse charge, and historical order tax snapshots.
+
+### Added — `fluentcart/fluentcart-rest-headless`
+
+Build REST / AJAX, headless, mobile and external clients against the **source-verified** `/fluent-cart/v2` route inventory. Covers FluentCart router policies, WordPress cookie/nonce and application-password authentication, customer ownership, public checkout endpoints and cart-hash trust, custom `register_rest_route` resources, schema validation, pagination, throttling, cache resets — and the documentation drift that makes re-inventorying mandatory after upgrades.
+
+### Added — `fluentcart/fluentcart-integrations-jobs`
+
+Build product/global integration feeds and CRM / LMS / webhook automations on `BaseIntegrationManager`, dispatched through `fct_scheduled_actions` plus Action Scheduler. Covers `fluent_cart/integration/order_integrations`, `integration/run/*` handlers, exact commerce triggers, `order_paid_done` provisioning and revoke events, provider idempotency, retries and replay protection, logs, scheduled cleanup, and diagnosing stuck pending/running jobs.
+
+### Added — `fluentcart/fluentcart-licensing-pro`
+
+Extend the Pro Licensing module's entitlement lifecycle: license generation, site activation limits, activation/deactivation, customer and admin access, subscription validity, refunds, update checks and protected package delivery. Covers `LicenseManager`, `LicenseHelper`, `fct_licenses`, `fct_license_activations`, the `fluent_cart_action_*` license endpoints, legacy EDD-compatible clients, local/staging activations, and license migrations — with explicit credential/token caveats.
+
+### Added — `fluentcart/fluentcart-migration`
+
+Run or extend migrations into FluentCart with the Migrator companion (EDD 3.x) or the Free-core WooCommerce migrator — and tell the two apart, since the companion UI lists WooCommerce and SureCart as "coming soon". Covers source-to-target ID maps, resumable batches, WP-CLI, monetary transforms, recount / reconciliation, legacy endpoint continuity, rollback, and destructive reset controls.
+
+New-domain wiring: `fluentcart` added to the domain allow-lists in `.github/scripts/validate-skill.js` and `.github/scripts/build-skill-pr.js` and the `new-skill.yml` domain dropdown, plus a `fluentcart/README.md`, the root README structure row, and the counters (skills 219 → 233, plugins 28 → 30 — `fluent-cart` and the `fluent-cart-migrator` companion are distinct products; `fluent-cart-pro` folds into its base tier). `skills-index.json` regenerated (domains 22 → 23).
+
 ## 2026-08-06 (woocommerce + plugin-scaffold: WooCommerce 11.0 / Action Scheduler 4.0 re-grounding, 3 new skills)
 
 The largest re-grounding batch so far: **three new WooCommerce skills** plus **32 updated skills** re-verified against **WooCommerce 11.0.0** (with bundled **Action Scheduler 4.0.0**), **WooCommerce Stripe Gateway 10.8.5**, and **WooCommerce Subscriptions 9.0.1**. Every touched `wp-skills-plugin-version-tested` / `wp-skills-woocommerce-version-tested` value moved to the installed release source, and `wp-skills-last-updated` to `2026-08-05`. Four long code blocks were also split out into `references/` files to keep the SKILL.md bodies within the spec's progressive-disclosure guidance.

@@ -1,0 +1,4 @@
+interface:
+  display_name: "FluentCart coupons and discounts"
+  short_description: "Extend discount rules, allocation, and virtual coupons"
+  default_prompt: "Use $fluentcart-coupons-discounts to implement or audit this promotion against the verified coupon pipeline, amount units, usage rules, and snapshots."

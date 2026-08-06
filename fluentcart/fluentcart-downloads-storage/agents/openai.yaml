@@ -1,0 +1,4 @@
+interface:
+  display_name: "FluentCart downloads and storage"
+  short_description: "Protect file entitlement, signed delivery, and drivers"
+  default_prompt: "Use $fluentcart-downloads-storage to implement or audit this digital delivery flow across entitlement, signed URLs, limits, and private storage."

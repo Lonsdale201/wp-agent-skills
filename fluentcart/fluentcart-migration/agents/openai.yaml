@@ -1,0 +1,4 @@
+interface:
+  display_name: "FluentCart migration"
+  short_description: "Run resumable and verifiable commerce migrations"
+  default_prompt: "Use $fluentcart-migration to plan, execute, extend, or audit this FluentCart migration with source maps, resumability, reconciliation, compatibility, and rollback controls."
