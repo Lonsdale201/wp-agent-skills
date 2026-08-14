@@ -18,7 +18,7 @@ metadata:
   wp-skills-plugin: "wordpress"
   wp-skills-plugin-version-tested: "6.5 - 7.0"
   wp-skills-php-min: "7.4"
-  wp-skills-last-updated: "2026-07-09"
+  wp-skills-last-updated: "2026-08-14"
 ---
 
 # WordPress plugin: bootstrap (main file)
@@ -161,7 +161,7 @@ The authoritative list is in `get_plugin_data()` (`wp-admin/includes/plugin.php`
 | `Requires Plugins` | 6.5+, recommended | Comma-separated slugs (see Section 3) |
 | `Author` / `Author URI` | recommended | Display name + link |
 | `Text Domain` | recommended | i18n; defaults to folder slug if omitted (since WP 4.6) |
-| `Domain Path` | only if `/languages/` is non-standard | Relative path to `.mo` files |
+| `Domain Path` | recommended whenever translations ship with the plugin | Relative path to the `.mo` files. On WP 6.8+ this header is what registers the directory; omit it and WP registers the plugin root instead (see Section 6) |
 | `License` / `License URI` | recommended | wp.org submission requires GPL-compatible |
 | `Update URI` | only if non-wp.org | Tells WP NOT to overwrite from wp.org if a slug collision occurs |
 | `Network` | only if multisite-only | `true` makes the plugin network-wide-only |
@@ -260,13 +260,22 @@ if ( ! defined( 'ABSPATH' ) ) {
 
 Class-only files don't crash without it (no top-level execution), but it's a wp.org submission expectation and a defense-in-depth habit. Three lines, zero downside.
 
-### 6. Text-domain on WP 6.5+ — less is more
+### 6. Text-domain — what actually loads a bundled `.mo`
 
-The plugin header `Text Domain: my-plugin` plus `.mo` files at the conventional location (`<plugin>/languages/my-plugin-<locale>.mo` OR the GlotPress-installed `wp-content/languages/plugins/my-plugin-<locale>.mo`) is **all you need on WP 6.5+**. The `WP_Textdomain_Registry` auto-discovers them.
+Nothing "auto-discovers" a plugin's own `languages/` folder by convention. Exactly two things load translations without code from you, and only one of them is recent:
 
-Call `load_plugin_textdomain()` only when:
-- Your `.mo` files live in a non-standard path (custom `Domain Path` pointing somewhere weird).
-- You support WP versions older than 6.5 (rare in 2026).
+- **The global location, on every supported version.** `wp-content/languages/plugins/my-plugin-<locale>.mo` (`.l10n.php` since 6.5) — where GlotPress / wp.org installs them. `WP_Textdomain_Registry` always searches `WP_LANG_DIR/plugins`.
+- **Bundled inside the plugin — WP 6.8 and up only.** As `wp-settings.php` loads each active plugin it registers that plugin's language directory from the header, via `WP_Textdomain_Registry::set_custom_path()`: the `Domain Path` value when present, **otherwise the plugin root**.
+
+The version boundary is the part that bites. On **WP 6.7 and earlier**, `WP_Textdomain_Registry::get_paths_for_domain()` returns only `WP_LANG_DIR/plugins`, `WP_LANG_DIR/themes`, and paths registered by an explicit `load_plugin_textdomain()` call — nothing ever looks inside the plugin folder. A `.mo` shipped in `<plugin>/languages/` simply never loads there, silently.
+
+So call `load_plugin_textdomain()` when either holds:
+- The plugin ships its own translations **and** its `Requires at least:` is below 6.8.
+- The `.mo` files live somewhere the header does not point at.
+
+Skip it when the plugin is wp.org-distributed (the global location covers it), or when it declares 6.8+ and its `Domain Path` is correct. Calling it anyway is harmless — on 6.8+ it just re-registers the same path.
+
+**`Domain Path` is load-bearing, not decoration.** Omit it and WP registers the plugin **root**, so a `languages/` subfolder is invisible even on 6.8+. If you bundle translations under `languages/`, declare `Domain Path: /languages`.
 
 If you do call it, hook on `init`:
 
