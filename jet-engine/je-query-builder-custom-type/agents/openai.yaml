@@ -1,0 +1,4 @@
+interface:
+  display_name: "JetEngine Query Builder Type"
+  short_description: "Build custom JetEngine query types"
+  default_prompt: "Use $je-query-builder-custom-type to implement or audit this custom JetEngine Query Builder runtime and editor type."

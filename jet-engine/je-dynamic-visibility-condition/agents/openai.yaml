@@ -1,0 +1,4 @@
+interface:
+  display_name: "JetEngine Visibility Condition"
+  short_description: "Build safe JetEngine visibility conditions"
+  default_prompt: "Use $je-dynamic-visibility-condition to implement or audit this JetEngine Dynamic Visibility condition and its show/hide behavior."

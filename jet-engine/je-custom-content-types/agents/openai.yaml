@@ -1,0 +1,4 @@
+interface:
+  display_name: "JetEngine Custom Content Types"
+  short_description: "Build safe JetEngine CCT integrations"
+  default_prompt: "Use $je-custom-content-types to build or audit a JetEngine Custom Content Type integration with safe CRUD, queries, hooks, and REST permissions."
