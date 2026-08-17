@@ -4040,16 +4040,16 @@
         "plugin": "wordpress",
         "plugin-version-tested": "6.5 - 7.0",
         "php-min": "7.4",
-        "last-updated": "2026-07-09"
+        "last-updated": "2026-08-14"
       },
       "resources": [],
       "has_reference": false,
       "has_examples": false,
       "has_scripts": false,
       "skill_md": {
-        "bytes": 19953,
-        "lines": 363,
-        "sha256": "1c38accdb6d4fa427b6083080afc528f15afe75801c1301ed81e5e4171842d1d"
+        "bytes": 21337,
+        "lines": 372,
+        "sha256": "3ec545233d07edbdf008d2ae8a4313e22d8606f318fc5a1916284b50871e0a7e"
       }
     },
     {
@@ -7610,16 +7610,16 @@
         "plugin": "wordpress",
         "plugin-version-tested": "6.0 - 7.0.1",
         "php-min": "7.4",
-        "last-updated": "2026-07-10"
+        "last-updated": "2026-08-14"
       },
       "resources": [],
       "has_reference": false,
       "has_examples": false,
       "has_scripts": false,
       "skill_md": {
-        "bytes": 11002,
-        "lines": 296,
-        "sha256": "6c00c44503335d5697bc8f5077a211215f83679aafc2e972ab1b46b0e0447b09"
+        "bytes": 11470,
+        "lines": 304,
+        "sha256": "5cc3a9c35f12ea49d8131431683529959dc97e939da66f4b75fd00744cfd5937"
       }
     },
     {
