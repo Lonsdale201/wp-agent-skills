@@ -12,7 +12,7 @@
     "skill_file": "SKILL.md"
   },
   "domain_count": 23,
-  "skill_count": 235,
+  "skill_count": 237,
   "domains": [
     {
       "slug": "better-data",
@@ -60,7 +60,7 @@
       "slug": "jet-engine",
       "path": "jet-engine",
       "readme_path": "jet-engine/README.md",
-      "skill_count": 3
+      "skill_count": 5
     },
     {
       "slug": "jetformbuilder",
@@ -2749,10 +2749,100 @@
       }
     },
     {
+      "slug": "je-custom-content-types",
+      "name": "je-custom-content-types",
+      "domain": "jet-engine",
+      "description": "Builds or audits third-party integrations with JetEngine Custom Content Types (CCT): resolving Factory instances, custom-table fields and service columns, Item_Handler create/update/delete hooks, safe queries, Query Builder, related single posts, REST routes and capability boundaries. Use when a plugin reads or mutates CCT rows, listens for CCT lifecycle events, exposes CCT data to a headless client, or diagnoses missing sanitation, bypassed hooks, unsafe raw deletion, public writes, ownership leaks, or CCT/query inconsistencies.",
+      "path": "jet-engine/je-custom-content-types",
+      "skill_path": "jet-engine/je-custom-content-types/SKILL.md",
+      "url": "https://raw.githubusercontent.com/Lonsdale201/wp-agent-skills/main/jet-engine/je-custom-content-types/SKILL.md",
+      "raw_url": "https://raw.githubusercontent.com/Lonsdale201/wp-agent-skills/main/jet-engine/je-custom-content-types/SKILL.md",
+      "html_url": "https://github.com/Lonsdale201/wp-agent-skills/blob/main/jet-engine/je-custom-content-types/SKILL.md",
+      "directory_url": "https://github.com/Lonsdale201/wp-agent-skills/tree/main/jet-engine/je-custom-content-types",
+      "metadata": {
+        "author": "Soczó Kristóf",
+        "contact": "mailto:lonsdale201@hotmail.com",
+        "plugin": "jet-engine",
+        "plugin-version-tested": "3.8.14",
+        "wp-version-tested": "7.0.4",
+        "php-min": "7.4",
+        "last-updated": "2026-08-17"
+      },
+      "resources": [
+        {
+          "path": "agents/openai.yaml",
+          "repo_path": "jet-engine/je-custom-content-types/agents/openai.yaml",
+          "type": "resource",
+          "bytes": 286,
+          "sha256": "244a9e41988637782f94fd8d19215a2c4af41beebbb04357e1e18b9455ea3a3a"
+        },
+        {
+          "path": "references/cct-query-rest-hooks.md",
+          "repo_path": "jet-engine/je-custom-content-types/references/cct-query-rest-hooks.md",
+          "type": "reference",
+          "bytes": 5042,
+          "sha256": "a5445238758d183636c9f62ed6a29acef4d7d91821259fbffe1dfe0b76aab03d"
+        }
+      ],
+      "has_reference": true,
+      "has_examples": false,
+      "has_scripts": false,
+      "skill_md": {
+        "bytes": 9466,
+        "lines": 243,
+        "sha256": "ea6a79279a06bed004421c13a1f45e1cb9a363d352c9c2d63fd9286fa6a73d73"
+      }
+    },
+    {
+      "slug": "je-data-stores",
+      "name": "je-data-stores",
+      "domain": "jet-engine",
+      "description": "Builds or audits JetEngine Data Store integrations for favorites, bookmarks, likes, recently viewed items, user IDs, and CCT IDs. Covers cookie, session, user-meta, local-storage, and user-IP semantics; Factory lookup; frontend and programmatic mutation; Query Builder; counters; CCT bridges; custom store types; and anonymous AJAX trust boundaries. Use when adding store buttons, querying stored items, syncing counts, extending storage, or diagnosing missing server data, spoofable state, stale counters, hooks, and size limits.",
+      "path": "jet-engine/je-data-stores",
+      "skill_path": "jet-engine/je-data-stores/SKILL.md",
+      "url": "https://raw.githubusercontent.com/Lonsdale201/wp-agent-skills/main/jet-engine/je-data-stores/SKILL.md",
+      "raw_url": "https://raw.githubusercontent.com/Lonsdale201/wp-agent-skills/main/jet-engine/je-data-stores/SKILL.md",
+      "html_url": "https://github.com/Lonsdale201/wp-agent-skills/blob/main/jet-engine/je-data-stores/SKILL.md",
+      "directory_url": "https://github.com/Lonsdale201/wp-agent-skills/tree/main/jet-engine/je-data-stores",
+      "metadata": {
+        "author": "Soczó Kristóf",
+        "contact": "mailto:lonsdale201@hotmail.com",
+        "plugin": "jet-engine",
+        "plugin-version-tested": "3.8.14",
+        "wp-version-tested": "7.0.4",
+        "php-min": "7.4",
+        "last-updated": "2026-08-17"
+      },
+      "resources": [
+        {
+          "path": "agents/openai.yaml",
+          "repo_path": "jet-engine/je-data-stores/agents/openai.yaml",
+          "type": "resource",
+          "bytes": 279,
+          "sha256": "26a2107e438381cc307f483930d0f05fbded759fb75282cf9d80c3fe109a3b64"
+        },
+        {
+          "path": "references/storage-mutation-query.md",
+          "repo_path": "jet-engine/je-data-stores/references/storage-mutation-query.md",
+          "type": "reference",
+          "bytes": 5378,
+          "sha256": "70bb8e975bd7125f375b66fa7dc8dfdfa3549bc4d70fde5f73de70242ca1d601"
+        }
+      ],
+      "has_reference": true,
+      "has_examples": false,
+      "has_scripts": false,
+      "skill_md": {
+        "bytes": 8829,
+        "lines": 189,
+        "sha256": "61055512c803a13f489f5d9a4e7263dcef049750d47ca7938fe0b33390e0e22f"
+      }
+    },
+    {
       "slug": "je-dynamic-visibility-condition",
       "name": "je-dynamic-visibility-condition",
       "domain": "jet-engine",
-      "description": "Register a custom Dynamic Visibility condition for JetEngine — extend \\Jet_Engine\\Modules\\Dynamic_Visibility\\Conditions\\ Base, hook jet-engine/modules/dynamic-visibility/conditions/register, call $manager->register_condition( new MyCondition() ). The 3 abstract methods are get_id() / get_name() / check( $args = [] ); override get_group() to assign a UI group, is_for_fields() / need_value_detect() / need_type_detect() to control where the condition appears, get_custom_controls() to add per-condition UI controls. The check() $args includes type ('show' or 'hide'), field / field_raw, value, data_type ('chars' / 'numeric' / 'datetime' / 'date' / 'list'), and context ('default' or 'current_listing'). Important — $args['type'] is the user's show/hide intent; condition must invert its boolean accordingly. Use get_current_value() helper for context-aware meta resolution (handles WP_Post, WP_User, WP_Term, WP_Comment, listing macros). Use when scaffolding a JetEngine companion plugin's visibility conditions.",
+      "description": "Registers or audits a custom JetEngine Dynamic Visibility condition by extending Conditions\\Base and using the conditions/register hook. Covers show/hide polarity, AND/OR behavior, listing-context value resolution, custom controls under condition_settings, groups, module timing, pure checks, and 3.8.14 silent listing-asset preload behavior. Use when a companion plugin adds visibility rules, a condition appears but evaluates backwards, custom UI values are missing, or listing/admin/AJAX rendering differs.",
       "path": "jet-engine/je-dynamic-visibility-condition",
       "skill_path": "jet-engine/je-dynamic-visibility-condition/SKILL.md",
       "url": "https://raw.githubusercontent.com/Lonsdale201/wp-agent-skills/main/jet-engine/je-dynamic-visibility-condition/SKILL.md",
@@ -2763,25 +2853,41 @@
         "author": "Soczó Kristóf",
         "contact": "mailto:lonsdale201@hotmail.com",
         "plugin": "jet-engine",
-        "plugin-version-tested": "3.8.8.2",
+        "plugin-version-tested": "3.8.14",
+        "wp-version-tested": "7.0.4",
         "php-min": "7.4",
-        "last-updated": "2026-05-01"
+        "last-updated": "2026-08-17"
       },
-      "resources": [],
-      "has_reference": false,
+      "resources": [
+        {
+          "path": "agents/openai.yaml",
+          "repo_path": "jet-engine/je-dynamic-visibility-condition/agents/openai.yaml",
+          "type": "resource",
+          "bytes": 277,
+          "sha256": "9f0336f1c1f48e5c6688ffcdfc78a701680e7a05de031413b138becec7d6626b"
+        },
+        {
+          "path": "references/implementation-reference.md",
+          "repo_path": "jet-engine/je-dynamic-visibility-condition/references/implementation-reference.md",
+          "type": "reference",
+          "bytes": 3286,
+          "sha256": "7ecd263fc98540977e068f5aad3bc63aaf56ab2094917d170d7806bd7d85a227"
+        }
+      ],
+      "has_reference": true,
       "has_examples": false,
       "has_scripts": false,
       "skill_md": {
-        "bytes": 26794,
-        "lines": 533,
-        "sha256": "4d915966c15706bb937b898fb5601404e3a40520a89f84f248862bfe2801df7c"
+        "bytes": 7283,
+        "lines": 191,
+        "sha256": "4717cd876bb0fc3bfc93fad6a83ddeba7093c903f0979c7b1ac2f8ba8a6a2341"
       }
     },
     {
       "slug": "je-listings-callback",
       "name": "je-listings-callback",
       "domain": "jet-engine",
-      "description": "Register a custom Listings callback for JetEngine — the per-field transform fired when a Dynamic Field widget renders meta values (Format date, Format number, Get post title, Convert units, …). Two registration paths: legacy 3-filter via jet-engine/listings/allowed-callbacks (label), jet-engine/listings/allowed-callbacks-args (control schema), and jet-engine/listing/dynamic-field/callback-args (positional args at runtime). Modern single-call $manager->register_callback($name, $label, $args) hooked on jet-engine/callbacks/register fires the three filters internally. Contract — the registered callback identifier MUST be a real PHP callable string (a global function name OR `Fully\\\\Qualified\\\\Class::method`). Bare static method names like `'unit_converter'` fail JE's is_callable() gate in apply_callback() and the field silently renders empty. Use when scaffolding a JetEngine companion plugin's listing-field transform, when seeing \"callback applied but value disappears\" bugs, or when extending the field-args UI.",
+      "description": "Registers or audits a JetEngine Listings callback used by Dynamic Field rendering through jet-engine/callbacks/register or the legacy callback filters. Covers callable identifiers, positional control arguments, multi-callback chains, zero-value defaults, serialized/non-scalar input, scalar output, escaping, and render-time performance. Use when adding a field formatter, callback controls, array-aware transforms, or diagnosing blank, unsafe, incorrectly ordered, or unexpectedly defaulted Dynamic Field output.",
       "path": "jet-engine/je-listings-callback",
       "skill_path": "jet-engine/je-listings-callback/SKILL.md",
       "url": "https://raw.githubusercontent.com/Lonsdale201/wp-agent-skills/main/jet-engine/je-listings-callback/SKILL.md",
@@ -2792,25 +2898,41 @@
         "author": "Soczó Kristóf",
         "contact": "mailto:lonsdale201@hotmail.com",
         "plugin": "jet-engine",
-        "plugin-version-tested": "3.8.8.2",
+        "plugin-version-tested": "3.8.14",
+        "wp-version-tested": "7.0.4",
         "php-min": "7.4",
-        "last-updated": "2026-05-01"
+        "last-updated": "2026-08-17"
       },
-      "resources": [],
-      "has_reference": false,
+      "resources": [
+        {
+          "path": "agents/openai.yaml",
+          "repo_path": "jet-engine/je-listings-callback/agents/openai.yaml",
+          "type": "resource",
+          "bytes": 255,
+          "sha256": "25000f450661747e1892e74308d90abf56b3ee81e26149cf2e396466bb4c830e"
+        },
+        {
+          "path": "references/callback-contracts.md",
+          "repo_path": "jet-engine/je-listings-callback/references/callback-contracts.md",
+          "type": "reference",
+          "bytes": 3182,
+          "sha256": "d6e914d9d889400dd163fbd54fad4217f1842e1886397486bd887080843471a5"
+        }
+      ],
+      "has_reference": true,
       "has_examples": false,
       "has_scripts": false,
       "skill_md": {
-        "bytes": 19726,
-        "lines": 314,
-        "sha256": "a944b3a0f26fc1930cb377fd55a333bc16303cbd05c1bab1bd1c0f3e974f014c"
+        "bytes": 7208,
+        "lines": 192,
+        "sha256": "a80ccb0df5226e2c0d4134c52e541a427b5e3bf80e3195b1cfd2adc656e87cbc"
       }
     },
     {
       "slug": "je-query-builder-custom-type",
       "name": "je-query-builder-custom-type",
       "domain": "jet-engine",
-      "description": "Register a custom Query type for JetEngine's Query Builder — extend \\Jet_Engine\\Query_Builder\\Queries\\Base_Query for the runtime query class, extend \\Jet_Engine\\Query_Builder\\Query_Editor\\Base_Query for the editor component, then hook BOTH register actions — jet-engine/query-builder/queries/register (factory) for the runtime, jet-engine/query-builder/query-editor/register for the editor UI. Five abstract methods on Base_Query — _get_items(), get_items_total_count(), get_items_page_count(), get_items_pages_count(), get_current_items_page(). Built-in cache via get_cached_data() / update_query_cache(). Custom queries participate in JE 3.8+ MCP tool exposure and the frontend query inspector automatically. Use when scaffolding a custom query type (HPOS WC orders, third-party API source, custom DB table) for JetEngine listings, dynamic widgets, or REST API endpoints.",
+      "description": "Registers or audits a custom JetEngine Query Builder type with paired runtime and editor classes. Covers all six Base_Query abstract methods including set_filtered_prop, setup_query dynamic/macro merging, pagination, automatic item caching and explicit count caching, filtering, REST endpoint exposure, editor assets, and optional MCP argument conversion. Use for custom tables, HPOS-like repositories, external APIs, or bugs involving stale cache, broken filters, missing editor controls, empty MCP-created queries, or pagination.",
       "path": "jet-engine/je-query-builder-custom-type",
       "skill_path": "jet-engine/je-query-builder-custom-type/SKILL.md",
       "url": "https://raw.githubusercontent.com/Lonsdale201/wp-agent-skills/main/jet-engine/je-query-builder-custom-type/SKILL.md",
@@ -2821,18 +2943,34 @@
         "author": "Soczó Kristóf",
         "contact": "mailto:lonsdale201@hotmail.com",
         "plugin": "jet-engine",
-        "plugin-version-tested": "3.8.8.2",
+        "plugin-version-tested": "3.8.14",
+        "wp-version-tested": "7.0.4",
         "php-min": "7.4",
-        "last-updated": "2026-05-01"
+        "last-updated": "2026-08-17"
       },
-      "resources": [],
-      "has_reference": false,
+      "resources": [
+        {
+          "path": "agents/openai.yaml",
+          "repo_path": "jet-engine/je-query-builder-custom-type/agents/openai.yaml",
+          "type": "resource",
+          "bytes": 253,
+          "sha256": "97d51598aa2b8b9d811a3d9f77ee9a044e5ac677dccf19fe17638af84e41b0da"
+        },
+        {
+          "path": "references/runtime-editor-mcp.md",
+          "repo_path": "jet-engine/je-query-builder-custom-type/references/runtime-editor-mcp.md",
+          "type": "reference",
+          "bytes": 4714,
+          "sha256": "d5a6f765e7525c2ba7842b0e3b6930f43d2535a6882369b672e084bc547a2121"
+        }
+      ],
+      "has_reference": true,
       "has_examples": false,
       "has_scripts": false,
       "skill_md": {
-        "bytes": 39905,
-        "lines": 731,
-        "sha256": "7168cb5d1726588aed3aedd02db7125177f2533ebf6ed43d9c393586250519af"
+        "bytes": 8311,
+        "lines": 214,
+        "sha256": "de6bb4f80c299496797120903c76c2cbe68a62eaa0902a6c2a187b5714d0d78a"
       }
     },
     {

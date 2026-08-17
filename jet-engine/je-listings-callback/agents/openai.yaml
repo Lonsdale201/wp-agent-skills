@@ -1,0 +1,4 @@
+interface:
+  display_name: "JetEngine Listings Callback"
+  short_description: "Build safe Dynamic Field callbacks"
+  default_prompt: "Use $je-listings-callback to implement or audit this JetEngine Dynamic Field callback, arguments, output, and escaping."

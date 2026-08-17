@@ -1,6 +1,6 @@
 # wp-agent-skills
 
-**235 skills · 30 plugins**
+**237 skills · 30 plugins**
 
 A community-maintained collection of **portable Agent Skills** for WordPress plugin and theme development.
 
@@ -27,7 +27,7 @@ Skills are grouped by domain. Each domain has its own README listing the skills 
 | &nbsp;&nbsp;↳ [WooCommerce Memberships](woocommerce#woocommerce-memberships) | `wcm-*` — membership hooks, access & discounts, the data model + WCS-linked memberships, and the 1.29+ Abilities API surface. |
 | &nbsp;&nbsp;↳ [Other WooCommerce extensions](woocommerce#woocommerce-extensions) | The WooCommerce **Stripe** payment gateway (add-payment-method, Subscriptions integration, webhooks) and **Sequential Order Numbers Pro**. |
 | [`jetformbuilder/`](jetformbuilder) | Extending JetFormBuilder — settings tabs, form sidebar panels, custom Form Actions, action events, item decorators, external-API actions. |
-| [`jet-engine/`](jet-engine) | Extending JetEngine — Dynamic Visibility conditions, Listings callbacks, Query Builder custom query types. |
+| [`jet-engine/`](jet-engine) | Extending JetEngine from a companion plugin — Dynamic Visibility conditions (show/hide polarity, listing context), Dynamic Field callbacks (callable gate, positional args, output escaping), Query Builder custom query types (runtime + editor halves, cache, filters, REST, MCP), Custom Content Types (Factory / Item Handler CRUD, lifecycle hooks, `jet-cct` REST), and Data Stores (favorites / likes / recently-viewed across cookie, session, user-meta, local-storage, user-IP backends). |
 | [`jetsmartfilter/`](jetsmartfilter) | Integrating & extending **JetSmartFilters** (`jet-smart-filters`) — the provider / query-ID contract, filterable JSF Listings, the frontend AJAX lifecycle, narrowly scoped PHP query hooks, and the custom provider / query-type APIs. |
 | [`better-data/`](better-data) | **Contributor** skills for the [better-data](https://github.com/lonsdale201/better-data) PHP library. |
 | [`better-route/`](better-route) | **Consumer** skills for the [better-route](https://github.com/Lonsdale201/better-route) PHP library. |
