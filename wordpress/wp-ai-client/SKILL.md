@@ -1,26 +1,28 @@
 ---
 name: wp-ai-client
-description: Build and review WordPress 7.0 WP AI Client integrations for
+description: Build and review WordPress 7.1 WP AI Client integrations for
   provider-agnostic text, image, speech, video, JSON, and ability-powered
   generation. Covers wp_ai_client_prompt, WP_AI_Client_Prompt_Builder,
   wp_supports_ai, using_model_preference, is_supported_* checks,
   generate_* / generate_*_result methods, WP_Error handling,
   using_abilities, WP_AI_Client_Ability_Function_Resolver, connector-backed
-  provider configuration, prompt prevention filters, and safe AI feature
-  gating. Use when plugin code calls AI models or adds AI-powered WordPress
+  provider configuration, client-safe schemas, cache-group customization,
+  prompt prevention filters, and safe AI feature gating. Use when plugin code
+  calls AI models or adds AI-powered WordPress
   features.
 metadata:
   wp-skills-author: "Soczó Kristóf"
   wp-skills-contact: "mailto:lonsdale201@hotmail.com"
   wp-skills-plugin: "wordpress"
-  wp-skills-plugin-version-tested: "7.0.1"
+  wp-skills-plugin-version-tested: "7.0 - 7.1"
+  wp-skills-wp-version-tested: "7.1"
   wp-skills-php-min: "7.4"
-  wp-skills-last-updated: "2026-07-10"
+  wp-skills-last-updated: "2026-08-20"
 ---
 
 # WordPress AI Client
 
-WordPress 7.0 adds a provider-agnostic WP AI Client. Plugin code asks WordPress for a prompt builder, declares what it needs, and lets the configured providers/models handle execution. Credentials are managed through Settings > Connectors and the Connectors API.
+WordPress 7.0 added a provider-agnostic WP AI Client. Plugin code asks WordPress for a prompt builder, declares what it needs, and lets configured providers/models handle execution. WordPress 7.1 improves Ability schema interoperability, mixed function-call resolution, and cache isolation. Credentials are managed through Settings > Connectors and the Connectors API.
 
 ## When to use this skill
 
@@ -33,7 +35,7 @@ Trigger when ANY of the following is true:
 
 ## Availability
 
-The WP AI Client is available in WordPress 7.0+. Guard code for older sites:
+The WP AI Client is available in WordPress 7.0+. Guard code for older sites and feature-detect 7.1 helpers/hooks when supporting 7.0:
 
 ```php
 if ( ! function_exists( 'wp_ai_client_prompt' ) || ! wp_supports_ai() ) {
@@ -126,7 +128,7 @@ if ( ! is_array( $decoded ) ) {
 }
 ```
 
-The AI Client helps request structured output; plugin code still owns validation before saving data.
+The AI Client helps request structured output; plugin code still owns validation before saving data. When exporting a WordPress-authored schema yourself, use `wp_prepare_json_schema_for_client()` on WordPress 7.1+. It removes server-only keywords and normalizes WordPress's older per-property `required` convention for draft-04 consumers. This preparation does not expand what WordPress validates.
 
 ## Media generation
 
@@ -166,13 +168,21 @@ $resolver = new WP_AI_Client_Ability_Function_Resolver(
 
 The resolver converts ability names to function names with the `wpab__` prefix. Do not expose all abilities to a model. The ability `permission_callback` still runs, but the resolver allowlist prevents arbitrary tool selection.
 
+WordPress 7.1 prepares Ability input schemas before creating model function
+declarations. Its resolver also ignores non-Ability function calls in a mixed
+model message instead of trying to execute every function call as an Ability.
+This means a resolver response contains Ability responses only; another tool
+resolver must handle calls outside the Ability allowlist. Do not assume unknown
+calls were rejected merely because they are absent from that response.
+
 ## Controls and hooks
 
 - `wp_ai_client_default_request_timeout`: filter default request timeout in seconds.
 - `wp_ai_client_prevent_prompt`: last-chance filter to block prompt execution. Generation methods return `WP_Error( 'prompt_prevented', ... )`.
 - AI client events dispatch to hooks such as `wp_ai_client_before_generate_result` and `wp_ai_client_after_generate_result`.
+- `wp_ai_client_cache_group` (WordPress 7.1+) changes the object-cache group used by the AI Client adapter.
 
-Use these for policy, observability, and operational control. Do not use them to smuggle credentials into prompts.
+Use these for policy, observability, and operational control. Do not use them to smuggle credentials into prompts. Keep `wp_ai_client_cache_group` deterministic for the entire request and deployment; changing it dynamically fragments caches and makes `clear()` target only the currently selected group.
 
 ## Critical rules
 
@@ -183,6 +193,7 @@ Use these for policy, observability, and operational control. Do not use them to
 - **Require explicit user intent for write actions.** Avoid AI generation on every page load, cron tick, or unauthenticated request.
 - **Treat AI output as untrusted input.** Validate before saving, escape before rendering.
 - **Allowlist abilities when using AI tools.**
+- **Route mixed tool calls explicitly.** The Ability resolver handles only its allowlisted Ability calls in WordPress 7.1.
 - **Avoid sending secrets, private user data, or personal data unless the feature explicitly requires it and the user/admin has consented.**
 
 ## Common mistakes
@@ -224,4 +235,5 @@ update_post_meta( $post_id, '_summary', sanitize_textarea_field( $summary ) );
 
 - AI Client dev note: <https://make.wordpress.org/core/2026/03/24/introducing-the-ai-client-in-wordpress-7-0/>
 - WordPress 7.0 Field Guide: <https://make.wordpress.org/core/2026/05/14/wordpress-7-0-field-guide/>
+- WordPress 7.1 Field Guide: <https://make.wordpress.org/core/2026/08/05/wordpress-7-1-field-guide/>
 - Core files: `wp-includes/ai-client.php`, `wp-includes/ai-client/class-wp-ai-client-prompt-builder.php`, `wp-includes/ai-client/class-wp-ai-client-ability-function-resolver.php`.

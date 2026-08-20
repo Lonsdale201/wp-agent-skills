@@ -1,13 +1,14 @@
 ---
 name: classic-theme-navigation-menus
-description: Build or audit navigation menus in classic PHP WordPress themes on WP 7.0. Covers `register_nav_menus()` on `after_setup_theme`, rendering with `wp_nav_menu()`, `theme_location`, `container => nav`, `container_aria_label`, `fallback_cb => false`, `has_nav_menu()`, menu IDs/classes, mobile toggle buttons with `aria-controls` and `aria-expanded`, safe filters for menu attributes/classes, when to avoid custom walkers, and common accessibility/security mistakes around raw menu meta and anchor-based toggles.
+description: Build or audit navigation menus in classic PHP WordPress themes on WP 7.1. Covers `register_nav_menus()` on `after_setup_theme`, rendering with `wp_nav_menu()`, `theme_location`, a nav container, `container_aria_label`, disabled fallback callbacks, `has_nav_menu()`, menu IDs/classes, mobile toggle buttons with `aria-controls` and `aria-expanded`, safe filters for menu attributes/classes, when to avoid custom walkers, and common accessibility/security mistakes around raw menu meta and anchor-based toggles.
 metadata:
   wp-skills-author: "Soczó Kristóf"
   wp-skills-contact: "mailto:lonsdale201@hotmail.com"
   wp-skills-plugin: "wordpress"
-  wp-skills-plugin-version-tested: "7.0"
+  wp-skills-plugin-version-tested: "7.1"
+  wp-skills-wp-version-tested: "7.1"
   wp-skills-php-min: "7.4"
-  wp-skills-last-updated: "2026-06-04"
+  wp-skills-last-updated: "2026-08-20"
 ---
 
 # Classic Theme Navigation Menus

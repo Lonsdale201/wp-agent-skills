@@ -1,6 +1,6 @@
 # WooCommerce coupon extension contract
 
-Version scope: WooCommerce 10.9.4, PHP 7.4+. Use this reference for custom coupon types, rule engines, admin/REST fields, concurrency, or historical order recalculation.
+Version scope: WooCommerce 11.0.0, PHP 7.4+. Use this reference for custom coupon types, rule engines, admin/REST fields, concurrency, or historical order recalculation.
 
 ## Contents
 

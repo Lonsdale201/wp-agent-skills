@@ -1,0 +1,3 @@
+interface:
+  display_name: "WP Block Bindings API"
+  short_description: "Connect block attributes to dynamic data"

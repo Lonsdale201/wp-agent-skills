@@ -25,7 +25,7 @@ On Add payment method and subscription purchases Stripe can force saving and hid
 
 ## Classic compatibility path
 
-`assets/js/stripe.js` remains in Stripe 10.8.4 for compatibility paths, but new integrations should target UPE. Legacy selectors include `#stripe-card-element`, `#stripe-iban-element`, `.stripe-source-errors`, and hidden `stripe_source`.
+`assets/js/stripe.js` remains in Stripe 10.9.0 for compatibility paths, but new integrations should target UPE. Legacy selectors include `#stripe-card-element`, `#stripe-iban-element`, `.stripe-source-errors`, and hidden `stripe_source`.
 
 The old flow creates a PaymentMethod, calls the `wc_stripe_create_setup_intent` AJAX endpoint with `stripe_source_id` and the nonce, confirms SCA if required, then submits the Woo form. Do not choose this path for new UI and do not instantiate deprecated `WC_Gateway_Stripe`.
 

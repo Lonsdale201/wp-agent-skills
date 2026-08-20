@@ -1,0 +1,4 @@
+interface:
+  display_name: "FluentCart extension architecture"
+  short_description: "Choose safe FluentCart lifecycle and data boundaries"
+  default_prompt: "Use $fluentcart-extension-architecture to design or audit this FluentCart addon against the verified bootstrap, storage, version, and monetary contracts."

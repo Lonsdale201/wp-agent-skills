@@ -5,9 +5,9 @@ metadata:
   wp-skills-author: "Soczó Kristóf"
   wp-skills-contact: "mailto:lonsdale201@hotmail.com"
   wp-skills-plugin: "woocommerce"
-  wp-skills-plugin-version-tested: "10.9.4"
+  wp-skills-plugin-version-tested: "11.0.0"
   wp-skills-php-min: "7.4"
-  wp-skills-last-updated: "2026-07-10"
+  wp-skills-last-updated: "2026-08-05"
 ---
 
 # WooCommerce fulfillment shipping providers
@@ -16,7 +16,7 @@ This is the provider registry for WooCommerce's Order Fulfillments feature. It i
 
 ## Feature status
 
-In WooCommerce 10.9.4, feature ID `fulfillments` is disabled by default and its feature UI is hidden. Classes existing on disk does not mean fulfillment UI/routes are active.
+In WooCommerce 11.0.0, feature ID `fulfillments` is disabled by default and its feature UI is hidden. Classes existing on disk does not mean fulfillment UI/routes are active.
 
 ```php
 use Automattic\WooCommerce\Utilities\FeaturesUtil;

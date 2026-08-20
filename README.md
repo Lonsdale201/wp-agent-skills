@@ -1,6 +1,6 @@
 # wp-agent-skills
 
-**211 skills · 30 plugins**
+**252 skills · 31 plugins**
 
 A community-maintained collection of **portable Agent Skills** for WordPress plugin and theme development.
 
@@ -20,29 +20,31 @@ Skills are grouped by domain. Each domain has its own README listing the skills 
 
 | Domain | What it covers |
 |---|---|
-| [`wordpress/`](wordpress) | Core WP topics that apply to any plugin or theme — security, i18n, REST API, the Abilities API, HTML/UTF-8 helpers, query cache. |
+| [`wordpress/`](wordpress) | Core WP topics that apply to any plugin or theme — security, i18n, REST API, the Abilities API, HTML/UTF-8 helpers, query cache, and the WP 7.1 editor/block surface (Interactivity API, Block Bindings, DataViews/DataForms, Style Engine, View Config, JSON Schema, speculative loading). |
 | [`plugin-scaffold/`](plugin-scaffold) | Building a new plugin from scratch — bootstrap, lifecycle, architecture, options storage, cron, hooks, rewrite rules, asset loading, Action Scheduler. |
-| [`woocommerce/`](woocommerce) | WooCommerce **core** ([`wc-*`](woocommerce#woocommerce-core)) — HPOS, payment gateways, Store API, order lifecycle, cart/checkout, variations & pricing, emails, Action Scheduler, logging. The extension families below live in the same folder. |
-| &nbsp;&nbsp;↳ [WooCommerce Subscriptions](woocommerce#woocommerce-subscriptions) | `wcs-*` — subscription hooks, renewal scheduler, data model / switching / gifting, 8.8+ health-check & processing, subscription downloads, All Products for Subscriptions, and the WCS REST API. |
+| [`woocommerce/`](woocommerce) | WooCommerce **core** ([`wc-*`](woocommerce#woocommerce-core)) — HPOS, payment gateways, Store API, order lifecycle, cart/checkout, variations & pricing, product CRUD & request caching, emails, Action Scheduler, logging, and per-release extension upgrade audits. The extension families below live in the same folder. |
+| &nbsp;&nbsp;↳ [WooCommerce Subscriptions](woocommerce#woocommerce-subscriptions) | `wcs-*` — subscription hooks, renewal scheduler, data model / switching / gifting, 8.8+ health-check & processing, subscription downloads, All Products for Subscriptions, cart / checkout / recurring coupons, and the WCS REST API. |
 | &nbsp;&nbsp;↳ [WooCommerce Memberships](woocommerce#woocommerce-memberships) | `wcm-*` — membership hooks, access & discounts, the data model + WCS-linked memberships, and the 1.29+ Abilities API surface. |
 | &nbsp;&nbsp;↳ [Other WooCommerce extensions](woocommerce#woocommerce-extensions) | The WooCommerce **Stripe** payment gateway (add-payment-method, Subscriptions integration, webhooks) and **Sequential Order Numbers Pro**. |
 | [`jetformbuilder/`](jetformbuilder) | Extending JetFormBuilder — settings tabs, form sidebar panels, custom Form Actions, action events, item decorators, external-API actions. |
-| [`jet-engine/`](jet-engine) | Extending JetEngine — Dynamic Visibility conditions, Listings callbacks, Query Builder custom query types. |
+| [`jet-engine/`](jet-engine) | Extending JetEngine from a companion plugin — Dynamic Visibility conditions (show/hide polarity, listing context), Dynamic Field callbacks (callable gate, positional args, output escaping), Query Builder custom query types (runtime + editor halves, cache, filters, REST, MCP), Custom Content Types (Factory / Item Handler CRUD, lifecycle hooks, `jet-cct` REST), and Data Stores (favorites / likes / recently-viewed across cookie, session, user-meta, local-storage, user-IP backends). |
+| [`jetsmartfilter/`](jetsmartfilter) | Integrating & extending **JetSmartFilters** (`jet-smart-filters`) — the provider / query-ID contract, filterable JSF Listings, the frontend AJAX lifecycle, narrowly scoped PHP query hooks, and the custom provider / query-type APIs. |
 | [`better-data/`](better-data) | **Contributor** skills for the [better-data](https://github.com/lonsdale201/better-data) PHP library. |
 | [`better-route/`](better-route) | **Consumer** skills for the [better-route](https://github.com/Lonsdale201/better-route) PHP library. |
 | [`lw-plugins/`](lw-plugins) | LW Plugins family — LW LMS, LW Site Manager, Elállás for WooCommerce, and LW Firewall (worker/rate-limit compatibility, registration spam guard, and management/CLI/abilities). |
 | [`wp-rocket/`](wp-rocket) | WP Rocket integration skills — cache invalidation and filter hooks for third-party plugins / themes. |
 | [`redis-object-cache/`](redis-object-cache) | Redis Object Cache (`redis-cache`) integration — drop-in lifecycle, `WP_REDIS_*` config, `wp redis` CLI, and correct `wp_cache_*` usage with persistent object caching. |
+| [`fluentcart/`](fluentcart) | Extending **FluentCart** (`fluent-cart` + Pro `fluent-cart-pro` + the `fluent-cart-migrator` companion) — the extension bootstrap / container / custom-table data model, products & inventory, cart & checkout trust boundaries, orders / transactions / refunds, payment gateways and subscriptions, customers & the account portal, downloads & storage, coupons, shipping & tax, the `/fluent-cart/v2` REST surface, integration feeds & scheduled jobs, Pro licensing, and EDD / WooCommerce migrations. Every skill marks its Free / Pro / Migrator boundary. |
 | [`fluentcrm/`](fluentcrm) | Extending FluentCRM — funnel triggers / actions / benchmarks, `rest_selector` option lists, and the Free / Pro extension contract. |
 | [`fluentform/`](fluentform) | Extending **Fluent Forms** (`fluentform` + Pro `fluentformpro`) from a third-party plugin — custom form-builder fields (`BaseFieldManager`), the server-side submission lifecycle (parse → validate → persist → notify → confirm) and its hook timing, reading/managing entries & submission meta (`fluentFormApi`, `Submission` / `SubmissionMeta`), and configurable feed integrations (`IntegrationManagerController`, async Action Scheduler dispatch). Every skill marks the Free vs Pro boundary. |
-| [`theme-development/`](theme-development) | Classic (non-FSE) PHP theme development — structure, template hierarchy, the Loop, menus, widgets, comments, media, the Customizer, assets, i18n, accessibility, security, and classic-theme WooCommerce integration. |
+| [`theme-development/`](theme-development) | Theme development — `theme.json` / Global Styles for block themes, plus the full classic (non-FSE) PHP set: structure, template hierarchy, the Loop, menus, widgets, comments, media, the Customizer, assets, i18n, accessibility, security, and classic-theme WooCommerce integration. |
 | [`translatepress/`](translatepress) | Making your own plugin/theme **TranslatePress-compatible** — translatable output and exclusions, URL/SEO/slug and Different-Domain behavior, language switchers and navigation, and recipient-language emails. Covers the free core plus the Business add-ons. |
 | [`elementor/`](elementor) | Building **Elementor** addon plugins — registering Dynamic Tags, their controls and fallback behavior, AJAX item pickers for large datasets, and auditing deprecated Elementor APIs. Extends the free base classes and feature-detects Pro. |
 | [`szamlazzhu/`](szamlazzhu) | Making your own WooCommerce extension cooperate with **Integration for Szamlazz.hu & WooCommerce** — invoice line items / XML / document timing and B2B VAT-number checkout, via the plugin's hooks and canonical data model rather than duplicating it. |
 | [`dev-tooling/`](dev-tooling) | Testing & QA tooling for plugins/themes — PHPUnit (scaffold, harness, CI, writing tests), PHP_CodeSniffer + WordPress Coding Standards, PHPStan, Strauss namespace prefixing for bundled Composer dependencies, and local Docker environments (wp-env, custom compose stacks with Redis/Mailpit/Xdebug), wired through Composer. The developer pipeline beside the code, not WP runtime APIs. |
 | [`polylang/`](polylang) | Making your own plugin/theme **Polylang-compatible** — the guarded public language API, translated post/term groups via the model (not raw DB writes), Pro slugs / sync / ACF behavior, REST & headless `lang` semantics, string/option translation, and Polylang for WooCommerce data stores. Covers the free core plus Polylang Pro and Polylang for WooCommerce. |
 | [`wpml/`](wpml) | Making your own plugin/theme **WPML-compatible** — the "WPML translates copies" model, detecting the base plugin vs the String Translation / Media / Translation Management add-ons, declaring translatable content in `wpml-config.xml`, the runtime language hook API (`wpml_object_id`, `wpml_switch_language`, `wpml_permalink`), and registering/translating dynamic strings. |
-| [`learndash/`](learndash) | Making your own plugin, theme, or integration cooperate with **LearnDash LMS** (`sfwd-lms`) and the **LearnDash WooCommerce** bridge — course and group access/enrollment through the public access APIs (not raw usermeta), the user/course/group/leader relationship model and hierarchical groups, Woo order/subscription/refund-driven enrollment with the access counter, and the `ldlms/v2` + `learndash/v1` REST surfaces. |
+| [`learndash/`](learndash) | Making your own plugin, theme, or integration cooperate with **LearnDash LMS** (`sfwd-lms`) and the **LearnDash WooCommerce** bridge — course and group access/enrollment through the public access APIs (not raw usermeta), the user/course/group/leader relationship model and hierarchical groups, learner progress / completion / reset lifecycle and activity synchronization, Woo order/subscription/refund-driven enrollment with the access counter, and the `ldlms/v2` + `learndash/v1` REST surfaces. |
 | [`rankmath/`](rankmath) | Making your own plugin/theme **Rank Math**-compatible — safe bootstrap around `rank_math/loaded`, frontend metadata filters (title / robots / canonical / Open Graph), replacement variables and content-analysis fields, extending the JSON-LD Schema `@graph`, and XML sitemap entries, providers, and cache invalidation. |
 
 New domain folders follow the same convention: top-level folder per plugin (or plugin family), one subfolder per skill, each containing at minimum a `SKILL.md`. Larger skills may also include `reference.md`, `examples/`, or `scripts/`.
@@ -65,6 +67,35 @@ node .github/scripts/build-skills-index.js
 ```
 
 CI checks that `skills-index.json` stays in sync with the committed `SKILL.md` files.
+
+## Staying up to date
+
+New skills land continuously. Instead of watching the repo, you can sync the collection into a local folder straight from the [`skills-index.json`](skills-index.json) manifest — no clone, no fork, plain HTTPS. [`scripts/sync-skills.sh`](scripts/sync-skills.sh) does exactly that, and is deliberately defensive because it writes files an agent will later read:
+
+- Download URLs are **reconstructed from a pinned repo base** — the manifest is never used to decide *which host* to fetch from, so a tampered manifest cannot redirect a download elsewhere.
+- Every manifest path is **validated** (no `..`, absolute paths, backslashes, `~`, safe charset only) and **confined** under your destination directory.
+- Every file is verified against the `sha256` **and** byte size in the manifest **before** it is written; any mismatch is a hard failure and nothing partial or unverified is moved into place.
+- HTTPS only (TLS ≥ 1.2), no redirect-following, per-file size cap.
+- Downloaded files are written non-executable and the script **never runs anything it downloads** (skills are Markdown/YAML). It only adds/updates — it never deletes local files.
+- It **refuses to write through a pre-existing symlink** (or any non-regular file) at a target path, so a planted link can't redirect a write outside the destination.
+
+```bash
+# sync everything into ./skills
+sh scripts/sync-skills.sh
+
+# …or point it at wherever YOUR agent runtime loads skills from — the script
+# is not tied to any single tool:
+sh scripts/sync-skills.sh ~/.claude/skills          # Claude Code, global
+sh scripts/sync-skills.sh .claude/skills            # Claude Code, per-project
+WP_SKILLS_DIR=/path/to/skills sh scripts/sync-skills.sh
+
+# only some domains (space-separated allowlist)
+WP_SKILLS_DOMAINS="woocommerce wordpress" sh scripts/sync-skills.sh ~/.claude/skills
+```
+
+Requires `curl`, `jq`, and `sha256sum` (or `shasum`). Re-running is cheap — unchanged files are detected by hash and skipped.
+
+**Trust model.** The manifest is the trust root: you are trusting *GitHub, serving this repository over TLS*. The script guarantees you receive exactly the bytes this repo published (right host, right path, matching hash) and that nothing lands outside the directory you chose — it does **not** vouch for the *content* of the skills. Review third-party skills before pointing an agent at them, the same as any untrusted prompt input.
 
 ## Using these skills
 

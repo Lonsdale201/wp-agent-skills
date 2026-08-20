@@ -14,9 +14,10 @@ metadata:
   wp-skills-author: "Soczó Kristóf"
   wp-skills-contact: "mailto:lonsdale201@hotmail.com"
   wp-skills-plugin: "wordpress"
-  wp-skills-plugin-version-tested: "6.0 - 7.0.1"
+  wp-skills-plugin-version-tested: "6.0 - 7.1"
+  wp-skills-wp-version-tested: "7.1"
   wp-skills-php-min: "7.4"
-  wp-skills-last-updated: "2026-07-10"
+  wp-skills-last-updated: "2026-08-20"
 ---
 
 # WordPress i18n audit
@@ -187,6 +188,14 @@ for wp.org-distributed plugins. Do not treat its absence as a HIGH
 finding without first establishing whether the plugin is shipped via
 wp.org.
 
+For a plugin that **bundles** its own `.mo` / `.l10n.php`, the verdict turns on
+the declared `Requires at least:`. Since **WP 6.8** `wp-settings.php` registers
+each active plugin's language directory from its header (`Domain Path`, or the
+plugin root when that header is absent), so the call is redundant. On **6.7 and
+earlier** nothing looks inside the plugin folder and the bundled files never
+load without it. Check the header before deciding, and never phrase the verdict
+as "modern WordPress".
+
 When a self-hosted plugin needs a custom language path, registering it on
 `init` is a clear, safe lifecycle choice. Do not claim that calling
 `load_plugin_textdomain()` itself on `plugins_loaded` triggers the WordPress
@@ -252,9 +261,12 @@ Flag mismatched domain between PHP and JS calls. Out of scope: deep JS audit (di
   text-domain, or dynamic first argument that extraction tools cannot find.
 - **MEDIUM:** unescaped `_e` in HTML, missing translator comment on `sprintf`,
   concatenation across translated strings, an actual pre-`after_setup_theme`
-  translation load, or plural handled with an English-only `if`.
-- **LOW:** missing optional `Domain Path`, ambiguous short strings without `_x`
-  context, or header/tooling metadata that does not break runtime lookup.
+  translation load, plural handled with an English-only `if`, or a bundled
+  translation with neither `Domain Path` nor `load_plugin_textdomain()`
+  (nothing loads it below 6.8; above 6.8 WP registers the plugin root, not
+  `languages/`).
+- **LOW:** ambiguous short strings without `_x` context, or header/tooling
+  metadata that does not break runtime lookup.
   Absence of `load_plugin_textdomain()` is no finding for a normal
   wp.org-distributed plugin.
 

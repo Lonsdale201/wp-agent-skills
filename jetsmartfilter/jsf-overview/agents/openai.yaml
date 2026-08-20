@@ -1,0 +1,4 @@
+interface:
+  display_name: "JetSmartFilters Overview"
+  short_description: "Choose the correct JetSmartFilters integration surface."
+  default_prompt: "Use $jsf-overview to map this JetSmartFilters integration to the correct provider, query, listing, frontend event, or extension API."

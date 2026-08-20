@@ -12,9 +12,9 @@ metadata:
   wp-skills-author: "Soczó Kristóf"
   wp-skills-contact: "mailto:lonsdale201@hotmail.com"
   wp-skills-plugin: "woocommerce"
-  wp-skills-plugin-version-tested: "10.9.4"
+  wp-skills-plugin-version-tested: "11.0.0"
   wp-skills-php-min: "7.4"
-  wp-skills-last-updated: "2026-07-10"
+  wp-skills-last-updated: "2026-08-05"
 ---
 
 # WooCommerce: admin inline scripts
@@ -25,7 +25,7 @@ Use this when adding or reviewing small JavaScript glue in WooCommerce admin scr
 
 > "WooCommerce has `wc_enqueue_js()`, so use that for admin inline JS."
 
-Do not use it. In WooCommerce 10.9.4 the function still exists, but it is deprecated since 10.4.0 with the replacement `wp_add_inline_script()`. It appends code to a global queue printed by `wc_print_js()` on `wp_footer` and `admin_footer`, wrapped in `jQuery(function($) { ... })`. That global footer queue is hard to scope, hard to dequeue, and not tied to a real script handle.
+Do not use it. In WooCommerce 11.0.0 the function still exists, but it is deprecated since 10.4.0 with the replacement `wp_add_inline_script()`. It appends code to a global queue printed by `wc_print_js()` on `wp_footer` and `admin_footer`, wrapped in `jQuery(function($) { ... })`. That global footer queue is hard to scope, hard to dequeue, and not tied to a real script handle.
 
 ## When to use this skill
 
@@ -123,7 +123,7 @@ wp_add_inline_script(
 
 ## Woo admin handles
 
-Common handles from WooCommerce 10.9.4:
+Common handles from WooCommerce 11.0.0:
 
 | Screen need | Existing handle |
 |---|---|
@@ -134,6 +134,12 @@ Common handles from WooCommerce 10.9.4:
 | Shipping classes | `wc-shipping-classes` |
 
 Attach behavior to your own handle unless you are only adding small configuration required before an existing Woo script runs. For custom admin pages outside Woo screens, enqueue the Woo handle you depend on explicitly.
+
+## WooCommerce 11.0 product editor boundary
+
+WooCommerce 11.0 retires the in-core beta product editor. Do not target its removed slots, feature flags, React routes, or private data stores merely because old examples still exist. The stable core product-edit surface is the classic editor and its documented PHP hooks; separate experimental editor packages require their own explicit compatibility contract and version checks.
+
+For new React admin UI, prefer a plugin-owned screen or a currently documented Woo extension point. Never enqueue scripts globally in the hope that a removed product-editor bundle supplies dependencies.
 
 ## Guardrails
 

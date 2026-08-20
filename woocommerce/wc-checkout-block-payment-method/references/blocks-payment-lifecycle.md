@@ -81,7 +81,7 @@ Use:
 
 The object belongs below `meta.paymentMethodData`, not at the top level. Store API accepts key/value entries, applies `sanitize_key()` to names and `wc_clean()` to values, then `PaymentContext::set_payment_data()` casts values to strings. Prefer short opaque scalar values.
 
-`PaymentResult::set_payment_details()` also casts every value to string in WooCommerce 10.9.4. Return short scalar values such as a scoped client secret or provider intent ID; do not expect nested response objects to survive.
+`PaymentResult::set_payment_details()` also casts every value to string in WooCommerce 11.0.0. Return short scalar values such as a scoped client secret or provider intent ID; do not expect nested response objects to survive.
 
 `onPaymentProcessing` may still appear in older examples but is deprecated. Use `onPaymentSetup`.
 

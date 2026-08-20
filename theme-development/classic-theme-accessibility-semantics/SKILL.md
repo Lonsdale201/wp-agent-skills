@@ -1,13 +1,14 @@
 ---
 name: classic-theme-accessibility-semantics
-description: Build or audit accessibility and semantic HTML in classic PHP WordPress themes on WP 7.0. Covers `language_attributes()`, `wp_head()`, `body_class()`, `wp_body_open()`, landmarks, skip links, focus management, `screen-reader-text`, heading order, nav/button semantics, `aria-controls` and `aria-expanded`, forms and labels, image alt handling, icon accessibility, reduced motion CSS, search forms, and common mistakes such as hover-only menus, hidden focus outlines, fake buttons, missing main landmarks, or unlabeled controls.
+description: Build or audit accessibility and semantic HTML in classic PHP WordPress themes on WP 7.1. Covers `language_attributes()`, `wp_head()`, `body_class()`, `wp_body_open()`, landmarks, skip links, focus management, `screen-reader-text`, heading order, nav/button semantics, `aria-controls` and `aria-expanded`, forms and labels, image alt handling, icon accessibility, reduced motion CSS, search forms, and common mistakes such as hover-only menus, hidden focus outlines, fake buttons, missing main landmarks, or unlabeled controls.
 metadata:
   wp-skills-author: "Soczó Kristóf"
   wp-skills-contact: "mailto:lonsdale201@hotmail.com"
   wp-skills-plugin: "wordpress"
-  wp-skills-plugin-version-tested: "7.0"
+  wp-skills-plugin-version-tested: "7.1"
+  wp-skills-wp-version-tested: "7.1"
   wp-skills-php-min: "7.4"
-  wp-skills-last-updated: "2026-06-04"
+  wp-skills-last-updated: "2026-08-20"
 ---
 
 # Classic Theme Accessibility and Semantics

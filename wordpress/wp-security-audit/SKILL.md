@@ -12,9 +12,10 @@ metadata:
   wp-skills-author: "Soczó Kristóf"
   wp-skills-contact: "mailto:lonsdale201@hotmail.com"
   wp-skills-plugin: "wordpress"
-  wp-skills-plugin-version-tested: "6.0 - 7.0.1"
+  wp-skills-plugin-version-tested: "6.0 - 7.1"
+  wp-skills-wp-version-tested: "7.1"
   wp-skills-php-min: "7.4"
-  wp-skills-last-updated: "2026-07-12"
+  wp-skills-last-updated: "2026-08-20"
 ---
 
 # WordPress security audit
@@ -49,6 +50,18 @@ Work through the **Critical checks** below in order. For each finding:
 4. Show the fix.
 5. Mark severity: **HIGH** (exploitable now), **MEDIUM** (exploitable under
    conditions), **LOW** (hardening / best practice).
+6. Mark the evidence status separately from severity:
+   - **Reproduced** — a controlled test reached the sink or observed the effect;
+   - **Source-proven** — the complete deterministic path and prerequisites are
+     visible in the inspected code/core contracts;
+   - **Environment-dependent hypothesis** — the effect needs a deployment
+     property or integration that was not available to test.
+
+Do not present an environment-dependent hypothesis as a confirmed finding. Put
+it under limitations or required validation, name the missing environment, and
+do not promote it into a reusable skill rule until it is reproduced or the
+relevant runtime contract is verified. Severity describes impact and
+exploitability; it does not compensate for weak evidence.
 
 Do NOT silently rewrite the file. Produce a report first; only edit if the
 user asks you to apply fixes.
@@ -90,6 +103,12 @@ Authentication ≠ authorization. A logged-in subscriber is still a user.
   `__return_true` is dangerous on privileged writes, but can be intentional
   for genuinely public endpoints. Signed webhook routes should verify the
   signature before mutation, preferably in `permission_callback`.
+- In multisite, `is_user_member_of_blog()` is a membership predicate, not a
+  capability check. WordPress 7.1 adds the `is_user_member_of_blog` filter, but
+  it runs only after both the user and an active site have resolved. Returning
+  `true` can affect core REST user/application-password checks and admin UI
+  visibility globally; do not use the filter to manufacture authorization.
+  Keep an object-appropriate `current_user_can()` check at the protected sink.
 
 ### 3. Input: unslash → normalize when needed → validate
 
@@ -135,6 +154,14 @@ Escape **at the point of output**, in the right context:
 
 `echo $foo;` where `$foo` came from input or DB without escaping → XSS.
 This is the most common finding in plugin audits.
+
+WordPress 7.1 expanded what Core KSES accepts: `tabindex` is a global allowed
+attribute, and safe inline CSS recognizes additional gradient, transform,
+`clip-path`, and SVG presentation forms. This is not a bypass and does not make
+raw HTML safe, but code must not rely on older Core stripping those values as
+its business rule. When the product needs a narrower policy, pass an explicit
+allowlist to `wp_kses()` and test it on every supported Core version. Keep
+escaping at output even after KSES sanitization.
 
 ### 5. SQL: always prepare
 
@@ -275,6 +302,7 @@ Date: <YYYY-MM-DD>
 
 ## HIGH
 1. <file>:<line> — <issue>
+   Evidence: <Reproduced | Source-proven>
    <code>
    Fix: <code>
 
@@ -286,6 +314,9 @@ Date: <YYYY-MM-DD>
 
 ## Out of scope
 - <thing not checked>
+
+## Requires environment validation
+- <hypothesis, missing deployment property, exact acceptance test>
 ```
 
 ## References
@@ -296,3 +327,4 @@ Date: <YYYY-MM-DD>
 - Official documentation: <https://developer.wordpress.org/apis/security/>
 - Official documentation: <https://developer.wordpress.org/reference/functions/wp_verify_nonce/>
 - Official documentation: <https://developer.wordpress.org/reference/functions/current_user_can/>
+- WordPress 7.1 source: `wp-includes/user.php` (`is_user_member_of_blog`).

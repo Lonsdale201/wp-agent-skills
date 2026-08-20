@@ -13,9 +13,10 @@ metadata:
   wp-skills-author: "Soczó Kristóf"
   wp-skills-contact: "mailto:lonsdale201@hotmail.com"
   wp-skills-plugin: "wordpress"
-  wp-skills-plugin-version-tested: "6.3 - 7.0"
+  wp-skills-plugin-version-tested: "6.3 - 7.1"
+  wp-skills-wp-version-tested: "7.1"
   wp-skills-php-min: "7.4"
-  wp-skills-last-updated: "2026-07-09"
+  wp-skills-last-updated: "2026-08-20"
 ---
 
 # WordPress plugin: internal architecture
@@ -39,45 +40,11 @@ Trigger when ANY of the following is true:
 
 ## Folder layout — by-type or by-feature
 
-There are two reasonable organizational schemes for `src/`. Pick one and stay consistent.
-
-**By-type** (group classes by their WP role). Works for small-to-medium plugins (≤ 15 classes, 1-3 features):
-
-```
-src/
-├── Plugin.php              # composition root / wiring
-├── Schema.php              # central constants
-├── Admin/                  # admin screens / list tables / settings
-├── Content/                # CPTs / taxonomies
-├── Frontend/               # shortcodes / frontend app shell / assets
-├── Rest/                   # REST controllers
-├── Setup/                  # Activator / Deactivator
-└── Api/                    # external HTTP clients
-```
-
-**By-feature** (group everything that belongs to a feature together). Scales better past 3-4 distinct features:
-
-```
-src/
-├── Plugin.php
-├── Schema.php
-├── Documents/
-│   ├── DocumentPresenter.php
-│   ├── DocumentRepository.php
-│   └── DocumentService.php
-├── Folders/
-│   └── FolderService.php
-├── Rest/
-│   ├── DocumentsController.php
-│   └── FoldersController.php
-└── Frontend/
-    ├── Assets.php
-    └── ListShortcode.php
-```
-
-The wrong move is **mixing both** in the same plugin. A reader gets confused, an AI gets lost, and refactors become tedious. By-type is fine until it isn't — when a third feature ships and `Actions/` has 9 classes from 3 unrelated domains, switch the whole plugin to by-feature.
-
-**Hard rule across both styles:** one class per file, file name matches class name (`FolderService.php` -> `final class FolderService`), PSR-4 maps `<RootNamespace>\Folders\FolderService` to `src/Folders/FolderService.php`. The kebab-case `class-folder-service.php` filename is a holdover from old WordPress procedural scaffolds; modern Composer plugins use PascalCase files that match the class.
+Choose either by-type for a small cohesive plugin or by-feature when several
+domains evolve independently. Do not mix both schemes opportunistically.
+Across both styles, keep one class per PascalCase file and mirror the PSR-4
+namespace path. Read `references/layout-and-review-examples.md` for both trees,
+migration signals, and a review comparison.
 
 Composer mapping:
 
@@ -287,52 +254,9 @@ do_action( 'myplugin/before_request', $payload );
 
 ## Common mistakes
 
-```php
-// WRONG — magic strings scattered across files
-update_post_meta( $post_id, '_myplugin_settings', $value ); // file A
-get_post_meta( $post_id, '_myplugin_setings', true );        // file B (typo!)
-
-// RIGHT — one source of truth
-update_post_meta( $post_id, Schema::META_SETTINGS, $value );
-
-// WRONG — enqueue on init unconditionally
-add_action( 'init', function () {
-    wp_enqueue_script( 'myplugin-frontend', /* ... */ );
-} );
-// queues assets in broad request contexts and bypasses page-specific gates
-
-// RIGHT — frontend hook + context gate
-add_action( 'wp_enqueue_scripts', function () {
-    if ( ! has_block( 'myplugin/contact' ) ) return;
-    wp_enqueue_script( 'myplugin-frontend', /* ... */ );
-} );
-
-// WRONG — singleton by reflex
-final class HttpClient {
-    private static ?self $instance = null;
-    public static function instance(): self { /* ... */ }
-}
-// 1 plugin = 1 client, can't test, can't swap base URL per call site
-
-// RIGHT — regular class with explicit dependencies
-$client = new HttpClient( $api_key, $base_url );
-$client->post( '/things', $payload );
-
-// WRONG — bare hook name
-do_action( 'before_save', $data );  // collides with 5 other plugins
-
-// RIGHT
-do_action( 'myplugin/before_save', $data );
-
-// WRONG — legacy file/class style in a new plugin
-includes/class-folder-service.php
-class Folder_Service {}
-
-// RIGHT — Composer PSR-4
-src/Folders/FolderService.php
-namespace MyPlugin\Folders;
-final class FolderService {}
-```
+Read `references/layout-and-review-examples.md` for wrong/right examples of
+magic strings, unconditional assets, reflexive singletons, bare hooks, and
+legacy class filenames.
 
 ## Cross-references
 
@@ -350,6 +274,7 @@ final class FolderService {}
 
 ## References
 
+- Layout and review examples: `references/layout-and-review-examples.md`.
 - `wp_enqueue_script`: `wp-includes/functions.wp-scripts.php` — note the `@since 6.3.0` on `$args` array overload.
 - `wp_add_inline_script`: `wp-includes/functions.wp-scripts.php` — since WP 4.5.
 - `admin_enqueue_scripts` action with `$hook_suffix`: `wp-admin/admin-header.php:123`.

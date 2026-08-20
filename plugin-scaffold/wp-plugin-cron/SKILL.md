@@ -12,9 +12,10 @@ metadata:
   wp-skills-author: "Soczó Kristóf"
   wp-skills-contact: "mailto:lonsdale201@hotmail.com"
   wp-skills-plugin: "wordpress"
-  wp-skills-plugin-version-tested: "6.5 - 6.9"
+  wp-skills-plugin-version-tested: "6.5 - 7.1"
+  wp-skills-wp-version-tested: "7.1"
   wp-skills-php-min: "7.4"
-  wp-skills-last-updated: "2026-04-28"
+  wp-skills-last-updated: "2026-08-20"
 ---
 
 # WordPress plugin: cron & background jobs
@@ -40,6 +41,12 @@ WordPress cron does NOT run on a system schedule. There is no `cron` daemon waki
 3. Since WP 6.9, `wp_cron()` registers `_wp_cron()` on `shutdown` for normal requests, so the cron spawn does not hurt TTFB as much. With `ALTERNATE_WP_CRON`, it still uses `wp_loaded`.
 4. `_wp_cron()` checks for due events and makes a non-blocking loopback request to `/wp-cron.php`, which actually runs the due events.
 
+In WordPress 7.1, the cron spawn passes its resolved cron URL as the second
+argument to `https_local_ssl_verify`. Existing one-argument callbacks continue
+to work, while a filter that needs host-specific local TLS policy can register
+for two arguments. Keep verification exceptions exact and development/host
+specific; do not disable TLS verification globally for cron.
+
 Implications:
 
 - **No traffic = no cron.** A site with 5 visitors/day fires cron events 5 times/day, max. A "daily" event on a low-traffic site might run every 3 days.
@@ -60,81 +67,9 @@ This is host-level setup, NOT the plugin's responsibility — but the plugin's d
 
 ## Native WP cron — the basic API
 
-```php
-// 1. Register a custom interval (only needed for non-default recurrences).
-add_filter( 'cron_schedules', static function ( array $schedules ): array {
-    $schedules['every_six_hours'] = array(
-        'interval' => 6 * HOUR_IN_SECONDS,
-        'display'  => __( 'Every 6 Hours', 'myplugin' ),
-    );
-    return $schedules;
-} );
+Register custom intervals before scheduling, guard recurring events with the exact hook+args through `wp_next_scheduled()`, check `WP_Error` results for important jobs, wire callbacks on every runtime request, and clear owned hooks on deactivation. Use `wp_schedule_single_event()` for one-shot deferred work.
 
-// 2. Schedule on activation (idempotently — see below).
-register_activation_hook( __FILE__, static function (): void {
-    if ( ! wp_next_scheduled( 'myplugin_daily_cleanup' ) ) {
-        wp_schedule_event( time() + DAY_IN_SECONDS, 'daily', 'myplugin_daily_cleanup' );
-    }
-} );
-
-// 3. Wire the callback at runtime (in a 'plugins_loaded' callback or top-level).
-add_action( 'myplugin_daily_cleanup', static function (): void {
-    // The actual work.
-    myplugin_purge_old_logs();
-} );
-
-// 4. Clear on deactivation. wp_unschedule_hook clears ALL events for the hook
-//    regardless of $args; safer than wp_clear_scheduled_hook($hook, $args)
-//    which requires the exact args used at schedule time.
-register_deactivation_hook( __FILE__, static function (): void {
-    wp_unschedule_hook( 'myplugin_daily_cleanup' );
-} );
-```
-
-The `cron_schedules` filter returns an array; each schedule has `interval` (seconds) and `display` (translated label). WP defaults: `'hourly'` (3600), `'twicedaily'` (43200), `'daily'` (86400), `'weekly'` (604800).
-
-If you schedule a custom recurrence during activation, the `cron_schedules`
-filter must already be registered before the activation callback calls
-`wp_schedule_event()`. A filter hidden inside a runtime object that only boots on
-`plugins_loaded` can be missing during activation flows.
-
-For critical scheduling, pass `$wp_error=true` and log or surface failures:
-
-```php
-$result = wp_schedule_event( time() + DAY_IN_SECONDS, 'daily', 'myplugin_daily_cleanup', array(), true );
-if ( is_wp_error( $result ) ) {
-    error_log( 'MyPlugin cron schedule failed: ' . $result->get_error_message() );
-}
-```
-
-### Idempotent scheduling
-
-The `wp_next_scheduled` guard is non-negotiable. Without it, every plugin reactivation creates a duplicate event:
-
-```php
-// WRONG — creates a new event every time activation fires
-register_activation_hook( __FILE__, function () {
-    wp_schedule_event( time(), 'daily', 'myplugin_daily_cleanup' );
-} );
-// After 5 reactivations: 5 events, the callback runs 5 times daily.
-
-// RIGHT
-if ( ! wp_next_scheduled( 'myplugin_daily_cleanup' ) ) {
-    wp_schedule_event( time() + DAY_IN_SECONDS, 'daily', 'myplugin_daily_cleanup' );
-}
-```
-
-`wp_next_scheduled( $hook, $args )` returns the timestamp of the next pending event matching the hook + args, or `false` if none exists. **Args matter** — events with different `$args` are distinct events under the same hook. Schedule with the same args you'll check.
-
-### One-shot deferred work
-
-For "do this once, soon" (e.g. send a notification after a form submit, defer a heavy compute off the request):
-
-```php
-wp_schedule_single_event( time() + 30, 'myplugin_send_followup', array( $user_id, $form_id ) );
-```
-
-Use `time() + N` for a delay; use `time()` (or `time() + 1`) to fire as soon as possible. WP de-duplicates: scheduling the same hook + args within the duplicate window around an existing pending event returns `false` (or `WP_Error` when `$wp_error=true`). This is verified in `wp_schedule_single_event()`.
+Read [references/native-wp-cron-patterns.md](references/native-wp-cron-patterns.md) for the complete activation/runtime/deactivation example, error handling, argument-sensitive deduplication, and one-shot scheduling.
 
 ## Multisite — cron is per-blog
 
@@ -167,8 +102,8 @@ When to graduate from WP cron to Action Scheduler:
 | Scheduling 5-10 plugins' worth of events | OK | OK |
 | 10,000+ scheduled actions (e.g. one per order) | **slow / breaks** — `cron` option grows huge in `wp_options`, all autoloaded | designed for it |
 | Per-action status tracking (pending / running / completed / failed) | none | built-in |
-| Built-in retry on failure | manual | built-in |
-| Duplicate guards | partial (single-event 10-min de-dup by hook+args) | `$unique` for hook+group singletons, or exact-args guards with `as_has_scheduled_action()` |
+| Retry after callback failure | manual | explicit; failed one-off actions are not auto-retried |
+| Duplicate guards | partial (single-event 10-min de-dup by hook+args) | AS 4.0 `$unique` for exact hook+group+encoded-args identities; exact-args checks for mixed older runtimes |
 | Admin UI to inspect queue / re-run failures | none | yes (`Tools → Scheduled Actions`) |
 | Logical grouping of related actions | none | `group` parameter |
 | Graceful concurrency (multiple workers) | no | yes |
@@ -215,7 +150,7 @@ if ( function_exists( 'as_unschedule_all_actions' ) ) {
 }
 ```
 
-For one-shot deferred work, the parallel pair is `as_schedule_single_action()` / `wp_schedule_single_event()`. Modern Action Scheduler's `$unique` flag handles hook+group singleton de-duplication explicitly; per-entity jobs should use exact-args guards plus idempotent callbacks.
+For one-shot deferred work, the parallel pair is `as_schedule_single_action()` / `wp_schedule_single_event()`. Action Scheduler 4.0's DBStore makes `$unique` argument-aware, so canonical per-entity args can be part of the queue identity. Action Scheduler 3.x did not include args; integrations supporting unknown older active copies should use exact-args guards. Every version still needs idempotent callbacks.
 
 The cost of Action Scheduler: it's a hard dependency. For a small plugin with 1-2 daily events on a low-traffic site, native WP cron is fine. Don't pull in WooCommerce or vendor Action Scheduler for a single hourly cleanup.
 
@@ -226,7 +161,7 @@ Cron callbacks run inline. A 60-second `daily_cleanup` ties up the whole cron ba
 - **Chunk and re-schedule**: process N rows, then `wp_schedule_single_event( time() + 1, 'myplugin_daily_cleanup' )` if more remain.
 - **Defer per-item to single events**: `wp_schedule_single_event( time(), 'myplugin_process_item', array( $id ) )` per row. Parallelizes well with Action Scheduler; overkill for native WP cron.
 
-Even with `wp_next_scheduled` guards at schedule time, the **callback must be idempotent** — manual triggers (`spawn_cron`), restored backups, WP-CLI `wp cron event run`, and Action Scheduler retries can all replay events. Two minimal patterns:
+Even with `wp_next_scheduled` guards at schedule time, the **callback must be idempotent** — manual triggers (`spawn_cron`), restored backups, WP-CLI `wp cron event run`, and manually or explicitly scheduled Action Scheduler retries can all replay events. Two minimal patterns:
 
 ```php
 // Gate by data state — preferred when the work is per-entity.
@@ -253,7 +188,7 @@ add_action( 'myplugin_daily_cleanup', static function (): void {
 } );
 ```
 
-The transient lock and `get_option`+`update_option` pattern is non-atomic (TOCTOU race) but good enough for soft idempotency. For a global singleton, modern Action Scheduler's `$unique` support can help; for per-entity hard idempotency, use a unique-key insert into a custom table as the gate.
+The transient lock and `get_option`+`update_option` pattern is non-atomic (TOCTOU race) but good enough for soft idempotency. Action Scheduler 4.0's `$unique` support can suppress an exact queue identity, but for per-entity hard idempotency use a unique-key insert into an owned table or a provider-enforced idempotency key as the gate.
 
 ## Critical rules
 
@@ -265,7 +200,7 @@ The transient lock and `get_option`+`update_option` pattern is non-atomic (TOCTO
 - **Cron is per-blog in multisite** — schedule per-site if the work is per-site.
 - **Make callbacks idempotent.** Data-state check, soft lock, or `last_success` timestamp gate.
 - **Long-running work goes in chunks** (re-schedule a single event after a batch) — don't block the worker.
-- **Graduate to Action Scheduler** when you need queue semantics: 10k+ actions, status tracking, retry, duplicate guards, admin UI. Don't pull it in for one-off uses.
+- **Graduate to Action Scheduler** when you need queue semantics: 10k+ actions, status tracking, explicit retry workflows, duplicate guards, admin UI. Don't pull it in for one-off uses.
 
 ## Common mistakes
 
@@ -317,7 +252,7 @@ foreach ( $orders as $order ) {
 
 ## What this skill does NOT cover
 
-- Action Scheduler internal architecture, queue tables, runner process, WP-CLI commands, and 3.9.x API details — covered by `wp-action-scheduler`.
+- Action Scheduler internal architecture, queue tables, runner process, WP-CLI commands, and 4.0 API details — covered by `wp-action-scheduler`.
 - WP-CLI cron commands (`wp cron event list`, `wp cron event run`, `wp cron schedule list`) — adjacent topic, useful for debugging but separate skill scope.
 - External queue systems (Redis Queue, AWS SQS, Beanstalkd) integrated into WP — viable for ultra-high-throughput plugins but out of WP-native scope.
 - Server-side cron daemon configuration.
@@ -328,6 +263,7 @@ foreach ( $orders as $order ) {
 - `wp_schedule_event` / `wp_schedule_single_event` / `wp_next_scheduled` / `wp_unschedule_hook`: `wp-includes/cron.php`
 - `cron_schedules` filter: [developer.wordpress.org/reference/hooks/cron_schedules/](https://developer.wordpress.org/reference/hooks/cron_schedules/)
 - WP 6.9 cron change (`_wp_cron` moved to `shutdown`): `wp-includes/cron.php` `wp_cron()` docblock
+- WP 7.1 cron TLS filter context: `wp-includes/cron.php` `spawn_cron()`
 - Action Scheduler: [actionscheduler.org](https://actionscheduler.org), [bundled in WooCommerce](https://github.com/woocommerce/action-scheduler)
 - Official documentation: <https://developer.wordpress.org/reference/functions/wp_schedule_event/>
 - Official documentation: <https://developer.wordpress.org/reference/functions/wp_schedule_single_event/>

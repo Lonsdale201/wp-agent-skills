@@ -6,9 +6,9 @@ metadata:
   wp-skills-contact: "mailto:lonsdale201@hotmail.com"
   wp-skills-plugin: "woocommerce"
   wp-skills-plugin-version-tested: "10.8.1"
-  wp-skills-wp-version-tested: "7.0"
+  wp-skills-wp-version-tested: "7.1"
   wp-skills-php-min: "7.4"
-  wp-skills-last-updated: "2026-06-14"
+  wp-skills-last-updated: "2026-08-20"
 ---
 
 # Classic WooCommerce Shop Loop

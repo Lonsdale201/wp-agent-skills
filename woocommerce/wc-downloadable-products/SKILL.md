@@ -5,9 +5,9 @@ metadata:
   wp-skills-author: "Soczó Kristóf"
   wp-skills-contact: "mailto:lonsdale201@hotmail.com"
   wp-skills-plugin: "woocommerce"
-  wp-skills-plugin-version-tested: "10.9.4"
+  wp-skills-plugin-version-tested: "11.0.0"
   wp-skills-php-min: "7.4"
-  wp-skills-last-updated: "2026-07-20"
+  wp-skills-last-updated: "2026-08-05"
 ---
 
 # WooCommerce downloadable products
@@ -54,6 +54,8 @@ $product->save();
 ```
 
 `set_downloads()` validates new or changed paths. Local files must exist, use an allowed type, and pass Approved Download Directory checks when that feature is enabled. Remote absolute URLs are accepted without a remote existence request; shortcode providers must enforce their own validation.
+
+WooCommerce 11.0 correctly resolves root-relative content paths against relocated/custom `WP_CONTENT_DIR` locations and requires a path-segment boundary. Do not assume content is literally `/wp-content`, slice a hard-coded 11 characters, or treat `/application` as if it were under `/app`. Store paths through product CRUD and let `WC_Product_Download` resolve/validate them.
 
 For an existing file, reuse its ID:
 
@@ -145,14 +147,15 @@ Woo download links contain the order key, customer email (or hash), product ID, 
 - Use `wc-rest-api-v4` for the authenticated administrative Woo REST boundary.
 - Use `wc-action-scheduler-jobs` for partial-download tracking or background reconciliation.
 
-## Verified sources
+## References
 
-- `wp-content/plugins/woocommerce/includes/abstracts/abstract-wc-product.php`
-- `wp-content/plugins/woocommerce/includes/class-wc-product-download.php`
-- `wp-content/plugins/woocommerce/includes/class-wc-customer-download.php`
-- `wp-content/plugins/woocommerce/includes/class-wc-download-handler.php`
-- `wp-content/plugins/woocommerce/includes/wc-order-functions.php`
-- `wp-content/plugins/woocommerce/includes/wc-user-functions.php`
-- `wp-content/plugins/woocommerce/includes/data-stores/class-wc-customer-download-data-store.php`
-- `wp-content/plugins/woocommerce/src/Internal/ProductDownloads/`
-- `wp-content/plugins/woocommerce/src/Internal/RestApi/Routes/V4/Orders/ActionController.php`
+- Verified source paths:
+  - `wp-content/plugins/woocommerce/includes/abstracts/abstract-wc-product.php`
+  - `wp-content/plugins/woocommerce/includes/class-wc-product-download.php`
+  - `wp-content/plugins/woocommerce/includes/class-wc-customer-download.php`
+  - `wp-content/plugins/woocommerce/includes/class-wc-download-handler.php`
+  - `wp-content/plugins/woocommerce/includes/wc-order-functions.php`
+  - `wp-content/plugins/woocommerce/includes/wc-user-functions.php`
+  - `wp-content/plugins/woocommerce/includes/data-stores/class-wc-customer-download-data-store.php`
+  - `wp-content/plugins/woocommerce/src/Internal/ProductDownloads/`
+  - `wp-content/plugins/woocommerce/src/Internal/RestApi/Routes/V4/Orders/ActionController.php`

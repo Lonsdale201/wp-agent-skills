@@ -6,7 +6,7 @@ body:
   - type: markdown
     attributes:
       value: |
-        Use this form to *suggest* a new skill. If you already have the content ready, use **Submit a skill** instead.
+        Use this form to *suggest* a new skill. Skills are written and published by the maintainer — this form is how you say what's missing.
 
   - type: dropdown
     id: scope
@@ -78,5 +78,5 @@ body:
       options:
         - label: I checked the existing skill list and didn't find one that already covers this.
           required: true
-        - label: If this gets accepted, I'm OK with someone else writing it (or willing to write it myself if discussed first).
+        - label: I understand this is a suggestion — the maintainer decides whether it gets written, and writes it.
           required: true

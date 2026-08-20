@@ -18,7 +18,7 @@ debugging, controller/resource design, collections and pagination,
 
 ## Dispatch and permission semantics
 
-Use the following execution model for WordPress 7.0.1:
+Use the following execution model for WordPress 7.1:
 
 1. `WP_REST_Server::serve_request()` calls `check_authentication()`.
 2. Authentication filters may set the current user or return `WP_Error`.
@@ -72,6 +72,21 @@ Keep validation pure. It executes for anonymous requests before endpoint
 permission and may execute once for each source containing the parameter.
 Perform ownership checks, remote requests, expensive queries, uniqueness
 checks, writes, and atomic reservations after authorization.
+
+### Preparing schemas for external clients in WordPress 7.1
+
+`wp_prepare_json_schema_for_client( $schema, $profile )` prepares a
+WordPress-authored schema before it is returned to a browser, AI provider, or
+other standalone draft-04 consumer. The default profile is `draft-04`; use
+`rest-api` for the historical REST keyword subset. The helper recursively
+removes non-allowed keys, converts per-property `required: true` flags to a
+parent `required` array when appropriate, and represents an empty object default
+as a JSON object.
+
+This is an exposure/compatibility helper, not a validator. Adding a keyword via
+`wp_json_schema_allowed_keywords` does not make WordPress enforce it. Keep route
+validation within core's supported schema subset and never expose callable
+`validate_callback` or `sanitize_callback` values to clients.
 
 For object payloads, declare nested `properties` and normally set
 `additionalProperties => false` when the contract should reject unknown keys.

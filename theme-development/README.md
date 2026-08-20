@@ -1,10 +1,16 @@
 # theme-development
 
-Classic (non-FSE / non-block) PHP WordPress theme skills, verified against WP 7.0 — structure, template hierarchy, the Loop, menus, widgets, comments, media, the Customizer, assets, i18n, accessibility, security, and classic-theme WooCommerce integration.
+WordPress theme-development skills verified against WP 7.1: a focused block-theme/global-styles guide plus the complete classic PHP theme set for structure, template hierarchy, the Loop, menus, widgets, comments, media, the Customizer, assets, i18n, accessibility, security, and classic-theme WooCommerce integration.
 
-Use these when scaffolding or reviewing a classic PHP theme, converting static HTML into a theme, or deciding where theme files and hooks belong. These are explicitly **not** FSE / block-theme skills — they assume `style.css` + `index.php` + `functions.php`, not `theme.json` + `templates/*.html`.
+Use the block-theme skill for `theme.json` and editor/frontend style parity. The remaining skills are explicitly classic-theme skills: they assume `style.css` + `index.php` + `functions.php`, not block templates.
 
-## Skills
+## Block theme skills
+
+| Skill | Purpose |
+|---|---|
+| `block-theme-global-styles` | Build and audit WP 7.1 block-theme styling through `theme.json`, Global Styles, block supports, style variations, responsive presets, pseudo/custom states, gradients, minimum width, configurable editor viewports, and Style Engine output—without fragile editor-only CSS. |
+
+## Classic theme skills
 
 | Skill | Purpose |
 |---|---|
@@ -23,7 +29,7 @@ Use these when scaffolding or reviewing a classic PHP theme, converting static H
 
 ## WooCommerce (classic theme)
 
-Classic-theme WooCommerce integration — verified against WooCommerce 10.8.1 on WP 7.0, `php-min` 7.4. These cover the PHP-template / hook surface a classic theme touches to render the shop, **not** the WC Cart/Checkout Blocks or block-theme WooCommerce templates.
+Classic-theme WooCommerce integration — verified against WooCommerce 10.8.1 on WP 7.1, `php-min` 7.4. These cover the PHP-template / hook surface a classic theme touches to render the shop, **not** the WC Cart/Checkout Blocks or block-theme WooCommerce templates.
 
 | Skill | Purpose |
 |---|---|

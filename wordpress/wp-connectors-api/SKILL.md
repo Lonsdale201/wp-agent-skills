@@ -1,25 +1,27 @@
 ---
 name: wp-connectors-api
-description: Register and review WordPress 7.0 Connectors API integrations
+description: Register and review WordPress 7.1 Connectors API integrations
   for external services, especially AI providers and API-key backed services
-  shown under Settings > Connectors. Covers wp_connectors_init,
+  shown under the Settings / Connectors screen. Covers wp_connectors_init,
   WP_Connector_Registry, wp_get_connector, wp_get_connectors,
-  wp_is_connector_registered, api_key vs none authentication, env/constant
-  key priority, WP AI Client provider auto-discovery, connector settings,
+  wp_is_connector_registered, api_key, application_password, and none
+  authentication, credential source priority, masking and REST settings,
+  WP AI Client provider auto-discovery, connector settings,
   and safe metadata override patterns. Use when code mentions connectors,
-  Settings > Connectors, external provider setup, or connector API keys.
+  the Settings / Connectors screen, external provider setup, or connector API keys.
 metadata:
   wp-skills-author: "Soczó Kristóf"
   wp-skills-contact: "mailto:lonsdale201@hotmail.com"
   wp-skills-plugin: "wordpress"
-  wp-skills-plugin-version-tested: "7.0.1"
+  wp-skills-plugin-version-tested: "7.0 - 7.1"
+  wp-skills-wp-version-tested: "7.1"
   wp-skills-php-min: "7.4"
-  wp-skills-last-updated: "2026-07-10"
+  wp-skills-last-updated: "2026-08-20"
 ---
 
 # WordPress Connectors API
 
-WordPress 7.0 introduces the Connectors API: a registry for external-service connection metadata. Core uses it for the new Settings > Connectors screen and for AI provider credentials used by the WP AI Client. A connector is not the service client itself; it describes how the service is named, displayed, installed, authenticated, and discovered.
+WordPress 7.0 introduced the Connectors API; 7.1 adds Application Password credentials. Core uses the registry for Settings > Connectors and AI provider credentials. A connector is not the service client itself: it describes how the service is named, displayed, installed, authenticated, and discovered.
 
 ## When to use this skill
 
@@ -27,12 +29,12 @@ Trigger when ANY of the following is true:
 
 - Code calls `wp_get_connector()`, `wp_get_connectors()`, `wp_is_connector_registered()`, or hooks `wp_connectors_init`.
 - A plugin needs to appear on Settings > Connectors or expose provider credentials.
-- The task mentions WordPress 7.0 connectors, AI provider setup, API key settings, `connectors_ai_*_api_key`, `WP_Connector_Registry`, or `@wordpress/connectors`.
-- Reviewing code that stores API keys for Anthropic, Google, OpenAI, Akismet, or another external provider.
+- The task mentions WordPress connectors, AI provider setup, API keys, Application Password credentials, `WP_Connector_Registry`, or `@wordpress/connectors`.
+- Reviewing code that stores API keys or `username` / `password` credential objects for an external service.
 
 ## Availability
 
-The Connectors API is core-only in WordPress 7.0+. Public lookup functions are available after `init`, because core initializes the registry on `init` priority 15.
+The Connectors API is core-only in WordPress 7.0+. Public lookup functions are available after `init`, because core initializes the registry on `init` priority 15. Feature-detect `application_password` support when retaining WordPress 7.0 compatibility.
 
 AI provider connectors are registered only when `wp_supports_ai()` is true. `wp_supports_ai()` can be disabled by `WP_AI_SUPPORT` or the `wp_supports_ai` filter, so AI connectors must be feature-detected.
 
@@ -88,7 +90,7 @@ Required:
 
 - `name`: display name.
 - `type`: connector type, e.g. `ai_provider`, `spam_filtering`, `content_sync`.
-- `authentication.method`: `api_key` or `none`.
+- `authentication.method`: `api_key`, `application_password` (WordPress 7.1+), or `none`.
 
 Optional but important:
 
@@ -99,7 +101,7 @@ Optional but important:
 - `authentication.constant_name` / `env_var_name`: non-database secret sources.
 - `plugin.file` / `plugin.is_active`: install/activate status for UI.
 
-If `api_key` is used and `setting_name` is omitted, core generates `connectors_{$type}_{$id}_api_key` with hyphens normalized to underscores.
+If a credential method is used and `setting_name` is omitted, core generates `connectors_{$type}_{$id}_{$method}` with hyphens normalized to underscores.
 
 ## API key handling
 
@@ -113,7 +115,39 @@ AI providers use `{PROVIDER_ID}_API_KEY`, for example `OPENAI_API_KEY`. Non-AI c
 
 Database API keys are masked in REST/UI responses but are not encrypted in core 7.0. Prefer env vars or constants for production secrets. Never log connector settings or include raw key values in debug output.
 
-Core registers default connector settings on `init` priority 20 when the connector has `api_key` authentication and its plugin is active. Settings are exposed through `/wp/v2/settings`; core masks values in REST responses and validates AI provider keys on update.
+Core registers default connector settings on `init` priority 20 when the connector uses a credential method and its plugin is active. Settings are exposed through `/wp/v2/settings`; core masks values in REST responses and validates AI provider API keys on update.
+
+## Application Password credentials in WordPress 7.1
+
+Use `application_password` for an external WordPress-style HTTP Basic pair, not
+for an API key and not for the current site's Application Password management
+UI:
+
+```php
+'authentication' => array(
+    'method'          => 'application_password',
+    'credentials_url' => 'https://remote.example.com/wp-admin/profile.php',
+    'setting_name'    => 'myplugin_remote_credentials',
+    'constant_name'   => 'MYPLUGIN_REMOTE_CREDENTIALS',
+    'env_var_name'    => 'MYPLUGIN_REMOTE_CREDENTIALS',
+),
+```
+
+Environment and constant values use one `username:password` string, split on
+the first colon, so the password may contain colons. Core resolves sources in
+environment, constant, database order. A malformed non-empty environment or
+constant value emits `_doing_it_wrong()` and falls through to the next source.
+
+The database setting is an object with `username` and `password`. Core exposes
+its schema through `/wp/v2/settings` and masks a non-empty password as exactly
+16 bullet characters in responses. Resubmitting that mask preserves the stored
+password; an explicit empty string clears the field. An empty username clears
+both fields. Partial updates preserve omitted stored fields.
+
+Application Password values are masked but not verified against the remote
+service by core. The integration must test credentials server-side, use HTTPS,
+avoid logging Authorization headers, and provide a deterministic disconnected
+state. Database values remain ordinary options, not encrypted secrets.
 
 ## AI providers
 
@@ -143,7 +177,7 @@ Always check `is_registered()` first; `unregister()` on a missing connector trig
 
 Core has an `@wordpress/connectors` script module, but its registration APIs are currently exposed as experimental/private internals. Do not build stable plugin behavior around those private exports unless you are working on core or a tightly pinned internal build.
 
-For public plugin integrations, register connector metadata in PHP and use ordinary Settings API or plugin UI for custom flows that core does not support yet. In 7.0, built-in UI support focuses on `api_key` and `none`.
+For public plugin integrations, register connector metadata in PHP and use ordinary Settings API or plugin UI for custom flows that core does not support. WordPress 7.1's public registry supports `api_key`, `application_password`, and `none`; OAuth and multi-step credential protocols still need plugin-owned flows.
 
 ## Critical rules
 
@@ -152,6 +186,7 @@ For public plugin integrations, register connector metadata in PHP and use ordin
 - **Feature-detect AI support and connector existence.**
 - **Do not duplicate WP AI Client provider connectors.** Let auto-discovery create them.
 - **Prefer env vars or constants for production API keys.**
+- **Treat Application Password pairs as secrets.** Use HTTPS and server-side resolution; never expose them to browser code.
 - **Do not expose raw keys through REST, logs, inline JS, or admin notices.**
 - **A configured connector is site-wide infrastructure, not automatic consent
   for every plugin feature.** Require explicit feature/admin intent before
@@ -187,11 +222,12 @@ wp_add_inline_script( 'myplugin-admin', 'window.apiKey = ' . wp_json_encode( get
 ## What this skill does NOT cover
 
 - Implementing a full AI provider plugin for the PHP AI Client SDK.
-- Custom OAuth or multi-step credential flows; WP 7.0 core UI is primarily `api_key` / `none`.
+- Custom OAuth or multi-step credential flows.
 - Building private core Connectors screen extensions.
 
 ## References
 
 - Connectors API dev note: <https://make.wordpress.org/core/2026/03/18/introducing-the-connectors-api-in-wordpress-7-0/>
 - WordPress 7.0 Field Guide: <https://make.wordpress.org/core/2026/05/14/wordpress-7-0-field-guide/>
+- WordPress 7.1 Field Guide: <https://make.wordpress.org/core/2026/08/05/wordpress-7-1-field-guide/>
 - Core files: `wp-includes/connectors.php`, `wp-includes/class-wp-connector-registry.php`, `wp-admin/options-connectors.php`.

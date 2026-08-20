@@ -1,8 +1,7 @@
 <!--
-For NEW skills: please use the "Submit a skill" issue form instead.
-The bot will create the PR for you with the right structure.
 This template is for direct PRs that EDIT existing skills (typo, link
 fix, version bump, refactor) or change repo-level files.
+New skills are written by the maintainer — see CONTRIBUTING.md.
 -->
 
 ## Summary

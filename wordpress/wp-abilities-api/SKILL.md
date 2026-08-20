@@ -6,16 +6,18 @@ description: >-
   optional REST exposure, client-side abilities, and AI/MCP-friendly
   discovery. Covers categories, wp_register_ability, WP_Ability::execute,
   REST run endpoints, @wordpress/abilities, @wordpress/core-abilities,
-  meta.show_in_rest, annotations, and Ability vs REST route vs custom hook
+  meta.public/show_in_rest, filtered discovery, execution lifecycle hooks,
+  client-safe schemas, annotations, and Ability vs REST route vs custom hook
   decisions. Use when exposing plugin functionality to agents, admin JS,
   external tools, WP AI Client workflows, or reviewing AI integration code.
 metadata:
   wp-skills-author: "Soczó Kristóf"
   wp-skills-contact: "mailto:lonsdale201@hotmail.com"
   wp-skills-plugin: "wordpress"
-  wp-skills-plugin-version-tested: "6.9 - 7.0.1"
+  wp-skills-plugin-version-tested: "6.9 - 7.1"
+  wp-skills-wp-version-tested: "7.1"
   wp-skills-php-min: "7.4"
-  wp-skills-last-updated: "2026-07-10"
+  wp-skills-last-updated: "2026-08-20"
 ---
 
 # WordPress Abilities API
@@ -24,7 +26,7 @@ A standardized registry for plugin / theme / core functionality, designed primar
 
 Pre-Abilities, the same functionality was scattered across `do_action`, `apply_filters`, custom REST routes, public PHP functions, and ad-hoc plugin APIs (each with its own conventions). The Abilities API consolidates that into one machine-readable surface.
 
-This skill is grounded in WordPress 7.0 core behavior. Server-side Abilities shipped in WordPress 6.9; WordPress 7.0 adds the client-side `@wordpress/abilities` package, `@wordpress/core-abilities` bridge, WP AI Client integration, and REST schema cleanup for client validation. If a handbook page and installed core disagree, verify against the target site's `wp-includes/abilities-api`, REST controller classes, and `wp-includes/js/dist/script-modules/abilities`.
+This skill is grounded in WordPress 7.1 core behavior. Server-side Abilities shipped in WordPress 6.9; WordPress 7.0 added the client packages and WP AI Client integration. WordPress 7.1 adds unified public exposure metadata, filtered discovery, a complete execution-filter lifecycle, client-safe JSON Schema preparation, REST collection filters/pagination, and schema-aware run-input coercion. Verify version-sensitive behavior against `wp-includes/abilities-api`, the `WP_REST_Abilities_V1_*` controllers, and the abilities script modules.
 
 ## When to use this skill
 
@@ -42,7 +44,7 @@ Trigger when ANY of the following is true:
 
 Three installation paths, depending on WP version:
 
-1. **WordPress 7.0+** - server-side PHP API plus client-side `@wordpress/abilities` and `@wordpress/core-abilities` script modules ship in core.
+1. **WordPress 7.0+** - server-side PHP API plus client-side `@wordpress/abilities` and `@wordpress/core-abilities` script modules ship in core. Feature-detect 7.1 additions before using them on 7.0.
 2. **WordPress 6.9.x** - server-side PHP API, registry, REST exposure, and core integration ship in core. Feature-detect the JS packages before relying on them.
 3. **WordPress < 6.9 - Composer package** for plugins that bundle their own dependencies:
    ```bash
@@ -102,7 +104,7 @@ function myplugin_register_abilities(): void {
             'execute_callback'    => 'myplugin_get_site_info',
             'permission_callback' => static fn () => current_user_can( 'manage_options' ),
             'meta' => array(
-                'show_in_rest' => true,
+                'public' => true,
             ),
         )
     );
@@ -118,7 +120,7 @@ function myplugin_get_site_info(): array {
 
 ## Registration arguments — what's required
 
-WordPress 6.9+ and 7.0 core validate these arguments in `WP_Ability::prepare_properties()` and `WP_Abilities_Registry::register()`:
+WordPress 6.9+ validates these arguments in `WP_Ability::prepare_properties()` and `WP_Abilities_Registry::register()`:
 
 | Field | Required | Type | Notes |
 |---|---|---|---|
@@ -129,7 +131,7 @@ WordPress 6.9+ and 7.0 core validate these arguments in `WP_Ability::prepare_pro
 | `output_schema` | no in core, yes in docs/review | array | Core allows omission and then skips output validation. Provide it anyway for contracts, REST discovery, and agents. |
 | `execute_callback` | yes | callable | The PHP function that runs. |
 | `permission_callback` | yes | callable | Returns `true`, `false`, or `WP_Error`. Enforced by `WP_Ability::execute()` and by REST run permission checks. |
-| `meta` | optional | array | Additional metadata. `'show_in_rest' => true` exposes the ability via the REST endpoints. |
+| `meta` | optional | array | Annotations and exposure flags. In 7.1, `public` seeds channel defaults; explicit `show_in_rest` wins for REST. |
 
 The `description` is the most important field for AI consumers — it's what an agent reads to decide whether the Ability is the right tool. Write it the way you'd describe the function to a smart colleague reviewing the API.
 
@@ -144,7 +146,7 @@ Ability identifier: `namespace/ability-name` (slash-separated, kebab-case on bot
 
 Pick names a non-developer could read aloud — `myplugin/cancel-subscription` is better than `myplugin/cancel-sub-v2`. Treat the identifier as a public API contract: once an Ability is shipped and an AI agent or external client depends on it, renaming is a breaking change.
 
-Server-side PHP registration in WP 7.0 accepts exactly two slash-separated segments (`myplugin/do-thing`). The client-side `@wordpress/abilities` registry accepts 2-4 segments, but use the two-segment form for abilities that need to round-trip through PHP, REST, or the WP AI Client.
+Server-side PHP registration accepts exactly two slash-separated segments (`myplugin/do-thing`). The client-side `@wordpress/abilities` registry accepts 2-4 segments, but use the two-segment form for abilities that need to round-trip through PHP, REST, or the WP AI Client.
 
 ## Permission callback
 
@@ -164,7 +166,7 @@ For object-level abilities (operate on a specific post / user / order), pass the
 },
 ```
 
-Keep permission callbacks cheap and side-effect-free. In the REST run flow, WordPress validates input and calls `check_permissions()` in the REST `permission_callback`, then `WP_Ability::execute()` validates and checks permissions again before running the ability. Do not put logging, billing, remote API calls, or state changes in `permission_callback`.
+Keep normalization, validation, and permission filters/callbacks cheap, deterministic, and side-effect-free. In the REST run flow, WordPress can normalize, validate, and check permissions before dispatch, then `WP_Ability::execute()` repeats the execution pipeline. Do not put billing, remote calls, writes, or one-shot state in these stages.
 
 ## Executing an ability from PHP
 
@@ -178,10 +180,10 @@ if ( $ability instanceof WP_Ability ) {
 For an ability with a non-empty `input_schema`, pass the matching normalized
 input array to `execute( $input )`.
 
-Helpers documented in the announcement:
+Public lookup helpers:
 
 - `wp_get_ability( string $id ): ?WP_Ability`
-- `wp_get_abilities(): array<string, WP_Ability>`
+- `wp_get_abilities( array $args = array() ): array<string, WP_Ability>`
 - `wp_has_ability( string $id ): bool`
 
 For inspection / debugging during development, use `wp shell`:
@@ -196,10 +198,18 @@ wp> wp_get_ability( 'myplugin/site-info' );
 
 ## REST and JavaScript exposure
 
-Set `meta.show_in_rest = true` for server abilities that external tools may
-discover/run. Core exposes list/get/run routes, enforces the ability permission
-callback, selects GET/POST/DELETE from annotations, and strips internal schema
-callbacks from REST responses. Public constraints belong in JSON Schema.
+On WordPress 7.1, set `meta.public = true` when the operation is intended for
+client channels. It defaults `show_in_rest` to true; an explicit
+`show_in_rest => false` overrides it. Set only `show_in_rest => true` when REST
+exposure is intended but broader public-channel intent is not. Neither flag
+grants execution permission.
+
+Core exposes list/get/run routes, enforces the ability permission callback,
+selects GET/POST/DELETE from annotations, and prepares schemas with
+`wp_prepare_json_schema_for_client()`. List requests support bounded pagination,
+category, namespace, and declared meta filters. Public constraints belong in
+JSON Schema; PHP callbacks and WordPress-only keywords are removed from client
+schemas. Read `reference.md` for route, lifecycle, and filtering details.
 
 Use `@wordpress/core-abilities` to bridge server abilities into JavaScript and
 await its exported `ready` promise before immediate execution. Use
@@ -209,7 +219,7 @@ the verified route shapes, module bootstrap, and complete client examples.
 
 ## WP AI Client integration
 
-WordPress 7.0 can expose selected server-side abilities as AI model function declarations:
+WordPress 7.0+ can expose selected server-side abilities as AI model function declarations:
 
 ```php
 $result = wp_ai_client_prompt( 'Summarize current site diagnostics.' )
@@ -221,7 +231,7 @@ For AI-driven ability execution, instantiate `WP_AI_Client_Ability_Function_Reso
 
 ## MCP adapter — bridging to AI agents
 
-The WordPress team maintains a separate **MCP adapter** that bridges the Abilities registry to the [Model Context Protocol](https://modelcontextprotocol.io/) — the protocol Claude, ChatGPT, and other AI agent runtimes use to discover and invoke external tools. With the adapter installed, every registered Ability becomes an MCP tool the AI can call, gated by the same `permission_callback`.
+The WordPress team maintains a separate **MCP adapter** that can bridge eligible Abilities to the [Model Context Protocol](https://modelcontextprotocol.io/). Exposure is adapter configuration and metadata dependent; do not assume every registered or merely `public` Ability becomes an MCP tool. The ability's permission callback remains mandatory.
 
 Architectural details of the MCP adapter were not included in the Nov 2025 announcement (deferred to a follow-up post). For now, the practical takeaway: registering a clean, well-described Ability also makes it AI-agent-ready without any extra code on your side, IF the site administrator installs the MCP adapter.
 
@@ -247,9 +257,10 @@ in-process extension point.
 - **Identifier `namespace/ability-name` is a public contract** — treat it like a versioned API.
 - **Always provide a `permission_callback`**; core requires it. Use object-aware capability checks for object-scoped abilities.
 - **Provide schemas even when core does not force them.** If the ability accepts input, `input_schema` is required in practice; without it, provided input is rejected. `output_schema` is essential for documentation and agents.
-- **Set `meta.show_in_rest = true`** if external tools should call the ability. Without it, only PHP-side `->execute()` works.
+- **Use `meta.public` and channel flags deliberately on 7.1.** `public` seeds `show_in_rest`; explicit `show_in_rest` wins. Exposure never replaces authorization.
 - **Use `@wordpress/core-abilities` for server abilities in JS.** Use `@wordpress/abilities` alone only for client-only abilities.
-- **Do not expose internal REST schema callbacks to clients.** WP 7.0 strips `sanitize_callback`, `validate_callback`, and `arg_options` from REST ability schemas.
+- **Prepare schemas before sending them to non-WordPress clients.** Use `wp_prepare_json_schema_for_client()`; allowing a keyword does not add server validation for it.
+- **Treat 7.1 lifecycle filters as trusted policy code.** `wp_pre_execute_ability` bypasses normalization, validation, permission, callback, output validation, and before/after actions when it short-circuits.
 - **Allowlist abilities for WP AI Client tool use.** Do not pass all registered abilities to a prompt.
 - **Description is the AI's tool selector.** Write it for a reader who doesn't know your plugin.
 - **For pre-6.9 sites, use the Composer package or feature plugin.** Don't reimplement the registry yourself.
@@ -274,13 +285,14 @@ tool allowlists. Corrected examples are in `reference.md`.
 - Advanced `@wordpress/abilities` store internals beyond registration, querying, execution, and unregistering.
 - Multisite-network considerations for Abilities (not addressed in the Nov 2025 announcement; verify before relying on per-site vs network registration semantics).
 - WP-CLI command coverage beyond `wp shell` inspection (no dedicated CLI commands documented yet).
-- Building a full hook extension layer around abilities. Core provides `wp_abilities_api_categories_init`, `wp_abilities_api_init`, `wp_before_execute_ability`, `wp_after_execute_ability`, `wp_register_ability_category_args`, and `wp_register_ability_args`.
+- Building a full hook extension layer around abilities. The verified WordPress 7.1 execution lifecycle is summarized in `reference.md`.
 
 ## References
 
 - [Abilities API documentation](https://developer.wordpress.org/apis/abilities-api/) — primary authoritative source.
 - [Introducing the Abilities API (Nov 2025)](https://developer.wordpress.org/news/2025/11/introducing-the-wordpress-abilities-api/) — announcement post with concrete examples.
 - [Client-Side Abilities API in WordPress 7.0](https://make.wordpress.org/core/2026/03/24/client-side-abilities-api-in-wordpress-7-0/).
+- [Abilities API improvements in WordPress 7.1](https://make.wordpress.org/core/2026/07/31/abilities-api-improvements-in-wordpress-7-1/).
 - [`wordpress/abilities-api` Composer package](https://packagist.org/packages/wordpress/abilities-api).
 - [WordPress/abilities-api on GitHub](https://github.com/WordPress/abilities-api) — active feature-plugin repository (the older archived repo is NOT canonical).
 - [Make WordPress Core AI team blog](https://make.wordpress.org/ai/) — ongoing development discussion.

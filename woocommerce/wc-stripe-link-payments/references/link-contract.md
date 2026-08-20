@@ -1,6 +1,6 @@
 # Stripe Link integration contract
 
-Version scope: WooCommerce Stripe Gateway 10.8.4 with WooCommerce 10.9.4. Use this reference when a custom integration lists, stores, selects, deletes, defaults, or migrates Link methods, or changes a subscription to Link.
+Version scope: WooCommerce Stripe Gateway 10.9.0 with WooCommerce 11.0.1. Use this reference when a custom integration lists, stores, selects, deletes, defaults, or migrates Link methods, or changes a subscription to Link.
 
 ## Contents
 
@@ -25,7 +25,7 @@ Version scope: WooCommerce Stripe Gateway 10.8.4 with WooCommerce 10.9.4. Use th
 | Woo token type | `link` | `CC` |
 | Woo gateway ID | `stripe` | `stripe` |
 | Duplicate key | Link email | Stripe card fingerprint |
-| Display | `Stripe Link (email)` | ordinary card display in 10.8.4 |
+| Display | `Stripe Link (email)` | ordinary card display in 10.9.0 |
 
 The local Link class extends base `WC_Payment_Token`, not `WC_Payment_Token_CC`. Its extra data contains only `email`. It has no card brand, last4, expiry, or fingerprint contract.
 
@@ -33,7 +33,7 @@ The plugin maps lowercase token type `link` explicitly through `woocommerce_paym
 
 ### `payment_method_type` accessor caveat
 
-The Link class defines `set_payment_method_type()` and `get_payment_method_type()`, and creation code calls the setter. However, `payment_method_type` is absent from the class's `extra_data`, while `WC_Data::set_prop()` ignores undeclared properties. Runtime verification on 10.8.4 therefore yields:
+The Link class defines `set_payment_method_type()` and `get_payment_method_type()`, and creation code calls the setter. However, `payment_method_type` is absent from the class's `extra_data`, while `WC_Data::set_prop()` ignores undeclared properties. Runtime verification on 10.9.0 therefore yields:
 
 ```text
 get_type()                => "link"
@@ -92,11 +92,11 @@ It does not compare PaymentMethod IDs. During remote synchronization, if a match
 2. stop when the initial local token count reaches `posts_per_page`;
 3. categorize stored and deprecated local tokens by provider ID;
 4. fetch all remote Stripe Customer PaymentMethods, cached under an all-methods transient;
-5. filter to active reusable types, or all reusable types under Optimized Checkout;
+5. filter to active reusable types, or inspect all reusable types under Optimized Checkout;
 6. preserve matching `pm_...` rows;
 7. create missing type-specific Woo tokens;
 8. collapse duplicates using the type-specific comparator;
-9. delete local rows not represented in the active remote result.
+9. delete local rows not represented in the active remote result, except that Optimized Checkout preserves remotely present rows for disabled or temporarily unavailable methods while excluding them from the returned list.
 
 The cleanup temporarily removes the normal remote-detach deletion action. Thus local reconciliation cleanup does not detach the PaymentMethod from Stripe.
 
@@ -105,13 +105,19 @@ Practical consequences:
 - `get_customer_tokens()` can perform network I/O and local writes;
 - CLI/cron without a logged-in user sees local state only;
 - transient state can delay remote changes until cleared by gateway operations/expiry;
-- disabled Link is outside the active type set, so its local row can be removed and later recreated if Link is re-enabled;
+- outside Optimized Checkout, disabled Link can be outside the active type set, so its local row can be removed and later recreated; under Optimized Checkout the remotely present row is preserved but hidden from the result;
 - local token IDs are projections, not permanent external identifiers;
 - repeated listing in a loop risks expensive provider synchronization.
 
 Use `WC_Payment_Tokens::get_tokens()` with explicit arguments when the task intentionally needs raw local rows and must avoid the customer-token filter. Use the gateway's normal UI/service when reconciliation is desired; direct Stripe internal service calls require version pinning.
 
 ## Checkout and intent behavior
+
+### Dedicated Link appearance settings in 10.9
+
+Express Link now uses `link_button_locations` and `link_button_size`, separate from Apple Pay/Google Pay's `express_checkout_button_locations` and `express_checkout_button_size`. On upgrade, the migration initializes a missing Link location setting from the prior Express Checkout locations. The helper routes `get_button_locations( 'link' )` to the Link option and `get_link_button_height()` to Link's size.
+
+Do not assume changing the generic Express Checkout appearance changes Link. If a version-pinned integration reads these internal helpers, test product, cart, checkout, and WCS change-payment locations. Stripe 10.9 also moved Express Checkout shipping and variable-product cart mutations to Woo Store API calls, so custom field/cart extensions must use Woo extension points rather than legacy Stripe AJAX interception.
 
 ### Standard Payment Element
 

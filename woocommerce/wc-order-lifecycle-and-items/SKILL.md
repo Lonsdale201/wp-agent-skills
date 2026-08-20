@@ -12,9 +12,9 @@ metadata:
   wp-skills-author: "Soczó Kristóf"
   wp-skills-contact: "mailto:lonsdale201@hotmail.com"
   wp-skills-plugin: "woocommerce"
-  wp-skills-plugin-version-tested: "10.9.4"
+  wp-skills-plugin-version-tested: "11.0.0"
   wp-skills-php-min: "7.4"
-  wp-skills-last-updated: "2026-07-15"
+  wp-skills-last-updated: "2026-08-05"
 ---
 
 # WooCommerce order lifecycle and items
@@ -67,6 +67,8 @@ if ( $order instanceof WC_Order && $provider_status === 'captured' ) {
 ```
 
 Use `update_status( 'on-hold' )`, `update_status( 'failed' )`, or `update_status( 'cancelled' )` for non-success states.
+
+Custom stored order-status keys have a 20-character schema limit, and WooCommerce's save guard measures the full stored key in bytes including the `wc-` prefix. WooCommerce 11.0 emits a doing-it-wrong notice when a CPT-backed order would save a longer status, but the schema limit still makes that value unsafe across HPOS/legacy modes. Keep a custom unprefixed slug at 17 ASCII characters or fewer, register `wc-<slug>`, and test persistence—a UI label may be arbitrarily longer.
 
 ## Status hook ordering
 
@@ -164,6 +166,28 @@ if ( $order instanceof WC_Order && $product instanceof WC_Product ) {
 
 `add_item()` attaches the item to the order object and assigns a temporary item key until save. Recalculate totals after changing items, fees, shipping, discounts, or taxes.
 
+## Remove all items: WooCommerce 11.0 save boundary
+
+`$order->remove_order_items( $type )` now clears matching items from the in-memory order immediately but defers the database deletion until the next `$order->save()`. This makes checkout's resume-order rebuild atomic: if rebuilding throws before save, the persisted items remain.
+
+Hook timing is therefore split:
+
+| Hook | Timing in WooCommerce 11.0 |
+|---|---|
+| `woocommerce_remove_order_items` | Synchronous, before the in-memory clear is queued |
+| `woocommerce_removed_order_items` | During `save_items()`, after the database delete succeeds |
+
+```php
+$order->remove_order_items( 'line_item' );
+
+// The object now reports no product lines, but persisted rows are not deleted yet.
+$order->save();
+
+// The post-hook has now fired and persisted rows are gone.
+```
+
+Do not pair the pre/post hooks as if they bracket one synchronous call. Save before querying persisted state from another process, and expect the post-hook to fire from the later save stack. Pass a valid item-type string or `null` for all item types; WooCommerce 11.0 rejects other PHP types with a doing-it-wrong notice and leaves state unchanged.
+
 ## Edit existing line items
 
 ```php
@@ -191,12 +215,16 @@ In WooCommerce 10.9+, `$item->get_order()` returns the item's already-associated
 WooCommerce already wires stock reduction and restoration to order lifecycle hooks:
 
 - `wc_maybe_reduce_stock_levels()` runs on `woocommerce_payment_complete`, `woocommerce_order_status_completed`, `woocommerce_order_status_processing`, and `woocommerce_order_status_on-hold`.
-- `wc_maybe_increase_stock_levels()` runs on `woocommerce_order_status_cancelled` and `woocommerce_order_status_pending`.
+- `wc_maybe_increase_stock_levels()` runs on `woocommerce_order_status_cancelled`, `woocommerce_order_status_pending`, and—new in WooCommerce 11.0—`woocommerce_order_status_failed`. The failed transition now restores inventory previously reduced while an asynchronous payment order was on hold.
 - Each line item stores `_reduced_stock` to avoid reducing stock twice.
 - `woocommerce_order_item_quantity` filters the quantity used for stock reduction.
 - `woocommerce_reduce_order_item_stock`, `woocommerce_reduce_order_stock`, and `woocommerce_restore_order_stock` let integrations observe changes.
 
 Do not call `wc_reduce_stock_levels()` blindly in payment/webhook code. In the normal paid flow, `payment_complete()` and the status hooks already cover it. If you implement custom stock behavior, respect `_reduced_stock` and make the operation idempotent.
+
+Checkout stock reservation is separate from paid-order stock reduction. Prefer `wc_reserve_stock_for_order( $order )`; it passes the store's `woocommerce_hold_stock_minutes` setting. If version-pinned code directly calls internal `ReserveStock::reserve_stock_for_order()`, WooCommerce 11.0 defaults an omitted duration to 60 minutes. Pass the intended minutes explicitly instead of silently inheriting that fallback.
+
+If an extension deliberately replaces WooCommerce's default `intval` callback on `woocommerce_stock_amount` with `floatval` for fractional inventory, WooCommerce 11.0 preserves positive quantities below `1` instead of casting them to zero during product validation. Merely adding `floatval` after the still-active `intval` callback is too late—the fraction is already lost. Keep quantity handling numeric and consistent across cart, order-item, stock, REST, and reporting code; never mix a fractional stock policy with integer-only downstream assumptions.
 
 ## HPOS-safe order data
 
@@ -224,6 +252,7 @@ Do not use `get_post_meta()`, `update_post_meta()`, `WP_Query` over `shop_order`
   insert was a duplicate/no-op.
 - Instantiating `WC_Order_Item` instead of `WC_Order_Item_Product`, `WC_Order_Item_Fee`, `WC_Order_Item_Shipping`, `WC_Order_Item_Coupon`, or `WC_Order_Item_Tax`.
 - Editing items and forgetting `calculate_totals()` and `save()`.
+- Expecting `woocommerce_removed_order_items` to fire synchronously from `remove_order_items()` in WooCommerce 11.0.
 - Calling stock reduction manually after WooCommerce already did it.
 - Saving order data through post meta instead of CRUD APIs.
 

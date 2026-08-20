@@ -1,13 +1,13 @@
 ---
 name: wc-variations-pricing-filters
-description: Customize WooCommerce variation prices without stale or cross-user parent price caches. Covers direct variation getter filters, parent aggregation filters, the `woocommerce_get_variation_prices_hash` cache contract, bounded pricing contexts, role checks, tax/display separation, cache invalidation, and when stored CRUD prices are preferable. Use for B2B, role, segment, campaign, or context-dependent variation pricing.
+description: Customize WooCommerce variation prices without stale or cross-user parent price caches. Covers direct variation getter filters, parent aggregation filters, `woocommerce_get_variation_prices_hash`, WooCommerce 11.0 tax-influence cache partitioning, bounded pricing contexts, role checks, cache invalidation, and when stored CRUD prices are preferable. Use for B2B, role, segment, campaign, tax/location, or context-dependent variation pricing.
 metadata:
   wp-skills-author: "Soczó Kristóf"
   wp-skills-contact: "mailto:lonsdale201@hotmail.com"
   wp-skills-plugin: "woocommerce"
-  wp-skills-plugin-version-tested: "10.9.4"
+  wp-skills-plugin-version-tested: "11.0.0"
   wp-skills-php-min: "7.4"
-  wp-skills-last-updated: "2026-07-10"
+  wp-skills-last-updated: "2026-08-05"
 ---
 
 # WooCommerce variation pricing filters
@@ -43,6 +43,21 @@ Each receives `( $price, WC_Product_Variation $variation, WC_Product_Variable $p
 ### Display/tax edge
 
 `get_variation_prices( false )` is raw business data. `get_variation_prices( true )` adapts for shop tax display. Do not use display-adjusted values for authorization, thresholds, or stored calculations.
+
+WooCommerce 11.0 adds `woocommerce_variable_product_taxes_influence_price`. Core uses taxability and configured tax rates to decide whether opposite display-tax variants need separate cache entries. If an extension makes displayed prices differ by country/tax context even where WooCommerce has no configured rates, force the safe split:
+
+```php
+add_filter(
+    'woocommerce_variable_product_taxes_influence_price',
+    static function ( bool $influences, WC_Product $product ): bool {
+        return $influences || myplugin_has_location_price_adjustment( $product->get_id() );
+    },
+    10,
+    2
+);
+```
+
+Return `true` only when the two variants can differ. This filter complements, and does not replace, adding every extension-owned pricing dimension to `woocommerce_get_variation_prices_hash`.
 
 ## Role-based example
 

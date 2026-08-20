@@ -14,9 +14,10 @@ metadata:
   wp-skills-author: "Soczo Kristof"
   wp-skills-contact: "mailto:lonsdale201@hotmail.com"
   wp-skills-plugin: "wordpress"
-  wp-skills-plugin-version-tested: "6.3 - 6.9"
+  wp-skills-plugin-version-tested: "6.3 - 7.1"
+  wp-skills-wp-version-tested: "7.1"
   wp-skills-php-min: "7.4"
-  wp-skills-last-updated: "2026-04-29"
+  wp-skills-last-updated: "2026-08-20"
 ---
 
 # WordPress plugin: native presenters

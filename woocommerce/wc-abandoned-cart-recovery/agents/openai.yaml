@@ -1,0 +1,4 @@
+interface:
+  display_name: "WooCommerce Abandoned Cart Recovery"
+  short_description: "Extend Woo 11 abandoned-cart recovery safely."
+  default_prompt: "Use $wc-abandoned-cart-recovery to integrate with or audit WooCommerce abandoned-cart recovery emails."

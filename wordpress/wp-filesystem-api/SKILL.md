@@ -2,9 +2,9 @@
 name: wp-filesystem-api
 description: Read, write, copy, delete, chmod files from a WordPress
   plugin via the `WP_Filesystem` abstraction instead of bare PHP. Covers
-  the bootstrap (`require_once ABSPATH . 'wp-admin/includes/file.php'`
-  → `request_filesystem_credentials()` → `WP_Filesystem()` →
-  `$wp_filesystem->*` methods), the four transports (direct, ssh2,
+  the bootstrap sequence from loading `wp-admin/includes/file.php` through
+  `request_filesystem_credentials()` and `WP_Filesystem()` to filesystem
+  method calls, the four transports (direct, ssh2,
   ftpext, ftpsockets) selected by `get_filesystem_method()`, the
   `FS_METHOD` / `FS_CHMOD_FILE` / `FS_CHMOD_DIR` constants, the
   credentials form flow, and when to use `wp_handle_upload()` /
@@ -16,9 +16,10 @@ metadata:
   wp-skills-author: "Soczó Kristóf"
   wp-skills-contact: "mailto:lonsdale201@hotmail.com"
   wp-skills-plugin: "wordpress"
-  wp-skills-plugin-version-tested: "6.0 - 7.0.1"
+  wp-skills-plugin-version-tested: "6.0 - 7.1"
+  wp-skills-wp-version-tested: "7.1"
   wp-skills-php-min: "7.4"
-  wp-skills-last-updated: "2026-07-10"
+  wp-skills-last-updated: "2026-08-20"
 ---
 
 # WordPress Filesystem API
@@ -69,7 +70,7 @@ if ( ! $wp_filesystem->put_contents(
 }
 ```
 
-The `$context` arg is "a directory you're about to write to" — `wp-admin/includes/file.php:2364`. It controls writability detection (`get_filesystem_method` writes a temp file there to confirm permissions) and determines whether `direct` is safe.
+The `$context` arg is a directory you are about to write to. It controls writability detection (`get_filesystem_method` writes a temp file there to confirm permissions) and determines whether `direct` is safe.
 
 `$context` is a local WordPress path used for method detection. Filesystem
 methods need paths in the selected transport's namespace. With `direct` they
@@ -79,7 +80,7 @@ base mappings such as `$wp_filesystem->wp_content_dir()`,
 
 ## What `request_filesystem_credentials()` returns
 
-Verified at `wp-admin/includes/file.php:2364-2393`:
+Verified in `request_filesystem_credentials()` in `wp-admin/includes/file.php`:
 
 | Return | Meaning | What you do |
 |---|---|---|
@@ -91,7 +92,7 @@ The function ALSO ECHOES the form when no creds are present and `$_POST` is empt
 
 ## The four transports
 
-`get_filesystem_method()` (`file.php:2260`) picks in this order:
+`get_filesystem_method()` picks in this order:
 
 | Priority | Method | Condition |
 |---|---|---|
@@ -107,7 +108,7 @@ after checking ownership and write permissions:
 define( 'FS_METHOD', 'direct' ); // Operator-controlled; never set by a plugin.
 ```
 
-Defaults set on first successful `WP_Filesystem()` call (`file.php:2208-2228`):
+Defaults established by `WP_Filesystem()` initialization:
 
 - `FS_CONNECT_TIMEOUT = 30`
 - `FS_TIMEOUT = 30`
@@ -150,59 +151,45 @@ $wp_filesystem->rmdir( $path, $recursive = false );
 
 `put_contents` returns `true` on success — always check.
 
+## WordPress 7.1 transport hardening
+
+WordPress 7.1 tightened the concrete filesystem transports. This mostly turns
+warnings, invalid coercions, and ambiguous results into explicit failure
+values, so callers that already check every result continue to work:
+
+- path mapping helpers such as `abspath()`, `wp_content_dir()`,
+  `wp_plugins_dir()`, and `wp_themes_dir()` are explicitly `string|false`;
+- `get_contents_array()` returns `string[]|false`, including on disconnected
+  FTP transports;
+- FTP/SSH constructors accept missing options defensively and connection calls
+  stop on constructor configuration errors;
+- disconnected FTP/SSH methods and failed directory listings return `false`
+  more consistently;
+- owner/group may be a name, a positive numeric ID, or `false`;
+- recursive `chgrp()` / `chown()` in the direct transport now traverse the
+  actual listing names, and default `chmod()` preserves the detected mode
+  instead of forcibly OR-ing file bits.
+
+Do not branch on transport-specific warning behavior. Check `false` from path,
+read, listing, stat, and mutation methods on every supported WordPress version.
+Do not instantiate `WP_Filesystem_FTPext`, `WP_Filesystem_ftpsockets`, or
+`WP_Filesystem_SSH2` directly; let `WP_Filesystem()` validate and connect them.
+
 ## When NOT to use `WP_Filesystem`
 
 | Need | Right tool |
 |---|---|
-| Writing a user-uploaded file to `wp-content/uploads/` | `wp_handle_upload()` or `media_handle_upload()` (`wp-admin/includes/file.php:1097`) |
+| Writing a user-uploaded file to `wp-content/uploads/` | `wp_handle_upload()` or `media_handle_upload()` |
 | Reading any existing file (where you don't need write capability) | Plain PHP `file_get_contents()` is fine — read access doesn't need FS abstraction |
 | Touching a local file that you just got back from `wp_handle_upload` | Plain PHP, after checking every return value; storage-offload plugins may change the lifecycle |
 | Anything in PHP `tempnam()` / `sys_get_temp_dir()` | Plain PHP |
 
 `WP_Filesystem` is overkill for `wp-content/uploads`. It's the right tool for `wp-content/`, `wp-content/plugins/<self>/cache/`, `wp-content/mu-plugins/`, or anywhere ELSE that needs the credentials dance on restricted hosts.
 
-## Pattern: write generated CSS into uploads on settings save
+## Usage patterns
 
-```php
-add_action( 'update_option_myplugin_options', static function ( $old, $new ): void {
-    if ( $old === $new ) {
-        return;
-    }
-
-    $upload  = wp_upload_dir();
-    $dir     = $upload['basedir'] . '/myplugin';
-    $file    = $dir . '/style.css';
-    $css     = ':root { --brand: ' . sanitize_hex_color( $new['brand_color'] ?? '#000' ) . '; }';
-
-    if ( ! empty( $upload['error'] ) ) {
-        return;
-    }
-
-    if ( ! wp_mkdir_p( $dir ) ) {
-        return;
-    }
-
-    if ( false === file_put_contents( $file, $css, LOCK_EX ) ) {
-        return;
-    }
-}, 10, 2 );
-```
-
-This is intentionally plain PHP for the normal local uploads filesystem; every
-directory/write result is checked. Object-storage or stream-wrapper plugins
-can alter the upload lifecycle, so do not assume a permanent local file after
-third-party offload hooks run. Use `WP_Filesystem` when writing outside
-uploads, where an admin page can show the credentials form.
-
-## Pattern: read a JSON config the plugin ships
-
-For READING bundled assets, just use PHP — no credentials needed:
-
-```php
-$config = json_decode( file_get_contents( MYPLUGIN_DIR . '/config/defaults.json' ), true );
-```
-
-`WP_Filesystem` for reads is unnecessary indirection. The abstraction exists for WRITES on hosts where the web user lacks privileges.
+Read `references/patterns-and-mistakes.md` for checked examples covering local
+uploads, bundled-file reads, admin credential flows, and REST-safe failure.
 
 ## Critical rules
 
@@ -216,59 +203,10 @@ $config = json_decode( file_get_contents( MYPLUGIN_DIR . '/config/defaults.json'
 - **Never prescribe `FS_METHOD = 'direct'` as a generic plugin fix**. It is a host-operator override after ownership and permissions are verified. Forcing it on a mismatched host can fail or create files with ownership that later blocks core updates. Never define it from a plugin.
 - **Don't store FTP credentials**. WP intentionally does NOT persist the password — the user re-enters it each session. Don't add your own "save FTP password" UI.
 
-## Common AI mistakes
+## Common mistakes
 
-```php
-// WRONG — fails on hosts where web user != file owner
-file_put_contents( WP_CONTENT_DIR . '/myplugin-cache.json', $data );
-
-// RIGHT — on an admin page, request creds, then initialize WP_Filesystem
-require_once ABSPATH . 'wp-admin/includes/file.php';
-$form_url = wp_nonce_url( admin_url( 'admin.php?page=myplugin' ), 'myplugin_write_cache' );
-$context  = WP_CONTENT_DIR;
-$creds    = request_filesystem_credentials( $form_url, '', false, $context );
-
-if ( false === $creds ) {
-    return;
-}
-
-if ( ! WP_Filesystem( $creds, $context ) ) {
-    request_filesystem_credentials( $form_url, '', true, $context );
-    return;
-}
-
-global $wp_filesystem;
-$remote_content = $wp_filesystem->wp_content_dir();
-if ( ! $remote_content
-     || ! $wp_filesystem->put_contents(
-        trailingslashit( $remote_content ) . 'myplugin-cache.json',
-        $data,
-        FS_CHMOD_FILE
-     ) ) {
-    return;
-}
-```
-
-```php
-// WRONG — credentials form leaks into REST / AJAX response
-add_action( 'rest_api_init', static function (): void {
-    register_rest_route( 'myplugin/v1', '/clear-cache', array(
-        'callback' => static function () {
-            request_filesystem_credentials( '' );        // echoes <form>; corrupts JSON response
-            // ...
-        }
-    ) );
-} );
-
-// RIGHT — only request creds in admin page contexts; gate by transport availability elsewhere
-require_once ABSPATH . 'wp-admin/includes/file.php';
-if ( 'direct' !== get_filesystem_method() ) {
-    return new WP_Error( 'fs_unavailable', 'Server requires admin filesystem access.' );
-}
-if ( ! WP_Filesystem() ) {
-    return new WP_Error( 'fs_unavailable', 'Filesystem initialization failed.' );
-}
-```
+Read `references/patterns-and-mistakes.md` before moving a filesystem mutation
+into REST, AJAX, cron, or CLI; the credentials form is admin-interactive.
 
 ## Cross-references
 
@@ -284,6 +222,7 @@ if ( ! WP_Filesystem() ) {
 
 ## References
 
+- Detailed patterns and failure cases: `references/patterns-and-mistakes.md`.
 - `wp-admin/includes/file.php:2169` — `WP_Filesystem()` initializer (sets `$wp_filesystem` global, defines FS_CHMOD_* constants).
 - `wp-admin/includes/file.php:2260` — `get_filesystem_method()` with the transport priority and writability detection.
 - `wp-admin/includes/file.php:2364` — `request_filesystem_credentials()` (returns `true|false|array`, echoes form when needed).

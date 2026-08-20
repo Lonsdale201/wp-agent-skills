@@ -2,13 +2,13 @@
 name: wc-stripe-add-payment-method
 description: Build or audit WooCommerce Stripe Gateway My Account saved-payment-method flows. Covers the canonical Woo form contract, Stripe UPE SetupIntents, exact selectors and POST fields, billing details, polymorphic Woo tokens including native Link, remote reconciliation/detach/default synchronization, custom endpoint security, and the Subscriptions boundary. Use for payment-methods.php, form-add-payment-method.php, add_payment_method, wc-stripe-setup-intent, wc-stripe-upe-element, Stripe saved cards or Link, or custom customer payment-method screens.
 metadata:
-  wp-skills-author: "Soczo Kristof"
+  wp-skills-author: "Soczó Kristóf"
   wp-skills-contact: "mailto:lonsdale201@hotmail.com"
   wp-skills-plugin: "woocommerce-gateway-stripe"
-  wp-skills-plugin-version-tested: "10.8.4"
-  wp-skills-woocommerce-version-tested: "10.9.4"
+  wp-skills-plugin-version-tested: "10.9.0"
+  wp-skills-woocommerce-version-tested: "11.0.1"
   wp-skills-php-min: "7.4"
-  wp-skills-last-updated: "2026-07-20"
+  wp-skills-last-updated: "2026-08-19"
 ---
 
 # WooCommerce Stripe: saved payment methods
@@ -21,7 +21,7 @@ Do not rebuild Stripe Elements markup or submit raw card data to WordPress. Keep
 
 This skill covers saving without a purchase on the My Account Add payment method screen. A SetupIntent creates no charge. For checkout that takes an initial payment and saves the same reusable method for installments or other future off-session charges, use `wc-stripe-future-payments`; for a custom Checkout Block gateway adapter, also use `wc-checkout-block-payment-method`.
 
-Stripe 10.8.4 uses `WC_Stripe_UPE_Payment_Gateway` as the main `stripe` gateway. `WC_Gateway_Stripe` is only a deprecated compatibility subclass. Optimized Checkout is deliberately disabled on Add payment method and Subscriptions Change payment method pages; those pages use the standard UPE flow. Express Checkout on a subscription change-payment page is a separate Stripe 10.8+ feature covered by `wc-stripe-subscriptions`.
+Stripe 10.9.0 uses `WC_Stripe_UPE_Payment_Gateway` as the main `stripe` gateway. `WC_Gateway_Stripe` is only a deprecated compatibility subclass. Optimized Checkout is deliberately disabled on Add payment method and Subscriptions Change payment method pages; those pages use the standard UPE flow. Express Checkout on a subscription change-payment page is a separate Stripe 10.8+ feature covered by `wc-stripe-subscriptions`.
 
 ## Canonical Woo form
 
@@ -30,7 +30,7 @@ Prefer Woo's template unchanged. The following is a condensed selector map, not 
 ```php
 <form id="add_payment_method" method="post">
     <div id="payment" class="woocommerce-Payment">
-        <ul class="woocommerce-PaymentMethods payment_methods methods">
+        <ul class="woocommerce-PaymentMethods payment_methods methods" aria-label="<?php esc_attr_e( 'Payment methods', 'woocommerce' ); ?>">
             <li class="woocommerce-PaymentMethod payment_method_<?php echo esc_attr( $gateway->id ); ?>">
                 <input
                     id="payment_method_<?php echo esc_attr( $gateway->id ); ?>"
@@ -55,6 +55,7 @@ Prefer Woo's template unchanged. The following is a condensed selector map, not 
 Required contracts:
 
 - `form#add_payment_method` is watched by Woo and Stripe scripts.
+- Preserve the WooCommerce 11.0 payment-method list `aria-label`; selector compatibility does not replace accessible naming.
 - The gateway radio must use `name="payment_method"`, `.input-radio`, and `id="payment_method_{gateway_id}"`.
 - The box must retain `.payment_box.payment_method_{gateway_id}`.
 - The nonce action/name are `woocommerce-add-payment-method` and `woocommerce-add-payment-method-nonce`.
@@ -93,6 +94,12 @@ and redirects to the `payment-methods` endpoint. Do not document this hook with 
 Classify the retrieved PaymentMethod, not its `pm_...` prefix. A native Stripe `type=link` method becomes `WC_Payment_Token_Link` with Woo token type `link`, gateway `stripe`, and email metadata; it is not a `WC_Payment_Token_CC`. A `type=card` method with `card.wallet.type=link` remains a Stripe CC token with card fields. Do not store either one under a fictional `stripe_link` order gateway.
 
 When Link is enabled, Stripe hides the Woo store-level save checkbox for card and Link because the Payment Element owns Link-wallet consent. Do not re-add that checkbox. Add payment method still uses a SetupIntent and the gateway's merchant-side token-creation path. Use `wc-stripe-link-payments` for the complete identifier, consent, duplicate, and reconciliation contract.
+
+## Stripe.js ownership
+
+Woo Stripe 10.9 registers the `stripe` script handle from `https://js.stripe.com/dahlia/stripe.js` and sends API version `2026-03-25.dahlia`. Do not deregister that handle, replace it with an older `/v3/` build, self-host Stripe.js, or load another Stripe release train first. The plugin can fall back from Adaptive Pricing or Optimized Checkout when it detects an incompatible Stripe.js, but copied/custom Elements code does not inherit that compatibility handling.
+
+Treat the loaded Stripe.js origin and version as a deployment invariant. Test Add payment method, classic checkout, Blocks, Optimized Checkout, and Express Checkout together whenever another extension also loads Stripe.js.
 
 ## Billing data
 
@@ -138,7 +145,7 @@ Adding a token and changing a subscription's payment method are different operat
 ## Debug checklist
 
 1. Confirm `form#add_payment_method`, canonical radio/box selectors, nonce, and hidden submit gate exist.
-2. Confirm `wc-stripe-upe-classic`, Stripe.js, and `wc_stripe_upe_params` load without duplicate/conflicting Stripe.js versions.
+2. Confirm `wc-stripe-upe-classic`, the official Dahlia Stripe.js, and `wc_stripe_upe_params` load without duplicate/conflicting Stripe.js versions.
 3. Confirm the mount container is inside the selected gateway box.
 4. Confirm SetupIntent creation succeeds and the final POST contains `wc-stripe-setup-intent`.
 5. Confirm `woocommerce_stripe_add_payment_method` fires once and a Woo token is created for the current user.
@@ -165,5 +172,6 @@ Adding a token and changing a subscription's payment method are different operat
   - `wp-content/plugins/woocommerce-gateway-stripe/includes/payment-methods/class-wc-stripe-upe-payment-gateway.php`
   - `wp-content/plugins/woocommerce-gateway-stripe/includes/payment-methods/class-wc-stripe-upe-payment-method.php`
   - `wp-content/plugins/woocommerce-gateway-stripe/includes/class-wc-stripe-intent-controller.php`
+  - `wp-content/plugins/woocommerce-gateway-stripe/includes/class-wc-stripe-api.php`
   - `wp-content/plugins/woocommerce-gateway-stripe/includes/payment-tokens/class-wc-stripe-payment-tokens.php`
   - `wp-content/plugins/woocommerce-gateway-stripe/includes/compat/trait-wc-stripe-subscriptions.php`

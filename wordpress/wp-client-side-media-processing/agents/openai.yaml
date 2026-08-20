@@ -1,0 +1,4 @@
+interface:
+  display_name: "WP Client-side Media Processing"
+  short_description: "Handle the WordPress 7.1 browser media pipeline safely"
+  default_prompt: "Use $wp-client-side-media-processing to implement or audit WordPress 7.1 client-side media processing compatibility."

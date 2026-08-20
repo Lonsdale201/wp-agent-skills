@@ -5,10 +5,10 @@ metadata:
   wp-skills-author: "Soczó Kristóf"
   wp-skills-contact: "mailto:lonsdale201@hotmail.com"
   wp-skills-plugin: "woocommerce-gateway-stripe"
-  wp-skills-plugin-version-tested: "10.8.4"
-  wp-skills-woocommerce-version-tested: "10.9.4"
+  wp-skills-plugin-version-tested: "10.9.0"
+  wp-skills-woocommerce-version-tested: "11.0.1"
   wp-skills-php-min: "7.4"
-  wp-skills-last-updated: "2026-07-20"
+  wp-skills-last-updated: "2026-08-19"
 ---
 
 # WooCommerce Stripe future payments
@@ -54,7 +54,7 @@ Use `wc-checkout-block-payment-method` for the Blocks adapter. Link support is a
 
 ## Force saving through Woo Stripe carefully
 
-Woo Stripe 10.8.4 exposes:
+Woo Stripe 10.9.0 exposes:
 
 ```php
 add_filter(
@@ -80,6 +80,27 @@ The helper refuses force-save for logged-out users. Saving also remains disabled
 A shopper selecting “create account” during final checkout is still logged out when the Block payment UI is initially configured. Therefore the force-save filter alone does not solve a first-purchase guest flow. If first-time shoppers must qualify, authenticate/create the durable account before mounting the payment step, use a recurring system whose gateway integration explicitly owns that lifecycle, or implement the complete custom Customer/intent/token flow. Test this path with a shopper who has no prior Woo token or Stripe Customer.
 
 Do not use `wc_stripe_display_save_payment_method_checkbox` merely as a cosmetic hide. In the classic Stripe path, hiding an otherwise available checkbox is also interpreted as a forced-save situation. Consent must not be inferred from a missing control.
+
+## Opt incompatible plans out of Adaptive Pricing
+
+Adaptive Pricing uses a Stripe Checkout Session and is a different orchestration path from an ordinary PaymentIntent checkout. Stripe already rejects carts containing WCS subscriptions, charge-upon-release pre-orders, and WooCommerce Deposits. If a custom installment, deposit, or future-payment cart cannot preserve its amount, currency, token, or order lifecycle through that path, opt it out explicitly:
+
+```php
+add_filter(
+    'wc_stripe_is_adaptive_pricing_supported',
+    static function ( bool $supported, $cart ): bool {
+        if ( ! $supported || ! $cart instanceof WC_Cart ) {
+            return $supported;
+        }
+
+        return myplugin_cart_has_future_payment_plan( $cart ) ? false : $supported;
+    },
+    10,
+    2
+);
+```
+
+This 10.9+ filter runs only after the gateway's own availability and cart checks pass, so it can opt out but must not be treated as an opt-in override. The older `wc_stripe_is_checkout_sessions_available` filter has been removed; do not use it as a replacement.
 
 ## Consent and mandate are part of the payment contract
 
@@ -156,7 +177,8 @@ Use provider object type/capabilities, not an ID prefix or checkout label, to cl
 3. Compare Stripe amount/currency with the authoritative Woo payment record on initial and later attempts.
 4. Verify provider idempotency, unique local installment records, signed webhooks, event deduplication, and timeout reconciliation.
 5. Test first-time shopper with no Customer/token, saved method, guest rejection/account creation, classic checkout, Checkout Block, Link/card, SCA now, SCA later, decline, async processing, duplicate job, duplicate webhook, refund, cancellation, and method replacement.
-6. Redact secrets, client secrets, payment identifiers where unnecessary, raw provider bodies, and billing data from logs.
+6. Test Adaptive Pricing eligibility and opt-out for every custom deposit/installment cart shape.
+7. Redact secrets, client secrets, payment identifiers where unnecessary, raw provider bodies, and billing data from logs.
 
 ## Cross-references
 

@@ -1,0 +1,4 @@
+interface:
+  display_name: "Block Theme Global Styles"
+  short_description: "Build WordPress 7.1 responsive and stateful theme.json styles"
+  default_prompt: "Use $block-theme-global-styles to implement or audit WordPress 7.1 block-theme Global Styles and theme.json behavior."
