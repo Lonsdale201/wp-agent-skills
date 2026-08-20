@@ -6,7 +6,7 @@ body:
   - type: markdown
     attributes:
       value: |
-        Use this form for general questions. For bug reports / wrong content, use **Report a skill problem**. For new skills, use **Submit a skill**.
+        Use this form for general questions. For bug reports / wrong content, use **Report a skill problem**. For a skill that doesn't exist yet, use **Request a skill**.
 
   - type: dropdown
     id: topic
