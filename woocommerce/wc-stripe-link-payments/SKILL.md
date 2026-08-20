@@ -1,14 +1,14 @@
 ---
 name: wc-stripe-link-payments
-description: Implement or audit Stripe Link behavior in the WooCommerce Stripe Gateway, especially code that assumes every `pm_...` or `stripe` token is a card. Distinguishes native Stripe PaymentMethod `type=link` and `WC_Payment_Token_Link` from `type=card` with `card.wallet.type=link`, and covers gateway/type identifiers, Payment Element and Express Checkout, save consent, SetupIntents, remote-to-Woo token reconciliation, duplicate detection, checkout request validation, deletion/defaulting, orders, subscriptions, and Link-specific test cases. Use for Link by Stripe, `WC_Payment_Token_Link`, `link.email`, `wallet_type=link`, saved Link methods, or Stripe token type errors.
+description: Implement or audit Stripe Link behavior in the WooCommerce Stripe Gateway, especially code that assumes every `pm_...` or `stripe` token is a card. Distinguishes native Stripe PaymentMethod `type=link` and `WC_Payment_Token_Link` from `type=card` with `card.wallet.type=link`, and covers gateway/type identifiers, Payment Element and Express Checkout, dedicated Link button settings, save consent, SetupIntents, remote-to-Woo token reconciliation, duplicate detection, checkout request validation, deletion/defaulting, orders, subscriptions, and Link-specific tests. Use for Link by Stripe, `WC_Payment_Token_Link`, `link.email`, `wallet_type=link`, `link_button_locations`, saved Link methods, or Stripe token type errors.
 metadata:
   wp-skills-author: "Soczó Kristóf"
   wp-skills-contact: "mailto:lonsdale201@hotmail.com"
   wp-skills-plugin: "woocommerce-gateway-stripe"
-  wp-skills-plugin-version-tested: "10.8.4"
-  wp-skills-woocommerce-version-tested: "10.9.4"
+  wp-skills-plugin-version-tested: "10.9.0"
+  wp-skills-woocommerce-version-tested: "11.0.1"
   wp-skills-php-min: "7.4"
-  wp-skills-last-updated: "2026-07-20"
+  wp-skills-last-updated: "2026-08-19"
 ---
 
 # WooCommerce Stripe Link payments
@@ -72,9 +72,9 @@ function myplugin_describe_stripe_token( WC_Payment_Token $token ): array {
 
 Use `get_type()` and capabilities such as `method_exists()` before type-specific getters. Do not call `get_last4()`, expiry, card brand, or fingerprint methods on a Link token.
 
-### Verified 10.8.4 quirk
+### Verified 10.9.0 quirk
 
-`WC_Payment_Token_Link::set_payment_method_type()` calls `set_prop( 'payment_method_type', ... )`, but that property is absent from the class's `extra_data`. Consequently `get_payment_method_type()` returns `null` in 10.8.4. Do not use it to classify Link; use `get_type() === 'link'`. Version-guard and retest if upstream adds the property.
+`WC_Payment_Token_Link::set_payment_method_type()` calls `set_prop( 'payment_method_type', ... )`, but that property is absent from the class's `extra_data`. Consequently `get_payment_method_type()` still returns `null` in 10.9.0. Do not use it to classify Link; use `get_type() === 'link'`. Version-guard and retest if upstream adds the property.
 
 ## Let the gateway create tokens
 
@@ -109,6 +109,10 @@ Link is offered inside the main Stripe/card surface rather than as a standalone 
 
 Express Link sends `express_payment_type=link` into the gateway intent path and `express_checkout_type=link` for Express Checkout/WCS bookkeeping, but the order gateway remains `stripe`. The final PaymentMethod may still need server-side inspection; do not treat either request marker as the provider token type.
 
+Stripe 10.9 gives Link its own `link_button_locations` and `link_button_size` settings instead of inheriting Apple Pay/Google Pay appearance. Existing stores migrate the previous Express Checkout locations when the Link location option is absent. Read Link placement through `WC_Stripe_Express_Checkout_Helper::get_button_locations( 'link' )` and height through `get_link_button_height()` only in version-pinned integration code; do not read the generic `express_checkout_button_*` options and assume they control Link. Supported locations include product, cart, checkout, and the WCS change-payment page when available.
+
+The 10.9 Express Checkout client uses Woo Store API calls for shipping and variable-product cart mutations. Do not intercept removed legacy Stripe shipping/add-to-cart AJAX requests. Integrate custom cart data and checkout fields through Woo's Store API/classic-checkout extension surfaces, then test Link Express Checkout separately from Apple Pay/Google Pay.
+
 ### Optimized Checkout
 
 Multiple methods share the consolidated `stripe` gateway. Use the resolved PaymentMethod type and hydrated Woo token, not the selected container slug, as the type authority.
@@ -138,14 +142,14 @@ Then let the gateway retrieve/use the PaymentMethod. Do not expose the `pm_...`,
 
 The Stripe plugin filters `WC_Payment_Tokens::get_customer_tokens()` for logged-in requests. A token-list read can therefore:
 
-1. call Stripe for active reusable PaymentMethod types;
+1. call Stripe for active reusable PaymentMethod types, or all reusable types under Optimized Checkout;
 2. create missing local Woo tokens;
 3. update a duplicate token's remote `pm_...`;
 4. delete local methods no longer returned for the active type set.
 
-CLI/cron without a logged-in user does not take this synchronization path. The remote list is cached, and synchronization is skipped when the initial local token list already reaches the configured `posts_per_page` limit. Do not assume token enumeration is pure, context-independent, complete, or cheap.
+CLI/cron without a logged-in user does not take this synchronization path. The remote list is cached, and synchronization is skipped when the initial local token list already reaches the configured `posts_per_page` limit. Under Optimized Checkout, a remotely present but disabled or temporarily unavailable method is excluded from the returned list while its local token row is preserved. Outside Optimized Checkout, a disabled type can be outside the remote fetch and its local projection can still be cleaned up. Do not treat visibility as proof of remote detach, and do not assume token enumeration is pure, context-independent, complete, or cheap.
 
-Disabling Link can remove its local projection during a logged-in reconciliation while leaving the remote PaymentMethod attached; re-enabling can recreate it with another Woo token ID. Store durable domain relationships against the order/subscription and remote PaymentMethod purpose, not a permanently stable local token-row ID. Load [references/link-contract.md](references/link-contract.md) for the full sync, deletion/default, order, and subscription contracts.
+Depending on Optimized Checkout state, disabling and re-enabling Link can either preserve the hidden local row or recreate a cleaned-up projection with another Woo token ID. Store durable domain relationships against the order/subscription and remote PaymentMethod purpose, not a permanently stable local token-row ID. Load [references/link-contract.md](references/link-contract.md) for the full sync, deletion/default, order, and subscription contracts.
 
 ## Handle orders and subscriptions through `stripe`
 
@@ -167,7 +171,7 @@ On Express Checkout change-payment, the plugin replaces the subscription's attac
 3. Guest, logged-in, Add payment method, and one-time checkout save behavior.
 4. Existing saved Link selection through `wc-stripe-payment-token`.
 5. Duplicate Link email with the same and a replacement `pm_...`.
-6. Remote detach, Woo deletion, default change, disabled/re-enabled Link, cache refresh, and CLI versus logged-in listing.
+6. Remote detach, Woo deletion, default change, disabled/re-enabled Link with Optimized Checkout on and off, cache refresh, and CLI versus logged-in listing.
 7. Subscription signup, off-session renewal, standard and Express change-payment, update-all consent, and 3DS return.
 8. Plugin disabled/missing custom token class; code must fail closed rather than assuming a CC token.
 
@@ -178,16 +182,20 @@ On Express Checkout change-payment, the plugin replaces the subscription's attac
 - `wc-stripe-subscriptions`: renewal, WCS change-payment, SCA, and detached-token behavior.
 - `wc-stripe-webhooks`: asynchronous settlement and idempotent order transitions.
 
-## Verified sources
+## References
 
-- `wp-content/plugins/woocommerce-gateway-stripe/includes/payment-methods/class-wc-stripe-upe-payment-method-link.php`
-- `wp-content/plugins/woocommerce-gateway-stripe/includes/payment-methods/class-wc-stripe-upe-payment-method-cc.php`
-- `wp-content/plugins/woocommerce-gateway-stripe/includes/payment-methods/class-wc-stripe-upe-payment-gateway.php`
-- `wp-content/plugins/woocommerce-gateway-stripe/includes/payment-methods/class-wc-stripe-express-checkout-element.php`
-- `wp-content/plugins/woocommerce-gateway-stripe/includes/payment-methods/class-wc-stripe-express-checkout-helper.php`
-- `wp-content/plugins/woocommerce-gateway-stripe/includes/payment-tokens/class-wc-stripe-link-payment-token.php`
-- `wp-content/plugins/woocommerce-gateway-stripe/includes/payment-tokens/class-wc-stripe-cc-payment-token.php`
-- `wp-content/plugins/woocommerce-gateway-stripe/includes/payment-tokens/class-wc-stripe-payment-tokens.php`
-- `wp-content/plugins/woocommerce-gateway-stripe/includes/class-wc-stripe-customer.php`
-- `wp-content/plugins/woocommerce-gateway-stripe/includes/class-wc-stripe-intent-controller.php`
-- `wp-content/plugins/woocommerce-gateway-stripe/includes/compat/trait-wc-stripe-subscriptions.php`
+- Verified source paths:
+  - `wp-content/plugins/woocommerce-gateway-stripe/includes/payment-methods/class-wc-stripe-upe-payment-method-link.php`
+  - `wp-content/plugins/woocommerce-gateway-stripe/includes/payment-methods/class-wc-stripe-upe-payment-method-cc.php`
+  - `wp-content/plugins/woocommerce-gateway-stripe/includes/payment-methods/class-wc-stripe-upe-payment-gateway.php`
+  - `wp-content/plugins/woocommerce-gateway-stripe/includes/payment-methods/class-wc-stripe-express-checkout-element.php`
+  - `wp-content/plugins/woocommerce-gateway-stripe/includes/payment-methods/class-wc-stripe-express-checkout-helper.php`
+  - `wp-content/plugins/woocommerce-gateway-stripe/includes/admin/class-wc-stripe-link-controller.php`
+  - `wp-content/plugins/woocommerce-gateway-stripe/includes/admin/stripe-settings.php`
+  - `wp-content/plugins/woocommerce-gateway-stripe/includes/migrations/class-wc-stripe-migrate-link-button-locations.php`
+  - `wp-content/plugins/woocommerce-gateway-stripe/includes/payment-tokens/class-wc-stripe-link-payment-token.php`
+  - `wp-content/plugins/woocommerce-gateway-stripe/includes/payment-tokens/class-wc-stripe-cc-payment-token.php`
+  - `wp-content/plugins/woocommerce-gateway-stripe/includes/payment-tokens/class-wc-stripe-payment-tokens.php`
+  - `wp-content/plugins/woocommerce-gateway-stripe/includes/class-wc-stripe-customer.php`
+  - `wp-content/plugins/woocommerce-gateway-stripe/includes/class-wc-stripe-intent-controller.php`
+  - `wp-content/plugins/woocommerce-gateway-stripe/includes/compat/trait-wc-stripe-subscriptions.php`

@@ -1,0 +1,4 @@
+interface:
+  display_name: "WP Block Editor Iframe Compatibility"
+  short_description: "Make editor extensions safe for the always-iframed canvas"
+  default_prompt: "Use $wp-block-editor-iframe-compatibility to audit or fix a WordPress block editor extension for the WordPress 7.1 always-iframed canvas."

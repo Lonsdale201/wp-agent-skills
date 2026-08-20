@@ -12,9 +12,10 @@ metadata:
   wp-skills-author: "Soczó Kristóf"
   wp-skills-contact: "mailto:lonsdale201@hotmail.com"
   wp-skills-plugin: "wordpress"
-  wp-skills-plugin-version-tested: "6.0 - 7.0.1"
+  wp-skills-plugin-version-tested: "6.0 - 7.1"
+  wp-skills-wp-version-tested: "7.1"
   wp-skills-php-min: "7.4"
-  wp-skills-last-updated: "2026-07-10"
+  wp-skills-last-updated: "2026-08-20"
 ---
 
 # WordPress Admin Drag-and-Drop
@@ -74,9 +75,9 @@ add_action( 'admin_enqueue_scripts', static function ( string $hook_suffix ): vo
 
 | Handle | Version | When you need it |
 |---|---|---|
-| `jquery-ui-sortable` | 1.13.3 | Any reorderable list |
-| `jquery-ui-draggable` | 1.13.3 | Palette items / freely-dragged elements |
-| `jquery-ui-droppable` | 1.13.3 | Drop targets that aren't sortable lists (trash zone, status bucket) |
+| `jquery-ui-sortable` | 1.14.2 in WP 7.1 | Any reorderable list |
+| `jquery-ui-draggable` | 1.14.2 in WP 7.1 | Palette items / freely-dragged elements |
+| `jquery-ui-droppable` | 1.14.2 in WP 7.1 | Drop targets that aren't sortable lists (trash zone, status bucket) |
 | `jquery-touch-punch` | n/a | Touch device support for any of the above |
 | `wp-a11y` | n/a | `wp.a11y.speak()` for screen reader announcements |
 
@@ -243,7 +244,14 @@ Use real buttons, not only a draggable handle. The click handler moves the row i
 
 ## Touch support
 
-jQuery UI 1.13's drag handlers are mouse-only. For touch devices, add `jquery-touch-punch` as a dep — it patches jQuery UI mouse interactions to also accept touch events. It's already registered in core (loaded by Iris, the color picker thumb), so declaring it as a dep is enough.
+jQuery UI's drag handlers remain mouse-oriented. For touch devices, add `jquery-touch-punch` as a dep — it patches jQuery UI mouse interactions to also accept touch events. It's registered in core, so declaring it as a dep is enough. Test real touch and keyboard behavior: the old patch is compatibility support, not a modern pointer-events accessibility layer.
+
+WordPress 7.1 updates the bundled jQuery UI components from 1.13.3 to 1.14.2
+and sets `jQuery.uiBackCompat = true` before `jquery-ui-core`. The documented
+widget APIs used in this skill remain available, but plugin code that reaches
+into underscored widget methods, copied internals, DOM-generated class details,
+or deprecated `$.ui.plugin` behavior must be regression-tested. Core's
+back-compat flag is not a promise that private internals are stable.
 
 ## Critical rules
 
@@ -282,7 +290,7 @@ You don't need to read these to use the patterns above — they're listed for wh
 - `wp-admin/js/postbox.js` — flat sortable (init at line 369), keyboard reorder buttons (line 98).
 - `wp-admin/js/widgets.js:195` and `:271` — palette + drop-zone pattern.
 - `wp-admin/js/nav-menu.js:885` — hierarchical sortable with depth math.
-- `wp-includes/script-loader.php:955-959` — the `jquery-ui-draggable`, `jquery-ui-droppable`, `jquery-ui-sortable` registrations.
+- `wp-includes/script-loader.php` — the `jquery-ui-draggable`, `jquery-ui-droppable`, `jquery-ui-sortable` registrations and bundled version.
 - `reference.md` — hierarchical tree snippet, keyboard reorder snippet, and common mistakes.
 
 ## References

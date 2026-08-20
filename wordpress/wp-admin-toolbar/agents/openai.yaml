@@ -1,0 +1,4 @@
+interface:
+  display_name: "WordPress Admin Toolbar"
+  short_description: "Extend the WordPress toolbar across admin/editor contexts."
+  default_prompt: "Use $wp-admin-toolbar to implement or audit WordPress toolbar integration."

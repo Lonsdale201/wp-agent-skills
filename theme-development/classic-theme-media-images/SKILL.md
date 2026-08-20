@@ -1,13 +1,14 @@
 ---
 name: classic-theme-media-images
-description: Build or audit media and image output in classic WordPress themes on WP 7.0. Covers `add_theme_support( 'post-thumbnails' )`, `add_image_size()`, `set_post_thumbnail_size()`, `has_post_thumbnail()`, `the_post_thumbnail()`, `get_the_post_thumbnail()`, `wp_get_attachment_image()`, responsive `srcset` and `sizes`, `loading`/`decoding`/`fetchpriority`, attachment alt text, decorative images, theme asset images, regeneration requirements, and common mistakes such as hand-built `img` tags, full-size archive images, removed dimensions, and broken CLS.
+description: Build or audit media and image output in classic WordPress themes on WP 7.1. Covers `add_theme_support( 'post-thumbnails' )`, `add_image_size()`, `set_post_thumbnail_size()`, `has_post_thumbnail()`, `the_post_thumbnail()`, `get_the_post_thumbnail()`, `wp_get_attachment_image()`, responsive `srcset` and `sizes`, `loading`/`decoding`/`fetchpriority`, attachment metadata contracts, client-side processed uploads, alt text, decorative images, regeneration requirements, and common mistakes such as hand-built `img` tags, full-size archive images, removed dimensions, and broken CLS.
 metadata:
   wp-skills-author: "Soczó Kristóf"
   wp-skills-contact: "mailto:lonsdale201@hotmail.com"
   wp-skills-plugin: "wordpress"
-  wp-skills-plugin-version-tested: "7.0"
+  wp-skills-plugin-version-tested: "7.1"
+  wp-skills-wp-version-tested: "7.1"
   wp-skills-php-min: "7.4"
-  wp-skills-last-updated: "2026-06-04"
+  wp-skills-last-updated: "2026-08-20"
 ---
 
 # Classic Theme Media and Images
@@ -113,6 +114,24 @@ Core adds useful defaults:
 
 Do not replace this with a manual `<img src="...">` unless the image is not a WordPress attachment.
 
+### WordPress 7.1 metadata contract
+
+`wp_get_attachment_metadata()` now returns `false` if stored or filtered
+metadata is not an array. When a `sizes` key exists but a filter makes it
+non-array, core normalizes it to an empty array. Treat the return as
+`array|false`, and treat `sizes` as optional; never index it blindly.
+
+`wp_filesize()` now always returns a non-negative integer. Numeric filter
+results are cast, negative pre-filter values are ignored, and a negative or
+non-numeric final filter value is clamped to zero. Zero still means either an
+empty file or an unavailable size, so it is not proof that the attachment is
+invalid.
+
+WordPress 7.1 can process supported images in the browser before upload. Theme
+rendering must remain agnostic to whether the server or client created the
+sub-sizes: use attachment IDs and core image helpers, not filename conventions
+or assumptions that every size was derived in a single server request.
+
 ## Alt Text
 
 Rules:
@@ -208,6 +227,8 @@ Rules:
 - Priority/eager loading is used only for primary above-the-fold images.
 - Static theme images use theme file helpers and escaped URLs.
 - No upload URLs are built manually from metadata.
+- `wp_get_attachment_metadata()` failure and a missing/empty `sizes` map are handled.
+- Client-processed and ordinary server-processed attachments render through the same public helpers.
 
 ## Common Mistakes
 
@@ -223,6 +244,7 @@ Rules:
 - Official documentation: <https://developer.wordpress.org/themes/functionality/featured-images-post-thumbnails/>
 - Official documentation: <https://developer.wordpress.org/themes/classic-themes/functionality/media/images/>
 - Official documentation: <https://developer.wordpress.org/reference/functions/the_post_thumbnail/>
+- WordPress 7.1 client-side media processing: <https://make.wordpress.org/core/2026/07/22/client-side-media-processing-in-wordpress-7-1/>
 - Verified source paths:
   - `wp-includes/media.php`
   - `wp-includes/post-thumbnail-template.php`

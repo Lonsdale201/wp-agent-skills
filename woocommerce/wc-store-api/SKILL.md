@@ -1,13 +1,13 @@
 ---
 name: wc-store-api
-description: Build shopper-facing WooCommerce integrations with the Store API. Covers `/wc/store/v1`, public product reads, cart Nonce and Cart-Token authentication, CORS, Store API sessions, endpoint data and cart update extensions, add-to-cart validation, payment requirements, checkout draft timing, and feature-gated routes. Use for headless carts, Checkout Block server integration, Store API response extensions, cart mutations, or debugging nonce/session/order timing.
+description: Build shopper-facing WooCommerce integrations with the Store API. Covers `/wc/store/v1`, public product reads, cart Nonce and Cart-Token authentication, CORS, Store API sessions, endpoint data and cart update extensions, collection-count query bounds, JSON input handling, add-to-cart validation, payment requirements, checkout draft timing, existing-order payment validation, and feature-gated routes. Use for headless carts, Checkout Block server integration, Store API extensions, cart mutations, or nonce/session/order timing bugs.
 metadata:
   wp-skills-author: "Soczó Kristóf"
   wp-skills-contact: "mailto:lonsdale201@hotmail.com"
   wp-skills-plugin: "woocommerce"
-  wp-skills-plugin-version-tested: "10.9.4"
+  wp-skills-plugin-version-tested: "11.0.0"
   wp-skills-php-min: "7.4"
-  wp-skills-last-updated: "2026-07-20"
+  wp-skills-last-updated: "2026-08-05"
 ---
 
 # WooCommerce Store API
@@ -34,6 +34,14 @@ WooCommerce registers the stable routes under both `wc/store` and `wc/store/v1`;
 ```
 
 Products, categories, brands, tags, attributes, terms, collection data, and reviews are read-oriented shopper resources. They honor catalog visibility and are not private catalog/admin APIs.
+
+WooCommerce 11.0 hardens single-product and review reads: a variation is not returned by ID/slug when its parent is missing or unpublished, and product-review collections exclude reviews belonging to unpublished products. Custom shopper-facing routes must preserve the parent-product visibility check; knowing a variation ID or review ID is not authorization to disclose private catalog data.
+
+### WooCommerce 11.0 collection-count bounds
+
+`GET /wc/store/v1/products/collection-data` can run full-collection aggregate queries for every entry in `calculate_attribute_counts` and `calculate_taxonomy_counts`. WooCommerce 11.0 limits each input array to 25 entries at REST schema validation. Requests over the cap fail instead of creating unbounded query fan-out.
+
+Core also normalizes and deduplicates requested taxonomies, resolves numeric global-attribute IDs, skips non-product-attribute taxonomies for attribute counts, and ignores unregistered taxonomies for generic counts. Clients should still send only the counts the current view renders, reuse responses, and handle a validation error rather than splitting an untrusted request into unlimited parallel calls.
 
 Shopper-list routes are registered only when WooCommerce's `ShopperListsController` reports at least one supporting feature enabled. The experimental `agentic_checkout` feature uses a separate `wc/agentic/v1` namespace, is disabled by default, and must not be assumed to be Store API v1.
 
@@ -161,6 +169,42 @@ Persist pre-order state in the Woo session, then copy it into the order object a
 
 WooCommerce 10.9.4 also fixed checkout order `is_vat_exempt` synchronization for logged-in shoppers. Do not trust a client-supplied VAT-exempt flag; set validated customer state server-side and let checkout copy current cart customer state.
 
+### Additional checkout fields: register at the Woo boundary
+
+WooCommerce 11.0 warns when `woocommerce_register_additional_checkout_field()` is called too early because that can trigger premature translation loading. Register on `woocommerce_init` or later:
+
+```php
+add_action( 'woocommerce_init', static function (): void {
+    woocommerce_register_additional_checkout_field( array(
+        'id'       => 'myplugin/delivery_note',
+        'label'    => __( 'Delivery note', 'myplugin' ),
+        'location' => 'order',
+        'type'     => 'text',
+        'required' => false,
+        'sanitize_callback' => static function ( $value ) {
+            return sanitize_text_field( (string) $value );
+        },
+        'validate_callback' => static function ( $value ) {
+            return strlen( (string) $value ) <= 200
+                ? null
+                : new WP_Error( 'myplugin_note_too_long', __( 'Delivery note is too long.', 'myplugin' ) );
+        },
+    ) );
+} );
+```
+
+Field IDs require `namespace/name`; supported locations are `contact`, `address`, and `order` (`additional` is deprecated), and core field types are `text`, `select`, and `checkbox`. Sanitize and validate decoded values, keep callbacks deterministic, and let Woo persist registered fields through its customer/order CRUD. WooCommerce 11.0 also fixes validation for phone/postcode/state-shaped fields outside billing/shipping fieldsets; do not reintroduce fieldset assumptions in extension callbacks.
+
+### JSON additional fields are already unslashed
+
+Store API request bodies are JSON-decoded and are never WordPress magic-quoted. In WooCommerce 11.0, checkout additional-field validation correctly passes the decoded value to `wc_clean()` without `wp_unslash()`.
+
+Apply `wp_unslash()` at classic superglobal boundaries such as `$_POST`; do not apply it blindly to values obtained from `WP_REST_Request::get_json_params()` or Store API additional-field callbacks. Otherwise a legitimate backslash can be removed before validation/storage. Continue to follow each concrete route's contract: some compatibility parameters still normalize legacy form-style input separately.
+
+### Paying an existing order
+
+For `POST /wc/store/v1/checkout/<order-id>`, WooCommerce 11.0 sets the submitted billing/shipping address on the in-memory order and validates it before saving either the order or `WC()->customer`. A rejected address no longer partially mutates the persisted order/customer first. Extension hooks must preserve that validate-before-persist boundary and avoid independent customer writes before Store API reports success.
+
 ## Payment requirements
 
 ```php
@@ -185,7 +229,10 @@ Use `wc-checkout-block-payment-method` for `AbstractPaymentMethodType`, `registe
 - Namespace response/update data and return schema-compatible arrays.
 - Never mutate state in a response data callback.
 - Never assume a checkout order exists during PATCH.
+- Never `wp_unslash()` already decoded Store API JSON as a blanket rule.
+- Never bypass the 25-entry collection-count bounds with unbounded fan-out.
 - Never disable nonce checks in production.
+- Never expose a variation or its reviews when the parent product is not publicly visible.
 - Apply rate limits and idempotency to public write-heavy flows.
 - Do not subclass Store API route internals; use documented helper functions or your own WP REST route.
 

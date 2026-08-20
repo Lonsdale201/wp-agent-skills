@@ -5,10 +5,10 @@ metadata:
   wp-skills-author: "Soczó Kristóf"
   wp-skills-contact: "mailto:lonsdale201@hotmail.com"
   wp-skills-plugin: "woocommerce-subscriptions"
-  wp-skills-plugin-version-tested: "9.0.0"
-  wp-skills-woocommerce-version-tested: "10.9.4"
+  wp-skills-plugin-version-tested: "9.1.0"
+  wp-skills-woocommerce-version-tested: "11.0.0"
   wp-skills-php-min: "7.4"
-  wp-skills-last-updated: "2026-07-10"
+  wp-skills-last-updated: "2026-08-06"
 ---
 
 # WooCommerce Subscriptions: renewal scheduler
@@ -82,12 +82,14 @@ try {
 }
 ```
 
-## WCS 9.0 date validation details
+## WCS 9.0-9.1 date validation details
 
 WCS 9.0 keeps the same public rule: use `WC_Subscription::update_dates()` or `update_valid_dates()`. Two source-verified edge cases matter for integrations:
 
 - `prepare_dates_for_update()` compares `next_payment` against `trial_end` at minute resolution. If both land in the same visible minute, WCS treats that as valid instead of rejecting the edit over hidden seconds.
 - Admin schedule editor text now correctly tells merchants that next payment must be after the trial end.
+- WCS 9.1 posts the render-time subscription status with the admin schedule form and skips schedule writes if the current status changed meanwhile. Preserve this guard in custom/extended editors; a stale pending-cancel form can otherwise restore cancelled/end dates and delete the next-payment date.
+- When an active subscription is legitimately saved, the 9.1 editor deletes any stale cancelled date before applying the remaining schedule, allowing a previously corrupted schedule to be repaired.
 
 Practical import rule: normalize external schedule dates to UTC `Y-m-d H:i:s`, but do not add arbitrary seconds just to make trial end and next payment different. If your system only stores minute precision, pass the minute value and let WCS validate it.
 
@@ -270,6 +272,7 @@ add_action( 'woocommerce_subscription_renewal_payment_complete', 'provision_cust
 
 - Run `wcs-subscription-hooks` when you need a broader action/filter map beyond renewal timing.
 - Run `wcs-health-check-processing` when diagnosing the 8.8 Health Check tab, Resolve actions, dedicated processing, or web-cron queue support.
+- Run `wcs-cart-checkout-coupons` for renewal-payment cart reconstruction, recurring coupon math, and Checkout block payment totals.
 - Run `wc-hpos-compatibility` before writing SQL or `WP_Query` over subscriptions/orders.
 
 ## References
@@ -285,5 +288,6 @@ add_action( 'woocommerce_subscription_renewal_payment_complete', 'provision_cust
   - `wp-content/plugins/woocommerce-subscriptions/includes/gateways/class-wc-subscriptions-payment-gateways.php`
   - `wp-content/plugins/woocommerce-subscriptions/includes/payment-retry/class-wcs-retry-manager.php`
   - `wp-content/plugins/woocommerce-subscriptions/includes/core/class-wc-subscriptions-change-payment-gateway.php`
+  - `wp-content/plugins/woocommerce-subscriptions/includes/core/admin/meta-boxes/class-wcs-meta-box-schedule.php`
   - `wp-content/plugins/woocommerce-subscriptions/src/Internal/Queue_Management/`
   - `wp-content/plugins/woocommerce-subscriptions/src/Internal/HealthCheck/`

@@ -1,13 +1,13 @@
 ---
 name: wc-action-scheduler-jobs
-description: Queue and run WooCommerce background jobs with Action Scheduler. Covers async, single, recurring and cron actions, exact-argument checks, groups, JSON args and `array_values()` invocation, the delivery contract (due is not run; no exactly-once or FIFO), remote idempotency keys, bounded retries with backoff and failure telemetry, the AS 3.9.3 `action_scheduler_ensure_recurring_actions` daily repair hook behind `as_supports()`, WP-CLI diagnostics, lifecycle scheduling, batching, and the WC 10.9.4 DB-store rule that `$unique` guards pending/running actions by hook and group rather than argument set. Use when moving slow order/product/customer work out of requests or status hooks.
+description: Queue and run WooCommerce background jobs with Action Scheduler 4.0. Covers async, single, recurring and cron actions, args-aware `$unique` identity, exact-argument checks, groups, JSON args and positional callback delivery, at-least-once execution, remote idempotency, bounded retries, failed-action retention, the recurring-action repair hook, WP-CLI diagnostics, lifecycle scheduling, and batching. Use for `as_enqueue_async_action`, `as_schedule_single_action`, duplicate jobs, failed queues, or slow work moved out of WooCommerce requests and status hooks.
 metadata:
   wp-skills-author: "Soczó Kristóf"
   wp-skills-contact: "mailto:lonsdale201@hotmail.com"
   wp-skills-plugin: "woocommerce"
-  wp-skills-plugin-version-tested: "10.9.4"
+  wp-skills-plugin-version-tested: "11.0.0"
   wp-skills-php-min: "7.4"
-  wp-skills-last-updated: "2026-07-13"
+  wp-skills-last-updated: "2026-08-05"
 ---
 
 # WooCommerce Action Scheduler jobs
@@ -18,13 +18,13 @@ Use it instead of doing slow work during checkout, order status hooks, admin sav
 
 ## Misconception this skill corrects
 
-> "I will pass `$unique = true` so there is only one job per order ID."
+> "I will pass `$unique = true`, so this side effect can happen exactly once."
 
-In WooCommerce 10.9.4's DB store, unique inserts guard by pending/running `hook + group`. They do not include args in the SQL uniqueness check. If you schedule `myplugin_sync_order` with group `myplugin` and `$unique = true`, a pending job for order 10 can block scheduling order 11.
+WooCommerce 11.0 bundles Action Scheduler 4.0. Its DB store suppresses a unique insert only when a pending/running action has the same `hook + group + encoded args`. Jobs for order 10 and order 11 no longer block each other merely because they share a hook and group.
 
-For per-order deduplication, check `as_has_scheduled_action( $hook, $args, $group )` with the exact args, then schedule normally. This check-and-schedule pair is best-effort and can race under concurrent requests; the callback must still be idempotent. Strict uniqueness needs an owned atomic claim/unique key.
+This is queue-entry deduplication, not exactly-once execution. A job can be manually re-created, retried, replayed after a restored backup, or finish its remote side effect before its local state is saved. Keep the callback idempotent and use a durable owned claim/provider idempotency key when duplicate business effects are unacceptable.
 
-Treat the `$unique` behavior as active-store-specific, not as a portable business guarantee. Confirm the loaded Action Scheduler version, source, and data store when another plugin can bundle its own copy.
+Treat `$unique` identity as active-version/store-specific. Action Scheduler 3.x DBStore used only hook and group; 4.0 adds args. Confirm the loaded version, source, and data store when another plugin can bundle its own copy. For a plugin supporting mixed 3.x/4.x runtimes, use exact `as_has_scheduled_action()` checks as a compatibility guard and still rely on callback idempotency for correctness.
 
 "Exact args" means the same JSON representation. Associative key insertion order and scalar types matter: `array( 'id' => 1, 'mode' => 'full' )` does not match reversed keys, and integer `1` does not match string `'1'`.
 
@@ -65,11 +65,7 @@ add_action(
         $args  = array( 'order_id' => $order_id );
         $group = 'myplugin';
 
-        if ( as_has_scheduled_action( $hook, $args, $group ) ) {
-            return;
-        }
-
-        as_enqueue_async_action( $hook, $args, $group );
+        as_enqueue_async_action( $hook, $args, $group, true );
     }
 );
 
@@ -118,16 +114,14 @@ $hook  = 'myplugin_follow_up_order';
 $args  = array( 'order_id' => $order_id );
 $group = 'myplugin';
 
-if ( ! as_has_scheduled_action( $hook, $args, $group ) ) {
-    as_schedule_single_action( time() + HOUR_IN_SECONDS, $hook, $args, $group );
-}
+as_schedule_single_action( time() + HOUR_IN_SECONDS, $hook, $args, $group, true );
 ```
 
-`as_next_scheduled_action()` returns a timestamp for a pending scheduled action, `true` for running/async, and `false` for no match. Use `as_has_scheduled_action()` when you only need a boolean.
+On Action Scheduler 4.0, the unique insert is atomic at the DBStore insert boundary for the exact encoded args and returns `0` when a matching pending/running action already exists. `as_next_scheduled_action()` returns a timestamp for a pending scheduled action, `true` for running/async, and `false` for no match. Use `as_has_scheduled_action()` when you only need a boolean or must support older active copies.
 
 ## Recurring job initialization, repair, and deactivation
 
-Do not call the procedural API directly from plugin activation: Action Scheduler may not be loaded then. Store bootstrap state on activation, schedule after `action_scheduler_init`, and use the Action Scheduler 3.9.3 ensure hook to repair a missing recurring action daily. Fall back to an idempotent readiness check on older active copies.
+Do not call the procedural API directly from plugin activation: Action Scheduler may not be loaded then. Store bootstrap state on activation, schedule after `action_scheduler_init`, and use the `action_scheduler_ensure_recurring_actions` hook to repair a missing recurring action daily when `as_supports( 'ensure_recurring_actions_hook' )` reports support. Fall back to an idempotent readiness check on older active copies.
 
 ```php
 function myplugin_ensure_hourly_maintenance(): bool {
@@ -194,88 +188,31 @@ register_deactivation_hook(
 
 Increment the bootstrap version when a release changes the recurring schedule. Keep recurring callbacks small. If one run may need to process thousands of rows, split it into batches.
 
-A failed one-off action is marked failed and is not retried automatically. A recurring action normally schedules its next instance even after a failure, but Action Scheduler 3.9.3 stops rescheduling after consistently failing recent runs; the default threshold is five actions with the same hook. The daily ensure hook can restore a disappeared recurring action, but it does not fix the underlying failure.
+A failed one-off action is marked failed and is not retried automatically. A recurring action normally schedules its next instance even after a failure, but current Action Scheduler stops rescheduling after consistently failing recent runs; the default threshold is five actions with the same hook. The daily ensure hook can restore a disappeared recurring action, but it does not fix the underlying failure.
 
-## Explicit retries and failure telemetry
+## Action Scheduler 4.0 cleanup and evidence retention
 
-Implement bounded retries deliberately. Carry an attempt number, use exponential backoff with optional jitter, and preserve remote idempotency across every attempt. Rethrow the original error after scheduling the retry so the failed attempt remains visible.
+Action Scheduler 4.0 moved old-action deletion to a dedicated daily scheduled action, normally around 03:00 in the site's local timezone, with bounded batches and continuation actions. The cleaner hooks/classes are internal; do not call or replace them from a distributed plugin.
 
-```php
-add_action(
-    'myplugin_import_order',
-    static function ( int $order_id, int $attempt = 1 ): void {
-        try {
-            myplugin_import_order_from_remote( $order_id );
-        } catch ( Throwable $error ) {
-            if ( $attempt < 5 ) {
-                $delay = min( 15 * ( 2 ** max( 0, $attempt - 1 ) ), 15 * MINUTE_IN_SECONDS );
-                $delay += wp_rand( 0, 30 ); // Intentional jitter prevents synchronized retries.
+Default retention is:
 
-                as_schedule_single_action(
-                    time() + $delay,
-                    'myplugin_import_order',
-                    array(
-                        'order_id' => $order_id,
-                        'attempt'  => $attempt + 1,
-                    ),
-                    'myplugin'
-                );
-            }
+- completed and canceled actions: 31 days via `action_scheduler_retention_period`;
+- failed actions: three 31-day months via `action_scheduler_retention_period_for_failed`;
+- failed cleanup enabled via `action_scheduler_enable_failed_action_cleanup`.
 
-            throw $error;
-        }
-    },
-    10,
-    2
-);
+Failed rows and their logs are therefore temporary diagnostics, not durable audit/business records. Export required incident/accounting data to owned storage before retention expires. Site-specific operational code may adjust the documented filters, but a distributed plugin should not globally disable cleanup or impose longer retention without an explicit reason.
 
-add_action(
-    'action_scheduler_failed_execution',
-    static function ( int $action_id, Throwable $error, string $context ): void {
-        wc_get_logger()->error(
-            'Action Scheduler action failed.',
-            array(
-                'source'    => 'myplugin',
-                'action_id' => $action_id,
-                'context'   => $context,
-                'exception' => $error,
-            )
-        );
-    },
-    10,
-    3
-);
-```
+## Table ownership and uninstall
 
-Use retry jitter only when varied timing is acceptable. For deterministic tests, inject or filter the delay calculation instead of asserting an exact randomized timestamp.
+Action Scheduler is a shared library. A plugin that happens to load or bundle it does not automatically own the four queue tables, because other active plugins may be using the same store. On WooCommerce 11.0 uninstall, Action Scheduler tables are deliberately preserved by default. WooCommerce removes them only when the site owner has explicitly defined `WC_REMOVE_ACTION_SCHEDULER` as `true` in addition to requesting WooCommerce data removal.
 
-## Batch pattern
+Do not define that constant from an extension and do not drop Action Scheduler tables in a plugin uninstaller. Deactivation should cancel only your plugin's pending actions—prefer an exclusive plugin-owned group—and remove only your own bootstrap/options. Full queue-table deletion is a site-owner operation that requires confirming no other plugin relies on the shared queue.
 
-```php
-add_action(
-    'myplugin_rebuild_product_cache',
-    static function ( int $offset = 0 ): void {
-        $product_ids = myplugin_get_product_ids_for_rebuild( $offset, 100 );
+## Retries, batches, and operations
 
-        foreach ( $product_ids as $product_id ) {
-            myplugin_rebuild_one_product_cache( (int) $product_id );
-        }
+Failed one-offs do not retry automatically. Implement a bounded attempt counter, backoff, optional jitter, and the same durable idempotency key across attempts; rethrow so each failed attempt remains visible. Split large work into bounded cursor/ID batches rather than one action or an unstable offset over changing data.
 
-        if ( count( $product_ids ) === 100 ) {
-            as_schedule_single_action(
-                time() + 30,
-                'myplugin_rebuild_product_cache',
-                array( 'offset' => $offset + 100 ),
-                'myplugin'
-            );
-        }
-    },
-    10,
-    1
-);
-```
-
-For imports that can change while the batch runs, prefer a cursor based on IDs or timestamps instead of an offset.
+Read [references/retries-batches-cli.md](references/retries-batches-cli.md) for copy-ready retry/failure telemetry, batching, and the verified Action Scheduler 4.0 WP-CLI command tree.
 
 ## Groups, ordering, and concurrency
 
@@ -283,30 +220,10 @@ Use a group as an operational namespace for filtering, cleanup, and runner selec
 
 When overlap would corrupt state, acquire an owned atomic claim in durable storage and release it only if the current worker still owns it. Prefer a database unique key or conditional update over a check-then-set option. Make the callback safe if a worker dies while holding the claim, and design a stale-claim recovery rule.
 
-## CLI diagnostics and operations
-
-The active Action Scheduler copy registers WP-CLI commands. Multiple plugins can bundle it, so do not assume WooCommerce's physical copy won version selection. Inspect the runtime before diagnosing source-specific behavior:
-
-```bash
-wp action-scheduler version --all --path=/path/to/site
-wp action-scheduler source --path=/path/to/site
-wp action-scheduler source --all --path=/path/to/site
-wp action-scheduler data-store --path=/path/to/site
-wp action-scheduler runner --path=/path/to/site
-wp action-scheduler status --path=/path/to/site
-wp action-scheduler run --group=myplugin --batch-size=25 --path=/path/to/site
-wp action-scheduler action list --group=myplugin --status=pending --path=/path/to/site
-wp action-scheduler action get 123 --path=/path/to/site
-wp action-scheduler action run 123 --path=/path/to/site
-```
-
-Use the CLI runner for controlled local tests and production workers. It accepts `--hooks`, `--group`, `--exclude-groups`, `--batch-size`, and `--batches`. Use `--force` only intentionally: it bypasses the maximum-concurrent-batches guard and can increase overlap.
-
-Use plain `source` for the selected runtime source. `source --all` shows the registry, but it can omit duplicate physical copies registered under the same version; treat that list as supporting evidence, not a complete filesystem inventory.
-
 ## Common mistakes
 
-- Using `$unique = true` for per-order/per-product jobs. In the current DB store, that is hook+group uniqueness, not args-level uniqueness.
+- Assuming `$unique = true` makes the callback or its side effect exactly once. It only suppresses a matching pending/running queue row.
+- Assuming one `$unique` identity across AS 3.x and 4.x. The bundled AS 4.0 DBStore includes encoded args; older DBStore versions did not.
 - Omitting the group and later being unable to isolate your jobs.
 - Treating a group as a lock, FIFO queue, or per-resource serialization boundary.
 - Passing objects or closures as args, or using large payloads instead of durable IDs.
@@ -315,12 +232,14 @@ Use plain `source` for the selected runtime source. `source --all` shows the reg
 - Doing slow external API calls directly in WooCommerce hooks instead of queueing.
 - Assuming `as_enqueue_async_action()` runs immediately or in the same request.
 - Assuming a one-off failure retries automatically.
+- Treating failed rows/logs as permanent evidence even though AS 4.0 purges them after roughly three months by default.
 - Writing a local success marker after a remote call and calling that exactly-once behavior.
 - Assuming a job can run only once. Crashes, timeouts, manual CLI runs, or duplicate scheduling can happen; callbacks must be replay-safe.
 - Scheduling or querying a recurring action on every page load when the active version supports the daily ensure hook.
 - Assuming recurring actions continue forever despite repeated failures.
 - Running critical queues only through traffic-driven WP-Cron without latency/failure monitoring.
 - Forgetting to unschedule recurring plugin jobs on deactivation.
+- Treating shared Action Scheduler tables as plugin-owned uninstall data.
 
 ## Cross-skill routing
 
@@ -335,6 +254,7 @@ Use plain `source` for the selected runtime source. `source --all` shows the reg
   - `wp-content/plugins/woocommerce/packages/action-scheduler/functions.php`
   - `wp-content/plugins/woocommerce/packages/action-scheduler/classes/ActionScheduler_ActionFactory.php`
   - `wp-content/plugins/woocommerce/packages/action-scheduler/classes/data-stores/ActionScheduler_DBStore.php`
+  - `wp-content/plugins/woocommerce/packages/action-scheduler/classes/ActionScheduler_QueueCleaner.php`
   - `wp-content/plugins/woocommerce/packages/action-scheduler/classes/WP_CLI/ActionScheduler_WPCLI_Scheduler_command.php`
   - `wp-content/plugins/woocommerce/packages/action-scheduler/classes/WP_CLI/Action_Command.php`
   - `wp-content/plugins/woocommerce/packages/action-scheduler/classes/WP_CLI/System_Command.php`

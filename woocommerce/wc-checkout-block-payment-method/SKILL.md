@@ -5,9 +5,9 @@ metadata:
   wp-skills-author: "Soczó Kristóf"
   wp-skills-contact: "mailto:lonsdale201@hotmail.com"
   wp-skills-plugin: "woocommerce"
-  wp-skills-plugin-version-tested: "10.9.4"
+  wp-skills-plugin-version-tested: "11.0.0"
   wp-skills-php-min: "7.4"
-  wp-skills-last-updated: "2026-07-20"
+  wp-skills-last-updated: "2026-08-05"
 ---
 
 # WooCommerce Checkout Block payment methods
@@ -195,7 +195,7 @@ Once this handler sets a result status, Woo skips the legacy gateway bridge. Do 
 ## Client confirmation and saved tokens
 
 - Use `onPaymentSetup` to validate or create an opaque provider-side reference before Checkout sends the order.
-- If the server must first return a scoped client secret, put only required scalar data in `PaymentResult::payment_details`, then complete the SDK step through `onCheckoutSuccess`. Woo 10.9.4 casts each payment-detail value to string. Settle the order from verified server state/webhooks.
+- If the server must first return a scoped client secret, put only required scalar data in `PaymentResult::payment_details`, then complete the SDK step through `onCheckoutSuccess`. Woo 11.0.0 casts each payment-detail value to string. Settle the order from verified server state/webhooks.
 - `savedTokenComponent` receives a local Woo token ID, not the provider credential. Resolve it server-side and verify ownership, gateway, type, expiry/state, and provider customer.
 - Set `supports.showSavedCards` and `supports.showSaveOption` only if the PHP gateway implements safe tokenization. These flags are UI capability claims, not security checks.
 - Keep `canMakePayment` cheap, deterministic, and side-effect free. It can run repeatedly and asynchronously; memoize costly provider capability checks.

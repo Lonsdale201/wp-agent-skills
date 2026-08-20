@@ -1,0 +1,4 @@
+interface:
+  display_name: "FluentCart Pro licensing"
+  short_description: "Extend product licensing and package delivery safely"
+  default_prompt: "Use $fluentcart-licensing-pro to implement or audit this FluentCart Pro licensing flow with lifecycle, ownership, activation-limit, credential, and package-delivery controls."

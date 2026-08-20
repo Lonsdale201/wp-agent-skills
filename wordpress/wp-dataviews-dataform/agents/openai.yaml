@@ -1,0 +1,4 @@
+interface:
+  display_name: "WordPress DataViews and DataForm"
+  short_description: "Build data-driven WordPress admin interfaces safely."
+  default_prompt: "Use $wp-dataviews-dataform to design or audit a WordPress DataViews/DataForm interface."

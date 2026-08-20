@@ -1,13 +1,14 @@
 ---
 name: classic-theme-comments-discussion
-description: Build or audit classic theme comments output for WP 7.0. Covers `comments_template()`, `comments.php`, `post_password_required()`, `have_comments()`, `wp_list_comments()`, comment pagination, `comment_form()`, threaded comment reply script loading, closed-comment messaging, accessible comment navigation, escaping comment titles and labels, and common mistakes such as custom comment forms, missing password guards, loading `comment-reply` globally, broken callback walkers, or showing comments on unsupported post types.
+description: Build or audit classic theme comments output for WP 7.1. Covers `comments_template()`, `comments.php`, `post_password_required()`, `have_comments()`, `wp_list_comments()`, comment pagination, `comment_form()`, threaded comment reply script loading, closed-comment messaging, accessible comment navigation, excluding private editor Notes, escaping comment titles and labels, and common mistakes such as custom comment forms, missing password guards, loading `comment-reply` globally, broken callback walkers, or showing comments on unsupported post types.
 metadata:
   wp-skills-author: "Soczó Kristóf"
   wp-skills-contact: "mailto:lonsdale201@hotmail.com"
   wp-skills-plugin: "wordpress"
-  wp-skills-plugin-version-tested: "7.0"
+  wp-skills-plugin-version-tested: "7.0 - 7.1"
+  wp-skills-wp-version-tested: "7.1"
   wp-skills-php-min: "7.4"
-  wp-skills-last-updated: "2026-06-04"
+  wp-skills-last-updated: "2026-08-20"
 ---
 
 # Classic Theme Comments and Discussion
@@ -38,6 +39,9 @@ Rules:
 - Check `comments_open()` or `get_comments_number()` before loading the template.
 - If a custom post type does not support comments, do not force comments into its template.
 - Keep the rendering code in `comments.php`.
+- Editor Notes use the comments table but are private editorial data. Do not use
+  `type => all` in custom public queries or walkers; keep public theme output to
+  ordinary comments/pings intentionally.
 
 `comments_template()` is designed for single/page contexts and returns early outside supported contexts unless `$withcomments` is set.
 
@@ -210,6 +214,7 @@ Do not show "Comments are closed" on every page with no discussion.
 - `comment-reply` is conditionally enqueued.
 - Closed-comment messaging is not noisy.
 - Custom callbacks preserve reply links, moderation state, and escaping.
+- Custom comment queries do not expose `comment_type = note`.
 
 ## Common Mistakes
 
@@ -219,12 +224,15 @@ Do not show "Comments are closed" on every page with no discussion.
 - Rendering comment navigation when comments are not paginated.
 - Echoing `get_the_title()` raw inside the comments heading.
 - Using a `<div>` wrapper while asking `wp_list_comments()` for `style => 'ol'`.
+- Querying all comment types and leaking editor Notes into public output.
 
 ## References
 
 - Official documentation: <https://developer.wordpress.org/themes/classic-themes/templates/partial-and-miscellaneous-template-files/comment-template/>
 - Official documentation: <https://developer.wordpress.org/reference/functions/comment_form/>
 - Official documentation: <https://developer.wordpress.org/reference/functions/wp_list_comments/>
+- Related skill: `wordpress/wp-comments-notes-api` for Notes, notification,
+  REST, and ping behavior.
 - Verified source paths:
   - `wp-includes/comment-template.php`
   - `wp-includes/script-loader.php`

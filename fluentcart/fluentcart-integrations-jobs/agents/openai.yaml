@@ -1,0 +1,4 @@
+interface:
+  display_name: "FluentCart integrations and jobs"
+  short_description: "Build replay-safe feeds and background work"
+  default_prompt: "Use $fluentcart-integrations-jobs to implement or audit this FluentCart integration feed or background job with correct lifecycle timing, queue ownership, retries, and idempotency."

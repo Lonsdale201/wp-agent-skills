@@ -4,19 +4,21 @@ description: Build WordPress admin tables by extending `WP_List_Table`.
   Covers the required `require_once`, constructor `singular` / `plural` /
   `ajax` args, `prepare_items()`, `get_columns()`, `column_cb()`,
   `column_default()`, `get_sortable_columns()`, `get_bulk_actions()`,
+  `get_primary_column_aria_label()`, semantic row headers,
   `process_bulk_action()`, `extra_tablenav()`, pagination with
   `set_pagination_args()`, row actions, search, views, Screen Options
   per-page settings, sortable `orderby` / `order`, and the plugin CSRF gap,
-  calling `check_admin_referer( 'bulk-' . $this->_args['plural'] )` before
+  calling `check_admin_referer()` with the plural bulk-action value before
   acting on `current_action()`. Use for license keys, jobs, logs, audit
   records, subscriptions, or any plugin record list needing WP-native UI.
 metadata:
   wp-skills-author: "Soczó Kristóf"
   wp-skills-contact: "mailto:lonsdale201@hotmail.com"
   wp-skills-plugin: "wordpress"
-  wp-skills-plugin-version-tested: "6.0 - 7.0.1"
+  wp-skills-plugin-version-tested: "6.0 - 7.1"
+  wp-skills-wp-version-tested: "7.1"
   wp-skills-php-min: "7.4"
-  wp-skills-last-updated: "2026-07-10"
+  wp-skills-last-updated: "2026-08-20"
 ---
 
 # WordPress Admin List Table (`WP_List_Table`)
@@ -43,6 +45,7 @@ Trigger when ANY of the following is true:
 | `column_default( $item, $col )` | Recommended | Fallback renderer for any column without its own method |
 | `column_<slug>( $item )` | Optional | Per-column renderer for the column named `<slug>` |
 | `column_cb( $item )` | Required IF you have bulk actions | Renders the row checkbox |
+| `get_primary_column_aria_label( $item )` | Recommended on WP 7.1+ | Concise accessible name for the primary row-header cell |
 | `get_sortable_columns()` | Optional | Return `[ col => [ orderby_slug, default_desc ] ]` |
 | `get_bulk_actions()` | Optional | Return `[ action_slug => label ]` to show the bulk dropdown |
 | `process_bulk_action()` | Optional — but you write it if you have bulk actions | Read `current_action()` and act; this is where the CSRF lives |
@@ -213,6 +216,31 @@ Use `get_views()` for `All | Active | Archived` links above the table and `extra
 
 `WP_List_Table` supports AJAX (`ajax => true` in the constructor) but the docs are thin and you have to wire it manually — handle the `wp_ajax_*` callback, return the rendered table HTML, swap on the client. For 95% of plugin use cases, **don't bother with AJAX** — a regular form post is faster to ship and faster for users (one round-trip vs JS scaffolding). Add AJAX later if you genuinely need inline updates.
 
+## WordPress 7.1 row-header semantics
+
+WordPress 7.1 renders the primary column as `<th scope="row">` and the checkbox
+column as `<td>`. The base class adds
+`get_primary_column_aria_label( $item )`; override it with a short, plain item
+identifier so assistive technology does not derive a noisy name from row
+actions, status text, and excerpts:
+
+```php
+protected function get_primary_column_aria_label( $item ): string {
+    return isset( $item['name'] ) ? (string) $item['name'] : '';
+}
+```
+
+The base implementation returns an empty string, so the `aria-label` is omitted
+unless a subclass opts in. Escaping is handled by the base renderer; return text,
+not markup or pre-escaped HTML.
+
+If a subclass overrides `single_row_columns()` or a private-style
+`_column_<slug>()` renderer, it bypasses some base markup and must emit the same
+semantics itself. Do not produce multiple `scope="row"` cells, do not place the
+bulk checkbox in a row header, and keep every row's primary identifier visible
+or otherwise programmatically named. CSS/JS selectors that assumed every body
+cell was a `td` must target column classes instead of element names.
+
 ## Critical rules
 
 - **`require_once ABSPATH . 'wp-admin/includes/class-wp-list-table.php'`** before extending. The class is NOT autoloaded everywhere.
@@ -223,6 +251,7 @@ Use `get_views()` for `All | Active | Archived` links above the table and `extra
 - **`current_user_can()` is NOT a substitute for a nonce**. The nonce catches CSRF; the cap check catches privilege escalation. You need both.
 - **Sanitize `orderby` against a whitelist**, never pass directly to SQL `ORDER BY`. Either compare against `get_sortable_columns()` or use a hardcoded `in_array()`.
 - **Set `_column_headers` to a 4-element array** when you want hidden columns / primary column to work — `[ columns, hidden, sortable, primary ]`. The 3-element shorthand still works but you lose the row-actions hover anchor.
+- **On WordPress 7.1+, treat the primary column as a row header.** Override `get_primary_column_aria_label()` and avoid selectors that require `td.column-primary`.
 - **Pluralize `plural` consistently**. Core uses it for the table classes and the bulk-action nonce suffix (`bulk-{$plural}`). Row checkbox names are your responsibility in `column_cb()`; the usual convention is `name="{$singular}[]"`.
 - **Don't query the DB inside `column_<slug>()`**. Those run per-row; an N+1 query happens silently. Resolve all needed joins in `prepare_items()`.
 - **Don't render anything before `display()`**. `prepare_items()` reads `$_GET`/`$_REQUEST`, but the actual `<form>` and `<table>` come from `display()`. If you echo headings in between, fine; just don't dump rows.
@@ -247,14 +276,7 @@ See `reference.md` for before/after examples: missing `require_once`, missing bu
 
 ## References
 
-- `wp-admin/includes/class-wp-list-table.php` — the base class. Method registrations start at line 87.
-- `wp-admin/includes/class-wp-list-table.php:138` — constructor with `singular` / `plural` / `ajax` / `screen` args.
-- `wp-admin/includes/class-wp-list-table.php:300` — `prepare_items()` "must be overridden" error.
-- `wp-admin/includes/class-wp-list-table.php:311` — `set_pagination_args()`, the contract for pagination data.
-- `wp-admin/includes/class-wp-list-table.php:559` — `get_bulk_actions()`.
-- `wp-admin/includes/class-wp-list-table.php:634` — `current_action()` — reads `$_REQUEST['action']`; core admin JS mirrors the bottom bulk-action selector into the top control before submit.
-- `wp-admin/includes/class-wp-list-table.php:655` — `row_actions()` for the hover-menu.
-- `wp-admin/includes/class-wp-list-table.php:978` — `get_items_per_page()`.
+- `wp-admin/includes/class-wp-list-table.php` — constructor, pagination, bulk actions, row actions, primary-column semantics, and `get_items_per_page()`.
 - `reference.md` — complete subclass, view/filter snippets, and common mistakes.
 - Official documentation: <https://developer.wordpress.org/reference/classes/wp_list_table/>
 - Official documentation: <https://developer.wordpress.org/reference/functions/add_screen_option/>

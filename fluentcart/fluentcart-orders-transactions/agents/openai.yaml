@@ -1,0 +1,4 @@
+interface:
+  display_name: "FluentCart orders and transactions"
+  short_description: "Use correct settlement, status, refund, and event flows"
+  default_prompt: "Use $fluentcart-orders-transactions to implement or audit this order workflow with correct status dimensions, transaction reconciliation, hooks, and idempotency."

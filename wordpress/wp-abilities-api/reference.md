@@ -1,11 +1,11 @@
 # Abilities API REST and JavaScript Reference
 
 Read this after the main skill when implementing REST discovery or client-side
-abilities on WordPress 7.0.x.
+abilities on WordPress 7.1.
 
 ## REST routes
 
-With `meta.show_in_rest = true`, core exposes:
+With effective `meta.show_in_rest = true`, core exposes:
 
 - `GET /wp-json/wp-abilities/v1/abilities`
 - `GET /wp-json/wp-abilities/v1/abilities/{namespace}/{ability}`
@@ -22,6 +22,111 @@ core version if a package or handbook disagrees.
 REST responses omit internal schema keys such as `sanitize_callback`,
 `validate_callback`, and `arg_options`. Express public constraints using JSON
 Schema keywords.
+
+In WordPress 7.1 the collection route supports `page` (minimum 1), `per_page`
+(1-100, default 50), `category`, `namespace`, and `meta`. It always forces the
+internal `show_in_rest => true` match. It sends `X-WP-Total`,
+`X-WP-TotalPages`, and pagination links; `HEAD` returns an empty body with the
+same collection headers. Use `rest_abilities_collection_params` to declare the
+schema for custom meta query fields before expecting query-string coercion.
+
+The 7.1 run controller coerces already-valid GET/DELETE query input into the
+ability's schema types. It deliberately leaves invalid input unchanged so
+validation rejects it instead of sanitization silently making it valid. POST
+reads `input` from the JSON body; GET/DELETE read it from the query string.
+
+## Public exposure flags
+
+```php
+'meta' => array(
+    'public'       => true,
+    'show_in_rest' => false,
+),
+```
+
+WordPress 7.1 resolves REST exposure in this order:
+
+1. explicit `show_in_rest`;
+2. `public` as its default;
+3. false.
+
+`public` communicates broad client-facing intent for REST, MCP, AI, and future
+channels; it is not authorization and does not force every adapter to expose
+the ability. An explicit channel flag can narrow or broaden one channel.
+
+## Filtered server discovery
+
+WordPress 7.1 accepts filters in `wp_get_abilities()`:
+
+```php
+$abilities = wp_get_abilities(
+    array(
+        'category'  => 'myplugin-actions',
+        'namespace' => 'myplugin',
+        'meta'      => array(
+            'public'      => true,
+            'annotations' => array( 'readonly' => true ),
+        ),
+        'item_include_callback' => static fn ( WP_Ability $ability ): bool =>
+            current_user_can( 'read' ),
+        'result_callback' => static fn ( array $items ): array =>
+            array_slice( $items, 0, 20, true ),
+    )
+);
+```
+
+Category, namespace, and meta use AND logic. Nested meta arrays are matched
+recursively and scalar values strictly. Results stay keyed by ability name
+unless a callback reshapes them. The pipeline order is declarative filters,
+caller item callback, `wp_get_abilities_item_include`, caller result callback,
+then `wp_get_abilities_result`. Ecosystem filters fire even for a no-argument
+call. Use the registry's raw getter only when deliberately bypassing all of
+those policies.
+
+## WordPress 7.1 execution lifecycle
+
+The exact `WP_Ability::execute()` order is:
+
+1. `wp_ability_invoked` receives raw input for every attempt.
+2. `wp_pre_execute_ability` may short-circuit everything below.
+3. schema default normalization, then `wp_ability_normalize_input`.
+4. schema validation, then `wp_ability_validate_input`.
+5. permission callback, then `wp_ability_permission_result`.
+6. `wp_before_execute_ability`.
+7. execute callback, then `wp_ability_execute_result`.
+8. schema validation, then `wp_ability_validate_output`.
+9. `wp_after_execute_ability`.
+
+`wp_pre_execute_ability` receives a unique `WP_Filter_Sentinel`. Return that
+exact value to continue; any different value—including `null` or `false`—is a
+final result and bypasses input/output validation and permission checks. Use it
+only in trusted server code, and enforce equivalent authorization and result
+integrity when caching or mocking.
+
+Normalization can return `WP_Error`. Validation filters receive `true` or the
+core `WP_Error`; return `false` for a generic invalid error or a non-empty
+`WP_Error` for a specific failure. Permission filtering coerces unexpected
+types to denial. The result filter can recover from an execution `WP_Error` or
+convert success into an error. Before/after actions now receive the
+`WP_Ability` object; old callbacks must keep their accepted-argument count
+compatible.
+
+REST dispatch runs normalization/validation/permission before the callback and
+`execute()` runs them again. Those stages must therefore be deterministic,
+read-only, and safe to repeat.
+
+## Client-safe JSON Schema
+
+Use `wp_prepare_json_schema_for_client( $schema )` before passing a
+WordPress-authored schema to browsers or AI providers. The default `draft-04`
+profile preserves a broader draft-04 vocabulary; pass `rest-api` for the
+historical REST subset. It recursively strips unapproved/PHP callback keys,
+converts per-property `required: true` to the parent draft-04 `required` array,
+and emits an empty object default as an object instead of an empty JSON array.
+
+`wp_get_json_schema_allowed_keywords()` can be filtered, but exposing a keyword
+does not make WordPress validate or sanitize it. Keep the server contract within
+the validator's supported subset.
 
 ## Server abilities in JavaScript
 

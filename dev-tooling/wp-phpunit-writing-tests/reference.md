@@ -63,7 +63,10 @@ class Test_My_Plugin_Subscriptions extends WP_UnitTestCase {
 }
 ```
 
-Note: the created posts/users and the `update_option` change are all undone by the per-test transaction rollback and `tear_down()`; only state outside the DB needs manual restoration.
+Note: the base test case and factories clean up these ordinary WordPress records.
+Do not generalize this into a universal transaction guarantee: restore globals,
+hooks, files, custom tables/schema, persistent-cache state, and external effects
+explicitly.
 
 ## HTTP mock inside an integration test
 

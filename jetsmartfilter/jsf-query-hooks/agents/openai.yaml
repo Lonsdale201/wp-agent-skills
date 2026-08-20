@@ -1,0 +1,4 @@
+interface:
+  display_name: "JSF Query Hooks"
+  short_description: "Customize JSF queries without cross-provider leaks."
+  default_prompt: "Use $jsf-query-hooks to alter JetSmartFilters query arguments with strict provider and query ID scoping."

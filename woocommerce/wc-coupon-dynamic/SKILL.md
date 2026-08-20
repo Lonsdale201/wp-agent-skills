@@ -5,9 +5,9 @@ metadata:
   wp-skills-author: "Soczó Kristóf"
   wp-skills-contact: "mailto:lonsdale201@hotmail.com"
   wp-skills-plugin: "woocommerce"
-  wp-skills-plugin-version-tested: "10.9.4"
+  wp-skills-plugin-version-tested: "11.0.0"
   wp-skills-php-min: "7.4"
-  wp-skills-last-updated: "2026-07-20"
+  wp-skills-last-updated: "2026-08-05"
 ---
 
 # WooCommerce virtual coupons
@@ -229,11 +229,12 @@ Prefer simple normalized code characters. The Store API's coupon endpoints and o
 - `wc-order-lifecycle-and-items`: safe idempotent order status and refund side effects.
 - `wc-cart-checkout-classic`: classic cart calculation and checkout transfer.
 
-## Verified sources
+## References
 
-- `wp-content/plugins/woocommerce/includes/class-wc-coupon.php`
-- `wp-content/plugins/woocommerce/includes/class-wc-discounts.php`
-- `wp-content/plugins/woocommerce/includes/abstracts/abstract-wc-order.php`
-- `wp-content/plugins/woocommerce/includes/class-wc-order.php`
-- `wp-content/plugins/woocommerce/includes/wc-coupon-functions.php`
-- `wp-content/plugins/woocommerce/src/StoreApi/Utilities/CartController.php`
+- Verified source paths:
+  - `wp-content/plugins/woocommerce/includes/class-wc-coupon.php`
+  - `wp-content/plugins/woocommerce/includes/class-wc-discounts.php`
+  - `wp-content/plugins/woocommerce/includes/abstracts/abstract-wc-order.php`
+  - `wp-content/plugins/woocommerce/includes/class-wc-order.php`
+  - `wp-content/plugins/woocommerce/includes/wc-coupon-functions.php`
+  - `wp-content/plugins/woocommerce/src/StoreApi/Utilities/CartController.php`

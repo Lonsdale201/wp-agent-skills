@@ -11,9 +11,10 @@ metadata:
   wp-skills-author: "Soczó Kristóf"
   wp-skills-contact: "mailto:lonsdale201@hotmail.com"
   wp-skills-plugin: "wordpress"
-  wp-skills-plugin-version-tested: "6.0 - 7.0.1"
+  wp-skills-plugin-version-tested: "6.0 - 7.1"
+  wp-skills-wp-version-tested: "7.1"
   wp-skills-php-min: "7.4"
-  wp-skills-last-updated: "2026-07-15"
+  wp-skills-last-updated: "2026-08-20"
 ---
 
 # WordPress HTTP API Client
@@ -152,6 +153,15 @@ resolver, IPv6, DNS-rebinding, or hosting-network scenario. For arbitrary
 user-selected URLs, combine it with short limits and infrastructure egress
 controls/a fixed outbound proxy. Never disable the check through broad
 `http_request_host_is_external` or `http_allowed_safe_ports` filters.
+
+WordPress 7.1 expands the IPv4 ranges rejected by `wp_http_validate_url()`.
+In addition to loopback and RFC1918 private space, core now rejects link-local
+and cloud-metadata space (`169.254.0.0/16`), CGNAT, benchmarking,
+documentation/test networks, protocol-assignment and 6to4 relay ranges,
+multicast, and reserved/broadcast space. This is defense-in-depth, not a reason
+to remove the plugin's semantic host allowlist. If a legitimate integration
+stops working after the upgrade, identify the exact destination and network
+design; do not globally return true from `http_request_host_is_external`.
 
 ## Time, size, and redirect budgets
 

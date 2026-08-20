@@ -1,0 +1,4 @@
+interface:
+  display_name: "WP SVG Icon API"
+  short_description: "Register and render WordPress 7.1 SVG icons safely"
+  default_prompt: "Use $wp-svg-icon-api to implement or audit a WordPress 7.1 SVG Icon API integration."

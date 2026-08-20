@@ -1,0 +1,7 @@
+interface:
+  display_name: "WordPress Presence API"
+  short_description: "Integrate the experimental Presence API safely"
+  default_prompt: "Use $wp-presence-api to implement or audit this WordPress presence integration against feature plugin 0.1.23."
+
+policy:
+  allow_implicit_invocation: true

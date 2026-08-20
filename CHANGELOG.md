@@ -2,6 +2,485 @@
 
 This collection is continuously evolving — entries are date-based, not version-tagged. New skills land when they're ready; updates go in when they cover real ground (a new release of an upstream plugin, a verified misconception, a corrected example).
 
+## 2026-08-20 (repo: skill-submission form retired)
+
+The **Submit a skill** issue form and the bot behind it are gone. Nobody ever submitted through it, and the grounding requirement this collection runs on — every skill verified against a real installation of the plugin it describes — can't be satisfied by a PR generated from a form, so new skills are written by the maintainer. Removed `.github/ISSUE_TEMPLATE/new-skill.yml`, `.github/workflows/issue-to-pr.yml` and `.github/scripts/build-skill-pr.js`; `validate-skill.yml` and `build-skills-index.yml` dropped their now-unreachable `submission/**` triggers, and the Dependabot note no longer claims a SHA-pinned third-party action — the only one lived in the deleted workflow. **Report a skill problem**, **Request a skill** and **Question** are unchanged and now cross-link to *Request a skill* where they used to point at the submission form; `CONTRIBUTING.md` and the PR template say the same. Direct PRs against `contrib` remain the route for editing skills that already exist.
+
+`validate-skill.js` also gained `scripts/` to its path-scope exemptions, next to `.github/`, `schemas/` and `rules/`. `scripts/sync-skills.sh` landed on `main` in July via a direct push, which skips the validate workflow — the first PR that carried the file (the contrib sync) failed on "changes outside permitted paths". Same silent-failure class as the earlier missing-domain and CHANGELOG.md scope gaps.
+
+Also folded in the one-line `better-data/README.md` correction that had been sitting unmerged on the `Lonsdale201-patch-1` branch — the library needs **WordPress + PHP 8.3+**, not "WordPress 8.3" — and deleted that branch. No skill content changed; counters unchanged.
+
+## 2026-08-20 (wordpress + plugin-scaffold + theme-development + dev-tooling: WordPress 7.1 re-grounding, 15 new skills)
+
+The four WordPress-core domains move from **7.0.1** to **WordPress 7.1**, sourced from the [7.1 Field Guide](https://make.wordpress.org/core/2026/08/05/wordpress-7-1-field-guide/) and its dev notes. **15 new skills** cover the 7.1 surface the collection had no skill for at all — the editor/block layer (Interactivity API, Block Bindings, block registration and assets, the always-iframed editor, editor components, DataViews/DataForms), the new public core APIs (View Config, JSON Schema preparation, SVG Icons, Style Engine), client-side media processing, speculative loading, comment Notes, the admin toolbar, and a first block-theme skill (`theme.json` / Global Styles). **66 existing skills** were re-grounded, 36 of them with real content changes rather than a version bump. Every touched skill records `wp-skills-wp-version-tested: "7.1"`, and 26 skills across these four domains now ship an `agents/openai.yaml`.
+
+Three themes run through the batch. First, **7.1 moves several editor assumptions**: the post editor is always iframed, so `document` / `window` in editor JavaScript no longer means the canvas; `@wordpress/components` removed Navigation and `__experimentalApplyValueToSides` and defaults form controls to 40px; and `WP_List_Table` renders the primary column as `<th scope="row">`, which breaks CSS/JS that assumed every body cell is a `td`. Second, **exposure is not authorization** — the Abilities API's new `meta.public` seeds `show_in_rest` but grants nothing, the SVG Icons and View Config REST routes are authenticated rather than public, and `wp_prepare_json_schema_for_client()` publishes a schema without adding server-side validation for the keywords it allows. Third, **a toolchain that passes is not a 7.1 audit**: WPCS 3.4.x knows symbols through 7.0 and the newest tagged `wordpress-stubs` is 7.0.1, so a green lint / PHPStan run cannot prove 7.1 compatibility.
+
+### Added — `wordpress/wp-interactivity-api`
+
+Server-directed interactive blocks: `block.json` `interactivity` support and `viewScriptModule`, the PHP state/config/context helpers, the `data-wp-*` directive rules, `@wordpress/interactivity` stores, hydration, async actions, and the 7.1 binding rules to audit. Covers server/client mismatch debugging and client-side-navigation compatibility, with the directive table, store contract and hydration-mismatch playbook in `references/contracts-and-debugging.md`.
+
+### Added — `wordpress/wp-block-bindings-api`
+
+Binding block attributes to post meta, post/term data, pattern overrides, custom tables, or remote data. Separates **PHP source registration from editor registration** (two different concerns, commonly conflated), and covers `metadata.bindings` markup, the supported-attribute filters, context, editing callbacks, permissions, caching, and 7.1's `core/list-item` addition. `references/editor-and-security.md` holds the editor half plus the permission and caching detail.
+
+### Added — `wordpress/wp-block-registration-and-assets`
+
+Block metadata and assets through the public APIs: `register_block_type` / `register_block_type_from_metadata`, API version 3, metadata collections, PHP-only `autoRegister` blocks on 7.0+, dynamic rendering and wrapper attributes, editor/frontend asset fields versus script modules, deprecations, transforms, and variations. The 7.1 support changes (`background.gradient`, `dimensions.minWidth`, Custom HTML `innerContent`, List Item bindings) and the always-iframed asset consequences are tabulated in `references/wp-71-block-contracts.md`.
+
+### Added — `wordpress/wp-block-editor-iframe-compatibility`
+
+The migration skill for the always-iframed post editor. The load-bearing rule is that **global `document` is the parent UI, not the canvas**: use `ownerDocument` / `defaultView` and `useRefEffect` from `@wordpress/compose`, put block styles in the block's own metadata so they reach the iframe document, and prefer editor APIs over DOM scraping for selection and measurement. Also covers portals/popovers, the persistent admin toolbar's effect on measurements, Document-Isolation-Policy interaction with media, classic-theme behavior, and a migration audit plus test matrix.
+
+### Added — `wordpress/wp-editor-components`
+
+Public `@wordpress/components` usage and the 7.1 migration: correct dependency handles, accessible controlled controls, the **40px form-control default** that shifts existing layouts, the removed Navigation and `__experimentalApplyValueToSides` APIs, the Navigator migration, the Emotion-to-SCSS styling change, and `View`'s now-no-op `css` prop. `references/wp-71-migration-matrix.md` carries the per-component removal/replacement matrix.
+
+### Added — `wordpress/wp-dataviews-dataform`
+
+Admin data interfaces built on the public `@wordpress/dataviews` DataViews, DataViewsPicker and DataForm components — the WordPress build contract, controlled data flow, defining fields once, action/write contracts, server-driven REST queries with bounded pagination, and the rule that **DataForm is an edit buffer**, not a store. Includes the 7.1 component migration notes and an accessibility/selection test matrix; contracts and security detail in `references/contracts-and-security.md`.
+
+### Added — `wordpress/wp-view-config-api`
+
+7.1's entity list/form defaults for DataViews-based Site Editor screens. Built around **generating the dynamic hook instead of guessing it** (`wp_get_entity_view_config_hook_name( 'postType', 'book' )`, kind/name segments lowercased), the four top-level keys, `WP_View_Config_Data`'s merge/replace/set/remove semantics and which is least destructive, null/reset behavior, composing with other plugins' callbacks, and the authenticated `wp/v2/view-config` route with CPT/taxonomy capability mapping. Patch semantics in `references/patch-semantics.md`.
+
+### Added — `wordpress/wp-json-schema-api`
+
+`wp_prepare_json_schema_for_client()` and `wp_get_json_schema_allowed_keywords()`: draft-04 versus `rest-api` profiles, required-property conversion, recursive cleanup, empty-object defaults, and the `wp_json_schema_allowed_keywords` filter. The boundary is stated explicitly — **preparation is publication, not enforcement**: allowing a keyword does not make the server validate it, and schema publication, REST validation, sanitization and application authorization stay four separate jobs. Profiles and normalization detail in `references/profiles-and-normalization.md`.
+
+### Added — `wordpress/wp-svg-icon-api`
+
+The 7.1 Icons API: `wp_register_icon_collection` / `wp_register_icon` / `wp_get_icon`, collection-before-icon ordering, `content` versus `file_path` (with lazy file reads), core's SVG sanitization limits and what they do **not** cover, accessible label versus decorative rendering, deliberate unregistration, duplicate handling, and the fact that the REST icon/collection routes are **authenticated, not public-anonymous**. API contract in `references/api-contract.md`.
+
+### Added — `wordpress/wp-style-engine`
+
+The public Style Engine surface — `wp_style_engine_get_styles`, `wp_style_engine_get_stylesheet_from_css_rules`, `wp_style_engine_get_stylesheet_from_context`, style objects, preset tokens, selectors, rule groups, and 7.1's declaration options including `!important` support. Two rules carry the skill: **contexts are request-local aggregation, not persistence**, and selector / at-rule input is a security boundary, not a passthrough. Output and testing detail in `references/output-and-testing.md`.
+
+### Added — `wordpress/wp-client-side-media-processing`
+
+7.1's browser-side media pipeline. The core requirement is to **model both processing paths** — `wp_is_client_side_media_processing_enabled()` can be on or off for the same site — and to keep upload integrations path-independent: the REST create/sideload/finalize workflow can call `wp_generate_attachment_metadata` more than once, and server-only image hooks must not be assumed to run. Also covers `generate_sub_sizes` / `convert_format`, byte and dimension limits, Document-Isolation-Policy, `crossorigin` and WASM/CSP requirements, external-image sideloading, and fallback behavior.
+
+### Added — `wordpress/wp-speculative-loading`
+
+Speculation Rules configuration and audit: prefetch versus prerender, eagerness, safe URL exclusions, custom rules, per-link opt-out, and 7.1's host default constants. The safety model is the point — **speculative GETs must be side-effect-free**, so plugin-owned carts, logout and other destructive links, and personalized or session-dependent pages need explicit exclusion. Rule shapes and the verification matrix in `references/rules-and-test-matrix.md`.
+
+### Added — `wordpress/wp-comments-notes-api`
+
+Comments and editor Notes as **two different things sharing one table** — public comments versus Notes, enabling Notes for a custom post type, capability-aware queries and mutations, REST note permissions, note status and mentions, inline markers, and the 7.1 changes to the notification filter and ping behavior. Query arguments, notification filters and ping semantics in `references/queries-notifications-pings.md`.
+
+### Added — `wordpress/wp-admin-toolbar`
+
+`admin_bar_menu` and the `WP_Admin_Bar` node contract: capability-aware links, parent/child ordering, accessible markup, and the frontend/admin/network/editor contexts — including 7.1's **persistent toolbar in the Post and Site Editors**, which is where most existing toolbar code needs a fix or a hide. Covers performance/state discipline (no per-request query in a node callback) and a context test matrix; node contract in `references/node-contract.md`.
+
+### Added — `theme-development/block-theme-global-styles`
+
+The domain's first block-theme skill: `theme.json` schema version 3, responsive mobile/tablet viewport states, block and element pseudo-states, Navigation Link current-state styles, style variations, CSS generation, 7.1's background gradients / minimum width / text shadow / block visibility controls, sanitization, merge order and the cascade, and editor / front-end parity. Frames responsive design **as states rather than ad-hoc media queries**, and insists on validating behavior, not just JSON syntax. `references/theme-json-71.md` holds the 7.1 schema delta.
+
+### Updated — `wordpress/wp-presence-api` (v0.1.4 awareness note to v0.1.23 integration skill)
+
+The largest single change in the batch. The skill was deliberately awareness-only ("do not invent function signatures"); Presence API 0.1.23 is documented enough to integrate against, so it is now a real integration skill: the seven public PHP functions, post and admin rooms, the per-site `wp_presence` table and TTL, Heartbeat transport, the REST read/write/delete/rooms endpoints, per-room capabilities and ownership, pagination and payload limits, post-type opt-in, the `usePresenceUsers` source hook, stale-screen revisions, collaboration hooks, and cleanup / multisite provisioning. It still states plainly that this is an **experimental feature plugin, not WordPress 7.1 core** — pin it and feature-detect, because the `0.1.x` contract can still change. `wp-skills-plugin` moves from `wordpress` to `presence-api`, so it is the batch's only new product.
+
+### Updated — `wordpress/wp-abilities-api`
+
+7.1 adds unified public exposure metadata, filtered discovery, a complete execution-filter lifecycle, client-safe schema preparation, REST collection filters/pagination, and schema-aware run-input coercion. The exposure section was rewritten around the new precedence: **`meta.public` seeds `show_in_rest`, an explicit `show_in_rest => false` overrides it, and neither flag grants execution permission**. `wp_get_abilities()` now takes an `$args` array; schemas going to non-WordPress clients go through `wp_prepare_json_schema_for_client()`; and the MCP-adapter claim was corrected — exposure is adapter configuration and metadata dependent, so a registered or merely `public` Ability does not automatically become an MCP tool. The 7.1 route, lifecycle and filtering detail moved to `reference.md`.
+
+### Updated — `wordpress/wp-connectors-api`
+
+7.1 adds `application_password` alongside `api_key` and `none`. Documents the credential-source precedence (environment, constant, database), the single `username:password` environment / constant string split on the **first** colon so passwords may contain colons, the generated `connectors_{$type}_{$id}_{$method}` setting name, and the boundary that this is for an *external* WordPress-style Basic pair — not for an API key and not for the current site's Application Passwords UI. Adds a feature-detection note for sites still on 7.0.
+
+### Updated — `wordpress/wp-admin-list-table`
+
+7.1 renders the primary column as `<th scope="row">` and the checkbox column as `<td>`, and adds `get_primary_column_aria_label( $item )` (the base implementation returns an empty string, so the `aria-label` is omitted unless a subclass opts in). The skill now covers overriding it with a short plain identifier, the rule that a subclass overriding `single_row_columns()` or a `_column_<slug>()` renderer must emit the same semantics itself, and the migration consequence: **CSS/JS selectors that required `td.column-primary` must target column classes instead of element names**.
+
+### Updated — `dev-tooling/wp-phpunit-test-setup`
+
+Two previously stated facts were wrong and are corrected. The installer does **not** avoid Subversion — it pulls release core as a WordPress.org tarball but uses `svn export` for the matching `wordpress-develop` test `includes/` and `data/`, so SVN, `tar` and MySQL client tools all have to be present. And there is **no universal per-test transaction rollback** for plugin code: core test cases and factories clean up after themselves, but custom tables, raw SQL and external side effects do not, so "the suite rolls back" is not a cleanup strategy. The PHPUnit-9.x ceiling is re-verified for 7.1 (PHPUnit 9 on PHP 7.4 through 8.5, core's `phpunit.xml.dist` on the 9.2 schema), and generated CI is reframed as a starting point to inspect rather than trust.
+
+### Updated — `dev-tooling/wp-phpcs-coding-standards`
+
+WPCS moves to **3.4.1, which is a security release**: it fixes arbitrary command execution in `WordPress.WP.EnqueuedResourceParameters` when scanning untrusted PHP, affecting the `WordPress` and `WordPress-Extra` rulesets — so developer machines and CI runners need the update, not just production dependencies. Pins are now `wpcs ^3.4.1` with `phpcs ^3.13.5`. Adds the 7.1 caveat: WPCS 3.4.x knows core symbols and deprecations through 7.0, so a missing 7.1 rule is not evidence of compatibility.
+
+### Updated — `dev-tooling/wp-phpstan-static-analysis`
+
+Corrects a claim about the extension: the narrow `apply_filters()` extra-argument `ignoreErrors` regex comes from `phpstan-wordpress`'s **documented example**, not from the installed `extension.neon` — so it has to be added deliberately, and not generalized to unrelated calls. Adds the stub-freshness rule: the newest tagged `php-stubs/wordpress-stubs` is 7.0.1, so 7.1-only symbols may report as unknown; feature-detect and add a small reviewed project stub rather than suppressing broadly, and treat a green run as incomplete for a 7.1 API audit.
+
+### Updated — `plugin-scaffold/wp-plugin-bootstrap`
+
+Adds 7.1's `get_file_data()` change (a header line prefixed by either `<?php` or the short open tag is now recognized) with the explicit warning that this is **parsing compatibility, not a new recommended style** — it does not justify short open tags or expressions in metadata. The header matrix, verified load order, common-mistakes examples and i18n detail moved into `references/bootstrap-contracts-and-mistakes.md`, keeping SKILL.md under the spec's length recommendation.
+
+### Updated — `plugin-scaffold/wp-plugin-lifecycle`, `wp-plugin-rewrite-rules`, `wp-plugin-architecture`, `wordpress/wp-filesystem-api`
+
+Progressive-disclosure restructures: the long code walkthroughs moved into a new `references/` companion each (`uninstall-and-multisite.md`, `custom-rules-and-endpoints.md`, `layout-and-review-examples.md`, `patterns-and-mistakes.md`) with net more material than before, not less. The uninstall reference also tightens its own example — dynamic transient cleanup now escapes `LIKE` wildcards with `$wpdb->esc_like()` and goes through `$wpdb->prepare()` instead of interpolating a prefix into query text.
+
+### Updated — `wordpress/wp-admin-drag-and-drop`
+
+7.1 ships jQuery UI **1.14.2** (was 1.13.3) and sets `jQuery.uiBackCompat = true` before `jquery-ui-core`. The documented widget APIs are unchanged, but the skill now says what the flag does not promise: code reaching into underscored widget methods, copied internals, generated class details, or deprecated `$.ui.plugin` behavior needs regression testing. The `jquery-touch-punch` note is reframed as compatibility support rather than a modern pointer-events accessibility layer.
+
+### Updated — 7.1 re-grounding across the remaining core skills
+
+Additive 7.1 passes, each stating the new behavior and what it does not change: `wordpress/wp-admin-notices` (the 7.1 `wp_dashboard_quick_press( $message, $notice_type )` second argument), `wp-admin-media-frame`, `wp-api-fetch-client`, `wp-rest-api`, `wp-html-api`, `wp-utf8-text`, `wp-ai-client`, `wp-http-api-client`, `wp-security-audit`, `wp-file-upload-security`, `wp-privacy-personal-data`, `wp-accessibility-audit` (plus `references/tooltips-71.md`), `wp-admin-form-controls`, `wp-admin-settings-api`, `wp-admin-postbox-sortable`, `dev-tooling/wp-phpunit-writing-tests`, `plugin-scaffold/wp-plugin-assets-loading`, `wp-plugin-cron`, and the classic-theme skills `classic-template-hierarchy`, `classic-theme-structure`, `classic-theme-assets-build`, `classic-theme-media-images` and `classic-theme-comments-discussion`. A further 30 skills received version metadata only.
+
+### Housekeeping
+
+Four corrections were applied on top of the incoming batch, where it had drifted from the repo:
+
+- **The 2026-08-14 i18n finding was restored.** The batch predated commit `ebe4a60` and replaced the verified version boundary with "on WordPress 6.5+ ... normally auto-discovered", which is wrong. `plugin-scaffold/wp-plugin-bootstrap` (SKILL.md and its new reference) and `wordpress/wp-i18n-audit` again state that a **bundled** translation is registered from the plugin header only on **WP 6.8 and up** — from `Domain Path`, or the plugin root when that header is absent — and that on 6.7 and earlier nothing looks inside the plugin folder. `Domain Path` is back to load-bearing rather than an optional LOW finding: a bundled translation with neither `Domain Path` nor `load_plugin_textdomain()` is a MEDIUM.
+- **`dev-tooling/README.md`** dropped `wp-strauss-namespace-prefixing`, `wp-env-local-dev` and `wp-docker-compose-stack` (the batch's source predated them). All three rows and the intro mention are restored; the domain lists 7 skills again.
+- **`## References` normalized in 8 new skills.** Two ended with `## Primary sources` and six had no sources section at all; all now use the collection's standard `## References`. All 252 skills use the same section name.
+- **`plugin-scaffold/README.md`** regained the `references/native-wp-cron-patterns.md` pointer on the `wp-plugin-cron` row.
+
+Root README counters bumped (skills 237 to 252, plugins 30 to 31 — `presence-api` is the one new product); the `wordpress/` and `theme-development/` domain rows describe the new 7.1 and block-theme coverage. Domain READMEs rewritten for `wordpress`, `theme-development`, `plugin-scaffold` and `dev-tooling`. `skills-index.json` regenerated. `node .github/scripts/validate-skill.js --all` passes; the only warning in these four domains is the pre-existing `wp-i18n-audit` length note.
+
+## 2026-08-20 (woocommerce: WooCommerce Stripe Gateway 10.9.0 re-grounding)
+
+Five `wc-stripe-*` skills re-verified against **WooCommerce Stripe Gateway 10.9.0** on WooCommerce 11.0.1, from local plugin source. No new skills; the changes are the kind an integration only finds after an upstream release moves a boundary.
+
+`wc-stripe-add-payment-method` records that **`WC_Stripe_UPE_Payment_Gateway` is the `stripe` gateway** and `WC_Gateway_Stripe` is only a deprecated compatibility subclass, that Optimized Checkout is deliberately disabled on Add payment method, and — new in 10.9 — that Stripe.js is loaded from `https://js.stripe.com/dahlia/stripe.js` with API version `2026-03-25.dahlia` under the `stripe` handle. Treat that origin and version as a deployment invariant: do not deregister the handle or substitute an older Stripe.js, and test Add payment method, classic checkout, Blocks, Optimized Checkout and Express Checkout together whenever another extension touches it.
+
+`wc-stripe-webhooks` documents that 10.9 updates the stored pending-webhook count **only after signature validation succeeds** (custom webhook code must not write health counters from an unverified payload), and adds the new connected-account binding: after signature validation the gateway compares a Connect event's `account`, or an agentic delegated-checkout event's `context`, against the cached connected account ID for the active mode. The skill is explicit that this check **fails open** when the event carries no account/context or the connected account is unknown — it is not a substitute for signature verification. Also covers 10.9 serializing deferred PaymentIntent and Checkout Session success against the return/3DS path with the order lock, re-queueing a collision rather than dropping it.
+
+`wc-stripe-subscriptions` adds the internal shared hook manager that keeps the main gateway and the lazily created Optimized Checkout method from registering the same subscription callbacks twice (so do not instantiate Stripe gateway objects yourself), and the new public `wc_stripe_subscription_renewal_blocked_by_radar` observer that fires after a Radar-blocked renewal order has been handled — the 10.7+ behavior of cancelling the pending WCS retry is now paired with a supported extension point instead of a private path.
+
+`wc-stripe-future-payments` and `wc-stripe-link-payments` cover Adaptive Pricing and Link. Adaptive Pricing runs through a Stripe Checkout Session rather than an ordinary PaymentIntent, and 10.9 exposes `wc_stripe_is_adaptive_pricing_supported( true, WC_Cart|null $cart )` as a **final opt-out after** Stripe's own account, settings, page, subscription, pre-order and deposit checks — the documented place to exclude an incompatible plan. Link gains its own `link_button_locations` and `link_button_size` settings instead of inheriting Apple Pay / Google Pay appearance (existing stores are migrated), its Express Checkout client now uses Woo Store API calls for shipping and variable-product cart mutations, and the local-token projection behavior on disable / re-enable now depends on Optimized Checkout state.
+
+`wc-stripe-link-payments` also had its trailing `## Verified sources` heading normalized to the standard `## References` with a `- Verified source paths:` sub-list — the same drift the 2026-08-06 housekeeping entry fixed, reintroduced by this drop's source.
+
+## 2026-08-17 (jet-engine: JetEngine 3.8.14 re-grounding, 2 new skills, 3 rewritten)
+
+The whole `jet-engine/` domain moves from **3.8.8.2** to **JetEngine 3.8.14**, source-audited against the locally installed plugin and smoke-tested on **WordPress 7.0.4 / PHP 8.3.30** where module state allowed it (the inactive CCT and Data Stores modules were initialized only inside an isolated WP-CLI process, without changing saved module settings). **Two new skills** cover the two data-owning modules the domain never documented — Custom Content Types and Data Stores — and the **three existing skills were rewritten**, not just re-versioned: each one carried at least one claim that no longer holds on 3.8.14. All five now ship a `references/` companion and an `agents/openai.yaml`, and record `wp-skills-wp-version-tested: "7.0.4"`.
+
+Two findings repeat across the batch, and both are the kind an extension only discovers in production. First, **a fired hook is not a committed write**: CCT's `created-item` / `updated-item` / `delete-item` actions all run *before* `Item_Handler` evaluates its insert-ID and `$wpdb` error branch, and Data Stores' `before-remove-from-store` fires *after* the value is already gone — so none of them can veto, and none of them prove the row changed. Second, **JetEngine's user-facing signals are not access control**: a Dynamic Visibility condition only decides whether markup is printed, Data Store membership and counters are written by unauthenticated `nopriv` AJAX with no nonce or ownership check, and CCT REST treats an empty capability (or the literal `public`) as "anyone" while never checking item ownership. Every skill in the batch states the boundary explicitly rather than leaving it implied.
+
+### Added — `jet-engine/je-custom-content-types`
+
+CCT rows are custom-table records, not posts, and the skill is built around the Factory / `Item_Handler` / DB triple rather than post APIs. Covers module timing (module construction on `jet-engine/init`, saved types registered on `init` priority 10, so resolve a factory later and fail closed), the service-column data model (`_ID`, `cct_status`, `cct_author_id`, `cct_created`, `cct_modified`, `cct_single_post_id`), canonical create/update through `update_item()` (same call for both — `_ID` decides) with the caveat that programmatic calls do not necessarily apply every configured UI default, and the per-slug lifecycle hooks including the trap that **`updated-item/{slug}` also fires after a create** with an empty previous-item array (use `created-item/{slug}` for creation-only behavior).
+
+Three source-verified 3.8.14 behaviors that break integrations: **`raw_delete_item()` performs no access check at all** (it is the programmatic primitive; `delete_item()` is the capability-guarded admin path that can redirect or `wp_die()`), it permanently deletes the linked `cct_single_post_id` — and with `delete_item_on_single_delete` enabled the reverse also holds, so cleanup hooks must be designed for both directions and guarded against recursion; the low-level delete path **does not reset the DB object's in-request `_found_items` cache**, so a same-request `get_item($id)` can still return a deleted row; and the factory DB's **output-format flag is shared mutable request state** — CCT Query Builder sets it to `OBJECT` while `Item_Handler` assumes array rows, so normalize to `ARRAY_A` (and restore the previous flag in `finally`) before mutating in a request that already queried. Also documents the `jet-cct` REST surface and its two independent gaps: an empty or `public` capability makes that operation public, and capability checks are global — they never enforce item ownership. Ships `references/cct-query-rest-hooks.md` (exact hook signatures, the confusing `rest_put_enabled` = *create* / `rest_post_enabled` = *update* legacy naming, list parameters, `Jet-Query-Total` / `Jet-Query-Pages` headers, filter names, query-row shapes).
+
+### Added — `jet-engine/je-data-stores`
+
+Favorites, bookmarks, likes, comparisons, and recently-viewed items across all five backends, with the storage matrix (`cookies`, `session`, `user-meta`, `local-storage`, `user_ip`) stating for each one where state actually lives, whether PHP can read it, and what it does *not* prove about identity — `user_ip` is keyed by an MD5 of a header-derived IP and is collision- and shared-network-prone; `is_user` means the stored *IDs* are users, not that the store belongs to the current user.
+
+The load-bearing sections are the ones about mutation. **`Factory` has no public high-level `add()` / `remove()` wrapper**, so calling `$store->get_type()->add_to_store()` / `->remove()` directly (as JetFormBuilder's own add action does) changes backend state while bypassing size enforcement, count maintenance, AJAX fragments, and the add/remove hooks — the skill's answer is one integration-owned service that validates actor and item, confirms a real membership transition before touching a counter, and emits its own idempotent domain event. Three 3.8.14 defects are called out with regression guidance: `before-remove-from-store` **fires after the store type already removed the value** (it cannot veto and cannot read pre-mutation state, despite the name); bounded `store_on_view` eviction **does not reconcile the evicted item's counter** through the normal decrement path; and for `local-storage` the PHP `get()` is empty, so the Factory `get_count()` / `in_store()` wrappers can reach `count(null)` / `in_array(..., null)` on PHP 8 — branch on `is_front_store()` and never read a missing server result as an empty browser store. Plus the anonymous trust boundary (every server-side store registers `nopriv` add/remove; `post_id` and slug are validated, nothing else — and a nonce would fix CSRF, not make a public signal trustworthy), the `manage_options` + nonce admin clear path, `data-stores-query` and the CCT bridge (`is_cct` / `related_cct`, stored-order preservation, the generated `{store_slug}_count` service column, mutually exclusive with `is_user`), and custom store types via `jet-engine/data-stores/register-store-types` — where the manager **reuses one store-type object for every configured store** and calls `on_init()` from each Factory, so initialization must be idempotent and per-store state keyed by slug. Ships `references/storage-mutation-query.md` (Factory surface, exact add/remove AJAX sequences, the 14 hooks, custom-type contract, counter meta keys, security review list).
+
+### Updated — `jet-engine/je-query-builder-custom-type`
+
+**The abstract-method list was wrong and would fatal on 3.8.14.** The skill documented five required `Base_Query` methods; there are **six** — `set_filtered_prop($prop = '', $value = null)` is also abstract, and omitting it leaves the subclass abstract so JetEngine fatals the moment it instantiates the type. The MCP claim was also inverted: custom queries do **not** "automatically participate" in MCP exposure. In 3.8.14 the add-query tool lists the registered slug while persisting an **empty `converted_args`**, so the saved type-specific settings come back empty unless the type provides `mcp_description()` *and* returns a converter through `jet-engine/query-builder/mcp/get-converter/{slug}` — and that feature creates saved queries, it does not turn each saved query into an independently callable MCP tool.
+
+Beyond the corrections: `set_filtered_prop()` is reframed as a **security boundary** (replace / merge / intersect / reject policy per property, with an explicit no-results sentinel when an intersection empties, because blindly replacing a tenant, owner, status, or visibility restriction leaks data); `setup_query()` is documented as the only way to read final arguments (dynamic + macro + `_id`-addressed nested-group merging, `get_args_to_explode()`, `_query_type`, `queried_object_id`) with the warning not to call `merge_dynamic_nested_args()` on the whole final query — it takes a *single* nested group with an `args` member; and the cache section separates `get_items()`'s automatic item caching (do not duplicate it in `_get_items()`) from count caching, which needs its own key and a `false !== $cached` test because `0` and `array()` are valid cached values. Also notes that JetEngine enqueues editor component files with an **empty dependency array**. Ships `references/runtime-editor-mcp.md` (editor contract, the `jet-query-component-{type}` localization name, stable `_id` requirements, filter-merge policies, REST endpoint audit list, converter wiring, `get_query_hash_args()` personalization, regression checklist).
+
+### Updated — `jet-engine/je-listings-callback`
+
+Two runtime contracts the old skill did not cover. **Literal zero does not survive the modern registration path**: 3.8.14 extracts arguments with `! empty($settings[$key])`, so a saved `0`, `'0'`, `false`, or `''` silently falls back to the declared default — and the default is read with `! empty()` too, so a declared default of `0` degrades to an empty string. If zero is a valid control value, pick a non-ambiguous UI representation and normalize in the callback, or use the legacy `jet-engine/listing/dynamic-field/callback-args` filter with `array_key_exists()`. **Output is not escaped for you**: `jet-engine/listings/dynamic-field/kses-output` defaults to `false` at the final render point, so the callback owns its escaping decision (`esc_html()` for text it renders, attribute-context escaping for URLs, `wp_kses_post()` or an opt-in KSES filter for intentional HTML — and never a pass-through for user-controlled shortcodes or callable names).
+
+Also new: the return-type contract (raw arrays and objects are **not** silently stringified — they produce a visible JetEngine error listing available child keys), the sequential `filter_callbacks` chain where each formatter must accept the previous one's output rather than the original database shape, and `jet-engine/listings/non-scalar-callbacks` as the only sanctioned way to receive safely decoded array-backed values — added per callback, never as a workaround for malformed scalar data, and never replaced by a raw `unserialize()`. The original `is_callable()` gate finding (a bare static method name fails silently and the field renders empty) is preserved and moved into `references/callback-contracts.md` together with the full legacy three-filter recipe, chain test cases, and a render-cost checklist.
+
+### Updated — `jet-engine/je-dynamic-visibility-condition`
+
+Rewritten around the show/hide contract as a single rule — implement the **positive predicate**, return it for `show` and its inverse for `hide`, and never invert again for AND/OR because the checker combines the returned values — with the four-case polarity matrix as the required regression test. Registration guidance now insists the condition class be loaded *from* the `conditions/register` callback (or a guarded autoloader) so `Conditions\Base` exists when PHP parses the subclass. Adds the 3.8.14 behavior that **`jet-engine/modules/dynamic-visibility/condition/prevent-check` is used by JetEngine's own silent listing-asset preload** — bypassing that filter makes conditions run during a pass that is not rendering anything. Documents `get_current_value()`'s full resolution order (`WP_Post` / exact `WC_Product` post meta, `WP_User`, `WP_Term`, `WP_Comment`, listing-data property, current-post fallback, macro output), `adjust_values_type()` comparison modes, and that custom-control values arrive **only** under `$args['condition_settings']` — they are never copied to top-level `$args`. Keeps the standing warning that visibility is not authorization, and adds the render-cost rule (no per-card query in a Listing Grid) and the state-restoration rule (`finally`, never leave the listing object, query globals, locale, or current user changed). Ships `references/implementation-reference.md` (base contract defaults, the full checker `$args` shape, comparison pattern, custom groups, an eight-dimension regression matrix).
+
+### Housekeeping
+
+`jet-engine/README.md` intro and table rewritten around the five-skill domain and its 3.8.14 audit scope; the root README's jet-engine row extended with the CCT and Data Stores areas and the counters bumped (skills 235 → 237, plugins unchanged at 30 — all five skills use the existing `jet-engine` product). The two SKILL.md length exceptions recorded on 2026-07-13 are now resolved: `je-dynamic-visibility-condition` (533 lines) and `je-query-builder-custom-type` (731 lines) are 190 and 213 lines with their long material in `references/`, so no jet-engine skill exceeds the spec's 500-line recommendation and the domain is warning-free under `node .github/scripts/validate-skill.js --all`. `skills-index.json` regenerated.
+
+## 2026-08-06 (housekeeping: `## References` section unified)
+
+Six `woocommerce` skills ended their body with a `## Verified sources` heading and a flat path list instead of the collection's standard Agent-Skills `## References` section with a `- Verified source paths:` sub-list — a leftover from the 2026-07-13 format migration that later batches kept reproducing. Normalized in `wc-coupon-dynamic`, `wc-coupon-types-rules`, `wc-downloadable-products`, `wc-stripe-link-payments`, `wcs-cart-checkout-coupons`, and `wcs-subscription-downloads`. Heading and list structure only — no path was added, removed, or re-verified, and no guidance changed. All 235 skills now use the same section name.
+
+## 2026-08-06 (woocommerce + learndash: WCS 9.1 and LearnDash 5.1.9 re-grounding, 2 new skills)
+
+**Two new skills** plus **12 updated skills** re-verified against **WooCommerce Subscriptions 9.1.0** (on WooCommerce 11.0.0) and **LearnDash LMS 5.1.9** local source. All touched `wp-skills-plugin-version-tested` / `wp-skills-woocommerce-version-tested` values moved to the installed release, `wp-skills-last-updated` to `2026-08-06`.
+
+Two themes run through the batch. On the WCS side, 9.1 tightens **authorization and shape boundaries** that extensions used to treat as loose: paying an existing switch order now needs a full guard set (not just a valid order key), relationship REST routes filter per object, and `payment_details` writes only land in gateway-declared slots. On the LearnDash side, the recurring point is that **access is not progress** — the new progress skill separates the completion/activity lifecycle from the enrollment skills, and 5.1.8+ changes the managed-group branch from *replace* to *union*.
+
+### Added — `woocommerce/wcs-cart-checkout-coupons`
+
+The missing WCS cart/checkout/coupon layer. Covers the **two-level cart model** (master `WC_Cart` = due today; the cloned, calculated `WC()->cart->recurring_carts` projections, `WC_Subscriptions_Cart::get_calculation_type()`, and why recurring carts must never be persisted or mutated as records), the four merchant-facing coupon types (`recurring_fee`, `recurring_percent`, `sign_up_fee`, `sign_up_fee_percent`) versus WCS's **internal transport types** (`renewal_fee`, `renewal_percent`, `renewal_cart`, `initial_cart` — never merchant-authored, never a durable identifier), eligibility extension without blanket-`true` on `woocommerce_coupon_is_valid` (and what `woocommerce_subscriptions_validate_coupon_type` actually switches off), **limited recurring coupons as payment limits** (`_wcs_number_payments` counted from paid, non-fully-refunded related orders with a non-zero matching discount — so never increment a custom counter at checkout), renewal-cart reconstruction and its pseudo coupon (9.1 compares coupon-line totals at Woo precision with a one-minor-unit tolerance — raw float equality misclassifies tax-inclusive recurring percentages as manual discounts), classic vs Cart/Checkout-block rendering with the Store API `extensions.subscriptions` / `subscriptions_cart_meta.hidden_coupon_codes` projections, and the **9.1 due-today subtotal contract**: WCS builds item subtotals on `woocommerce_cart_item_subtotal` at priority `1`, no longer filters `woocommerce_cart_product_subtotal`, and deprecates `get_formatted_product_subtotal()` / `get_due_today_subtotal()`. Ships `references/cart-checkout-contract.md` (calculation contexts, coupon-type matrix, hook signatures, renewal reconstruction, Store API shape, 9.1 regression assertions).
+
+### Added — `learndash/learndash-course-progress`
+
+Learner progress and completion as a **coordinated lifecycle** — progress usermeta, quiz attempts, activity tables, completion timestamps, parent steps, hooks, and group progress — instead of one usermeta write. Covers the operation-selection table, reading summaries/status without parsing display labels, single-step completion (`learndash_process_mark_complete`) versus bulk/administrative updates (`learndash_process_user_course_progress_update`, `learndash_user_course_complete_all_steps`), force and shared-step boundaries, the **5.1.8+ `learndash_user_progress_get_previous_incomplete_step()` contract**, safe mark-incomplete/reset paths (`learndash_delete_course_progress`, challenge-exam reset), completion and activity hooks, and the read-only REST progress boundary. Cross-linked from all four existing LearnDash skills.
+
+### Updated — `woocommerce/wcs-data-model-switching-gifting`
+
+Three 9.1 sections. **Paying an existing switch order**: `WCS_Cart_Switch::maybe_setup_cart()` rebuilds the cart only after order key `hash_equals()`, pending/failed status, a real switch relation *and* payload, login, `pay_for_order` on the order, `switch_shop_subscription` on every referenced subscription, and a bidirectional match between relation results and every `_subscription_switch_data` entry — an order key or payment capability alone is not authorization (full checklist in `switching-reference.md`). **HPOS-safe data copying**: values returned from `wc_subscriptions_subscription_data` / `..._renewal_order_data` / `wc_subscriptions_object_data` are copied without an extra `maybe_unserialize()` pass on HPOS while CPT values are decoded after the filters run — return the destination setter's PHP type, never pre-serialize, and regression-test both storages when a text field is itself serialized-looking. **Trash and restore**: restoring a parent restores trashed child subscriptions on both storages; on CPT, 9.1 restores to the recorded `_wp_trash_meta_status` instead of WordPress's `draft` (which `WC_Subscription` would expose as `pending`); never overwrite that meta or bypass `wp_untrash_post()`.
+
+### Updated — `woocommerce/wcs-subscription-plans-apfs`
+
+Four additions. Legacy `subscription` / `variable-subscription` product types are off by default since 9.0 and 9.1 **removes the obsolete activation walkthrough** that pointed at them — never use the presence of that onboarding UI as a feature check. `subscription_payment_sync_date` is always an **object** on the REST boundary (`{"day":0}` disabled, `{"day":N}` week/month, `{"day":N,"month":M}` yearly with a calendar-valid non-leap date); 9.1 fixes the admin path but API clients must still send a valid pair. New **sign-up-fee display filtering** section: APFS plan rows now pass fees through `woocommerce_subscriptions_product_sign_up_fee` with a third `$scheme` argument while native WCS still fires it with two — a required third parameter can fatal, so declare it optional. The long reference moved to `references/headless-admin-reference.md` (progressive-disclosure layout) and gained the renewal-alignment REST shape table.
+
+### Updated — `woocommerce/wcs-rest-api`
+
+9.1 tightens two boundaries. **Object-level relationship reads**: `/subscriptions/<id>/orders` omits related orders the caller cannot read and `/orders/<id>/subscriptions` omits subscriptions failing `shop_subscription` read permission — a collection-level capability is not a substitute in custom aggregate endpoints. **Payment-meta allowlist**: the v2/v3 controllers overlay request values only onto table/key slots declared for that gateway by `woocommerce_subscription_payment_meta`; unknown keys are ignored, malformed declarations are not written, and an empty/non-array `payment_details` returns an empty meta set without querying gateways — `post_meta` / `user_meta` is a gateway-declared shape, not a metadata tunnel. Also documents that `WCS_REST_Payment_Method_Meta` is an internal controller trait, not an extension base.
+
+### Updated — `woocommerce/wcs-renewal-scheduler`
+
+The 9.0 date-validation section becomes **9.0-9.1**: the admin schedule form now posts the render-time subscription status and skips schedule writes if the status changed meanwhile — preserve that guard in custom/extended editors, because a stale pending-cancel form can otherwise restore cancelled/end dates and delete `next_payment`. When an active subscription is legitimately saved, the 9.1 editor deletes a stale cancelled date first, so a corrupted schedule can be repaired. Cross-references the new `wcs-cart-checkout-coupons` for renewal-cart reconstruction and block payment totals.
+
+### Updated — `woocommerce/wcs-health-check-processing`
+
+The external web-cron route is **registered only while `woocommerce_subscriptions_external_trigger_enabled` is `yes`** — with Web cron off, a request gets route-not-found rather than a public disabled endpoint. 9.1 also fixes first-time enablement (URL/token generated on the first settings save) and makes the regeneration confirmation a one-shot user-scoped notice, so a missing URL on 9.1 is a configuration/cache problem, not expected bootstrap behavior — do not build a resave/regenerate workaround. Routine **skipped dedicated-queue runs are no longer logged as failures**: alert on explicit error context and stalled actions, not on a skipped-rotation message.
+
+### Updated — `woocommerce/wcs-subscription-hooks`
+
+Adds the 9.1 REST payment-meta allowlist note next to the existing `woocommerce_subscription_validate_payment_meta` / `..._{gateway_id}` argument-count rules, and cross-references `wcs-cart-checkout-coupons` for initial/recurring cart contexts, WCS coupon types, recurring fees, pseudo renewal coupons, and block checkout totals.
+
+### Updated — `woocommerce/wcs-subscription-downloads`
+
+The direct-SQL permission-deletion defect (orphan `wc_download_log` rows after revoke/regrant, no foreign-key cascade) was **rechecked against 9.1.0 source and still reproduces** — the entry is now version-accurate rather than reading as a fixed 9.0.1 issue.
+
+### Updated — `woocommerce/wc-stripe-subscriptions`
+
+Re-verified for WooCommerce Subscriptions **9.1.0** (Stripe Gateway 10.8.5, WooCommerce 11.0.0); description and `wp-skills-woocommerce-subscriptions-version-tested` updated, guidance unchanged.
+
+### Updated — `learndash/learndash-group-access`
+
+New **Managed Groups auto-enrollment (5.1.8+)** section: with `groups_autoenroll_managed` enabled, a Group Leader's effective group IDs are the *union* of explicit `learndash_group_users_*` memberships and `learndash_get_administrators_group_ids()` — before 5.1.8 the managed branch *replaced* explicit memberships, so custom portals and caches must stop reproducing the old behavior. Documents the one-minute `learndash_user_groups_{$user_id}` transient, the bypass argument, and the 5.1.9 gap where `ld_update_group_access()` clears that cache but `ld_update_leader_group_access()` does not — invalidate explicitly with `LDLMS_Transients::delete()` after leader, hierarchy, or setting changes.
+
+### Updated — `learndash/learndash-rest-api`
+
+Two source-verified additions. **Course custom pagination (5.1.7+)**: `lessons_per_page`, `lesson_per_page_custom`, and `topic_per_page_custom` need positive integers; empty/zero normalizes to the global setting and then to `LEARNDASH_LMS_DEFAULT_WIDGET_PER_PAGE`, so zero is not "show all" — disable custom pagination to inherit globals. **Progress routes are read-only**: in 5.1.9 `/users/{id}/course-progress`, `/{course}`, `/{course}/steps`, and `/{course}/exam` register no general write method — do not infer a PATCH contract from the response schema; authorize the actor and call LearnDash's completion APIs instead.
+
+### Updated — `learndash/learndash-course-access`
+
+Re-grounded on 5.1.9 (including the still-forced `$bypass_transient` in `learndash_user_get_enrolled_courses()`), with a cross-reference to the new `learndash-course-progress` for step completion, status, resets, activity, and incomplete-step navigation.
+
+### Updated — `learndash/learndash-woocommerce-access`
+
+Re-verified against LearnDash WooCommerce 2.0.2 + LearnDash LMS 5.1.9, and the combined `wp-skills-plugin-version-tested: "LearnDash WooCommerce 2.0.2 + LearnDash LMS 5.1.6.1"` string split into a clean `"2.0.2"` plus a new `wp-skills-learndash-version-tested: "5.1.9"` key (the old prose value did not match the validator's version-shape rule). Cross-references the progress skill for distinguishing order-driven access from resetting or completing learner progress.
+
+### Housekeeping
+
+`learndash/README.md` intro and rows rewritten around the access-versus-progress split; `woocommerce/README.md` gains the `wcs-cart-checkout-coupons` row; root README counters bumped (skills 233 → 235, plugins unchanged at 30 — both new skills use existing `sfwd-lms` / `woocommerce-subscriptions` products) and the Subscriptions / LearnDash structure rows extended. `wcs-subscription-plans-apfs/headless-admin-reference.md` was superseded by `references/headless-admin-reference.md` and removed. Three in-batch SKILL.md files had their accent-stripped `wp-skills-author: "Soczo Kristof"` normalized back to `"Soczó Kristóf"` (`wc-stripe-subscriptions`, `wcs-data-model-switching-gifting`, `wcs-rest-api`); 10 untouched skills still carry the ASCII form and remain for a separate sweep. `skills-index.json` regenerated; all touched skill folders pass `node .github/scripts/validate-skill.js --all` and the official `agentskills validate` reference tool.
+
+## 2026-08-06 (fluentcart: new FluentCart developer-extension domain)
+
+New domain `fluentcart/` — **14 skills** for building and auditing third-party extensions, gateways, integrations, headless clients, and migrations against **FluentCart**. Grounded against the installed FluentCart Free 1.6.0, FluentCart Pro 1.6.0, and FluentCart Migrator 1.0.0 source on WordPress 7.0.2 / PHP 8.3.30, with runtime smoke tests in a mixed-plugin environment that selected Action Scheduler 4.0.0. Every skill marks its Free / Pro / Migrator boundary.
+
+The batch's recurring warning is **documentation drift**: FluentCart's public developer documentation is orientation, not a versioned contract. The 1.6.0 runtime route inventory is `/fluent-cart/v2` and does not register the documented generic `/cart/add`, `/cart/update`, `/cart/remove` examples; gateway registration demands more metadata and response structure than the shortest public example shows; and accepted coupon enums do not prove a calculation implementation exists behind them. The affected skills therefore require a source/runtime inventory after every upgrade.
+
+### Added — `fluentcart/fluentcart-extension-architecture`
+
+Design and audit an addon against the real 1.6.0 bootstrap, the hybrid WordPress-post / custom-table (`fct_*`) data model, integer minor-unit money, store mode, and the public helper APIs. Covers `fluentcart_loaded` vs `fluent_cart/init` timing, choosing between hooks, models, Resource APIs, REST, or plain WordPress APIs, and the direct-write / cache / version-boundary errors that corrupt commerce records.
+
+### Added — `fluentcart/fluentcart-products-inventory`
+
+Extend products, details, variations, pricing, custom attributes, taxonomies, downloadable flags, and bundles with correct parent/child identity. Covers `ProductResource` / `ProductVariationResource`, `product-categories` / `product-brands` sync, the `product_updated`, `product_variations_changed` and `product_stock_changed` events, server-owned prices, atomic stock movements, and why direct `fct_product_*` writes desynchronize inventory.
+
+### Added — `fluentcart/fluentcart-cart-checkout`
+
+Add cart mutations, custom/ghost items, fees, checkout fields, and validation without letting the browser choose price, entitlement, stock, shipping, tax, or ownership. Covers `CartResource`, the `cart_hash` / `fct_cart_hash` trust boundary, `fluent_cart_checkout_routes`, `fluent_cart_place_order`, the `fluent_cart/cart/*` and `fluent_cart/checkout/*` hooks, recalculation, rate limiting, MySQL cart locking, retry behavior, and duplicate-submit protection.
+
+### Added — `fluentcart/fluentcart-orders-transactions`
+
+Read and mutate orders, order items, transactions and refunds through the lifecycle services, with independent order / payment / shipping statuses. Covers `fct_orders` and `fct_order_transactions`, choosing between `order_created`, `order_paid`, `order_paid_done`, `order_payment_failed`, `order_refunded` and the dynamic status hooks, webhook reconciliation, and replay-safe fulfillment that survives duplicate settlement.
+
+### Added — `fluentcart/fluentcart-payment-gateways`
+
+Implement a third-party gateway on `AbstractPaymentGateway` / `PaymentGatewayInterface` with `BaseGatewaySettings`, `PaymentInstance`, and `GatewayManager`. Covers `fluent_cart/register_payment_methods`, the required `meta()` / `fields()` metadata, `makePaymentFromPaymentInstance()`, `handleIPN()`, the `fluent_cart_load_payments_*` frontend confirmation events, signed webhooks and idempotency, refunds, saved methods, off-session renewal charging, and the "visible but cannot settle" failure mode.
+
+### Added — `fluentcart/fluentcart-subscriptions-renewals`
+
+Model recurring plans across automatic, manual and system collection, and across gateway-managed vs store-managed billing. Covers the `Subscription` model, renewal invoices, `SystemChargeService` / `RenewalService`, saved-method system charges, off-session retries and dunning, pause / resume / cancel / reactivate, `subscription_activated` / `subscription_renewed` / `renewal_paid`, next billing dates, installments, and access tied to recurring validity.
+
+### Added — `fluentcart/fluentcart-customers-portal`
+
+Resolve FluentCart customers as their own identity rather than as WP users. Covers `Customer` / `CustomerResource`, `getCurrentCustomer()`, `fct_customers`, email/user ownership enforcement on customer-profile routes, `fluent_cart_api()` customer-dashboard endpoint registration, portal menus, merges, guest linking and email changes, and isolating the request-static caches that break long-running tests which switch users.
+
+### Added — `fluentcart/fluentcart-downloads-storage`
+
+Configure product downloads, order permissions and subscription/license gating, then deliver files without exposing paths. Covers `ProductDownload`, `OrderDownloadPermission`, `generateDownloadFileLink()`, `FileDownloader`, expiring order-bound links, download limit/expiry logs, `fluent_cart/product_download/can_be_downloaded`, and extending Local / S3 or Pro R2 storage via `fluent_cart/register_storage_drivers`.
+
+### Added — `fluentcart/fluentcart-coupons-discounts`
+
+Build fixed, percentage and virtual coupons with eligibility rules, priority/stacking, per-customer usage limits, recurring discounts and order snapshots. Covers `CouponResource`, `DiscountService`, `fct_coupons`, `fct_applied_coupons`, `fluent_cart/coupon/resolve_coupons`, `can_use_coupon`, `will_skip_item`, `discount/pre_apply` — and warns that an accepted coupon enum does not prove a calculation implementation.
+
+### Added — `fluentcart/fluentcart-shipping-tax`
+
+Extend shipping zones, methods and classes plus tax classes and rates, including checkout address matching. Covers `ShippingMethod`, `ShippingZone`, `TaxCalculator`, `TaxManager`, `TaxModule`, `fct_shipping_methods`, `fct_tax_rates`, inclusive / exclusive / mixed pricing, compound and shipping tax, per-variation overrides, carrier quotes, taxable fees, EU VAT validation via `fluent_cart/tax/validate_eu_vat_number`, reverse charge, and historical order tax snapshots.
+
+### Added — `fluentcart/fluentcart-rest-headless`
+
+Build REST / AJAX, headless, mobile and external clients against the **source-verified** `/fluent-cart/v2` route inventory. Covers FluentCart router policies, WordPress cookie/nonce and application-password authentication, customer ownership, public checkout endpoints and cart-hash trust, custom `register_rest_route` resources, schema validation, pagination, throttling, cache resets — and the documentation drift that makes re-inventorying mandatory after upgrades.
+
+### Added — `fluentcart/fluentcart-integrations-jobs`
+
+Build product/global integration feeds and CRM / LMS / webhook automations on `BaseIntegrationManager`, dispatched through `fct_scheduled_actions` plus Action Scheduler. Covers `fluent_cart/integration/order_integrations`, `integration/run/*` handlers, exact commerce triggers, `order_paid_done` provisioning and revoke events, provider idempotency, retries and replay protection, logs, scheduled cleanup, and diagnosing stuck pending/running jobs.
+
+### Added — `fluentcart/fluentcart-licensing-pro`
+
+Extend the Pro Licensing module's entitlement lifecycle: license generation, site activation limits, activation/deactivation, customer and admin access, subscription validity, refunds, update checks and protected package delivery. Covers `LicenseManager`, `LicenseHelper`, `fct_licenses`, `fct_license_activations`, the `fluent_cart_action_*` license endpoints, legacy EDD-compatible clients, local/staging activations, and license migrations — with explicit credential/token caveats.
+
+### Added — `fluentcart/fluentcart-migration`
+
+Run or extend migrations into FluentCart with the Migrator companion (EDD 3.x) or the Free-core WooCommerce migrator — and tell the two apart, since the companion UI lists WooCommerce and SureCart as "coming soon". Covers source-to-target ID maps, resumable batches, WP-CLI, monetary transforms, recount / reconciliation, legacy endpoint continuity, rollback, and destructive reset controls.
+
+New-domain wiring: `fluentcart` added to the domain allow-lists in `.github/scripts/validate-skill.js` and `.github/scripts/build-skill-pr.js` and the `new-skill.yml` domain dropdown, plus a `fluentcart/README.md`, the root README structure row, and the counters (skills 219 → 233, plugins 28 → 30 — `fluent-cart` and the `fluent-cart-migrator` companion are distinct products; `fluent-cart-pro` folds into its base tier). `skills-index.json` regenerated (domains 22 → 23).
+
+## 2026-08-06 (woocommerce + plugin-scaffold: WooCommerce 11.0 / Action Scheduler 4.0 re-grounding, 3 new skills)
+
+The largest re-grounding batch so far: **three new WooCommerce skills** plus **32 updated skills** re-verified against **WooCommerce 11.0.0** (with bundled **Action Scheduler 4.0.0**), **WooCommerce Stripe Gateway 10.8.5**, and **WooCommerce Subscriptions 9.0.1**. Every touched `wp-skills-plugin-version-tested` / `wp-skills-woocommerce-version-tested` value moved to the installed release source, and `wp-skills-last-updated` to `2026-08-05`. Four long code blocks were also split out into `references/` files to keep the SKILL.md bodies within the spec's progressive-disclosure guidance.
+
+The two changes most likely to break existing extension code are **Action Scheduler 4.0's args-aware `$unique`** (3.x suppressed by hook+group only) and **WooCommerce 11.0's `product_instance_caching`** request cache (on by default for new installs).
+
+### Added — `woocommerce/wc-product-crud-cache`
+
+Read and write products through `WC_Product` CRUD while accounting for WooCommerce 11.0's `product_instance_caching` request cache — cloned reads, view vs edit context, invalidation on CRUD and on WordPress post/meta API writes (and the raw-SQL hole that bypasses both), variation-parent synchronization, taxonomy recount filtering, bounded imports, and a test matrix with the feature enabled *and* disabled. Use when code calls `wc_get_product()`, imports catalogs, or reports stale product values.
+
+### Added — `woocommerce/wc-abandoned-cart-recovery`
+
+Integrate with (or suppress) WooCommerce 11.0's experimental, default-off `abandoned_cart_recovery` checkout-recovery email — the three activation layers (feature / email / automation gate), manual order-edit action vs the two-hour Action Scheduler send, eligible pending and checkout-draft statuses, duplicate-provider suppression when an extension already sends recovery mail, the secret recovery URL, unsubscribe/privacy behavior, and HPOS-safe order access. It is an email around an existing order, not a generic serialized cart store.
+
+### Added — `woocommerce/wc-extension-upgrade-audit`
+
+Audit an extension against an *exact* WooCommerce release instead of bumping the `WC tested up to` header: diff the installed source, classify public vs `Internal\` contracts, and check hooks, CRUD timing, REST/Store API schemas, feature gates, templates, taxonomies, Action Scheduler, admin surfaces, caches, and companion gateways, then confirm with disposable runtime smoke tests. Ships `references/woocommerce-11.md` — a targeted 10.9 → 11.0 breakpoint checklist.
+
+### Updated — `plugin-scaffold/wp-action-scheduler` (Action Scheduler 3.9.3 → 4.0.0)
+
+Re-grounded against the Action Scheduler 4.0.0 copy bundled with WooCommerce 11.0. The substantive change is **`$unique` identity**: the 4.0 DBStore suppresses an insert only for a matching pending/running `hook + group + encoded args`, where JSON key order and scalar types are part of the identity — 3.x checked hook and group only, so a pending job for order 10 could block order 11. Per-entity jobs with canonical args are now legitimate `$unique` users; mixed 3.x/4.x runtimes still need an exact-args `as_has_scheduled_action()` compatibility guard, and no version makes the *callback* exactly-once. Two new sections: **table ownership and uninstall** (the four queue tables are shared infrastructure — cancel only your own group, never drop the tables from a distributed uninstaller) and **action/log retention in 4.0** (a dedicated ~03:00 daily cleanup action with bounded batches; 31-day completed/canceled retention via `action_scheduler_retention_period`, three 31-day months for failed via `action_scheduler_retention_period_for_failed`, switchable with `action_scheduler_enable_failed_action_cleanup` — so failed rows and logs are temporary diagnostics, not audit storage). `references/api-patterns.md` drops the obsolete `ReflectionFunction` arity probe; `references/operational-debugging.md` corrects `wp action-scheduler system data-store` to `wp action-scheduler data-store`.
+
+### Updated — `plugin-scaffold/wp-plugin-cron`
+
+The native-cron API walkthrough (activation/runtime/deactivation example, `WP_Error` handling, argument-sensitive deduplication, one-shot scheduling) moved into the new **`references/native-wp-cron-patterns.md`**, leaving a summary in the body. The Action Scheduler comparison table and graduation guidance were corrected for AS 4.0 (`$unique` is now args-aware; failed one-offs are not auto-retried).
+
+### Updated — `woocommerce/wc-action-scheduler-jobs`
+
+Rewritten around Action Scheduler 4.0. The headline misconception flips: the old "`$unique` is hook+group, so use exact-args checks" guidance is replaced by "4.0 keys on `hook + group + encoded args` — but that is *queue-entry* deduplication, not exactly-once execution". Adds mixed AS3/AS4 compatibility rules, the 4.0 cleanup/retention model (and the new mistake "treating failed rows as permanent evidence"), and **shared-table uninstall ownership** — WooCommerce 11.0 deliberately preserves Action Scheduler tables on uninstall unless the site owner defines `WC_REMOVE_ACTION_SCHEDULER`, and an extension must never define it. Retry telemetry, batching, and the verified WP-CLI command tree moved to **`references/retries-batches-cli.md`**.
+
+### Updated — `woocommerce/wc-hpos-compatibility`
+
+Adds the WooCommerce 11.0 distinction between `OrderUtil::custom_orders_table_data_sync_is_enabled()` (cheap setting read) and `OrderUtil::is_custom_order_tables_in_sync()` (real in-sync check that can query pending work) — different questions, different cost. New section on the **11.0 multi-status query optimization**: eligible `wc_get_orders()` multi-status queries are rewritten as `UNION ALL` branches so the `type_status_date` index serves each status, `woocommerce_orders_table_query_status_union_optimization` can only alter the enable decision after core's structural checks, and any `woocommerce_orders_table_query_sql` callback that changes the SQL disables the rewrite entirely. Also documents 11.0's acceptance of extension-injected **virtual order-meta rows** without `meta_id` via `woocommerce_data_store_wp_post_read_meta` — a read projection only (ID `0`, not persisted, never updated/deleted as a real row).
+
+### Updated — `woocommerce/wc-order-lifecycle-and-items`
+
+Four verified WooCommerce 11.0 behaviors. (1) **`remove_order_items()` now defers the database delete to the next `save()`** — the in-memory order clears immediately, so `woocommerce_remove_order_items` and `woocommerce_removed_order_items` no longer bracket one synchronous call; passing anything but a valid item-type string or `null` triggers a doing-it-wrong notice and leaves state unchanged. (2) **`wc_maybe_increase_stock_levels()` now also runs on `woocommerce_order_status_failed`**, restoring inventory reduced while an async-payment order sat on-hold. (3) Custom stored order-status keys are bounded by a 20-character schema limit measured in **bytes including the `wc-` prefix** (keep the unprefixed slug ≤ 17 ASCII chars); 11.0 emits a doing-it-wrong notice on CPT-backed saves but the schema limit still applies. (4) Prefer `wc_reserve_stock_for_order()` over the internal `ReserveStock::reserve_stock_for_order()`, whose omitted duration now silently defaults to 60 minutes — plus the fractional-stock note that 11.0 preserves sub-`1` positive quantities only when `intval` on `woocommerce_stock_amount` was genuinely *replaced* by `floatval`, not merely appended after it.
+
+### Updated — `woocommerce/wc-store-api`
+
+Five WooCommerce 11.0 additions. **Collection-count bounds**: `GET /products/collection-data` now caps `calculate_attribute_counts` and `calculate_taxonomy_counts` at 25 entries each at schema validation, and normalizes/deduplicates requested taxonomies — clients must handle the validation error rather than fanning out. **Additional checkout fields** must be registered on `woocommerce_init` or later (earlier calls now warn about premature translation loading), with the `namespace/name` ID rule, the `contact`/`address`/`order` locations (`additional` deprecated), and 11.0's fix for phone/postcode/state-shaped fields outside billing/shipping fieldsets. **JSON input is already unslashed** — never blanket-`wp_unslash()` values from `get_json_params()` or additional-field callbacks. **Paying an existing order** (`POST /checkout/<order-id>`) validates the submitted address before persisting either the order or `WC()->customer`, so extension hooks must preserve that boundary. **Disclosure guards**: a variation is no longer returned when its parent is missing/unpublished, and review collections exclude reviews of unpublished products.
+
+### Updated — `woocommerce/wc-customer-and-sessions`
+
+WooCommerce 11.0 **no longer treats account creation or login as proof for claiming matching historical guest orders** — core calls `wc_update_new_customer_past_orders()` only after the account email is verified. Documents the two stable hooks (`woocommerce_customer_email_verified`, `woocommerce_customer_verify_email_notification`), the rule that `$verify_url` is a secret single-use bearer URL that must never be logged or persisted, and that `_wc_email_verified` / `_wc_email_verification_key` / the `Internal\CustomerEmailVerification` namespace are not extension contracts. Also warns that `WC_Customer::get_meta_data()` is not a safe wholesale disclosure source (11.0 additionally excludes WordPress's `infinite_scrolling` preference) — REST/export/headless surfaces need an explicit allowlist.
+
+### Updated — `woocommerce/wc-emails-classic`
+
+Three WooCommerce 11.0 email changes: the new `woocommerce_order_status_pending_to_cancelled_notification` dispatcher hook (extensions that hand-rolled that notification must now deduplicate or administrators get two emails); the `woocommerce_notify_backorder` setting plus the per-product `woocommerce_should_send_backorder_notification` filter (which suppresses only core's internal stock-recipient mail — not backorder eligibility, shopper-facing copy, or custom emails); and the preview-only `woocommerce_email_preview_show_shipping_details` filter, which must tolerate a `null` order/email type and never leaks into real transactional templates. Cross-references the new `wc-abandoned-cart-recovery`.
+
+### Updated — `woocommerce/wc-variations-data`
+
+Adds WooCommerce 11.0 `product_instance_caching` (enabled for new installs, previous state preserved on upgrade — CRUD and WordPress post/meta writes invalidate it, raw SQL does not; never assume repeated `wc_get_product()` calls return the identical PHP object), the matching-variation AJAX endpoint's refusal to expose a non-published parent to users who cannot edit it, and REST v3 `image_size=<registered-size>` on `wc/v3/products` and `.../variations` collections (affects generated URLs and `srcset`/`sizes` only, never stored attachment IDs, defaults to `full`). Cross-references the new `wc-product-crud-cache`.
+
+### Updated — `woocommerce/wc-variation-gallery`
+
+Corrects the feature check. Reading `wc_feature_woocommerce_additional_variation_images_enabled === 'yes'` is now wrong: in WooCommerce 11.0 an **absent** option can still mean enabled, because stores in remote variant buckets 1–6 of 120 (5%) are switched on as a canary cohort. Use `FeaturesUtil::feature_is_enabled( 'variation_gallery' )`, which resolves the cohort-derived default, and do not import `Internal\VariationGallery\Package`.
+
+### Updated — `woocommerce/wc-product-attribute-swatches`
+
+Adds the WooCommerce 11.0 **attribute slug byte limit** — `wc_get_attribute_slug_max_byte_length()` (currently 29) validated with `strlen()`, so counting characters or hard-coding a limit can still produce an invalid `pa_*` taxonomy or a normalized-slug collision; return `wc_create_attribute()`'s `WP_Error` instead of truncating. Also documents the dynamic `visual` property (`{ type, value }`, types `color` / `image` / `none`) that core adds to term objects passing through `woocommerce_json_search_found_product_attribute_terms`, and why it must be read defensively. The classic-theme PHP filter and JS synchronization code moved to **`references/classic-rendering.md`**.
+
+### Updated — `woocommerce/wc-variations-pricing-filters`
+
+Adds WooCommerce 11.0's `woocommerce_variable_product_taxes_influence_price` filter: core uses taxability and configured rates to decide whether opposite display-tax variants need separate price-cache entries, so an extension whose displayed prices differ by country/tax context where Woo has no configured rates must force the split. It complements — never replaces — adding every extension-owned pricing dimension to `woocommerce_get_variation_prices_hash`.
+
+### Updated — `woocommerce/wc-rest-api-v4`
+
+The `wc/v4` release gate **did not open in WooCommerce 11.0** — `includes/react-admin/feature-config.php` still sets `rest-api-v4` to `false`, so the controllers ship but the core namespace stays unregistered. Adds the latent `POST /wc/v4/refunds/preview` route: it calculates only (no `WC_Order_Refund`, no gateway call, no restock) yet deliberately reuses the create-refund permission check so read-only credentials cannot probe refundable state; documents the per-line `line_item_id` + quantity-or-`refund_total` shape, the formatted-decimal-string response with `max_refundable`, and core's rejection of non-positive or over-refundable previews. `reference.md` re-verified against 11.0.0 with the new route added.
+
+### Updated — `woocommerce/wc-shipping-method`
+
+WooCommerce 11.0 registers `product_shipping_class` with `public => false`, `rewrite => false`, and no frontend query var. Assignment, `WC_Product::get_shipping_class_id()`, rate calculation, and admin management are unaffected; what disappears is the public archive and public taxonomy discovery. Do not build customer-facing URLs, sitemap entries, or frontend queries on it — `woocommerce_taxonomy_args_product_shipping_class` can restore the old visibility for a site-specific need, but a new public classification feature belongs in its own extension-owned taxonomy.
+
+### Updated — `woocommerce/wc-logging`
+
+WooCommerce 11.0 writes file-v2 context JSON **without adding or removing slashes** and preserves unescaped Unicode and URL slashes — so `addslashes()` / `stripslashes()` around logger context is now actively wrong. File-v2 retention cleanup also scans and deletes expired files in batches of 100 and continues past vetoed files, so a retention filter that preserves one file no longer causes later expired pages to be skipped.
+
+### Updated — `woocommerce/wc-cart-checkout-classic`
+
+Adds the WooCommerce 11.0 phone-handling split — `WC_Validation::is_phone_format()` (shape), `WC_Validation::is_phone()` / `woocommerce_validate_phone` (country-aware acceptance), and `wc_format_phone_number()` / `woocommerce_format_phone_number` (normalization) — with requiredness as a fourth, separate concern and the rule that formatting neither validates nor proves ownership. Exact filter signatures in the new **`references/phone-validation.md`**.
+
+### Updated — `woocommerce/wc-admin-inline-scripts`
+
+WooCommerce 11.0 **retires the in-core beta product editor**. Adds a boundary section: do not target its removed slots, feature flags, React routes, or private data stores just because older examples exist; the stable core product-edit surface is the classic editor and its documented PHP hooks, and separate experimental editor packages need their own version-checked compatibility contract.
+
+### Updated — `woocommerce/wc-downloadable-products`
+
+WooCommerce 11.0 resolves root-relative download paths against a **relocated or custom `WP_CONTENT_DIR`** and requires a path-segment boundary, so `/application` no longer falsely matches an `/app` content dir. Extensions must stop assuming a literal `/wp-content`, slicing a hard-coded 11 characters, or duplicating core's filesystem resolution — store paths through product CRUD and let `WC_Product_Download` resolve and validate them. Mirrored in `references/core-download-contract.md`.
+
+### Updated — `woocommerce/wc-payment-gateway`
+
+Corrects a wrong claim: the `wc-api` / `woocommerce_api_*` callback mechanism is **not** deprecated or removed in WooCommerce 11.0 — core still uses it. WP REST remains the recommendation for explicit methods, schemas, and response handling, but for the right reasons.
+
+### Updated — `woocommerce/wc-stripe-webhooks` (Stripe Gateway 10.8.5)
+
+Two verified 10.8.5 behaviors. The stored pending-webhook count is now updated **only after signature validation succeeds**, and invalid array/object/non-digit values are ignored rather than persisted — custom webhook code must not write health state from an unverified payload. And before marking a Checkout Session paid, the gateway **verifies settlement amount and currency** against the Woo order across both Stripe schemas (pre-`2025-03-31.basil` `currency_conversion.*` vs Basil top-level `currency` / `amount_total` with buyer-facing figures in `presentment_details`); on a missing or mismatched value it refuses completion, writes a diagnostic order note, and moves the order to `on-hold` so unpaid-pending cancellation cannot restock a payment Stripe may already have captured. Treat that state as manual reconciliation — never auto-`payment_complete()` or rewrite the total. Also fixes the CLI examples (`wp action-scheduler action list`, not `wp action-scheduler list`) and extends the test matrix.
+
+### Updated — Stripe / Subscriptions version re-verification
+
+- **`woocommerce/wc-stripe-add-payment-method`** (+ `reference.md`) — Stripe 10.8.5 on WooCommerce 11.0.0; the condensed template selector map gains the WooCommerce 11.0 `aria-label` on the payment-methods list, with a note that selector compatibility does not excuse dropping the accessible name.
+- **`woocommerce/wc-stripe-future-payments`** (+ `references/stripe-future-payment-lifecycle.md`) — re-verified against Stripe 10.8.5 / WooCommerce 11.0.0.
+- **`woocommerce/wc-stripe-link-payments`** (+ `references/link-contract.md`) — re-verified; the `WC_Payment_Token_Link::get_payment_method_type()` null quirk (setter writes an undeclared prop) **still** reproduces in 10.8.5, so `get_type() === 'link'` remains the classification rule.
+- **`woocommerce/wc-stripe-subscriptions`** — Stripe 10.8.5, WooCommerce Subscriptions 9.0.1, WooCommerce 11.0.0.
+- **`woocommerce/wcs-health-check-processing`** — WooCommerce 11.0.0 with a new `wp-skills-action-scheduler-version-tested: "4.0.0"` metadata key; CLI example corrected to `wp action-scheduler action list`.
+
+### Updated — version-bump-only re-verification
+
+Re-verified against WooCommerce 11.0.0 with no behavioral change to the guidance: `wc-checkout-block-payment-method` (+ `references/blocks-payment-lifecycle.md`), `wc-coupon-dynamic`, `wc-coupon-types-rules` (+ `references/coupon-contract.md`), `wc-payment-tokens`, `wc-product-search-select`, `wc-sequential-order-numbers-pro`, `wc-shipping-providers`.
+
+### Housekeeping
+
+`woocommerce/README.md` and `plugin-scaffold/README.md` rows rewritten for the new and re-scoped skills; root README structure row extended and counters bumped (skills 216 → 219, plugins unchanged at 28 — the new skills are all `woocommerce`). Four in-batch SKILL.md files had their accent-stripped `wp-skills-author: "Soczo Kristof"` normalized to the canonical `"Soczó Kristóf"` (`wp-action-scheduler`, `wc-stripe-add-payment-method`, `wc-stripe-subscriptions`, `wc-stripe-webhooks`); 12 untouched skills still carry the ASCII form and are left for a separate sweep. `skills-index.json` regenerated. All 35 touched skill folders pass both `node .github/scripts/validate-skill.js --all` (0 errors) and the official `agentskills validate` reference tool.
+
+## 2026-07-21 (tooling note: sync-skills.sh added)
+
+Added `scripts/sync-skills.sh` — a small consumer helper that syncs the collection (or selected domains) into a local skills directory straight from `skills-index.json`, with no clone and no fork. It is not a skill; see the README ["Staying up to date"](README.md#staying-up-to-date) section for usage and the trust model. Changes to this helper script are not tracked in this changelog — the changelog covers the skill collection itself.
+
+## 2026-07-21 (jetsmartfilter: new JetSmartFilters developer-integration domain)
+
+New domain `jetsmartfilter/` — five skills for integrating and extending **JetSmartFilters** (`jet-smart-filters`) from a third-party plugin, grounded against the locally installed JetSmartFilters 3.8.3.1 source (the plugin is not in the wp-skills index). The frontend event bus ships minified, so source-derived event contracts should be re-smoke-tested after plugin upgrades.
+
+### Added — `jetsmartfilter/jsf-overview`
+
+Router skill: map a JetSmartFilters integration to the correct layer — filter, provider, query ID, listing, frontend event, or extension API — before reaching for a hook. Use when planning/reviewing JSF compatibility, diagnosing a filter that targets the wrong listing, or choosing between JSF Listing hooks and a custom provider.
+
+### Added — `jetsmartfilter/jsf-listing-integration`
+
+Connect JSF controls to a native JSF Listing (or another supported listing) with the correct provider, query ID, query variable, apply type, and pagination contract — without provider/query-ID collisions that update the wrong widget or nothing. Covers `content_provider`, `_element_id`, additional providers, pagination, AJAX/reload/mixed filtering.
+
+### Added — `jetsmartfilter/jsf-frontend-events`
+
+Handle the frontend AJAX lifecycle (`ajaxFilters/start-loading`, `ajaxFilters/updated`, `ajaxFilters/end-loading`, `provider/content-rendered`, `jet-filter-content-rendered`) and reinitialize third-party behavior (sliders, galleries, analytics, accessibility) after provider DOM replacement.
+
+### Added — `jetsmartfilter/jsf-query-hooks`
+
+Customize native listing and parsed JSF query arguments with provider/query-ID scoping and input bounds — mandatory constraints, `posts_per_page`, item filtering, plain query variables — via `jet-smart-filters/listing/render` hooks, `query/request`, `query/add-var`, `query/meta-query-row`, and `query/final-query`, without leaking changes across providers or listing instances.
+
+### Added — `jetsmartfilter/jsf-custom-provider-query`
+
+Register an unsupported renderer as a custom provider (`jet-smart-filters/providers/register`, `Jet_Smart_Filters_Provider_Base`) or add a non-post query type to native JSF Listings (`jet-smart-filters/listing/render/query-types/register`) — DOM selectors, filter-arg merging, and pagination statistics.
+
+New-domain wiring: `jetsmartfilter` added to the domain allow-lists in `.github/scripts/validate-skill.js` and `.github/scripts/build-skill-pr.js` and the `new-skill.yml` domain dropdown (also backfilled the missing `rankmath` dropdown option), plus a `jetsmartfilter/README.md`, the root README structure row, and the counters (skills 211 → 216, plugins 27 → 28). `skills-index.json` regenerated.
+
+## 2026-07-21 (wordpress: security-skill reinforcements + plugin-count recount)
+
+Three `wordpress/` security skills reinforced with new failure modes, plus a definitional recount of the root README plugin counter. No new skills (still 211); `skills-index.json` regenerated for the changed descriptions/metadata.
+
+### Updated — `wordpress/wp-file-upload-security`
+
+New section **"Image format conversion and derived-name collisions"**: a unique *source* name does not make a differently-suffixed *target* unique (an existing `photo.webp` does not collide with a new `photo.jpg`), so extension-swap saves can silently overwrite an older attachment. Guidance to run `wp_unique_filename()` against the final target basename, prefer core image-editor output-format hooks, treat `wp_unique_filename()` as name-resolution not an atomic reservation, and preserve the source until the destination is validated. Adds EXIF-orientation normalization before resize/save. Edge-case test list expanded (cross-extension derived-name collisions, EXIF orientations 2–8, conversion failure with source preservation). Tested bumped to WordPress 6.0 – 7.0.2.
+
+### Updated — `wordpress/wp-security-audit`
+
+Adds an **evidence-status** classification separate from severity — *Reproduced* / *Source-proven* / *Environment-dependent hypothesis* — with the rule that an environment-dependent hypothesis must not be presented as a confirmed finding or promoted into a reusable skill rule until reproduced or the runtime contract is verified. Report template gains an `Evidence:` line and a **"Requires environment validation"** section.
+
+### Updated — `wordpress/wp-security-deep`
+
+New deep check **"Rate-limit abuse and global account lockout"** (numbered #10; former #10/#11 renumbered to #11/#12): a login defense can become an unauthenticated DoS primitive when anonymous failures create a global username/email lock that rejects the correct credential from every other client. Invariants — block on a bounded source/identity pair rather than unconditional global denial, enforce at every login entry point, clear the same identifier aliases (username vs email), bound nonexistent-username key creation, keep error responses account-agnostic, apply the TOCTOU atomic-counter guidance — plus a minimum acceptance test. Trigger list and description extended to login throttling / account lockout from unauthenticated failures.
+
+### Changed — root README plugin counter (30 → 27)
+
+Folded paid Pro/tier editions of the same plugin into their base for the `**N plugins**` counter (`elementor-pro → elementor`, `polylang-pro → polylang`, `translatepress-business → translatepress-multilingual`), at the user's request that Elementor Pro not count as a separate product — applied consistently to all Pro/tier pairs. Genuinely separate companion plugins (`polylang-wc`, `learndash-woocommerce`) and the bundled PHP libraries (`action-scheduler`, `better-data`, `better-route`) stay counted; `wordpress` core stays excluded. Skills unchanged (211).
+
 ## 2026-07-20 (fluentform: new Fluent Forms developer-extension domain)
 
 New domain `fluentform/` — four skills for extending Fluent Forms (Free `fluentform` + Pro `fluentformpro`) from a third-party plugin without bypassing its parser, lifecycle, ACL, or queue model. Grounded against Fluent Forms Free and Pro 6.2.7 on WordPress 7.0.2; every skill draws an explicit Free/Pro boundary and cites verified Free/Pro source paths (Fluent Forms is not in the wp-skills index).

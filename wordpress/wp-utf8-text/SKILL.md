@@ -4,16 +4,18 @@ description: Handle UTF-8 and text encoding safely in WordPress plugins,
   especially on WP 6.9+ where wp_is_valid_utf8(), wp_scrub_utf8(), and
   noncharacter helpers replace older seems_utf8-style checks. Covers when
   to validate, scrub, reject, or preserve invalid bytes; wp_check_invalid_utf8
-  behavior; XML/JSON/feed/export boundaries; and avoiding data loss from
+  behavior; WP 7.1 mb_chr()/mb_ord() compatibility and antispambot() changes;
+  XML/JSON/feed/export boundaries; and avoiding data loss from
   premature replacement. Use when processing imported text, CSV, XML, feeds,
   email, REST payloads, AI prompts, logs, filenames, or external API data.
 metadata:
   wp-skills-author: "Soczó Kristóf"
   wp-skills-contact: "mailto:lonsdale201@hotmail.com"
   wp-skills-plugin: "wordpress"
-  wp-skills-plugin-version-tested: "6.9 - 7.0.1"
+  wp-skills-plugin-version-tested: "6.9 - 7.1"
+  wp-skills-wp-version-tested: "7.1"
   wp-skills-php-min: "7.4"
-  wp-skills-last-updated: "2026-07-10"
+  wp-skills-last-updated: "2026-08-20"
 ---
 
 # WordPress UTF-8 Text Handling
@@ -121,6 +123,25 @@ if ( wp_has_noncharacters( $text ) ) {
 }
 ```
 
+## WordPress 7.1 code-point compatibility
+
+WordPress 7.1 supplies UTF-8-only compatibility implementations of
+`mb_chr()` and `mb_ord()` when the mbstring extension does not provide them.
+The optional encoding must be `UTF-8` or `null`; this is not a replacement for
+the full mbstring extension or arbitrary charset conversion. Both functions
+can return `false`, so check the result for untrusted code points or bytes.
+
+Because these functions are defined during WordPress bootstrap, standalone
+tools that load plugin files without Core cannot assume they exist. Either
+bootstrap WordPress, require mbstring in that tool, or feature-detect.
+
+In 7.1, `antispambot()` obfuscates valid multibyte characters as whole Unicode
+code points instead of processing their bytes independently. Its output is
+intentionally randomized and may differ across calls. Invalid UTF-8 byte spans
+pass through without obfuscation. Never use `antispambot()` as validation,
+encryption, authorization, or deterministic cache-key generation; validate the
+email first and treat the function only as best-effort source obfuscation.
+
 ## Critical rules
 
 - **Do not use `seems_utf8()` in new code.** It is deprecated as of WP 6.9.
@@ -130,6 +151,7 @@ if ( wp_has_noncharacters( $text ) ) {
 - **Call Unicode code-point helpers only after UTF-8 validation/scrubbing.**
   Noncharacter checks do not replace byte-sequence validation.
 - **Remember ASCII ambiguity.** A string can be valid UTF-8 and still originate from a non-UTF-8 encoding if it contains only ASCII.
+- **Do not snapshot one exact `antispambot()` output.** Assert decoding/equivalence or structural properties because the function is randomized.
 
 ## Common mistakes
 
@@ -171,3 +193,5 @@ $slug = sanitize_key( $raw_slug );
 - WordPress 6.9 UTF-8 dev note: <https://make.wordpress.org/core/2025/11/18/modernizing-utf-8-support-in-wordpress-6-9/>
 - UTF-8 helpers: `wp-includes/utf8.php`
 - `wp_check_invalid_utf8()` / `seems_utf8()`: `wp-includes/formatting.php`
+- WordPress 7.1 compatibility functions: `wp-includes/compat.php`
+- `antispambot()`: `wp-includes/formatting.php`

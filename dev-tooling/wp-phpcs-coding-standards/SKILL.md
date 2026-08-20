@@ -10,7 +10,7 @@ description: >
   `-Docs` standards, `prefixes`, `text_domain`, `minimum_wp_version`, `testVersion`),
   running `phpcs` (check) vs `phpcbf` (auto-fix), `phpcs -i`, `phpcs:ignore` /
   `disable` comments, and the WPCS 3.x breaking changes (sniff and property
-  renames such as `minimum_supported_version` -> `minimum_wp_version`). Use when
+  renames such as `minimum_supported_version` becoming `minimum_wp_version`). Use when
   adding coding-standards linting, writing/auditing a ruleset, or fixing
   "standard not installed" / WPCS 2.x-to-3.x migration problems.
 license: GPLv2-or-later
@@ -18,10 +18,11 @@ metadata:
   wp-skills-author: "Soczó Kristóf"
   wp-skills-contact: "mailto:lonsdale201@hotmail.com"
   wp-skills-plugin: "wordpress"
-  wp-skills-plugin-version-tested: "WPCS 3.3; PHP_CodeSniffer 3.13; PHPCompatibilityWP 2.1; WP 7.0"
-  wp-skills-wp-version-tested: "7.0"
+  wp-skills-plugin-version-tested: "7.1"
+  wp-skills-wp-version-tested: "7.1"
+  wp-skills-toolchain-tested: "WPCS 3.4.1; PHP_CodeSniffer 3.13.5; PHPCompatibilityWP 2.1.8"
   wp-skills-php-min: "7.4"
-  wp-skills-last-updated: "2026-06-17"
+  wp-skills-last-updated: "2026-08-20"
 ---
 
 # WordPress coding standards with PHPCS
@@ -40,16 +41,17 @@ PHP_CodeSniffer (`phpcs`) checks code against a ruleset; `phpcbf` auto-fixes wha
 ```bash
 composer config --no-plugins allow-plugins.dealerdirect/phpcodesniffer-composer-installer true
 composer require --dev \
-  wp-coding-standards/wpcs:"^3.0" \
+  wp-coding-standards/wpcs:"^3.4.1" \
   phpcompatibility/phpcompatibility-wp:"^2.1" \
   dealerdirect/phpcodesniffer-composer-installer:"^1.0"
 ```
 
-Three things that trip people up, all verified:
+Four things that trip people up, all verified:
 
-- **`squizlabs/php_codesniffer` is still the correct Packagist name** even though the project moved to the `PHPCSStandards` GitHub org. WPCS pulls it in transitively, so you usually don't list it. **WPCS 3.x needs PHPCS `3.x`, not 4.x** — don't force `squizlabs/php_codesniffer:^4`.
+- **`squizlabs/php_codesniffer` is still the correct Packagist name** even though the project moved to the `PHPCSStandards` GitHub org. WPCS pulls it in transitively, so you usually don't list it. **WPCS 3.4.1 requires PHPCS `^3.13.5`, not 4.x** — don't force `squizlabs/php_codesniffer:^4`.
 - **The installer is still `dealerdirect/phpcodesniffer-composer-installer` on Packagist** (the repo is now `PHPCSStandards/composer-installer`, but the package name is unchanged). It auto-registers WPCS and PHPCompatibility with PHPCS, so you never run `phpcs --config-set installed_paths …` by hand.
 - **PHPCompatibilityWP: use the stable `^2.1`.** The README advertises `^3.0@dev`, but 3.0 is alpha-only; pin `^2.1` for production unless you deliberately want the alpha.
+- **Do not use WPCS below 3.4.1.** Version 3.4.1 fixes arbitrary command execution in `WordPress.WP.EnqueuedResourceParameters` when scanning untrusted PHP. This affects the `WordPress` and `WordPress-Extra` rulesets; update developer machines and CI runners, not only production dependencies.
 
 Composer 2.2+ refuses to run the installer plugin unless it's in `allow-plugins` — the `composer config` line above does that; without it the standards won't register and `phpcs -i` won't list `WordPress`.
 
@@ -113,6 +115,12 @@ The four standards to choose `ref` from:
 
 Set `prefixes` and `text_domain` for your plugin or `PrefixAllGlobals` and `I18n` will flag everything. `testVersion` drives PHPCompatibility; `minimum_wp_version` drives WP deprecation sniffs.
 
+WPCS 3.4.x knows WordPress symbols/deprecations through WordPress 7.0, while
+WordPress 7.1 is newer. Keep `minimum_wp_version` equal to the plugin's actual
+support floor, but do not interpret a missing 7.1 symbol/deprecation rule as
+proof that the code is compatible. Pair linting with 7.1 runtime tests and
+source/API review until a WPCS release adds 7.1 knowledge.
+
 ## Run it
 
 ```bash
@@ -158,7 +166,7 @@ If you inherit a ruleset that errors on WPCS 3.x, the usual causes (verified aga
 
 - **`phpcs` checks, `phpcbf` fixes.** Run `phpcbf` to auto-resolve, then `phpcs` for the rest.
 - **Get the package names right:** `squizlabs/php_codesniffer` and `dealerdirect/phpcodesniffer-composer-installer` are still the Packagist names despite the GitHub org move.
-- **Pin WPCS `^3.0` with PHPCS `3.x`** (not 4.x); PHPCompatibilityWP stable is `^2.1` (3.0 is alpha).
+- **Require WPCS `^3.4.1` with PHPCS `^3.13.5`** (not 4.x); PHPCompatibilityWP stable is `^2.1` (3.0 is alpha).
 - **Add `allow-plugins` for the installer** or the standards never register.
 - **Always set `prefixes` and `text_domain`** in the ruleset for your plugin/theme.
 - **Use `minimum_wp_version`**, not the removed `minimum_supported_version`, on WPCS 3.x.
@@ -174,6 +182,7 @@ If you inherit a ruleset that errors on WPCS 3.x, the usual causes (verified aga
 ## References
 
 - WordPress Coding Standards: <https://github.com/WordPress/WordPress-Coding-Standards>
+- WPCS 3.4.1 security release: <https://github.com/WordPress/WordPress-Coding-Standards/releases/tag/3.4.1>
 - WPCS 3.0 release notes (renames): <https://github.com/WordPress/WordPress-Coding-Standards/releases/tag/3.0.0>
 - Customizable sniff properties: <https://github.com/WordPress/WordPress-Coding-Standards/wiki/Customizable-sniff-properties>
 - PHP_CodeSniffer (PHPCSStandards): <https://github.com/PHPCSStandards/PHP_CodeSniffer>

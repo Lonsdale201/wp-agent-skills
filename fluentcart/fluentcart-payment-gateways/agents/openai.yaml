@@ -1,0 +1,4 @@
+interface:
+  display_name: "FluentCart payment gateways"
+  short_description: "Build verified, idempotent provider payment adapters"
+  default_prompt: "Use $fluentcart-payment-gateways to implement or audit this gateway across registration, checkout JavaScript, transactions, webhooks, refunds, and subscription capabilities."

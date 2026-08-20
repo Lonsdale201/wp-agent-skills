@@ -1,13 +1,13 @@
 ---
 name: wc-hpos-compatibility
-description: Make WooCommerce order integrations compatible with High-Performance Order Storage. Covers compatibility declaration, order CRUD and queries, authoritative storage, sync mode, HPOS-aware admin list/meta-box hooks, cache-safe metadata access, migrations, and dual-mode testing. Use when a plugin reads or writes orders, queries order metadata, adds order admin UI, runs SQL, or declares `custom_order_tables` compatibility.
+description: Make WooCommerce order integrations compatible with High-Performance Order Storage. Covers compatibility declaration, order CRUD and queries, authoritative storage, sync-setting versus fully-synced checks, HPOS-aware admin list/meta-box hooks, cache-safe metadata access, large-store query optimization boundaries, migrations, and dual-mode testing. Use when a plugin reads or writes orders, queries order metadata, adds order admin UI, runs SQL, or declares `custom_order_tables` compatibility.
 metadata:
   wp-skills-author: "Soczó Kristóf"
   wp-skills-contact: "mailto:lonsdale201@hotmail.com"
   wp-skills-plugin: "woocommerce"
-  wp-skills-plugin-version-tested: "10.9.4"
+  wp-skills-plugin-version-tested: "11.0.0"
   wp-skills-php-min: "7.4"
-  wp-skills-last-updated: "2026-07-10"
+  wp-skills-last-updated: "2026-08-05"
 ---
 
 # WooCommerce HPOS compatibility
@@ -108,6 +108,15 @@ $hpos_active = class_exists( OrderUtil::class )
 
 Do not infer active storage from table existence or a class name: both stores can exist during synchronization.
 
+WooCommerce 11.0 adds a cheap public distinction for sync diagnostics:
+
+```php
+$sync_enabled = OrderUtil::custom_orders_table_data_sync_is_enabled();
+$fully_synced = OrderUtil::is_custom_order_tables_in_sync();
+```
+
+The first reads whether real-time posts/orders-table synchronization is enabled; it does not query whether every order is currently synchronized. The second checks the actual in-sync condition and can query pending work. Use the cheap setting helper for UI branching that only needs configuration state, and the full check for migration/cutover safety.
+
 ## Order list columns
 
 The hooks and callback arguments differ:
@@ -172,6 +181,14 @@ Synchronization is transitional compatibility, not a second public write API.
 
 Use WooCommerce's scheduled/CLI synchronization tools for diagnostics and migrations rather than custom table-copy SQL.
 
+## WooCommerce 11.0 multi-status query optimization
+
+On very large HPOS stores, a plain multi-status order query ordered by creation date can be rewritten as `UNION ALL` branches so the `type_status_date` index serves each status. The optimization is deliberately narrow: core checks the exact query shape, branch/page bounds, and store-size threshold; `woocommerce_orders_table_query_status_union_optimization` can alter only the enable decision after those structural checks.
+
+If a `woocommerce_orders_table_query_sql` callback changes the generated SQL, WooCommerce skips this rewrite. Avoid raw-SQL filters when documented `wc_get_orders()` arguments can express the query, and benchmark/`EXPLAIN` custom SQL on representative large data. Code observing `woocommerce_orders_table_query_sql` must not assume the SQL passed to the filter is necessarily the final executed SQL when it returns it unchanged.
+
+WooCommerce 11.0 also accepts extension-injected virtual order-meta rows without a `meta_id` when they pass through `woocommerce_data_store_wp_post_read_meta`, provided each row supplies `meta_key` and `meta_value`. Treat this as a read projection only: a virtual row has ID `0`, is not persisted automatically, and must not be updated/deleted as if it were an HPOS table row. Prefer ordinary extension-owned order meta unless a version-tested virtual projection is genuinely required.
+
 ## Test matrix
 
 Before declaring compatibility, test at least:
@@ -197,6 +214,8 @@ Every hit is not automatically wrong, but every order-related hit requires revie
 - Treat `WC_Order` CRUD and `wc_get_orders()` as the public contract.
 - Never write both HPOS and legacy stores yourself.
 - Branch only where Woo admin hook contracts genuinely differ.
+- Distinguish "sync enabled" from "fully synchronized"; they answer different questions and have different cost.
+- Do not casually modify `woocommerce_orders_table_query_sql`; doing so disables WooCommerce 11's eligible status-union rewrite.
 - Keep long migrations and backfills idempotent and asynchronous.
 - Products, coupons, and variations are not moved by HPOS; do not over-apply order rules to them.
 

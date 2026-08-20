@@ -1,13 +1,13 @@
 ---
 name: wc-variations-data
-description: Read, query, and write WooCommerce product variations through `WC_Product_Variation` and `WC_Product_Variable`. Covers parent/child storage, cached variation prices, CRUD creation, WooCommerce 10.9 deferred parent synchronization, stock inheritance, frontend variation data, and raw versus display-tax price reads. Use when creating, importing, querying, or debugging stale variation data.
+description: Read, query, and write WooCommerce product variations through `WC_Product_Variation` and `WC_Product_Variable`. Covers parent/child storage, cached variation prices, deferred parent synchronization, WooCommerce 11.0 product instance caching, stock inheritance, frontend variation data, and raw versus display-tax price reads. Use when creating, importing, querying, or debugging stale variation data.
 metadata:
   wp-skills-author: "Soczó Kristóf"
   wp-skills-contact: "mailto:lonsdale201@hotmail.com"
   wp-skills-plugin: "woocommerce"
-  wp-skills-plugin-version-tested: "10.9.4"
+  wp-skills-plugin-version-tested: "11.0.0"
   wp-skills-php-min: "7.4"
-  wp-skills-last-updated: "2026-07-10"
+  wp-skills-last-updated: "2026-08-05"
 ---
 
 # WooCommerce: variations data layer (CRUD + cache)
@@ -99,7 +99,9 @@ $variation->set_sku( 'TSHIRT-RED-M' );
 $variation_id = $variation->save();
 ```
 
-In WooCommerce 10.9, variation CRUD clears variation and parent transients and `WC_Product::save()` queues the parent ID through `wc_deferred_product_sync()`. `WC_Post_Data::do_deferred_product_sync()` deduplicates and synchronizes parents at shutdown. Normal CRUD therefore needs no manual cache delete or parent sync.
+In WooCommerce 11.0, variation CRUD clears variation and parent transients and `WC_Product::save()` queues the parent ID through `wc_deferred_product_sync()`. `WC_Post_Data::do_deferred_product_sync()` deduplicates and synchronizes parents at shutdown. Normal CRUD therefore needs no manual cache delete or parent sync.
+
+WooCommerce 11.0 enables `product_instance_caching` for newly installed stores while upgraded stores retain their previous state. Variation and parent CRUD invalidates that request cache; WordPress post/meta API writes also trigger its invalidation hooks, but raw SQL does not. Test both feature states and never depend on repeated `wc_get_product()` calls returning the identical PHP object. See `wc-product-crud-cache` for the complete contract.
 
 Direct post/meta/SQL writes bypass that contract and can leave the catalog stale. Avoid them. If the same request must read rebuilt parent aggregates before shutdown, call `WC_Product_Variable::sync( $parent_id )` explicitly after the final child write.
 
@@ -123,6 +125,14 @@ $available = $variable->get_available_variations(); // array of arrays
 ```
 
 `get_available_variations()` is what the classic variable-product template embeds inline when the variation count is below `woocommerce_ajax_variation_threshold` (default 30). Above that threshold, WC AJAX resolves one matching variation and calls `get_available_variation()` for that variation. The default array mode is heavy; if you only need objects, use `$variable->get_available_variations( 'objects' )`, or use `get_children()` and read only the properties you need.
+
+WooCommerce 11.0's matching-variation AJAX endpoint refuses to expose a non-published parent unless the current user can edit it. Custom variation lookup routes must preserve the same visibility boundary; never return unpublished/private variation data merely because the caller knows a parent ID and attributes.
+
+### REST v3 image size in WooCommerce 11.0
+
+Authenticated `wc/v3/products` and `wc/v3/products/<product_id>/variations` collection requests now accept `image_size=<registered-size>`. It affects the generated image URL (and the product image `srcset`/`sizes`) but not stored attachment IDs. The default is `full`; an unregistered size falls back through WordPress image handling to the full image.
+
+Use a registered WordPress size such as `woocommerce_thumbnail` and keep clients tolerant of a full-size fallback. Do not persist an API presentation choice into product or variation metadata.
 
 ## The variation stock inheritance model
 
@@ -242,6 +252,7 @@ Also avoid: assuming parent stock applies to variation-managed stock, and queryi
 
 - Run **`wc-variations-pricing-filters`** for the price filter chain (`woocommerce_product_variation_get_price`, `woocommerce_variation_prices_price`, etc.) — when a plugin needs to mutate variation prices via filters rather than direct CRUD.
 - Run **`wc-variation-gallery`** for WooCommerce 10.9+ native variation gallery data (`gallery_image_ids`, `gallery_images_html`, REST v3 gallery payloads, and Additional Variation Images migration).
+- Run **`wc-product-crud-cache`** when a broader product import or cache-invalidation path is in scope.
 - Run **`wc-product-search-select`** when the UI needs an admin product picker — `woocommerce_json_search_products_and_variations` returns variation IDs alongside parent products.
 - Run **`wp-plugin-cron`** for batch imports — cron callbacks scheduled idempotently are the right place for bulk variation operations.
 
