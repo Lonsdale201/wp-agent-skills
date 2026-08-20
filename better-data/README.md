@@ -1,6 +1,6 @@
 # better-data
 
-**Contributor** skills for the [better-data](https://github.com/lonsdale201/better-data) PHP library — DTO + Presenter for WordPress 8.3+. Use these when adding to the library itself, not when consuming it from a plugin.
+**Contributor** skills for the [better-data](https://github.com/lonsdale201/better-data) PHP library — DTO + Presenter for WordPress + PHP 8.3+. Use these when adding to the library itself, not when consuming it from a plugin.
 
 ## Skills
 
