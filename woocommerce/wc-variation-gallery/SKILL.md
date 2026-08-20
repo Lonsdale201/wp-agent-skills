@@ -1,24 +1,24 @@
 ---
 name: wc-variation-gallery
-description: Build or audit WooCommerce 10.9+ native variation gallery integrations. Covers the experimental `variation_gallery` feature flag, variation `image` vs `gallery_image_ids`, `_product_image_gallery` storage, REST v3 variation payloads, classic product gallery replacement/reset behavior, theme override compatibility, and Additional Variation Images legacy migration. Use when code mentions variation galleries, multiple variation images, `set_gallery_image_ids`, `gallery_images_html`, `gallery_image_ids`, `wc_feature_woocommerce_additional_variation_images_enabled`, `_wc_additional_variation_images`, or `wc-product-gallery-before-destroy`.
+description: Build or audit WooCommerce 11.0+ native variation gallery integrations. Covers the experimental `variation_gallery` feature flag and 5% canary rollout, variation `image` vs `gallery_image_ids`, `_product_image_gallery` storage, REST v3 variation payloads, classic product gallery replacement/reset behavior, theme override compatibility, and Additional Variation Images legacy migration. Use when code mentions variation galleries, multiple variation images, `set_gallery_image_ids`, `gallery_images_html`, `gallery_image_ids`, `wc_feature_woocommerce_additional_variation_images_enabled`, `_wc_additional_variation_images`, or `wc-product-gallery-before-destroy`.
 metadata:
   wp-skills-author: "Soczó Kristóf"
   wp-skills-contact: "mailto:lonsdale201@hotmail.com"
   wp-skills-plugin: "woocommerce"
-  wp-skills-plugin-version-tested: "10.9.4"
+  wp-skills-plugin-version-tested: "11.0.0"
   wp-skills-php-min: "7.4"
-  wp-skills-last-updated: "2026-07-10"
+  wp-skills-last-updated: "2026-08-05"
 ---
 
 # WooCommerce variation gallery
 
 Use this skill when a plugin or theme needs to read, write, render, or audit WooCommerce native variation gallery images. This is separate from attribute swatches: swatches choose an attribute value; variation gallery controls the images shown after a variation is selected.
 
-## Source-verified status in 10.9.4
+## Source-verified status in 11.0.0
 
 - Feature ID: `variation_gallery`.
 - Feature option: `wc_feature_woocommerce_additional_variation_images_enabled`.
-- Default: experimental and disabled by default.
+- Rollout: experimental. Explicit `yes` or `no` in the option wins; when the option is absent, stores assigned to remote variant buckets 1–6 of 120 (5%) are enabled as a canary cohort.
 - Merged package slug: `woocommerce-additional-variation-images`.
 - Native storage: variation `gallery_image_ids` prop, stored in `_product_image_gallery` on the `product_variation` post.
 - Primary image: still the variation image/thumbnail (`set_image_id()`, `_thumbnail_id`, REST `image`).
@@ -41,13 +41,17 @@ Do not store the primary image again in `gallery_image_ids`. WooCommerce REST v3
 
 ## Feature gate
 
-Use the feature option to decide whether storefront behavior should expect variation gallery swapping:
+Use WooCommerce's public feature API to decide whether storefront behavior should expect variation gallery swapping:
 
 ```php
+use Automattic\WooCommerce\Utilities\FeaturesUtil;
+
 function myplugin_wc_variation_gallery_enabled(): bool {
-    return 'yes' === get_option( 'wc_feature_woocommerce_additional_variation_images_enabled', 'no' );
+    return FeaturesUtil::feature_is_enabled( 'variation_gallery' );
 }
 ```
+
+Do not check only whether `wc_feature_woocommerce_additional_variation_images_enabled` equals `yes`. In WooCommerce 11.0 an absent option can still mean enabled for the 5% canary cohort. `FeaturesUtil` resolves the feature definition, including that cohort-derived default. Avoid importing `Automattic\WooCommerce\Internal\VariationGallery\Package`; it is an internal implementation surface.
 
 CRUD and REST can write gallery data even when the feature is off, but core classic frontend will not generate `gallery_images_html`, the admin gallery UI will not load, and legacy fallback hooks will not be registered until the feature package initializes.
 

@@ -2,13 +2,13 @@
 name: wcs-data-model-switching-gifting
 description: WooCommerce Subscriptions data model, switching, and gifting reference for order/product types, schedule and relation storage, switch cart/order payloads, proration hooks, recipient data, and WCS 9.0 APFS plan markers. Use for shop_subscription, _schedule_next_payment, _subscription_switch_data, subscription_switch, _switched_subscription_item_id, wcsg_gift_recipients_email, _recipient_user, _wcsatt_schemes, or _wcsatt_scheme.
 metadata:
-  wp-skills-author: "Soczo Kristof"
+  wp-skills-author: "Soczó Kristóf"
   wp-skills-contact: "mailto:lonsdale201@hotmail.com"
   wp-skills-plugin: "woocommerce-subscriptions"
-  wp-skills-plugin-version-tested: "9.0.0"
-  wp-skills-woocommerce-version-tested: "10.9.4"
+  wp-skills-plugin-version-tested: "9.1.0"
+  wp-skills-woocommerce-version-tested: "11.0.0"
   wp-skills-php-min: "7.4"
-  wp-skills-last-updated: "2026-07-10"
+  wp-skills-last-updated: "2026-08-06"
 ---
 
 # WooCommerce Subscriptions: data model, switching, gifting
@@ -129,6 +129,8 @@ Safe pattern:
 6. If an immediate payment is due, process it through the gateway/order payment flow; if no payment is due, complete/apply the switch through WCS completion logic.
 7. Let `complete_subscription_switches()` apply the change and let WCS fire its normal hooks.
 
+If a pending/failed switch order is reopened through its pay link, reproduce WCS 9.1's full guard set before rebuilding the cart: valid order key, pending/failed status, actual switch relation and payload, logged-in user, `pay_for_order` on the order, `switch_shop_subscription` on every referenced subscription, and a bidirectional match between relation results and every `_subscription_switch_data` entry. An order key or payment capability alone is insufficient.
+
 Do not implement switching by directly calling `$subscription->remove_item()` and `$subscription->add_product()` from a customer action. That bypasses switch orders, prorations, tax/fee/coupon handling, old item archival, pending switch item types, cancellation of older unpaid switch orders, and completion hooks.
 
 For read-only previews or eligibility checks, it is fine to expose custom endpoints that return allowed products, switchable item IDs, and WCS-calculated preview totals. For writes, prefer a service that uses WCS cart/checkout objects internally.
@@ -138,6 +140,25 @@ For read-only previews or eligibility checks, it is fine to expose custom endpoi
 Cart items use `subscription_switch`; switch orders persist `_subscription_switch_data`; staged/archive items use custom `*_pending_switch`, `*_switched`, and `line_item_removed` types. These payloads include item IDs, proration results, schedule changes, coupons, fees, and shipping lines and are not a stable shortcut for direct mutation.
 
 Use [switching-reference.md](switching-reference.md) for exact payload shapes, item meta, and hook signatures. In WCS 8.8+, `wcs_switch_proration_extra_to_pay` has a fifth `$switch_item` argument; register accepted args `5` when that context matters.
+
+## HPOS-safe order/subscription data copying
+
+WCS copies parent, subscription, renewal, and resubscribe data through `WC_Subscriptions_Data_Copier` and filters such as `wc_subscriptions_subscription_data`, `wc_subscriptions_renewal_order_data`, and `wc_subscriptions_object_data`.
+
+In WCS 9.1, values returned by those filters on HPOS are copied without an additional `maybe_unserialize()` pass; CPT/raw-storage values are decoded after the filters run. Return the PHP type expected by the destination setter. Do not pre-serialize arrays or objects merely because legacy `postmeta` stores serialized text, and do not assume an intentionally serialized string will be decoded twice on HPOS.
+
+Regression-test the same copy callback with HPOS enabled and disabled, especially when a text field is itself a valid serialized-looking string.
+
+## Trash and restore contract in WCS 9.1
+
+Treat trash/restore as an order lifecycle operation, not as a raw post-status edit.
+
+- Restoring a parent order restores its trashed child subscriptions under both HPOS and legacy CPT storage.
+- On CPT storage, WCS 9.1 restores a subscription to the recorded `_wp_trash_meta_status` instead of WordPress's default `draft` status, which `WC_Subscription` would otherwise expose as `pending`.
+- WCS normalizes unsafe pre-trash statuses to a restorable cancelled/pending/expired status before trashing. Do not overwrite `_wp_trash_meta_status` yourself.
+- CPT cache repair on `untrashed_post` reads prefixed subscription meta such as `_customer_user` directly when generic object-property lookup cannot resolve it. Bypassing `wp_untrash_post()` can leave customer/subscription caches stale and keep the restored subscription out of My Account.
+
+Use `$subscription->delete( false )` / the WooCommerce data-store trash and untrash paths for programmatic lifecycle changes. Test both HPOS and CPT storage when an integration observes trash hooks, relation caches, or My Account visibility.
 
 ## Gifting storage
 
@@ -227,7 +248,11 @@ $recipient_id = WCS_Gifting::get_recipient_user( $subscription );
   - `wp-content/plugins/woocommerce-subscriptions/includes/core/wcs-functions.php`
   - `wp-content/plugins/woocommerce-subscriptions/includes/core/wcs-switch-functions.php`
   - `wp-content/plugins/woocommerce-subscriptions/includes/switching/class-wc-subscriptions-switcher.php`
+  - `wp-content/plugins/woocommerce-subscriptions/includes/switching/class-wcs-cart-switch.php`
   - `wp-content/plugins/woocommerce-subscriptions/includes/switching/class-wcs-switch-totals-calculator.php`
+  - `wp-content/plugins/woocommerce-subscriptions/includes/core/class-wc-subscriptions-data-copier.php`
+  - `wp-content/plugins/woocommerce-subscriptions/includes/core/class-wc-subscriptions-manager.php`
+  - `wp-content/plugins/woocommerce-subscriptions/includes/core/class-wcs-post-meta-cache-manager.php`
   - `wp-content/plugins/woocommerce-subscriptions/includes/downloads/`
   - `wp-content/plugins/woocommerce-subscriptions/includes/apfs/class-wcs-att-product.php`
   - `wp-content/plugins/woocommerce-subscriptions/includes/apfs/product/class-wcs-att-product-schemes.php`

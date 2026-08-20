@@ -3,17 +3,19 @@ name: wp-file-upload-security
 description: Implement or audit secure WordPress file uploads and sideloads
   with media_handle_upload, wp_handle_upload, wp_check_filetype_and_ext,
   strict MIME/extension allowlists, capability and nonce checks, size limits,
-  attachment cleanup, SVG/archive policy, remote download cleanup, and private
-  file storage. Use when code handles $_FILES, multipart forms, REST uploads,
-  Media Library attachments, imported remote files, ZIP extraction, or custom
-  download endpoints.
+  collision-safe image format conversion, EXIF orientation, attachment cleanup,
+  SVG/archive policy, remote download cleanup, and private file storage. Use
+  when code handles $_FILES, multipart forms, REST uploads, Media Library
+  attachments, post-upload image conversion, imported remote files, ZIP
+  extraction, or custom download endpoints.
 metadata:
   wp-skills-author: "Soczó Kristóf"
   wp-skills-contact: "mailto:lonsdale201@hotmail.com"
   wp-skills-plugin: "wordpress"
-  wp-skills-plugin-version-tested: "6.0 - 7.0.1"
+  wp-skills-plugin-version-tested: "6.0 - 7.1"
+  wp-skills-wp-version-tested: "7.1"
   wp-skills-php-min: "7.4"
-  wp-skills-last-updated: "2026-07-10"
+  wp-skills-last-updated: "2026-08-20"
 ---
 
 # WordPress File Upload Security
@@ -34,6 +36,13 @@ matching alone is not malware scanning or content safety.
 
 Do not manually combine `move_uploaded_file()`, a client MIME, and the original
 name when core already provides unique naming, upload checks, and hooks.
+
+WordPress 7.1 also supports browser-side image processing and new REST flows
+for dimension validation, size-aware quality, and registering one sideloaded
+file for multiple sizes. This changes where bytes may be transformed, not the
+trust boundary: server-side capability, intent, MIME/dimension/resource checks,
+metadata validation, and cleanup remain mandatory. Use
+`wp-client-side-media-processing` for that protocol.
 
 ## Browser-to-Media-Library pattern
 
@@ -117,6 +126,33 @@ Important limits:
   resource limits, and operational quarantine before publishing the file.
 - Do not disable `test_type` or broaden global `upload_mimes` for one feature;
   pass a local allowlist to that upload call.
+
+## Image format conversion and derived-name collisions
+
+Core choosing a unique source name does not make a later, differently suffixed
+target unique. For example, an existing `photo.webp` does not collide with a
+new `photo.jpg` during the normal JPEG upload check. Code that later replaces
+the extension and saves to `photo.webp` can overwrite the older attachment.
+
+When converting uploads or generating derivatives:
+
+- never create the destination with only `pathinfo()` plus an extension swap;
+- run `wp_unique_filename()` against the **final target basename** immediately
+  before a custom save, and verify the returned editor path is the intended
+  unique target;
+- when product semantics permit, prefer core image-editor output-format hooks
+  so core can account for alternate output names; verify separately whether the
+  supported core version converts the original, only generated sizes, or both;
+- treat `wp_unique_filename()` as existing-name resolution, not an atomic
+  filesystem reservation; do not claim concurrent-write safety without a test
+  or an exclusive-write design;
+- validate the saved file before deleting the source, and preserve the source
+  whenever the destination or downstream upload result is incomplete.
+
+Normalize EXIF orientation before calculating resize dimensions and saving the
+replacement. Use the image editor's `maybe_exif_rotate()` path or keep the
+conversion inside the applicable core pipeline. Deleting the source before
+orientation and output validation removes the reliable recovery input.
 
 ## SVG and active content
 
@@ -214,13 +250,21 @@ For contracts, medical records, exports, or licensed downloads:
 - Apply site/multisite quotas via `wp_max_upload_size()` plus a narrower feature
   limit; browser `MAX_FILE_SIZE` is UX only, not a security boundary.
 - Store attachment IDs rather than URLs and render through attachment helpers.
+- Treat `wp_get_attachment_metadata()` as `array|false`. WordPress 7.1 rejects
+  non-array stored/filtered metadata and normalizes a present non-array `sizes`
+  value to an empty array.
+- `wp_filesize()` is non-negative in WordPress 7.1, but zero is ambiguous; do
+  not use it alone to distinguish an empty file from a read/filter failure.
 
 ## Tests
 
 Cover empty/partial/oversized files, double extensions, mismatched real MIME,
 uppercase extensions, polyglots appropriate to supported formats, SVG/HTML,
-archive traversal/bombs, duplicate names, low-privilege users, nonce failure,
-post ownership, sideload timeout/redirect, cleanup failure, and multisite quota.
+archive traversal/bombs, duplicate names, **cross-extension derived-name
+collisions** (`photo.webp` already exists before `photo.jpg`/`photo.png`), EXIF
+orientations 2–8, conversion failure with source preservation, low-privilege
+users, nonce failure, post ownership, sideload timeout/redirect, cleanup
+failure, and multisite quota.
 Run tests with and without `fileinfo`, and with a user that has
 `unfiltered_upload` to ensure the feature allowlist still wins.
 
@@ -239,16 +283,17 @@ Run tests with and without `fileinfo`, and with a user that has
 - Use **`wp-filesystem-api`** for non-upload filesystem transports.
 - Use **`wp-http-api-client`** for remote URLs and downloads.
 - Use **`wp-privacy-personal-data`** for personal documents and retention.
+- Use **`wp-client-side-media-processing`** for the WordPress 7.1 browser/REST
+  multi-request upload protocol and its fallback behavior.
 
-## Core references
+## References
 
 - `wp-admin/includes/file.php`: `_wp_handle_upload()`, `wp_handle_upload()`,
   `download_url()`, and `unzip_file()`.
 - `wp-admin/includes/media.php`: `media_handle_upload()` and sideload handling.
 - `wp-includes/functions.php`: `wp_check_filetype_and_ext()` and allowed mimes.
 
-## References
-
 - Official documentation: <https://developer.wordpress.org/reference/functions/media_handle_upload/>
 - Official documentation: <https://developer.wordpress.org/reference/functions/wp_handle_upload/>
 - Official documentation: <https://developer.wordpress.org/reference/functions/wp_check_filetype_and_ext/>
+- WordPress 7.1 client-side media processing: <https://make.wordpress.org/core/2026/07/22/client-side-media-processing-in-wordpress-7-1/>

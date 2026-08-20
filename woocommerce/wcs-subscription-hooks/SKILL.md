@@ -5,10 +5,10 @@ metadata:
   wp-skills-author: "Soczó Kristóf"
   wp-skills-contact: "mailto:lonsdale201@hotmail.com"
   wp-skills-plugin: "woocommerce-subscriptions"
-  wp-skills-plugin-version-tested: "9.0.0"
-  wp-skills-woocommerce-version-tested: "10.9.4"
+  wp-skills-plugin-version-tested: "9.1.0"
+  wp-skills-woocommerce-version-tested: "11.0.0"
   wp-skills-php-min: "7.4"
-  wp-skills-last-updated: "2026-07-10"
+  wp-skills-last-updated: "2026-08-06"
 ---
 
 # WooCommerce Subscriptions: hook map
@@ -157,6 +157,8 @@ Use `wcs-subscription-plans-apfs` for storage, REST endpoints, cart data, and he
 | Validate all payment meta | `woocommerce_subscription_validate_payment_meta` | action | `string $payment_method_id, array $payment_meta, WC_Subscription $subscription` | Generic validator receives 3 arguments. Register with accepted args `3`. |
 | Validate one gateway's meta | `woocommerce_subscription_validate_payment_meta_{gateway_id}` | action | `array $payment_meta, WC_Subscription $subscription` | Gateway-specific validator receives 2 arguments. Do not give the generic callback this signature. |
 
+WCS 9.1 REST v2/v3 accepts request payment values only for slots declared by `woocommerce_subscription_payment_meta`; undeclared keys are ignored. Use `wcs-rest-api` for the allowlist shape and permission boundary.
+
 ## Health Check and Processing reliability
 
 WCS 8.8 adds operational surfaces that are not ordinary renewal hooks:
@@ -235,6 +237,7 @@ add_action( 'woocommerce_subscription_renewal_payment_complete', function ( WC_S
 
 - Run `wcs-data-model-switching-gifting` when exact Subscriptions meta names, product type slugs, switch payloads, switched item meta/types, or WCS Gifting recipient storage matters.
 - Run `wcs-subscription-plans-apfs` when ordinary Woo products can be sold as subscriptions via WCS 9.0 Subscription Plans / APFS.
+- Run `wcs-cart-checkout-coupons` for initial/recurring cart contexts, WCS coupon types, recurring fees, pseudo renewal coupons, and block checkout totals.
 - Run `wcs-renewal-scheduler` for changes to next payment dates, renewal order creation, scheduled actions, or payment retry timing.
 - Run `wcs-health-check-processing` for WCS 8.8 Health Check, Resolve actions, dedicated processing, and web-cron queue support.
 - Run `wc-hpos-compatibility` if the integration queries orders/subscriptions directly.

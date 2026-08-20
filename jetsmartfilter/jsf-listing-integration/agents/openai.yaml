@@ -1,0 +1,4 @@
+interface:
+  display_name: "JSF Listing Integration"
+  short_description: "Connect filters to JSF listings correctly."
+  default_prompt: "Use $jsf-listing-integration to connect JetSmartFilters controls to a listing with the correct provider and query ID."

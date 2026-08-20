@@ -13,9 +13,10 @@ metadata:
   wp-skills-author: "Soczó Kristóf"
   wp-skills-contact: "mailto:lonsdale201@hotmail.com"
   wp-skills-plugin: "wordpress"
-  wp-skills-plugin-version-tested: "6.0 - 7.0.1"
+  wp-skills-plugin-version-tested: "6.0 - 7.1"
+  wp-skills-wp-version-tested: "7.1"
   wp-skills-php-min: "7.4"
-  wp-skills-last-updated: "2026-07-10"
+  wp-skills-last-updated: "2026-08-20"
 ---
 
 # WordPress Admin Form Controls
@@ -221,9 +222,14 @@ wp_enqueue_script(
 
 For user / term suggestions, core ships `user-suggest` (admin pages only) and `tags-suggest` — those are wrappers around `jquery-ui-autocomplete` that hit core admin-ajax endpoints. Worth reusing if your "User" autocomplete maps to WP users — see `wp-admin/js/user-suggest.js`.
 
-## Admin pointer — `wp-pointer`
+## Admin onboarding pointer — `wp-pointer`
 
 The blue floating tooltip core uses for "new feature" onboarding (e.g. the first-time pointer that introduced the Customizer). Useful in plugins for: announcing a new admin menu item after a version bump, drawing attention to a moved button, first-time-tour-style hints.
+
+This is not WordPress 7.1's `wp_get_tooltip()` / `wp_get_toggletip()` API.
+Pointers are dismissible onboarding UI with user-meta persistence; tooltips are
+accessible control names or supporting context. Use `wp-accessibility-audit`
+when the requested UI is a tooltip/toggletip rather than a one-time tour.
 
 Handle `wp-pointer` is registered at `wp-includes/script-loader.php:860` and depends on `jquery-ui-core`. The matching stylesheet `wp-pointer` is registered at `:1655` and depends on `dashicons` — enqueue both.
 
@@ -259,6 +265,7 @@ wp_enqueue_script(
 - **For pointers, use core's `dismiss-wp-pointer` AJAX action**, not a custom one. The user-meta key `dismissed_wp_pointers` is what every other dismissed pointer in WP uses; matching the convention means a clean uninstall (you can remove your slug from the CSV in your uninstaller).
 - **Pointer slugs must be `sanitize_key()`-safe**. Use lowercase letters, numbers, and underscores, or core's dismissal handler rejects the request.
 - **Don't init `wpColorPicker` while its input is inside a hidden container** — Iris reads computed dimensions at init time. Init AFTER the containing tab/accordion is shown, or call `.iris('refresh')` on the input after revealing it.
+- **WordPress 7.1 bundles jQuery UI 1.14.2 with back-compat enabled.** Use public widget APIs; regression-test code that reaches into underscored methods or generated markup.
 
 ## Common AI mistakes
 

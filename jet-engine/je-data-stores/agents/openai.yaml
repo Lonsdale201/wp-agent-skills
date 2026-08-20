@@ -1,0 +1,4 @@
+interface:
+  display_name: "JetEngine Data Stores"
+  short_description: "Build safe JetEngine Data Store integrations"
+  default_prompt: "Use $je-data-stores to build or audit a JetEngine Data Store integration across PHP, browser storage, Query Builder, counts, and CCT items."

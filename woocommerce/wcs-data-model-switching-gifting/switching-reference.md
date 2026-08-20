@@ -52,6 +52,19 @@ $switch_data[ $subscription_id ] = array(
 
 WCS can cancel older unpaid switch orders when a new switch order is created.
 
+## Paying an existing switch order in WCS 9.1
+
+`WCS_Cart_Switch::maybe_setup_cart()` reconstructs a pending/failed switch order only after all of these checks pass:
+
+1. `pay_for_order`, order key, order-pay ID, and `subscription_switch` request markers exist.
+2. The order loads, the key matches with `hash_equals()`, status is `pending` or `failed`, and the order actually contains a switch.
+3. The user is logged in and has `pay_for_order` for that order.
+4. Stored `_subscription_switch_data` is a non-empty array.
+5. Every subscription returned by `wcs_get_subscriptions_for_switch_order()` is represented by array payload data and the user has `switch_shop_subscription` for it.
+6. Every stored payload subscription ID resolves back to a related switch subscription.
+
+Only then does WCS empty/rebuild the cart and set the order awaiting payment. Custom switch-payment routes must not treat the order key as sufficient authorization or accept payload entries unrelated to the order's subscriptions.
+
 ## Item types and meta
 
 | Item type | Meaning |

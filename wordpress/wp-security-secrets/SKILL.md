@@ -15,9 +15,10 @@ metadata:
   wp-skills-author: "Soczó Kristóf"
   wp-skills-contact: "mailto:lonsdale201@hotmail.com"
   wp-skills-plugin: "wordpress"
-  wp-skills-plugin-version-tested: "6.0 - 7.0.1"
+  wp-skills-plugin-version-tested: "6.0 - 7.1"
+  wp-skills-wp-version-tested: "7.1"
   wp-skills-php-min: "7.4"
-  wp-skills-last-updated: "2026-07-10"
+  wp-skills-last-updated: "2026-08-20"
 ---
 
 # WordPress secrets and credentials audit
@@ -180,7 +181,7 @@ setcookie( 'myplugin_session', $token, [
 
 For WP's own auth, **don't roll your own**: use `wp_set_auth_cookie()` so core
 owns session tokens, expiry, and its Secure/HttpOnly cookie behavior. Do not
-claim that it explicitly sets SameSite: WordPress 7.0.1's auth-cookie calls do
+claim that it explicitly sets SameSite: WordPress 7.1's auth-cookie calls do
 not pass a SameSite attribute.
 
 `SameSite=None` requires `Secure`. Also ensure `is_ssl()` is correct behind a

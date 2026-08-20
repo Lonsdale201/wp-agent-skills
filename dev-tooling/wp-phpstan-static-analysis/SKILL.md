@@ -19,10 +19,11 @@ metadata:
   wp-skills-author: "Soczó Kristóf"
   wp-skills-contact: "mailto:lonsdale201@hotmail.com"
   wp-skills-plugin: "wordpress"
-  wp-skills-plugin-version-tested: "PHPStan 2.x; phpstan-wordpress 2.0.3; wordpress-stubs 6.6+; WP 7.0"
-  wp-skills-wp-version-tested: "7.0"
+  wp-skills-plugin-version-tested: "7.1"
+  wp-skills-wp-version-tested: "7.1"
+  wp-skills-toolchain-tested: "PHPStan 2.2.5; phpstan-wordpress 2.0.3; wordpress-stubs 7.0.1"
   wp-skills-php-min: "7.4"
-  wp-skills-last-updated: "2026-06-17"
+  wp-skills-last-updated: "2026-08-20"
 ---
 
 # PHPStan static analysis for WordPress
@@ -43,7 +44,14 @@ composer require --dev szepeviktor/phpstan-wordpress
 composer require --dev phpstan/extension-installer   # recommended: auto-registers the extension
 ```
 
-`szepeviktor/phpstan-wordpress` (2.0.3) pulls in **`phpstan/phpstan` `^2.0`** and **`php-stubs/wordpress-stubs`** transitively — you don't add those yourself. It requires PHPStan 2.0+.
+`szepeviktor/phpstan-wordpress` (2.0.3) pulls in **`phpstan/phpstan` `^2.0`** and **`php-stubs/wordpress-stubs` `^6.6.2`** transitively — you don't normally add those yourself. It requires PHPStan 2.0+.
+
+At the WordPress 7.1 audit date, the newest tagged `wordpress-stubs` release is
+7.0.1. Composer can therefore analyze ordinary plugin code, but new 7.1-only
+symbols may still be reported as unknown. Do not silence those errors broadly.
+Feature-detect the API for older WordPress support and add a small reviewed
+project stub for the missing 7.1 declaration, then remove it when an official
+7.1 stubs package is available.
 
 `phpstan/extension-installer` is a Composer plugin that auto-includes any installed `phpstan-extension` package's config, so you don't hand-wire the include. Composer 2.2+ needs it in `allow-plugins`:
 
@@ -127,9 +135,9 @@ Now CI is green, but any **new** error fails the build. Over time, fix entries a
 
 ## WP-specific false positives the extension handles
 
-`phpstan-wordpress` already fixes the usual WordPress noise — don't suppress these by hand:
+`phpstan-wordpress` fixes much of the usual WordPress noise:
 
-- **`apply_filters()` "invoked with N parameters, 2 required"** — WP filters use `func_get_args()`; the bundled `ignoreErrors` regex (above) covers it.
+- **`apply_filters()` "invoked with N parameters, 2 required"** — WP filters use `func_get_args()`. The extension's official example supplies the narrow `ignoreErrors` regex shown above; the installed `extension.neon` itself does not contain that ignore.
 - **Loose return types** — dynamic return-type extensions narrow `apply_filters()`, `esc_sql()`, `wp_parse_url()`, `shortcode_atts()`, `wp_slash()`, and more.
 - **`is_wp_error()` narrowing** — after `if ( is_wp_error( $x ) )`, PHPStan knows `$x` is a `WP_Error` (vs the success type) in each branch.
 - **Hook callbacks** — `HookCallbackRule` validates `add_action()`/`add_filter()` callback signatures; `HookDocsRule` validates the docblocks on `apply_filters()`/`do_action()` calls.
@@ -166,7 +174,8 @@ Add a composer script so it joins the QA entry point alongside `phpcs`/`phpunit`
 - **Pick a level the code passes, commit, raise gradually.** `max` on legacy code without a baseline is noise, not signal.
 - **Baseline legacy errors** with `--generate-baseline` so only new/changed code is gated.
 - **Add the right stubs for cross-plugin calls** (e.g. `php-stubs/woocommerce-stubs`) or every external symbol is "unknown".
-- **Don't suppress the known WP patterns by hand** — the extension already handles `apply_filters` arg counts, `is_wp_error()`, hooks, constants. Annotate `global $wpdb` with `/** @var \wpdb $wpdb */`.
+- **Use only the extension's documented narrow suppression** for the extra-argument `apply_filters()` pattern; do not generalize it to unrelated calls. The extension handles return narrowing, hooks, constants, and `is_wp_error()` separately. Annotate `global $wpdb` with `/** @var \wpdb $wpdb */`.
+- **Check stub freshness against the target core.** For WordPress 7.1, tagged 7.0.1 stubs do not describe every new symbol; a green run alone is not a complete 7.1 API audit.
 
 ## Cross-references
 

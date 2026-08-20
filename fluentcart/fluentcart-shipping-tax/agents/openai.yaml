@@ -1,0 +1,4 @@
+interface:
+  display_name: "FluentCart shipping and tax"
+  short_description: "Extend shipping and tax without trusting totals"
+  default_prompt: "Use $fluentcart-shipping-tax to implement or audit this FluentCart shipping or tax flow with destination validation, server recalculation, and historical snapshots."

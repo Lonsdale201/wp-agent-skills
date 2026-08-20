@@ -1,8 +1,9 @@
 version: 2
 updates:
-  # Keep GitHub Actions (official + third-party) up to date.
-  # Action versions are SHA-pinned in workflow files; Dependabot will
-  # update both the SHA and the trailing version comment.
+  # Keep GitHub Actions up to date. The workflows currently use only
+  # official `actions/*` steps, tag-pinned; pin any third-party action
+  # by SHA when adding one and Dependabot will bump the SHA plus the
+  # trailing version comment.
   - package-ecosystem: github-actions
     directory: /
     schedule:

@@ -5,9 +5,10 @@ metadata:
   wp-skills-author: "Soczó Kristóf"
   wp-skills-contact: "mailto:lonsdale201@hotmail.com"
   wp-skills-plugin: "wordpress"
-  wp-skills-plugin-version-tested: "7.0.1"
+  wp-skills-plugin-version-tested: "7.0 - 7.1"
+  wp-skills-wp-version-tested: "7.1"
   wp-skills-php-min: "7.4"
-  wp-skills-last-updated: "2026-07-13"
+  wp-skills-last-updated: "2026-08-20"
 ---
 
 # WordPress API Fetch Client
@@ -226,6 +227,17 @@ Account for package behavior before reporting a bug:
 Do not rely on internal middleware order. Inspect the effective request when a
 proxy, service worker, test mock, or custom middleware changes behavior.
 
+WordPress 7.1 preserves a caller-supplied `Content-Type` header during method
+override while still forcing the correct `X-HTTP-Method-Override`. This fixes a
+7.0-era inconsistency, but it does not make an arbitrary content type match the
+body. Prefer `data` for JSON and `body` for pre-encoded data, and test the
+effective request when supporting both core generations.
+
+The 7.1 package contains locked `privateApis` for preload reuse/cleanup. The
+opt-in string explicitly marks them as core-only and unstable. Themes and
+plugins must not unlock or depend on them; use an application-owned cache or
+preload lifecycle when public behavior is required.
+
 ## Audit workflow
 
 1. Inventory usage and enqueue paths:
@@ -269,6 +281,7 @@ security or correctness flaw from a build/configuration suspicion.
 
 - `wp-rest-api` — route registration, validation, permissions, and response design.
 - `wp-plugin-assets-loading` — screen-scoped enqueueing and build asset manifests.
+- `wp-client-side-media-processing` — WordPress 7.1's browser-side image processing and multi-request media lifecycle.
 - `wp-security-audit` — end-to-end authorization, output, and browser trust review.
 
 ## References

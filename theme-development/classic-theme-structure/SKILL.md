@@ -1,20 +1,21 @@
 ---
 name: classic-theme-structure
-description: Build or audit a modern classic PHP WordPress theme structure for WP 7.0 without FSE/block-theme assumptions. Covers required `style.css` + `index.php`, `functions.php` as bootstrap, `after_setup_theme`, `wp_enqueue_scripts`, `get_theme_file_uri/path`, `wp_head`, `wp_body_open`, `wp_footer`, recommended `assets/`, `inc/`, `template-parts/`, `page-templates/`, `languages/`, child-theme-safe paths, theme supports, menus, sidebars, and what belongs in a plugin instead of a theme. Use when scaffolding/reviewing a non-FSE theme, converting static HTML to a theme, or deciding where theme files/hooks belong.
+description: Build or audit a modern classic PHP WordPress theme structure for WP 7.1 without FSE/block-theme assumptions. Covers required `style.css` + `index.php`, `functions.php` as bootstrap, `after_setup_theme`, `wp_enqueue_scripts`, `get_theme_file_uri/path`, `wp_head`, `wp_body_open`, `wp_footer`, recommended `assets/`, `inc/`, `template-parts/`, `page-templates/`, `languages/`, child-theme-safe paths, theme supports, menus, sidebars, and what belongs in a plugin instead of a theme. Use when scaffolding/reviewing a non-FSE theme, converting static HTML to a theme, or deciding where theme files/hooks belong.
 metadata:
   wp-skills-author: "Soczó Kristóf"
   wp-skills-contact: "mailto:lonsdale201@hotmail.com"
   wp-skills-plugin: "wordpress"
-  wp-skills-plugin-version-tested: "7.0"
+  wp-skills-plugin-version-tested: "7.1"
+  wp-skills-wp-version-tested: "7.1"
   wp-skills-php-min: "7.4"
-  wp-skills-last-updated: "2026-06-04"
+  wp-skills-last-updated: "2026-08-20"
 ---
 
 # Classic Theme Structure
 
 Use this when creating or reviewing a classic PHP WordPress theme. This skill deliberately avoids FSE/block-theme architecture: no `templates/*.html` as the primary rendering layer, no Site Editor assumptions, and no Gutenberg/block development workflow.
 
-The target is a secure, maintainable classic theme for WP 7.0.
+The target is a secure, maintainable classic theme for WP 7.1.
 
 ## When to Use This Skill
 
@@ -90,8 +91,7 @@ Theme URI: https://example.com/mytheme
 Author: Example Team
 Description: A classic PHP WordPress theme.
 Version: 1.0.0
-Requires at least: 7.0
-Tested up to: 7.0
+Requires at least: 7.1
 Requires PHP: 7.4
 License: GNU General Public License v2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
@@ -99,6 +99,10 @@ Text Domain: mytheme
 Domain Path: /languages
 */
 ```
+
+`Tested up to` is not a `style.css` theme header parsed by `WP_Theme`; do not
+copy the plugin/readme field into this file. Record release testing in the
+distribution metadata or project documentation instead.
 
 For a child theme, add `Template: parent-theme-folder-name`.
 

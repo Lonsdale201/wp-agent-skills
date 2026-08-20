@@ -5,9 +5,9 @@ metadata:
   wp-skills-author: "Soczó Kristóf"
   wp-skills-contact: "mailto:lonsdale201@hotmail.com"
   wp-skills-plugin: "woocommerce"
-  wp-skills-plugin-version-tested: "10.9.4"
+  wp-skills-plugin-version-tested: "11.0.0"
   wp-skills-php-min: "7.4"
-  wp-skills-last-updated: "2026-07-20"
+  wp-skills-last-updated: "2026-08-05"
 ---
 
 # WooCommerce payment tokens
@@ -163,7 +163,7 @@ When no gateway ID is passed, WooCommerce filters to currently registered gatewa
 
 Treat `get_customer_tokens()` as a filterable integration surface, not necessarily a pure local-table read. A provider can reconcile remote methods through `woocommerce_get_customer_payment_tokens`, causing network I/O and local writes. The result is also limited by `woocommerce_get_customer_payment_tokens_limit` (`posts_per_page` by default). A migration needing raw local rows should page through `WC_Payment_Tokens::get_tokens()` with explicit `user_id`, `gateway_id`, `limit`, and `page` arguments.
 
-Use `WC_Payment_Tokens::get_order_tokens( $order_id )` when you need token objects attached to an order. In WC 10.9.4, `$order->get_payment_tokens()` returns token IDs from the order data store; `WC_Payment_Tokens::get_order_tokens()` wraps them into token objects.
+Use `WC_Payment_Tokens::get_order_tokens( $order_id )` when you need token objects attached to an order. In WooCommerce 11.0.0, `$order->get_payment_tokens()` returns token IDs from the order data store; `WC_Payment_Tokens::get_order_tokens()` wraps them into token objects.
 
 ## Validate a chosen saved token at checkout
 

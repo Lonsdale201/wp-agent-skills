@@ -3,9 +3,10 @@ name: wp-phpunit-writing-tests
 description: >
   Write PHPUnit tests for a WordPress plugin or theme. Covers the integration
   base class `WP_UnitTestCase` and its snake_case `set_up()` / `tear_down()`
-  fixtures (and why WordPress uses them via phpunit-polyfills), the per-test DB
-  transaction rollback, the factory system (`self::factory()->post->create()`,
-  `create_many()`, `create_and_get()`, `wpSetUpBeforeClass()`), WP assertions
+  fixtures (and why WordPress uses them via phpunit-polyfills), verified cleanup
+  boundaries (without promising universal transaction rollback), the factory
+  system (post creation, `create_many()`, `create_and_get()`, and
+  `wpSetUpBeforeClass()`), WP assertions
   (`assertWPError`, `assertEqualSets`), HTTP mocking with the `pre_http_request`
   filter, data providers and `@group`, and the crucial distinction that
   `WP_UnitTestCase` is an INTEGRATION test (real WP + DB) while true unit tests
@@ -17,10 +18,11 @@ metadata:
   wp-skills-author: "Soczó Kristóf"
   wp-skills-contact: "mailto:lonsdale201@hotmail.com"
   wp-skills-plugin: "wordpress"
-  wp-skills-plugin-version-tested: "PHPUnit 9.x; phpunit-polyfills 1.1; Brain Monkey 2.7; WP_Mock 1.1; WP 7.0"
-  wp-skills-wp-version-tested: "7.0"
+  wp-skills-plugin-version-tested: "7.1"
+  wp-skills-wp-version-tested: "7.1"
+  wp-skills-toolchain-tested: "PHPUnit 9.x; phpunit-polyfills 1.1; Brain Monkey 2.7; WP_Mock 1.1"
   wp-skills-php-min: "7.4"
-  wp-skills-last-updated: "2026-06-17"
+  wp-skills-last-updated: "2026-08-20"
 ---
 
 # Writing WordPress PHPUnit tests
@@ -36,7 +38,12 @@ Once the harness is in place (`wp-phpunit-test-setup`), this skill is about the 
 
 ## Integration vs unit — get this right first
 
-`WP_UnitTestCase` **boots the full WordPress environment and uses a real (test) database**, with each test wrapped in a transaction that is rolled back afterwards. Despite the name, that is an **integration test**, not a pure unit test. Use it when you need real WP behavior: DB writes, `WP_Query`, hooks firing against core, rewrite rules, user capabilities.
+`WP_UnitTestCase` **boots the full WordPress environment and uses a real test
+database**. Its teardown and factory cleanup isolate normal WordPress records,
+but do not describe the suite as a universal per-test transaction: code that
+commits, creates tables/files, changes external services, starts cron workers,
+or mutates non-database globals still needs explicit cleanup. Despite the name,
+this is an **integration test**, not a pure unit test.
 
 For **true unit tests** — fast, isolated, no WP boot, no DB — you mock WordPress functions with one of:
 
@@ -98,7 +105,11 @@ Use the `$factory` argument passed in (not `self::factory()`) inside `wpSetUpBef
 - `assertEqualSets( $expected, $actual )` — equal regardless of order; `assertSameSets()` for strict.
 - `go_to( $url )` — sets up the main query/environment for a URL, to test template/conditional-tag logic (`is_single()` etc.).
 
-Because each test rolls back its transaction, you don't clean up created posts/users yourself — but you **do** restore global state you changed (options via `update_option` are fine; `$_GET`/`$_POST`/`$GLOBALS` you set should be reset in `tear_down()`).
+Factories and the base teardown clean up ordinary posts/users/options created
+through WordPress APIs. You still restore `$_GET`, `$_POST`, `$GLOBALS`, the
+current user, locale, filters, registered post types, files, custom tables, and
+external effects you changed. Do not rely on rollback language as a substitute
+for verifying cleanup.
 
 ## Mocking outbound HTTP
 
@@ -185,7 +196,8 @@ Pure unit tests can run on a newer PHPUnit than the WP suite, but keep them in a
 - **Use snake_case `set_up()` / `tear_down()`**; `parent::set_up()` first, `parent::tear_down()` last; never call the camelCase parent from them.
 - **Build data with factories**, not raw `wp_insert_post` loops or `$wpdb`.
 - **Never hit the network** — short-circuit with `pre_http_request` and return a full response array.
-- **Don't rely on cleanup you didn't do for globals** — the DB rolls back, but `$_POST`/`$GLOBALS`/added filters do not.
+- **Don't rely on cleanup you did not verify.** Core factories/base teardown handle ordinary WP records; globals, hooks, files, custom schema, caches, and external effects need explicit restoration.
+- **Keep the suite deterministic.** Freeze or inject time/randomness, block unexpected HTTP, and make asynchronous jobs run through a controlled test path.
 - **Keep unit and integration tests in separate suites**; only the WP suite is locked to PHPUnit 9.x.
 
 ## Cross-references
@@ -203,4 +215,5 @@ Pure unit tests can run on a newer PHPUnit than the WP suite, but keep them in a
 - Brain Monkey: <https://github.com/Brain-WP/BrainMonkey>
 - WP_Mock: <https://github.com/10up/wp_mock>
 - PHPUnit attributes vs annotations: <https://docs.phpunit.de/en/10.5/attributes.html>
+- WordPress 7.1 leaner PHPUnit CI: <https://make.wordpress.org/core/2026/07/30/leaner-steadier-phpunit-runs-for-upcoming-releases/>
 - Related documentation: <https://github.com/WordPress/wordpress-develop/tree/trunk/tests/phpunit/includes>

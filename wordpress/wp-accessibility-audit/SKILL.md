@@ -5,9 +5,10 @@ metadata:
   wp-skills-author: "Soczó Kristóf"
   wp-skills-contact: "mailto:lonsdale201@hotmail.com"
   wp-skills-plugin: "wordpress"
-  wp-skills-plugin-version-tested: "7.0.1"
+  wp-skills-plugin-version-tested: "7.0 - 7.1"
+  wp-skills-wp-version-tested: "7.1"
   wp-skills-php-min: "7.4"
-  wp-skills-last-updated: "2026-07-10"
+  wp-skills-last-updated: "2026-08-20"
 ---
 
 # WordPress Accessibility Audit
@@ -105,6 +106,11 @@ Error example:
 - Icon-only buttons need visible text, `.screen-reader-text`, or `aria-label`.
 - Decorative icons inside named controls should use `aria-hidden="true"` and not receive focus.
 - Repeated links like "Read more" need extra context through visible text or `.screen-reader-text`.
+
+WordPress 7.1 adds `wp_get_tooltip()` for a short control name and
+`wp_get_toggletip()` for longer supporting context. Visible labels are still
+preferred. Read [references/tooltips-71.md](references/tooltips-71.md) before
+using the helpers or supplying custom trigger markup.
 
 Icon button:
 
@@ -222,6 +228,8 @@ provide a no-motion code path and test that completion still occurs.
 - Use landmarks for major areas: `main`, `nav`, `aside`, `header`, `footer`.
 - Multiple `nav` landmarks need names with `aria-label` or `aria-labelledby`.
 - Data tables need header cells with `scope="col"` or `scope="row"`.
+- On WordPress 7.1 list tables, the primary column—not the checkbox column—is
+  the row header. Custom `WP_List_Table` renderers must preserve that structure.
 - Do not use tables for layout.
 
 ## Media and Images

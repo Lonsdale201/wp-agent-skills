@@ -1,7 +1,7 @@
 # Action Scheduler operational debugging
 
 Use this reference when jobs are late, duplicated, failed, stuck, or invisible.
-Examples target Action Scheduler 3.9.3.
+Examples target Action Scheduler 4.0.0.
 
 ## First checks
 
@@ -67,7 +67,7 @@ Symptoms:
 
 Likely causes:
 
-- No `$unique = true` on modern AS for a global hook+group singleton.
+- No `$unique = true` on AS 4.0 for an exact hook+group+args queue identity.
 - Guard used wrong args or wrong group.
 - Activation scheduled repeatedly without a guard.
 - Callback re-enqueues itself without a cursor/state gate.
@@ -81,10 +81,11 @@ wp action-scheduler action list --hook=myplugin/process_order --group=myplugin -
 
 Fix:
 
-- Add `$unique = true` only for jobs that must have at most one pending/running
-  copy per hook+group.
-- Use `as_has_scheduled_action( $hook, $args, $group )` before scheduling on
-  per-entity jobs where args distinguish the entity.
+- On AS 4.0 DBStore, add `$unique = true` when the exact hook+group+encoded-args
+  identity must have at most one pending/running row.
+- On mixed AS 3.x/4.x support, use
+  `as_has_scheduled_action( $hook, $args, $group )` as an exact-args
+  compatibility guard and verify which copy/store is active.
 - Add durable callback idempotency (`_processed` meta, custom table unique key,
   status transition check, or external idempotency key).
 
@@ -110,7 +111,7 @@ Throw when the operator should see and investigate the failure.
 
 ## Args are too long
 
-The 3.9.3 DB store can store larger encoded args in `extended_args`, but it
+The 4.0.0 DB store can store larger encoded args in `extended_args`, but it
 still validates encoded args against an 8000-character limit. Older stores can
 be stricter. If you see an error about `ActionScheduler_Action::$args too long`,
 stop passing payloads. Store payloads in a custom table, option, transient, or
@@ -131,7 +132,7 @@ as_enqueue_async_action( 'myplugin/import', array( 'batch_id' => $batch_id ), 'm
 
 ## Schema/table problems
 
-Action Scheduler 3.9.3 DB store table base names:
+Action Scheduler 4.0.0 DB store table base names:
 
 - `actionscheduler_actions`
 - `actionscheduler_claims`
@@ -144,7 +145,7 @@ If tables are missing or mismatched:
 
 ```bash
 wp action-scheduler fix-schema
-wp action-scheduler system data-store
+wp action-scheduler data-store
 ```
 
 Do not ship plugin code that writes these tables directly. Use direct SQL only
@@ -152,23 +153,29 @@ for emergency diagnostics or one-off repair scripts with a backup.
 
 ## Cleanup
 
-Action Scheduler has cleanup behavior, but busy sites may still need explicit
-CLI maintenance during incidents.
+Action Scheduler 4.0 schedules a dedicated cleanup action daily, normally near
+03:00 in the site's local timezone. It processes bounded batches and schedules
+continuations while a backlog remains. Completed/canceled actions default to
+31-day retention; failed actions are now also purged, after three 31-day months
+by default. Failed rows/logs are therefore not durable audit storage.
 
 ```bash
 wp action-scheduler clean --status=complete,canceled --before='31 days ago'
 wp action-scheduler clean --status=failed --before='90 days ago' --batch-size=100
 ```
 
-Do not automatically delete failed actions from plugin runtime code. Failed
-actions are operational evidence.
+The documented controls are `action_scheduler_retention_period`,
+`action_scheduler_retention_period_for_failed`, and
+`action_scheduler_enable_failed_action_cleanup`. Do not call the internal
+cleaner hooks or automatically delete failed actions from distributed plugin
+runtime code.
 
 ## Runner tuning
 
 Avoid tuning globals as a first response. Fix callback duration, chunking, and
 idempotency first.
 
-Relevant filters in 3.9.3:
+Relevant runner filters in 4.0.0:
 
 - `action_scheduler_queue_runner_batch_size` defaults web runner batches to 25.
 - `action_scheduler_queue_runner_concurrent_batches` defaults concurrent

@@ -1,0 +1,5 @@
+interface:
+  display_name: "WooCommerce Product CRUD and Cache"
+  short_description: "Audit Woo product CRUD and request caching."
+  default_prompt: "Use $wc-product-crud-cache to implement or audit WooCommerce product reads, writes, and cache invalidation."
+

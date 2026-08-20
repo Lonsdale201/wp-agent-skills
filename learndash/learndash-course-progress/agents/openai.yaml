@@ -1,0 +1,4 @@
+interface:
+  display_name: "LearnDash Course Progress"
+  short_description: "LearnDash progress and completion lifecycle"
+  default_prompt: "Use $learndash-course-progress to implement or audit LearnDash learner progress and completion logic."

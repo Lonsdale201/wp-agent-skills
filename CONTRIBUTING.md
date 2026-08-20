@@ -4,11 +4,10 @@ Thanks for considering a contribution. This repo lives or dies on skill **qualit
 
 ## Submission flow
 
-There are four ways to engage. Pick the one that matches your intent.
+Pick the row that matches your intent.
 
 | Intent | Use | What happens |
 |---|---|---|
-| Submit a brand-new skill (with content) | **[Submit a skill](../../issues/new?template=new-skill.yml)** issue form | Bot validates the form, builds the SKILL.md, opens a PR against `contrib`. You can edit the issue to fix errors and it retries. |
 | Report a problem with an existing skill | **[Report a skill problem](../../issues/new?template=report-skill.yml)** issue form | Maintainer triages; you (or a contributor) open a PR with the fix. |
 | Ask a question | **[Question](../../issues/new?template=question.yml)** issue form | Conversation in the issue thread. |
 | Suggest a skill that should exist (without writing it) | **[Request a skill](../../issues/new?template=request-skill.yml)** issue form | Maintainer evaluates demand and either picks it up or invites contributors. |
@@ -17,9 +16,9 @@ There are four ways to engage. Pick the one that matches your intent.
 
 > Only the maintainer (`@Lonsdale201`) merges `contrib` → `main` periodically. Direct pushes to `main` are blocked by branch protection.
 
-### Why is the *Submit a skill* form a hard requirement for new skills?
+### Can I submit a finished skill?
 
-It guarantees frontmatter shape, runs pre-checks (kebab-case name, ≤1024-char description, name uniqueness, no duplicate folder, no path traversal in filenames, no obvious secrets), and produces a clean PR with the right path, label, and review checklist. Editing the issue retriggers the bot, so fixing validation errors is a one-click loop.
+No. New skills are written and published by the maintainer, because every skill here is grounded against a real installation of the plugin it describes — that verification can't be outsourced to a form. If a skill is missing, open a **Request a skill** issue with concrete triggers and upstream docs; that is the fastest way to get it written. PRs against `contrib` are for editing skills that already exist.
 
 ## Repository layout rules
 

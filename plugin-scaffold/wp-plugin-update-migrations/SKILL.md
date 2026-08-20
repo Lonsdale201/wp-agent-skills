@@ -3,7 +3,7 @@ name: wp-plugin-update-migrations
 description: >-
   Designs and reviews WordPress plugin update-time version
   migrations: stored schema/data version options, version_compare or
-  integer schema versions, idempotent v1->v2->v3 migrators, dbDelta inside
+  integer schema versions, idempotent stepwise migrators, dbDelta inside
   migrations, locks, partial reruns, multisite handling, and safe use of
   upgrader_process_complete. Use when code mentions plugin updates,
   upgrade migrations, schema version, database version, data migration,
@@ -13,9 +13,10 @@ metadata:
   wp-skills-author: "Soczó Kristóf"
   wp-skills-contact: "mailto:lonsdale201@hotmail.com"
   wp-skills-plugin: "wordpress"
-  wp-skills-plugin-version-tested: "7.0"
+  wp-skills-plugin-version-tested: "7.1"
+  wp-skills-wp-version-tested: "7.1"
   wp-skills-php-min: "7.4"
-  wp-skills-last-updated: "2026-07-12"
+  wp-skills-last-updated: "2026-08-20"
 ---
 
 # WordPress plugin: update migrations

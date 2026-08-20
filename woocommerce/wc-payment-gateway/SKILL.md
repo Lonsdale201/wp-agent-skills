@@ -5,9 +5,9 @@ metadata:
   wp-skills-author: "Soczó Kristóf"
   wp-skills-contact: "mailto:lonsdale201@hotmail.com"
   wp-skills-plugin: "woocommerce"
-  wp-skills-plugin-version-tested: "10.9.4"
+  wp-skills-plugin-version-tested: "11.0.0"
   wp-skills-php-min: "7.4"
-  wp-skills-last-updated: "2026-07-20"
+  wp-skills-last-updated: "2026-08-05"
 ---
 
 # WooCommerce payment gateway
@@ -178,7 +178,7 @@ $callback_url = WC()->api_request_url( 'myplugin_gateway' );
 add_action( 'woocommerce_api_myplugin_gateway', array( $handler, 'handle' ) );
 ```
 
-Do not call the callback mechanism deprecated in 10.9.4; it remains used by core. WP REST is usually preferable for explicit methods, schemas, and response handling.
+Do not describe this callback mechanism as removed or deprecated in WooCommerce 11.0; core still uses it. WP REST is usually preferable for explicit methods, schemas, and response handling.
 
 ## Checkout Block boundary
 

@@ -6,7 +6,7 @@ body:
   - type: markdown
     attributes:
       value: |
-        Use this form to report a problem with an existing skill in the repo. For brand-new skills, use **Submit a skill** instead.
+        Use this form to report a problem with an existing skill in the repo. For a skill that doesn't exist yet, use **Request a skill** instead.
 
   - type: input
     id: skill_name
