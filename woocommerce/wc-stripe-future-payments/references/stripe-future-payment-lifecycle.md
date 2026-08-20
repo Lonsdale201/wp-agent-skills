@@ -50,7 +50,7 @@ confirm=true
 
 Never reuse the first successful PaymentIntent as the next installment. It represents one payment lifecycle and one amount/state history.
 
-## Installed Woo Stripe Gateway 10.8.5 contract
+## Installed Woo Stripe Gateway 10.9.0 contract
 
 The installed gateway's behavior is source-verified as follows:
 
@@ -63,6 +63,7 @@ The installed gateway's behavior is source-verified as follows:
 - Selecting account creation during checkout does not make the shopper logged in when the payment UI is first configured. Do not present the filter alone as a first-purchase guest solution.
 - The deprecated `wc_stripe_force_save_source` filter is still bridged, but new integrations must use `wc_stripe_force_save_payment_method`.
 - `handle_saving_payment_method()` classifies the provider object, rejects non-reusable types, reconciles duplicates, creates/updates the appropriate Woo token, and updates relevant order/subscription data.
+- Adaptive Pricing is automatically unavailable for WCS subscriptions, charge-upon-release pre-orders, and WooCommerce Deposits. The 10.9+ `wc_stripe_is_adaptive_pricing_supported` filter is a final opt-out for other incompatible carts; the removed `wc_stripe_is_checkout_sessions_available` filter is not a supported fallback.
 
 Treat these as version-pinned integration contracts. Test again when the Stripe Gateway version changes.
 

@@ -1,13 +1,14 @@
 ---
 name: classic-theme-assets-build
-description: Build or audit frontend asset loading for classic PHP WordPress themes on WP 7.0. Covers `wp_enqueue_scripts`, child-theme-safe `get_theme_file_uri()` and `get_theme_file_path()`, cache-busting with `filemtime()`, script args with `strategy` and `in_footer`, conditional enqueues, `comment-reply`, RTL style data, inline data with `wp_json_encode()` and `wp_add_inline_script()`, build output folders, preload/resource hints, and common mistakes such as hardcoded tags, enqueues inside templates, and invalid file paths.
+description: Build or audit frontend asset loading for classic PHP WordPress themes on WP 7.1. Covers `wp_enqueue_scripts`, child-theme-safe `get_theme_file_uri()` and `get_theme_file_path()`, cache-busting with `filemtime()`, classic scripts and script modules, loading strategy/fetch priority, conditional enqueues, `comment-reply`, RTL style data, inline data with `wp_json_encode()` and `wp_add_inline_script()`, build output folders, preload/resource hints, and common mistakes such as hardcoded tags, enqueues inside templates, and invalid file paths.
 metadata:
   wp-skills-author: "Soczó Kristóf"
   wp-skills-contact: "mailto:lonsdale201@hotmail.com"
   wp-skills-plugin: "wordpress"
-  wp-skills-plugin-version-tested: "7.0"
+  wp-skills-plugin-version-tested: "7.1"
+  wp-skills-wp-version-tested: "7.1"
   wp-skills-php-min: "7.4"
-  wp-skills-last-updated: "2026-06-04"
+  wp-skills-last-updated: "2026-08-20"
 ---
 
 # Classic Theme Assets and Build Output
@@ -87,7 +88,9 @@ Rules:
 
 ## JavaScript Loading
 
-WP 7.0 supports the modern `$args` array for `wp_enqueue_script()`.
+WP 7.1 retains the modern `$args` array for `wp_enqueue_script()` (introduced
+in 6.3). It supports `strategy`, `in_footer`, and, since 6.9,
+`fetchpriority`.
 
 ```php
 wp_enqueue_script(
@@ -109,6 +112,20 @@ Rules:
 - Keep dependencies accurate. WordPress may adjust strategies to preserve dependency order.
 - Prefer small, focused frontend scripts over one global file that runs on every page.
 - Do not pass the old boolean footer parameter in new code unless maintaining legacy style.
+
+### Script modules
+
+Use `wp_enqueue_script_module()` for a real ES module/import-map graph rather
+than printing a hand-written `<script type="module">`. Dependencies are module
+IDs; array entries can mark `import` as `static` or `dynamic`. Since WordPress
+6.9 the args array supports `in_footer` and `fetchpriority`, and WordPress 7.0+
+supports `wp_set_script_module_translations()`.
+
+Do not list classic script handles as module dependencies. If a classic script
+must dynamically import registered modules, use the `module_dependencies`
+classic-script argument available in WordPress 7.0+, or redesign one side of
+the boundary. Use the `wp-plugin-assets-loading` skill for the complete module
+contract and compatibility pattern.
 
 ## Inline Data
 

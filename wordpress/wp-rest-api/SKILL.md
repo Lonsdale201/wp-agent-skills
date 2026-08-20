@@ -16,9 +16,10 @@ metadata:
   wp-skills-author: "Soczó Kristóf"
   wp-skills-contact: "mailto:lonsdale201@hotmail.com"
   wp-skills-plugin: "wordpress"
-  wp-skills-plugin-version-tested: "6.0 - 7.0.1"
+  wp-skills-plugin-version-tested: "6.0 - 7.1"
+  wp-skills-wp-version-tested: "7.1"
   wp-skills-php-min: "7.4"
-  wp-skills-last-updated: "2026-07-15"
+  wp-skills-last-updated: "2026-08-20"
 ---
 
 # WordPress REST API: scaffold, review, secure
@@ -311,6 +312,10 @@ breaking an existing public contract in place.
 - Run `wp-security-secrets` for credentials, token issuance, or custom authentication.
 - Run `wp-database-performance-audit` for large collections, count queries,
   OFFSET scaling, N+1 queries, caching, or direct database access.
+- Run `wp-client-side-media-processing` for WordPress 7.1 media endpoints whose
+  browser and server paths use different multi-request lifecycles.
+- Run `wp-abilities-api` when the desired contract is a discoverable typed
+  operation rather than an HTTP resource.
 
 ## Out of scope
 

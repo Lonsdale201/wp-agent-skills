@@ -16,9 +16,10 @@ metadata:
   wp-skills-author: "Soczó Kristóf"
   wp-skills-contact: "mailto:lonsdale201@hotmail.com"
   wp-skills-plugin: "wordpress"
-  wp-skills-plugin-version-tested: "6.5 - 7.0"
+  wp-skills-plugin-version-tested: "6.5 - 7.1"
+  wp-skills-wp-version-tested: "7.1"
   wp-skills-php-min: "7.4"
-  wp-skills-last-updated: "2026-08-14"
+  wp-skills-last-updated: "2026-08-20"
 ---
 
 # WordPress plugin: bootstrap (main file)
@@ -43,15 +44,14 @@ The diff or file most likely contains: a `Plugin Name:` header, `register_activa
 
 ## Hook firing order
 
-```
-muplugins_loaded -> [active plugin files included; top-level code runs]
-  -> plugins_loaded -> after_setup_theme -> init -> ...
-```
-
-Verified in `wp-settings.php` ([wp-settings.php:511, 545-571, 593, 720, 742](wp-settings.php)) — `muplugins_loaded` fires first, then WP `include_once`s every active plugin's main file (this is when YOUR top-level code runs), then `plugins_loaded`. Two practical rules:
+Core loads active plugin files after `muplugins_loaded`, then fires
+`plugins_loaded`, `after_setup_theme`, and `init`. Two practical rules:
 
 - **Top-level code in the bootstrap file is normal and expected.** `add_action()` / `add_filter()` registrations at top level are fine — that's how plugins wire themselves into WP. What you should NOT do at top level: business logic, DB writes, calls to other plugins' functions (they may not be loaded yet), request-dependent work, or anything that triggers translation. Anything that needs other plugins available, or runtime context, goes inside a `plugins_loaded` callback.
 - **Translation calls (`__()`, `_e()`, `esc_html__`, etc.) must NOT run before `after_setup_theme`** on WP 6.7+. The just-in-time translation loader (`wp-includes/l10n.php:1380` `_load_textdomain_just_in_time`) emits `_doing_it_wrong` if a translation function triggers it before `after_setup_theme`. Bootstrap-phase strings (PHP version errors, requirement messages built during plugin file load or in a `plugins_loaded` callback) must be raw English.
+
+Read `references/bootstrap-contracts-and-mistakes.md` for the verified sequence
+and review examples.
 
 ## Anatomy of a clean bootstrap file
 
@@ -148,25 +148,16 @@ That single file is the **entire** entry-point. Everything else lives in `src/` 
 
 ### 1. Header fields that matter in 2026
 
-The authoritative list is in `get_plugin_data()` (`wp-admin/includes/plugin.php`). At the WordPress runtime level **only `Plugin Name` is required** — `get_plugins()` skips files where `$plugin_data['Name']` is empty. Everything else is recommended for usability, wp.org submission, or specific features.
+The authoritative list is parsed by `get_plugin_data()`. Core needs `Plugin
+Name` for discovery; other headers drive compatibility, dependencies, updates,
+i18n, attribution, and directory review. Read
+`references/bootstrap-contracts-and-mistakes.md` for the field matrix.
 
-| Field | Status | Purpose |
-|---|---|---|
-| `Plugin Name` | core-required | Listed in `/wp-admin/plugins.php`; if missing the plugin doesn't appear at all |
-| `Plugin URI` | recommended | "Visit plugin site" link |
-| `Description` | recommended | One-liner under the name |
-| `Version` | recommended | SemVer; should match your `VERSION` constant + `Stable tag` in `readme.txt` |
-| `Requires at least` | recommended | WP minimum, enforced at activation |
-| `Requires PHP` | recommended | PHP minimum, enforced at activation |
-| `Requires Plugins` | 6.5+, recommended | Comma-separated slugs (see Section 3) |
-| `Author` / `Author URI` | recommended | Display name + link |
-| `Text Domain` | recommended | i18n; defaults to folder slug if omitted (since WP 4.6) |
-| `Domain Path` | recommended whenever translations ship with the plugin | Relative path to the `.mo` files. On WP 6.8+ this header is what registers the directory; omit it and WP registers the plugin root instead (see Section 6) |
-| `License` / `License URI` | recommended | wp.org submission requires GPL-compatible |
-| `Update URI` | only if non-wp.org | Tells WP NOT to overwrite from wp.org if a slug collision occurs |
-| `Network` | only if multisite-only | `true` makes the plugin network-wide-only |
-
-For wp.org submission the bar is higher (wp.org review checks for `Description`, `Version`, `License`), but core-runtime-wise the only blocker is `Plugin Name`.
+WordPress 7.1 makes `get_file_data()` recognize a header line prefixed by either
+`<?php` or the short open tag `<?`. This is parsing compatibility, not a new
+recommended bootstrap style: keep the standard `<?php` opening tag and a normal
+comment header. Do not use the parser change to justify short open tags, mixed
+template syntax, or executable expressions inside metadata.
 
 ### 2. Composer + `src/` PSR-4 is the modern default
 
@@ -262,36 +253,20 @@ Class-only files don't crash without it (no top-level execution), but it's a wp.
 
 ### 6. Text-domain — what actually loads a bundled `.mo`
 
-Nothing "auto-discovers" a plugin's own `languages/` folder by convention. Exactly two things load translations without code from you, and only one of them is recent:
+Nothing auto-discovers a plugin's own `languages/` folder by convention. The
+global location (`wp-content/languages/plugins/my-plugin-<locale>.mo`) is
+searched on every supported version. A **bundled** translation is registered
+from the plugin header only on **WP 6.8 and up** — from `Domain Path`, or the
+plugin root when that header is absent. On **6.7 and earlier** nothing looks
+inside the plugin folder, so a bundled `.mo` silently never loads without an
+explicit `load_plugin_textdomain()` call. `Domain Path` is load-bearing, not
+decoration: omit it and even 6.8+ registers the plugin root, leaving a
+`languages/` subfolder invisible.
 
-- **The global location, on every supported version.** `wp-content/languages/plugins/my-plugin-<locale>.mo` (`.l10n.php` since 6.5) — where GlotPress / wp.org installs them. `WP_Textdomain_Registry` always searches `WP_LANG_DIR/plugins`.
-- **Bundled inside the plugin — WP 6.8 and up only.** As `wp-settings.php` loads each active plugin it registers that plugin's language directory from the header, via `WP_Textdomain_Registry::set_custom_path()`: the `Domain Path` value when present, **otherwise the plugin root**.
-
-The version boundary is the part that bites. On **WP 6.7 and earlier**, `WP_Textdomain_Registry::get_paths_for_domain()` returns only `WP_LANG_DIR/plugins`, `WP_LANG_DIR/themes`, and paths registered by an explicit `load_plugin_textdomain()` call — nothing ever looks inside the plugin folder. A `.mo` shipped in `<plugin>/languages/` simply never loads there, silently.
-
-So call `load_plugin_textdomain()` when either holds:
-- The plugin ships its own translations **and** its `Requires at least:` is below 6.8.
-- The `.mo` files live somewhere the header does not point at.
-
-Skip it when the plugin is wp.org-distributed (the global location covers it), or when it declares 6.8+ and its `Domain Path` is correct. Calling it anyway is harmless — on 6.8+ it just re-registers the same path.
-
-**`Domain Path` is load-bearing, not decoration.** Omit it and WP registers the plugin **root**, so a `languages/` subfolder is invisible even on 6.8+. If you bundle translations under `languages/`, declare `Domain Path: /languages`.
-
-If you do call it, hook on `init`:
-
-```php
-add_action( 'init', static function (): void {
-    load_plugin_textdomain(
-        'my-plugin',
-        false,
-        dirname( plugin_basename( MYPLUGIN_PLUGIN_FILE ) ) . '/languages'
-    );
-} );
-```
-
-`load_plugin_textdomain()` itself is **safe to call earlier** — on WP 6.7+ it just registers the custom path with the textdomain registry, doesn't actually load anything. The `_doing_it_wrong` notice is triggered by **a translation function (`__()`, `_e()`, `esc_html__`, etc.)** invoking the just-in-time loader before `after_setup_theme` (`wp-includes/l10n.php:1380` `_load_textdomain_just_in_time`). So the hard rule is on the translation calls themselves, not on `load_plugin_textdomain` placement.
-
-Practical rule: **don't translate strings during the bootstrap-phase** (top-level code, `plugins_loaded` callbacks, activation hook callbacks). PHP version errors, requirement failure messages, etc. should be raw English. Render them through `__()` only when the admin notice runs (`admin_notices`, well after `init`). The `init` hook for `load_plugin_textdomain` is convention + future-proof, not strictly required.
+Do not translate values during plugin-file load, `plugins_loaded`, or
+activation. Read the i18n section in
+`references/bootstrap-contracts-and-mistakes.md` before adding
+`load_plugin_textdomain()` or diagnosing an early-translation notice.
 
 ### 7. The bootstrap file does NOT contain business logic
 
@@ -303,48 +278,15 @@ If you find a bootstrap file pushing 400+ lines, move logic out. The bootstrap i
 
 ## Composer-free path (legacy/minority)
 
-If Composer is truly off the table, keep the same PSR-4-style layout anyway: `src/Settings/SettingsTab.php` for `MyPlugin\Settings\SettingsTab`. A tiny scoped `spl_autoload_register()` can map your namespace to `src/`. Do not fall back to `class-settings-tab.php`; future Composer adoption should be a `composer.json` change, not a file rename campaign. Third-party libs you depend on get vendored manually into `vendor/`. Workable for a one-shot plugin, painful by the second.
+If Composer is unavailable, preserve the same namespace-to-`src/` and
+PascalCase filename convention with a plugin-scoped autoloader. See the
+reference for the trade-off; do not revive `class-*.php` for new code.
 
 ## Common mistakes
 
-```php
-// WRONG — top-level call that depends on another plugin being loaded
-// (that plugin's file may not have been included yet at this point)
-$jfb_version = jet_form_builder()->version();   // fatal: function not defined
-
-// WRONG — translation called at top level / before after_setup_theme;
-// triggers _doing_it_wrong on WP 6.7+
-$message = __( 'My Plugin needs PHP 8.0+', 'my-plugin' );
-register_activation_hook( __FILE__, function () use ( $message ) {
-    if ( PHP_VERSION_ID < 80000 ) wp_die( $message );
-} );
-
-// WRONG — missing requirements check; activates anyway with broken state
-register_activation_hook( __FILE__, function () {
-    // no PHP / WP / dependency check
-    update_option( 'myplugin_active', true );
-} );
-
-// WRONG — class inside bootstrap file
-class MyPlugin_Singleton { /* 200 lines of logic */ }
-
-// WRONG — old WPCS-style filenames in a new Composer plugin
-includes/class-folder-service.php       // contains class Folder_Service
-includes/class-my-plugin-controller.php // contains class My_Plugin_Controller
-
-// RIGHT — PSR-4, filename matches class name
-src/Folders/FolderService.php           // contains MyPlugin\Folders\FolderService
-src/Rest/FoldersController.php          // contains MyPlugin\Rest\FoldersController
-
-// WRONG — Plugin URI / Author URI typo'd as singular
-* Plugin URL:  https://...    // should be Plugin URI
-* Author URL:  https://...    // should be Author URI
-
-// WRONG — unbounded autoload (matches every class in the codebase)
-spl_autoload_register( function ( $class ) {
-    require_once 'includes/' . $class . '.php';  // namespace pollution + wrong path convention
-} );
-```
+Read `references/bootstrap-contracts-and-mistakes.md` when reviewing dependency
+calls, early translations, requirements, class placement, header spelling, or
+autoload scope.
 
 ## Cross-references
 
@@ -362,7 +304,10 @@ spl_autoload_register( function ( $class ) {
 
 ## References
 
+- Header matrix, load order, and review examples:
+  `references/bootstrap-contracts-and-mistakes.md`.
 - Plugin header reference: [Header Requirements](https://developer.wordpress.org/plugins/plugin-basics/header-requirements/)
+- WordPress 7.1 Field Guide: <https://make.wordpress.org/core/2026/08/05/wordpress-7-1-field-guide/>
 - Plugin Dependencies (WP 6.5): [make.wordpress.org announcement](https://make.wordpress.org/core/2024/03/05/introducing-plugin-dependencies-in-wordpress-6-5/)
 - `register_activation_hook`: [developer.wordpress.org](https://developer.wordpress.org/reference/functions/register_activation_hook/)
 - `is_php_version_compatible` / `is_wp_version_compatible`: `wp-includes/functions.php`

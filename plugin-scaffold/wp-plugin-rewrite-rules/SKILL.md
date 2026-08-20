@@ -11,9 +11,10 @@ metadata:
   wp-skills-author: "Soczó Kristóf"
   wp-skills-contact: "mailto:lonsdale201@hotmail.com"
   wp-skills-plugin: "wordpress"
-  wp-skills-plugin-version-tested: "6.5 - 6.9"
+  wp-skills-plugin-version-tested: "6.5 - 7.1"
+  wp-skills-wp-version-tested: "7.1"
   wp-skills-php-min: "7.4"
-  wp-skills-last-updated: "2026-04-28"
+  wp-skills-last-updated: "2026-08-20"
 ---
 
 # WordPress plugin: rewrite rules & flush
@@ -114,77 +115,32 @@ If your CPT registration is encapsulated inside a class method that's normally o
 
 ## Custom rewrite rules — the `add_rewrite_rule` + handler pattern
 
-To handle a URL pattern that doesn't map to a post or taxonomy:
-
-```php
-// 1. Register the rule on init.
-add_action( 'init', static function (): void {
-    add_rewrite_rule(
-        '^track/([a-z0-9]+)/?$',          // URL pattern
-        'index.php?myplugin_track=$matches[1]',  // query string
-        'top'                             // priority over default rules
-    );
-} );
-
-// 2. Whitelist the query var (otherwise WP strips it).
-add_filter( 'query_vars', static function ( array $vars ): array {
-    $vars[] = 'myplugin_track';
-    return $vars;
-} );
-
-// 3. Handle the request — usually on template_redirect or parse_request.
-add_action( 'template_redirect', static function (): void {
-    $token = get_query_var( 'myplugin_track' );
-    if ( ! $token ) {
-        return;
-    }
-    // Render or redirect. exit; if you don't want WP's template loader to also run.
-    myplugin_render_track_page( sanitize_key( $token ) );
-    exit;
-} );
-
-// 4. Activation: flush after registering.
-register_activation_hook( __FILE__, static function (): void {
-    add_rewrite_rule( '^track/([a-z0-9]+)/?$', 'index.php?myplugin_track=$matches[1]', 'top' );
-    flush_rewrite_rules();
-} );
-```
-
-Notes on each step:
-
-- **`add_rewrite_rule( $regex, $redirect, $position )`** (`wp-includes/rewrite.php`). `$position`: `'top'` matches before WP defaults (use for plugin endpoints that should override `?p=NN` style queries); `'bottom'` matches after (use for fallback patterns).
-- **The query var IS whitelist-required.** Without the `query_vars` filter entry, `get_query_var()` returns empty even if the rule matched. If you use `add_rewrite_tag( '%myplugin_track%', '([a-z0-9]+)' )` before building rules, WordPress registers the matching public query var for you.
-- **`template_redirect` is the usual handler hook** for rendering custom output from a rewrite. `parse_request` runs earlier if you need to short-circuit before WP_Query.
-- **REST is usually a better choice** for true API endpoints — `register_rest_route` gives you typed args, permission_callback, JSON formatting, and cookie auth for free. Use `add_rewrite_rule` only when you genuinely need pretty URLs that participate in WP's permalink engine (frontend pages, redirects, content-driven routes).
+Register the regex on `init`, whitelist its query variable, handle the request
+at an appropriate lifecycle hook, and register the same rule immediately before
+the one-time activation flush. Use REST for a JSON API. Read
+`references/custom-rules-and-endpoints.md` for the complete checked pattern.
 
 ## `add_rewrite_endpoint` — extending existing permastructs
 
-For URLs that hang off existing permalinks, like `/<post-slug>/json/` or `/blog/<post-slug>/print/`:
+Use `add_rewrite_endpoint()` only for a suffix attached to selected existing
+permastructs. Choose the narrowest `EP_*` bitmask; `EP_ALL` expands every
+supported structure. It registers a same-named query var unless the third
+argument overrides or disables it. Register on `init` and flush once on
+activation. See `references/custom-rules-and-endpoints.md`.
 
-```php
-add_action( 'init', static function (): void {
-    // EP_PERMALINK | EP_PAGES — append /json/ to single-post and page permalinks
-    add_rewrite_endpoint( 'json', EP_PERMALINK | EP_PAGES );
-} );
+## Sitemap query routes in WordPress 7.1
 
-// On the template hook:
-add_action( 'template_redirect', static function (): void {
-    if ( get_query_var( 'json' ) !== '' && is_singular() ) {
-        wp_send_json( myplugin_serialize_post( get_post() ) );
-        exit;
-    }
-} );
-```
+WordPress 7.1 adds `WP_Query::$is_sitemap`, `WP_Query::is_sitemap()`, and the
+global `is_sitemap()` conditional. Core marks the query when the public
+`sitemap` query var is non-empty. SEO plugins such as Rank Math may also use
+that query var, so third-party sitemap requests can satisfy the core
+conditional after query parsing.
 
-`add_rewrite_endpoint` automatically registers a query var matching the name by default and adds rules to the relevant permastructs. Pass `false` as the third argument to skip query-var registration, or a string to use a custom query-var name. Bitmask options (verified in `wp-includes/rewrite.php` and `EP_*` constants in `wp-includes/class-wp-rewrite.php`):
-
-- `EP_PERMALINK` — single posts
-- `EP_PAGES` — pages
-- `EP_ALL` — every permastruct WP knows
-- `EP_ROOT` — root only (`/json/`)
-- `EP_CATEGORIES`, `EP_TAGS`, `EP_AUTHORS`, etc.
-
-Same flush rule applies: register on `init`, flush on activation.
+This does not register a route, create a provider, or render XML for custom
+plugin content. Keep rewrite registration, query vars, output ownership, HTTP
+headers, canonical behavior, and caching in one explicit integration. Never
+call `is_sitemap()` before the main query; feature-detect it when supporting
+WordPress 7.0 or older.
 
 ## Soft vs hard flush
 
@@ -252,41 +208,14 @@ Multisite caveat: this skill's authoring environment is single-site. The pattern
 - **Match settings-change flushing to specific setting changes**, not blanket "after any save".
 - **Hard flush = file write**; soft flush = option write only. Default `$hard = true` is fine for activation.
 - **Audit `rewrite_rules` option size** if you suspect rule bloat. 200KB+ is a smell.
+- **`is_sitemap()` is a conditional, not a routing API.** It does not create a
+  `sitemap.php` template or replace provider/output code.
 
 ## Common mistakes
 
-```php
-// WRONG — flush on every request, .htaccess rewritten constantly
-add_action( 'init', function () {
-    add_rewrite_rule( '^api/v1/items/?$', 'index.php?myplugin_endpoint=items', 'top' );
-    flush_rewrite_rules(); // disaster
-} );
-
-// WRONG — registers a CPT but never flushes; permalinks 404
-register_activation_hook( __FILE__, function () {
-    register_post_type( 'myplugin_log', array( 'rewrite' => array( 'slug' => 'logs' ) ) );
-    // missing: flush_rewrite_rules();
-} );
-
-// WRONG — flush on activation but rule isn't registered for this request
-register_activation_hook( __FILE__, function () {
-    flush_rewrite_rules(); // rebuilds rules WITHOUT my CPT (registered on init only)
-} );
-
-// WRONG — query_var not whitelisted; get_query_var returns empty
-add_action( 'init', function () {
-    add_rewrite_rule( '^track/([a-z0-9]+)/?$', 'index.php?myplugin_track=$matches[1]', 'top' );
-} );
-// Missing: add_filter( 'query_vars', fn ( $v ) => array_merge( $v, array( 'myplugin_track' ) ) );
-
-// WRONG — using add_rewrite_rule for a JSON API
-add_rewrite_rule( '^api/v1/orders/?$', 'index.php?myplugin_orders=1', 'top' );
-// Better: register_rest_route( 'myplugin/v1', '/orders', ... );
-
-// WRONG — flushing on every settings save regardless of what changed
-add_action( 'update_option_myplugin_settings', 'flush_rewrite_rules' );
-// Should be gated to specific URL-affecting fields changing.
-```
+Read `references/custom-rules-and-endpoints.md` to review per-request flushes,
+missing activation registration, stripped query vars, REST-shaped rewrite
+handlers, and unconditional settings-save flushes.
 
 ## Cross-references
 
@@ -304,6 +233,8 @@ add_action( 'update_option_myplugin_settings', 'flush_rewrite_rules' );
 
 ## References
 
+- Custom rule, endpoint, and failure patterns:
+  `references/custom-rules-and-endpoints.md`.
 - `add_rewrite_rule`: `wp-includes/rewrite.php`
 - `add_rewrite_endpoint`: `wp-includes/rewrite.php` — `EP_*` bitmask constants in `wp-includes/class-wp-rewrite.php`
 - `flush_rewrite_rules`: `wp-includes/rewrite.php` — wraps `WP_Rewrite::flush_rules`

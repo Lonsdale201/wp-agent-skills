@@ -14,9 +14,10 @@ metadata:
   wp-skills-author: "Soczó Kristóf"
   wp-skills-contact: "mailto:lonsdale201@hotmail.com"
   wp-skills-plugin: "wordpress"
-  wp-skills-plugin-version-tested: "6.4 - 7.0.1"
+  wp-skills-plugin-version-tested: "6.4 - 7.1"
+  wp-skills-wp-version-tested: "7.1"
   wp-skills-php-min: "7.4"
-  wp-skills-last-updated: "2026-07-10"
+  wp-skills-last-updated: "2026-08-20"
 ---
 
 # WordPress Admin Notices
@@ -34,7 +35,10 @@ Trigger when ANY of the following is true:
 
 ## The four hooks — pick by audience
 
-`wp-admin/admin-header.php:290-321` uses `if (is_network_admin()) / elseif (is_user_admin()) / else` to fire **exactly one** of the three context-specific hooks (at lines 299, 306, 313), then ALWAYS fires `all_admin_notices` at line 321 in addition. So on any given admin page render you get **two** hook fires: one context-specific + `all_admin_notices`.
+Core's admin header uses `if ( is_network_admin() ) / elseif (
+is_user_admin() ) / else` to fire **exactly one** of the three context-specific
+hooks, then fires `all_admin_notices` in addition. So a normal rendered admin
+screen runs one context hook plus the all-context hook.
 
 | Hook | Fires when | Use when |
 |---|---|---|
@@ -47,7 +51,9 @@ Most plugins want **`admin_notices`** unless they have a clear reason for one of
 
 ## Render markup the WP 6.4+ way
 
-`wp_admin_notice( $message, $args )` (defined at `wp-includes/functions.php:9189`) emits the full `<div>` wrapper with the right classes and runs `wp_kses_post()` on the markup. Args (verified at `:9078`):
+`wp_admin_notice( $message, $args )` emits the full `<div>` wrapper with the
+right classes and runs `wp_kses_post()` on the markup. `wp_get_admin_notice()`
+builds the string from the same argument contract:
 
 | Key | Type | Notes |
 |---|---|---|
@@ -220,6 +226,10 @@ add_filter( 'wp_admin_notice_args', static function ( array $args, string $messa
 - **`wp_get_admin_notice()` returns raw markup**. It does not run `wp_kses_post()`; only `wp_admin_notice()` does that before echoing.
 - **Flash transients must be per-user**. A global `myplugin_flash` key shows User B's "Imported!" notice to every admin on the next page load.
 - **Don't render notices in cron / REST contexts**. Hooks like `admin_notices` only fire on admin page renders. A successful background job should write to a transient and let the next admin pageview surface it.
+- WordPress 7.1 adds a second `$notice_type` argument to the internal/public
+  dashboard helper `wp_dashboard_quick_press( $message, $notice_type )`, default
+  `error`. Code invoking that helper may now render a success/warning/info
+  message without hand-built markup; this does not change the general notice API.
 
 ## Common AI mistakes
 
@@ -272,9 +282,9 @@ set_transient( 'myplugin_flash_' . get_current_user_id(), $msg, 60 );
 
 ## References
 
-- `wp-includes/functions.php:9078` — `wp_get_admin_notice()` definition with full `$args` shape.
-- `wp-includes/functions.php:9189` — `wp_admin_notice()` echo helper (runs `wp_kses_post`, fires `wp_admin_notice` action before output).
-- `wp-admin/admin-header.php:290-321` — the `if/elseif/else` that picks ONE of `network_admin_notices` (line 299) / `user_admin_notices` (306) / `admin_notices` (313), then unconditional `all_admin_notices` at line 321.
+- `wp-includes/functions.php` — `wp_get_admin_notice()` and the sanitized echo helper `wp_admin_notice()`.
+- `wp-admin/admin-header.php` — context-specific notice hooks followed by `all_admin_notices`.
+- `wp-admin/includes/dashboard.php` — WordPress 7.1 Quick Draft notice-type argument.
 - Official documentation: <https://developer.wordpress.org/reference/functions/wp_admin_notice/>
 - Official documentation: <https://developer.wordpress.org/reference/functions/wp_get_admin_notice/>
 - Official documentation: <https://developer.wordpress.org/reference/hooks/admin_notices/>

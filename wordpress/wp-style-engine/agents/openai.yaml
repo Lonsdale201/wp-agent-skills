@@ -1,0 +1,4 @@
+interface:
+  display_name: "WordPress Style Engine"
+  short_description: "Generate safe structured block-style CSS"
+  default_prompt: "Use $wp-style-engine to implement or audit this WordPress Style Engine integration."

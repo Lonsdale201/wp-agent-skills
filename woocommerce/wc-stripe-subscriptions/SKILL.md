@@ -1,15 +1,15 @@
 ---
 name: wc-stripe-subscriptions
-description: Integrate WooCommerce Stripe Gateway 10.8+ with WooCommerce Subscriptions 9.1+. Covers gateway feature support, automatic renewals, Stripe metadata, failed-renewal recovery, SCA, change-payment SetupIntents, update-all behavior, Express Checkout, native Link and card-wallet token shapes, detached tokens, and safe tests. Use when Stripe is a subscription gateway or code touches scheduled_subscription_payment_stripe, _stripe_source_id on WC_Subscription, change_payment_method, renewal authentication, Link, or Stripe token migration.
+description: Integrate WooCommerce Stripe Gateway 10.8+ with WooCommerce Subscriptions 9.1+. Covers gateway feature support, automatic renewals, Stripe metadata, failed-renewal recovery and Radar-block observers, SCA, change-payment SetupIntents, update-all behavior, Express Checkout, native Link and card-wallet token shapes, detached tokens, and safe tests. Use when Stripe is a subscription gateway or code touches scheduled_subscription_payment_stripe, wc_stripe_subscription_renewal_blocked_by_radar, _stripe_source_id on WC_Subscription, change_payment_method, renewal authentication, Link, or Stripe token migration.
 metadata:
   wp-skills-author: "Soczó Kristóf"
   wp-skills-contact: "mailto:lonsdale201@hotmail.com"
   wp-skills-plugin: "woocommerce-gateway-stripe"
-  wp-skills-plugin-version-tested: "10.8.5"
+  wp-skills-plugin-version-tested: "10.9.0"
   wp-skills-woocommerce-subscriptions-version-tested: "9.1.0"
-  wp-skills-woocommerce-version-tested: "11.0.0"
+  wp-skills-woocommerce-version-tested: "11.0.1"
   wp-skills-php-min: "7.4"
-  wp-skills-last-updated: "2026-08-06"
+  wp-skills-last-updated: "2026-08-19"
 ---
 
 # Stripe and WooCommerce Subscriptions
@@ -26,6 +26,8 @@ Stripe initializes Subscriptions support only when `WC_Subscriptions` and `WC_Su
 - multiple subscriptions
 
 It does **not** advertise `gateway_scheduled_payments`. Therefore WCS schedules renewals, creates renewal orders, and dispatches the Stripe gateway hook. Do not create a second Stripe renewal cron.
+
+Stripe 10.9 uses an internal shared hook manager so the main gateway and lazily created Optimized Checkout method do not register the same subscription callbacks twice. Do not instantiate Stripe gateway/payment-method classes merely to obtain their hooks, and do not call the internal hook manager as an extension API. Observe the public Woo/WCS/Stripe hooks instead.
 
 Reusable Stripe sub-gateways may have different IDs and capabilities. Ask the actual gateway object:
 
@@ -149,7 +151,24 @@ Since WCS 8.8, same-gateway failed-renewal retries do not fire ordinary `woocomm
 
 Stripe handles off-session SCA by leaving the renewal unpaid, sending Stripe-specific authentication email(s), and letting the customer authenticate/pay. Do not mark the subscription active or call `payment_complete()` merely because an intent exists or is `requires_action`.
 
-Stripe 10.7+ also detects Radar-blocked renewals, puts the subscription on hold, and cancels the pending WCS retry so repeated retries do not reproduce the same block.
+Stripe 10.7+ detects Radar-blocked renewals and cancels the pending WCS retry so repeated retries do not reproduce the same block. Stripe 10.9 adds a public observer after the renewal order has been marked failed and after the gateway attempts to cancel retry state and write its notes:
+
+```php
+add_action(
+    'wc_stripe_subscription_renewal_blocked_by_radar',
+    static function ( WC_Order $renewal_order, $response, string $reason ): void {
+        myplugin_alert_once(
+            'stripe-radar-renewal-' . $renewal_order->get_id(),
+            $renewal_order->get_id(),
+            sanitize_key( $reason )
+        );
+    },
+    10,
+    3
+);
+```
+
+Use it for idempotent alerting or reconciliation handoff, not to retry or mark the renewal paid. The response can contain provider/customer diagnostics; do not serialize it into logs, order notes, REST output, or notifications. Keep the listener non-throwing so it cannot interfere with the gateway's error path.
 
 ## Token deletion and detached subscriptions
 
@@ -167,7 +186,7 @@ Test at minimum:
 
 1. Initial paid subscription and zero-upfront free trial.
 2. Successful automatic renewal with the stored Stripe method.
-3. Decline, WCS retry, Radar block, and SCA-required renewal.
+3. Decline, WCS retry, Radar block, the Radar observer firing once per local alert purpose, and SCA-required renewal.
 4. Change payment with an existing token and with a new UPE method.
 5. 3DS redirect completion and cancellation.
 6. Express Checkout change-payment enabled/disabled and update-all consent.
@@ -190,6 +209,7 @@ Test at minimum:
   - `wp-content/plugins/woocommerce-gateway-stripe/includes/compat/trait-wc-stripe-subscriptions.php`
   - `wp-content/plugins/woocommerce-gateway-stripe/includes/compat/trait-wc-stripe-subscriptions-utilities.php`
   - `wp-content/plugins/woocommerce-gateway-stripe/includes/compat/class-wc-stripe-subscriptions-helper.php`
+  - `wp-content/plugins/woocommerce-gateway-stripe/includes/class-wc-stripe-hook-manager.php`
   - `wp-content/plugins/woocommerce-gateway-stripe/includes/payment-methods/class-wc-stripe-upe-payment-gateway.php`
   - `wp-content/plugins/woocommerce-gateway-stripe/includes/payment-methods/class-wc-stripe-express-checkout-element.php`
   - `wp-content/plugins/woocommerce-gateway-stripe/includes/payment-methods/class-wc-stripe-express-checkout-helper.php`

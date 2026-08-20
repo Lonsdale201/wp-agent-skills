@@ -1,0 +1,4 @@
+interface:
+  display_name: "WooCommerce Stripe Saved Methods"
+  short_description: "Build safe Stripe saved-method flows"
+  default_prompt: "Use $wc-stripe-add-payment-method to implement or audit a WooCommerce Stripe My Account saved-payment-method flow."

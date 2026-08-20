@@ -4,17 +4,18 @@ description: Use WordPress' HTML API for structured server-side HTML inspection
   and mutation instead of regex, fragile string replacement, or DOMDocument.
   Covers WP_HTML_Tag_Processor, WP_HTML_Processor, set_attribute,
   remove_attribute, add_class, remove_class, set_modifiable_text,
-  serialize_token, custom data attribute name mapping, and WP 6.9 behavior
-  where attribute/text setters escape character references. Use when plugin
+  serialize_token, custom data attribute name mapping, WP 6.9 setter escaping,
+  and WP 7.1 HTML processing-instruction recognition/mutation. Use when plugin
   code modifies rendered HTML, block output, shortcodes, content filters,
   widget markup, email fragments, or user-provided HTML.
 metadata:
   wp-skills-author: "Soczó Kristóf"
   wp-skills-contact: "mailto:lonsdale201@hotmail.com"
   wp-skills-plugin: "wordpress"
-  wp-skills-plugin-version-tested: "6.2 - 7.0.1"
+  wp-skills-plugin-version-tested: "6.2 - 7.1"
+  wp-skills-wp-version-tested: "7.1"
   wp-skills-php-min: "7.4"
-  wp-skills-last-updated: "2026-07-10"
+  wp-skills-last-updated: "2026-08-20"
 ---
 
 # WordPress HTML API
@@ -108,6 +109,26 @@ $html = $processor->get_updated_html();
 
 If the target text may be inside `script`, `style`, or complex nested content, inspect the processor behavior on the target WP version before shipping.
 
+## Processing instructions in WordPress 7.1
+
+`next_token()` now recognizes HTML processing instructions such as
+`<?my-target data?>`. Check `get_token_type() === '#processing-instruction'`;
+`get_tag()` returns the case-sensitive target, while `get_token_name()` returns
+the static token name.
+
+This follows HTML tokenization, not generic XML parsing. A recognized target
+starts with an ASCII letter or `_` and continues with ASCII alphanumerics, `-`,
+or `_`. Reserved `xml` / `xml-stylesheet` and XML-only target characters become
+comment-like tokens instead. The token ends at the first `>`, so do not use the
+API as an XML processor.
+
+`get_modifiable_text()` returns PI data without entity decoding.
+`set_modifiable_text()` supports it in 7.1 and normalizes the result to a space,
+the supplied data, and `?>`. It rejects data containing `>` or beginning with
+whitespace because those values cannot be represented unambiguously. It does
+not escape PI data. Attribute/class setters return false because a processing
+instruction is not an HTML tag. Always check mutation return values.
+
 ## Structural extraction
 
 Use `WP_HTML_Processor` when you need safe token serialization or fragment-level structure:
@@ -146,6 +167,7 @@ $dataset_name = wp_js_dataset_name( 'data-my-plugin-source' );
 - **Use `WP_HTML_Processor` for structure**, nested traversal, normalization, and `serialize_token()`.
 - **Return `get_updated_html()`** after lexical updates; returning the original `$html` drops changes.
 - **Test malformed HTML.** Plugin output often receives fragments, not clean full documents.
+- **Do not treat processing instructions as XML.** WordPress 7.1 exposes HTML's narrower token rules and PI text has different escaping constraints.
 
 ## Common mistakes
 
@@ -182,6 +204,7 @@ $p->set_attribute( 'title', $title );
 ## References
 
 - WordPress 6.9 HTML API dev note: <https://make.wordpress.org/core/2025/11/21/updates-to-the-html-api-in-6-9/>
+- WordPress 7.1 Field Guide: <https://make.wordpress.org/core/2026/08/05/wordpress-7-1-field-guide/>
 - `WP_HTML_Tag_Processor`: `wp-includes/html-api/class-wp-html-tag-processor.php`
 - `WP_HTML_Processor`: `wp-includes/html-api/class-wp-html-processor.php`
 - Dataset helpers: `wp-includes/script-loader.php`

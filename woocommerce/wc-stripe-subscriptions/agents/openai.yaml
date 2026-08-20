@@ -1,0 +1,4 @@
+interface:
+  display_name: "WooCommerce Stripe Subscriptions"
+  short_description: "Integrate Stripe with Woo subscriptions"
+  default_prompt: "Use $wc-stripe-subscriptions to implement or audit WooCommerce Stripe Gateway compatibility with WooCommerce Subscriptions."

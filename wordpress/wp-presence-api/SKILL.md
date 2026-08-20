@@ -1,139 +1,228 @@
 ---
 name: wp-presence-api
-description: Awareness-only reference for the WordPress Presence API — an
-  EXPERIMENTAL feature plugin (v0.1.4 as of July 2026) that adds
-  system-wide visibility of who is logged in, what admin screens they
-  view, and which posts they edit, using a dedicated wp_presence table
-  with a 60-second TTL plus the Heartbeat API as transport, instead of
-  writing presence pings to wp_postmeta or wp_options (which would
-  invalidate object cache). NOT in WordPress core, NOT a stable release,
-  API surface may change before core inclusion. Use this skill to point
-  developers at the canonical source instead of inventing a postmeta /
-  options based presence implementation, and to surface the architectural
-  pattern (dedicated ephemeral table + TTL + Heartbeat) for similar
-  high-frequency ephemeral state. Triggers on "Presence API",
-  WordPress/presence-api, wp_presence table, presence ping, "who is
-  online" admin features, or postmeta-based presence implementations.
+description: Implement or audit integrations with the experimental WordPress Presence API feature plugin 0.1.23. Covers the seven public PHP functions, post and admin rooms, the per-site wp_presence table and TTL, Heartbeat transport, REST read/write/delete/rooms endpoints, per-room capabilities and ownership, pagination and payload limits, post-type opt-in, usePresenceUsers source hook, stale-screen revisions, collaboration hooks, cleanup and multisite provisioning. Use for who-is-online, active-editor, post-lock, co-presence, Heartbeat, `wp_get_presence`, `wp_set_presence`, `wp-presence/v1`, or high-frequency ephemeral-state work. Do not confuse this experimental plugin with WordPress 7.1 core.
+license: GPLv2-or-later
 metadata:
   wp-skills-author: "Soczó Kristóf"
   wp-skills-contact: "mailto:lonsdale201@hotmail.com"
-  wp-skills-plugin: "wordpress"
-  wp-skills-plugin-version-tested: "presence-api-v0.1.4"
+  wp-skills-plugin: "presence-api"
+  wp-skills-plugin-version-tested: "0.1.23"
+  wp-skills-wp-version-tested: "7.1"
   wp-skills-php-min: "7.4"
-  wp-skills-last-updated: "2026-07-10"
+  wp-skills-last-updated: "2026-08-20"
 ---
 
-# WordPress Presence API (experimental — awareness reference)
+# WordPress Presence API
 
-> **Status (July 10, 2026)**: this is an **experimental feature plugin**, not
-> WordPress core and not a stable API. The latest release is **v0.1.4**. The
-> public architecture remains experimental and may change before core
-> inclusion. Do not make it a production dependency without an explicit risk
-> decision; verify every signature against the current repository.
-
-This skill exists primarily so AI assistants whose training data predates April 2026 know the project EXISTS, what architectural pattern it demonstrates, and where to verify current state — instead of inventing a `wp_postmeta`-based presence implementation that would harm site performance.
+Integrate with Presence API 0.1.23 as an experimental feature plugin, not as a
+WordPress 7.1 core API. It supplies awareness of active users and editors using
+a dedicated per-site table, a 60-second TTL, Heartbeat, REST, admin surfaces,
+and a small public PHP API. Pin and feature-detect the plugin; its `0.1.x`
+contract may still change.
 
 ## When to use this skill
 
-Trigger when ANY of the following is true:
+- Build who-is-online, active-editor, post-lock, or co-presence UI.
+- Review `wp_get_presence()`, `wp_set_presence()`, `wp_presence_post_room()`,
+  `presence-ping`, `wp_presence_editor_state`, or `/wp-presence/v1` code.
+- Add presence support to a custom post type.
+- Decide where to store high-frequency ephemeral state.
+- Audit Heartbeat load, room authorization, presence privacy, cleanup, or
+  multisite behavior.
 
-- The user asks "how do I show who's online" / "real-time co-editing indicator" / "active editors on this post" in a WordPress context.
-- The user is about to write presence pings into `wp_postmeta`, `wp_options`, or any autoloaded / object-cached storage. (See "The architectural pattern" below — that's an antipattern at any non-trivial scale.)
-- The user mentions WordPress 7.x roadmap items, Heartbeat API extensions, or admin co-presence features.
-- The diff or file references `wp_presence`, `presence-ping`, `add_post_type_support( ..., 'presence' )`, or the Presence API repo URL.
+## Establish the runtime contract first
 
-## What the Presence API is — in two sentences
+Feature-detect a public function and avoid loading plugin internals yourself:
 
-A WordPress feature plugin that tracks logged-in users' active screens and edited posts in a dedicated, ephemeral database table (`wp_presence`, 60-second TTL), with the existing Heartbeat API as the network transport — so the data is real-time-ish without invalidating object cache the way `postmeta` writes would.
+```php
+if ( ! function_exists( 'wp_get_presence' ) ) {
+    return;
+}
+```
 
-UI surfaces it currently adds (per the [April 27, 2026 announcement](https://make.wordpress.org/core/2026/04/27/presence-api-feature-plugin/)):
-- Dashboard widgets ("Who's Online", "Active Posts")
-- Admin bar online indicator with avatar stack
-- Post list "Editors" column
-- Users list "Online" filter
-- Post-lock bridge (coexists with WordPress's existing `edit_lock` mechanism)
-- REST endpoints + WP-CLI commands (mentioned but signatures not yet documented)
+Presence API 0.1.23 requires WordPress 7.0+ and PHP 7.4+. WordPress 7.1 does
+not provide these functions or the `wp_presence` table by itself. Do not test
+only `version_compare( get_bloginfo( 'version' ), '7.1', '>=' )`.
 
-Gated on `edit_posts` capability. Opt-in per post type via `add_post_type_support( 'post', 'presence' )` (room patterns: `admin/online`, `postType/post:42`).
+Treat an experimental-plugin version constraint as a deliberate product
+decision. Fail softly when it is absent, and verify the installed source again
+before relying on signatures in a later `0.1.x` release.
 
-## The architectural pattern — the durable lesson
+## Use only the seven public PHP functions
 
-This is the part of the Presence API that is valuable independently of whether the plugin itself ships in core. The pattern:
+The source explicitly marks these as its public contract:
 
-> **For high-frequency ephemeral state (presence, "is typing", cursor position, real-time counter), use a dedicated table with a TTL and the Heartbeat API as transport — NOT `wp_postmeta` / `wp_options` / autoloaded storage.**
+| Function | Contract |
+|---|---|
+| `wp_get_presence( $room, $timeout )` | Return active entry objects for one room. |
+| `wp_set_presence( $room, $client_id, $state, $user_id )` | Atomically upsert one `(room, client_id)` row. |
+| `wp_remove_presence( $room, $client_id )` | Remove one client entry. |
+| `wp_remove_user_presence( $user_id )` | Remove a user's entries across all rooms. |
+| `wp_can_access_presence_room( $room, $user_id )` | Check the plugin's room access policy. |
+| `wp_presence_post_room( $post )` | Return the canonical post room or `false`. |
+| `wp_presence_admin_room()` | Return the canonical `admin/online` room. |
 
-Why this matters:
+Everything after the public section in `includes/functions.php` is marked
+private even when it has a global `wp_*` function name. Do not depend on
+`wp_get_active_rooms()`, `wp_get_presence_summary()`, table/provisioning
+helpers, or cleanup internals.
 
-- **Object cache invalidation.** Every `update_post_meta` invalidates the cached post-meta row. Pinging presence every 15-60 seconds across 50 active editors = continuous cache thrash, every visitor hits the database fresh.
-- **Autoload bloat.** Pings written to options grow the autoloaded payload over time.
-- **Schema migration pain.** Postmeta keys named `_last_seen` etc. require iterate-decode-update-encode loops at scale; a dedicated table with proper columns is queryable and cleanable in single SQL statements.
-- **No native TTL.** Postmeta and options have no expiration story. Presence
-  stores an expiry value in its dedicated table and removes/excludes stale rows
-  through application cleanup; a SQL table schema does not expire rows by
-  itself.
+The direct PHP write/remove functions are trusted server-side primitives. They
+do not reproduce the REST controller's room-length, payload, ownership, entry
+limit, or capability checks. Validate and authorize before calling them from
+any request handler.
 
-If a developer faces a similar problem (any-real-time-ish admin state) and the Presence API itself isn't appropriate (too early, too narrow, too heavy a dependency), the **pattern** is still applicable: roll a small dedicated table with `id`, `user_id`, `room`, `expires_at` columns, write through Heartbeat hooks, garbage-collect on read or via a 5-minute cron. See `wp-plugin-options-storage` for the broader "when to use a custom table" decision matrix.
+## Model rooms and authorization together
 
-## Heartbeat API — quick context
+Core post types `post` and `page` opt in automatically. Add support to a custom
+post type during registration or afterwards:
 
-The WordPress Heartbeat API is a **default 60-second polling mechanism in the admin** (configurable down to 15s, up to 120s) that exposes a hook surface for plugins to send/receive small JSON payloads. Critical context that AI assistants frequently get wrong:
+```php
+register_post_type(
+    'book',
+    array(
+        'show_ui'  => true,
+        'supports' => array( 'title', 'editor', 'presence' ),
+    )
+);
 
-- It is **not WebSocket**, not server-push. It's `setInterval` + AJAX from the browser.
-- Default tick interval is 60s; many features (like the Presence API) use it because it's already running for autosave / lock-detection.
-- Server-side hooks: `heartbeat_received` (filter), `heartbeat_send` (filter).
+$room = wp_presence_post_room( $book_id ); // postType/book:123 or false.
+```
 
-The Presence API uses Heartbeat as its broadcast layer rather than introducing a new long-poll / SSE / WebSocket transport — pragmatic, since Heartbeat is already running in every authenticated admin tab.
+`postType/{post_type}:{id}` rooms require `edit_post` for that object. Other
+room strings, including `admin/online`, require only `edit_posts`. Therefore a
+custom room name is not a custom authorization boundary. Do not put data in a
+generic room when every user with `edit_posts` must not see it; enforce the
+narrower capability in your own server handler or use an object-backed room.
 
-## When NOT to recommend the Presence API today
+Presence is awareness, not authorization. Never grant locks, saves, or content
+access merely because a user has a presence entry.
 
-- **Production sites** until the v1.0 / core-merge milestone is reached.
-- **Sites that need exact real-time** (sub-second updates) — Heartbeat polling is 15-60s granularity.
-- **Multisite-network deployments** without explicit testing — verify current
-  network/site table and capability behavior against v0.1.4 source.
-- **As a JS-side dependency** before the Gutenberg-package release lands.
+## Keep state ephemeral and bounded
 
-For these cases, fall back to the architectural pattern (custom table + TTL + Heartbeat hooks) implemented inside your own plugin.
+```php
+$room      = wp_presence_post_room( $post_id );
+$client_id = 'my-plugin-' . get_current_user_id();
 
-## What to ALWAYS verify against the canonical sources
+if ( $room && current_user_can( 'edit_post', $post_id ) ) {
+    wp_set_presence(
+        $room,
+        $client_id,
+        array( 'mode' => 'reviewing' ),
+        get_current_user_id()
+    );
+}
+```
 
-The skill body above is a **snapshot from July 10, 2026**. Anything below can
-drift; verify on the actual repo and make-blog before recommending:
+Use stable, namespaced client IDs. Store only small UI state, never secrets,
+tokens, unpublished content bodies, or durable workflow state. Entries expire
+from reads after the TTL and are later removed in bounded cron batches. TTL is
+not a delivery guarantee, logout is not guaranteed to run, and a crashed tab
+can remain visible until expiry.
 
-- Exact PHP function signatures, hook names, REST endpoint paths.
-- Multisite behavior.
-- Composer package availability / install instructions.
-- Core-merge timeline and target WP version.
-- Per-post-type opt-in semantics if the registration helper changes.
+The table is the correct architectural pattern for high-frequency awareness:
+it avoids repeatedly invalidating `wp_options` or object meta caches. It does
+not make every custom ephemeral feature a reason to depend on this plugin;
+use the public contract only when Presence API's room and capability model fit.
 
-Sources, in priority order:
+## Use the REST contract safely
 
-1. [github.com/WordPress/presence-api](https://github.com/WordPress/presence-api) — active repo, NOT an archive. Maintainer: @josephfusco.
-2. [make.wordpress.org/core/tag/presence-api/](https://make.wordpress.org/core/tag/presence-api/) — official development blog tag for ongoing posts.
-3. [WordPress Playground demo](https://playground.wordpress.net/?blueprint-url=https://raw.githubusercontent.com/WordPress/presence-api/main/blueprint.json) — try the current build interactively.
+Authenticated endpoints are:
 
-## Critical rules (for AI consumers of this skill)
+| Method | Route | Purpose |
+|---|---|---|
+| `GET` | `/wp-presence/v1/presence` | Paginated entries for `room`. |
+| `POST` | `/wp-presence/v1/presence` | Upsert `room`, `client_id`, and `data`. |
+| `DELETE` | `/wp-presence/v1/presence` | Delete an owned entry; `manage_options` can delete any. |
+| `GET` | `/wp-presence/v1/presence/rooms` | Paginated, access-filtered active rooms. |
+| `POST` | `/wp-presence/v1/presence/screen-revisions/stale` | Bump an authorized screen revision. |
 
-- **Do not invent function signatures, hook names, or REST endpoints** for the Presence API. Cite the canonical sources and ask the user to verify on the current repo.
-- **Do not recommend the Presence API for production** at v0.1.x. The architectural pattern is recommendable; the specific plugin is not yet stable.
-- **Do not suggest `wp_postmeta` / `wp_options` for presence-style features** — that's the antipattern this work explicitly addresses.
-- **Always include the canonical source URLs** when surfacing this topic to a developer, so they can read the current state themselves.
+Use `wp.apiFetch` in WordPress admin/editor JavaScript so the REST nonce and
+root middleware are applied. Respect pagination headers and request `_fields`
+when only user identity is needed. Responses use `Cache-Control: no-store`.
+
+The 0.1.23 controller bounds room/client IDs to 191 characters, REST state to
+10 KiB and three nested array levels, list pages to 100 rows, and active
+entries to 50 per user. It rejects an active `client_id` owned by a different
+user and restricts delete-by-client ownership. Do not clone these values into
+a competing endpoint; use the plugin route or implement an independently
+reviewed contract.
+
+Read `references/api-and-runtime.md` before adding a REST client, custom room,
+screen-revision integration, or multisite dependency.
+
+## Integrate Heartbeat without multiplying traffic
+
+The plugin enqueues WordPress Heartbeat and writes initial presence on eligible
+admin/front-end requests, then refreshes state through Heartbeat. The block
+editor can run Heartbeat faster than its normal 60-second interval for post
+locks. Do not add a second timer that posts the same state independently.
+
+The shipped `usePresenceUsers()` React hook performs one REST read initially
+and on Heartbeat ticks, deduplicates by user ID, supports `_fields`, and can
+exclude the current user. In 0.1.23 it is shipped as source, not as a registered
+WordPress package or script handle. Do not deep-import another installed
+plugin's filesystem path at runtime. If a build deliberately vendors that
+experimental source, pin the plugin release and review license/update drift;
+otherwise implement a small `wp.apiFetch` consumer around the REST contract.
+
+## Treat collaboration hooks as advisory in 0.1.23
+
+`wp_presence_editor_state` can enrich editor state. The plugin also declares
+`wp_presence_collaboration_started` and `wp_presence_collaboration_ended`.
+Do not use the latter actions for billing, durable workflow transitions, or
+exact participant lifecycle: in 0.1.23 threshold memory is a request-local
+static variable, so it does not persist a transition state across separate
+Heartbeat requests. Recompute current membership from the room for decisions
+and verify this implementation again after upgrading.
+
+## Test the whole lifecycle
+
+1. Absence of the feature plugin: integration fails softly.
+2. Supported and unsupported post types: room string versus `false`.
+3. Author can access own editable post but not a post they cannot edit.
+4. Generic custom room visibility for every `edit_posts` user.
+5. REST create/read/delete, ownership conflict, 191-character keys, oversized
+   state, nested state, pagination, `_fields`, and `Cache-Control: no-store`.
+6. Two tabs for one user and two users in one room; close/crash/logout/TTL.
+7. Heartbeat active, slowed, suspended, and unavailable.
+8. Table missing during a front-end request: reads return empty and writes
+   return `false` instead of causing SQL errors.
+9. Site activation, network activation, new-site creation, large network, cron
+   cleanup, deactivation, and uninstall on a real multisite test network.
+10. Dynamic UI with keyboard focus, empty avatar alt text, live-region
+    announcements, and reduced motion.
+
+## Critical rules
+
+- Presence API 0.1.23 is an experimental plugin, not WordPress 7.1 core.
+- Feature-detect it and use only the seven explicitly public PHP functions.
+- Keep capability checks at every write/read boundary; presence grants nothing.
+- Treat generic rooms as visible to all users with `edit_posts`.
+- Keep state small, non-secret, ephemeral, and retry-safe.
+- Reuse Heartbeat; do not add a competing polling loop.
+- Do not depend on private global helpers or exact internal table queries.
+- Do not treat collaboration threshold hooks as durable transition events.
 
 ## Cross-references
 
-- Run **`wp-plugin-options-storage`** for the broader decision matrix on "when to use a custom table" — the Presence API is one canonical answer to "I need ephemeral state without cache invalidation".
-- Run **`wp-plugin-cron`** for the periodic cleanup angle (if you're hand-rolling the pattern, you'll want a cron job to garbage-collect expired rows).
-
-## What this skill does NOT cover
-
-- Implementation tutorial for using the Presence API directly. The API is too early for that; revisit when v1.0 / core-merge proposals land.
-- Specific PHP / REST / JS API signatures. None are yet stably documented; verify against the repo.
-- Multisite-network behavior, performance benchmarks, or production deployment guidance — all out of scope for an experimental v0.1.x release.
-- The internals of the Heartbeat API beyond the one-paragraph context above. Adjacent topic, separate skill if it ever grows.
+- Use **`wp-api-fetch-client`** for the authenticated JavaScript REST client.
+- Use **`wp-rest-api`** when implementing a separate custom endpoint.
+- Use **`wp-plugin-options-storage`** for the custom-table decision.
+- Use **`wp-plugin-cron`** for cleanup reliability and multisite scheduling.
 
 ## References
 
-- Repo (active): <https://github.com/WordPress/presence-api>
-- Announcement: [Presence API Feature Plugin](https://make.wordpress.org/core/2026/04/27/presence-api-feature-plugin/)
-- Tag for ongoing posts: <https://make.wordpress.org/core/tag/presence-api/>
-- Maintainer: [@josephfusco](https://github.com/josephfusco)
-- Original ticket motivating the work: WordPress core Trac #64696 (high-frequency ephemeral data without cache invalidation).
+- Read `references/api-and-runtime.md` for exact response fields, limits,
+  provisioning, stale-screen, and hook details.
+- Active repository and source: <https://github.com/WordPress/presence-api>
+- v0.1.23 release: <https://github.com/WordPress/presence-api/releases/tag/v0.1.23>
+- Feature-plugin announcement: <https://make.wordpress.org/core/2026/04/27/presence-api-feature-plugin/>
+- Verified source paths at tag `v0.1.23`:
+  - `presence-api.php`
+  - `includes/functions.php`
+  - `includes/class-wp-rest-presence-controller.php`
+  - `includes/heartbeat.php`
+  - `includes/screen-revisions.php`
+  - `includes/cron.php`
+  - `src/hooks/use-presence-users.js`

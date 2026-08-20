@@ -12,9 +12,10 @@ metadata:
   wp-skills-author: "Soczó Kristóf"
   wp-skills-contact: "mailto:lonsdale201@hotmail.com"
   wp-skills-plugin: "wordpress"
-  wp-skills-plugin-version-tested: "6.5 - 6.9"
+  wp-skills-plugin-version-tested: "6.5 - 7.1"
+  wp-skills-wp-version-tested: "7.1"
   wp-skills-php-min: "7.4"
-  wp-skills-last-updated: "2026-08-05"
+  wp-skills-last-updated: "2026-08-20"
 ---
 
 # WordPress plugin: cron & background jobs
@@ -39,6 +40,12 @@ WordPress cron does NOT run on a system schedule. There is no `cron` daemon waki
 2. On `init`, WordPress calls `wp_cron()` (`wp-includes/default-filters.php`).
 3. Since WP 6.9, `wp_cron()` registers `_wp_cron()` on `shutdown` for normal requests, so the cron spawn does not hurt TTFB as much. With `ALTERNATE_WP_CRON`, it still uses `wp_loaded`.
 4. `_wp_cron()` checks for due events and makes a non-blocking loopback request to `/wp-cron.php`, which actually runs the due events.
+
+In WordPress 7.1, the cron spawn passes its resolved cron URL as the second
+argument to `https_local_ssl_verify`. Existing one-argument callbacks continue
+to work, while a filter that needs host-specific local TLS policy can register
+for two arguments. Keep verification exceptions exact and development/host
+specific; do not disable TLS verification globally for cron.
 
 Implications:
 
@@ -256,6 +263,7 @@ foreach ( $orders as $order ) {
 - `wp_schedule_event` / `wp_schedule_single_event` / `wp_next_scheduled` / `wp_unschedule_hook`: `wp-includes/cron.php`
 - `cron_schedules` filter: [developer.wordpress.org/reference/hooks/cron_schedules/](https://developer.wordpress.org/reference/hooks/cron_schedules/)
 - WP 6.9 cron change (`_wp_cron` moved to `shutdown`): `wp-includes/cron.php` `wp_cron()` docblock
+- WP 7.1 cron TLS filter context: `wp-includes/cron.php` `spawn_cron()`
 - Action Scheduler: [actionscheduler.org](https://actionscheduler.org), [bundled in WooCommerce](https://github.com/woocommerce/action-scheduler)
 - Official documentation: <https://developer.wordpress.org/reference/functions/wp_schedule_event/>
 - Official documentation: <https://developer.wordpress.org/reference/functions/wp_schedule_single_event/>
