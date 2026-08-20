@@ -1,7 +1,8 @@
 ---
 name: wp-plugin-assets-loading
 description: Register and enqueue WordPress plugin scripts/styles with
-  modern loading behavior, especially WP 7.0 classic-script module
+  modern loading behavior, including WP 7.1 admin design-system assets,
+  WP 7.0 classic-script module
   dependencies, script module translations, fetchpriority support,
   script module args, footer placement, inline style limits, and removal
   of legacy IE conditional asset support. Covers wp_enqueue_script args
@@ -15,9 +16,10 @@ metadata:
   wp-skills-author: "Soczó Kristóf"
   wp-skills-contact: "mailto:lonsdale201@hotmail.com"
   wp-skills-plugin: "wordpress"
-  wp-skills-plugin-version-tested: "6.3 - 7.0"
+  wp-skills-plugin-version-tested: "6.3 - 7.1"
+  wp-skills-wp-version-tested: "7.1"
   wp-skills-php-min: "7.4"
-  wp-skills-last-updated: "2026-05-21"
+  wp-skills-last-updated: "2026-08-20"
 ---
 
 # WordPress Plugin Asset Loading
@@ -157,6 +159,41 @@ wp_enqueue_script_module( 'myplugin/admin' );
 
 Call `wp_set_script_module_translations()` after the module is registered. Use `wp_set_script_translations()` for classic scripts and `wp_set_script_module_translations()` for script modules.
 
+## WordPress 7.1 admin design-system assets
+
+WordPress 7.1 registers `wp-theme` as both a stylesheet handle and a classic
+script handle. They are independent assets that happen to share a handle name
+in their respective registries:
+
+- depend on the `wp-theme` **style** to use the `--wpds-*` semantic design
+  tokens in wp-admin CSS;
+- depend on the `wp-theme` **script** when code uses the
+  `@wordpress/theme` package and its `ThemeProvider` component;
+- prefer WordPress UI components over styling directly against low-level
+  tokens when an appropriate component exists.
+
+```php
+wp_enqueue_style(
+    'myplugin-admin',
+    plugins_url( 'assets/admin.css', MYPLUGIN_FILE ),
+    array( 'wp-theme' ),
+    MYPLUGIN_VERSION
+);
+
+wp_enqueue_script(
+    'myplugin-admin',
+    plugins_url( 'assets/admin.js', MYPLUGIN_FILE ),
+    array( 'wp-element', 'wp-theme' ),
+    MYPLUGIN_VERSION,
+    array( 'in_footer' => true )
+);
+```
+
+Do not enqueue either asset solely because it exists, and do not assume the
+stylesheet loads with the script. A `ThemeProvider` can alter color,
+roundness, and control-cursor tokens for its subtree. Render at most one root
+provider per document, and still verify contrast for custom seed colors.
+
 ## Styles and legacy conditionals
 
 WP 6.9 removed support for legacy conditional asset loading for Internet Explorer. Do not use `wp_style_add_data( $handle, 'conditional', 'IE' )`; in WP 6.9, a stylesheet with `conditional` data is ignored.
@@ -197,6 +234,7 @@ wp_add_inline_script(
 - **Do not use `async` on dependency-sensitive scripts.**
 - **For classic scripts with `module_dependencies`, use footer placement or `defer`.**
 - **Use the matching translation API**: `wp_set_script_translations()` for classic scripts, `wp_set_script_module_translations()` for modules.
+- **Declare `wp-theme` in the correct registry** when using WordPress 7.1 design tokens or `ThemeProvider`; the style and script do not imply each other.
 - **Do not use legacy IE `conditional` data** on styles in WP 6.9+.
 - **Do not put `<script>` tags inside `wp_add_inline_script()`.**
 - **Prefer dependencies over manual load ordering.**
@@ -236,6 +274,8 @@ wp_enqueue_script( 'myplugin-app', $src, array( 'jquery' ), '1.0.0', array( 'str
 - Run **`wp-plugin-architecture`** for broader placement of enqueue code inside plugin services.
 - Run **`wp-i18n-audit`** when scripts need translations.
 - Run **`wp-security-audit`** when inline boot data contains user/admin-controlled values.
+- Run **`wp-block-editor-iframe-compatibility`** for assets that must load inside the editor canvas.
+- Run **`wp-interactivity-api`** when `viewScriptModule` implements reactive block behavior.
 
 ## What this skill does NOT cover
 
@@ -246,6 +286,7 @@ wp_enqueue_script( 'myplugin-app', $src, array( 'jquery' ), '1.0.0', array( 'str
 ## References
 
 - WordPress 6.9 frontend performance field guide: <https://make.wordpress.org/core/2025/11/18/wordpress-6-9-frontend-performance-field-guide/>
+- WordPress 7.1 design-system theming: <https://make.wordpress.org/core/2026/07/31/design-system-theming-in-wordpress-7-1/>
 - Script APIs: `wp-includes/functions.wp-scripts.php`
 - Script Modules API: `wp-includes/script-modules.php`
 - Style APIs: `wp-includes/functions.wp-styles.php`

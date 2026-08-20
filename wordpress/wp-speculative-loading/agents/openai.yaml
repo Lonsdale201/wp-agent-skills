@@ -1,0 +1,3 @@
+interface:
+  display_name: "WP Speculative Loading"
+  short_description: "Configure safe WordPress prefetch and prerender rules"

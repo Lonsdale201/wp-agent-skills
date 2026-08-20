@@ -13,9 +13,10 @@ metadata:
   wp-skills-author: "Soczó Kristóf"
   wp-skills-contact: "mailto:lonsdale201@hotmail.com"
   wp-skills-plugin: "wordpress"
-  wp-skills-plugin-version-tested: "4.9.6 - 7.0.1"
+  wp-skills-plugin-version-tested: "4.9.6 - 7.1"
+  wp-skills-wp-version-tested: "7.1"
   wp-skills-php-min: "7.4"
-  wp-skills-last-updated: "2026-07-15"
+  wp-skills-last-updated: "2026-08-20"
 ---
 
 # WordPress Personal Data Privacy Integration
@@ -191,6 +192,19 @@ Privacy erasure, uninstall, and routine retention are different operations:
 - Uninstall removes plugin-owned configuration/data only when the product's
   uninstall policy says so; it is not a substitute for subject erasure.
 
+WordPress 7.1 schedules `wp_privacy_personal_data_cleanup_requests` daily. Core
+marks expired `request-pending` `user_request` posts as `request-failed` and
+clears their confirmation key; it does not delete completed requests or
+plugin-owned personal data. Expiry follows `user_request_key_expiration`
+(normally one day), and the cleanup compares the site-local `post_modified`
+column because the relative date is evaluated in the site timezone.
+
+Do not duplicate this cron event or treat it as a plugin retention engine.
+WP-Cron is traffic-dependent, so operationally critical retention still needs
+monitoring and a safe idempotent catch-up path. If filtering
+`user_request_key_expiration`, test confirmation links and scheduled cleanup
+together; the filter changes both sides of the lifecycle.
+
 Do not keep personal data in autoloaded options or permanent transients. Give
 temporary exports/logs an expiry and cleanup path. Backups are usually managed
 outside plugin callbacks; document their retention instead of pretending the
@@ -240,6 +254,7 @@ Test at least:
 - `wp-admin/includes/ajax-actions.php`: exporter/eraser response validation.
 - `wp-includes/comment.php`: core paged exporter and eraser examples.
 - `wp-admin/includes/privacy-tools.php`: export/erasure processing pipeline.
+- `wp-includes/functions.php`: scheduled request cleanup and old export-file cleanup.
 
 ## References
 

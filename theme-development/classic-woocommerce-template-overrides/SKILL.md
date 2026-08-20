@@ -1,14 +1,14 @@
 ---
 name: classic-woocommerce-template-overrides
-description: Create or audit WooCommerce template overrides in a classic PHP theme. Covers the `yourtheme/woocommerce/` override path, `WC()->template_path()`, `wc_get_template()`, `wc_get_template_part()`, `woocommerce.php`, `single-product.php`, `archive-product.php`, taxonomy templates, `WC_TEMPLATE_DEBUG_MODE`, template `@version` headers, WooCommerce Status outdated-template checks, hook/filter-first customization, child themes, escaping, and when not to override cart/checkout/account/email templates.
+description: Create or audit WooCommerce template overrides in a classic PHP theme. Covers the `yourtheme/woocommerce/` override path, the WooCommerce template path, `wc_get_template()`, `wc_get_template_part()`, `woocommerce.php`, `single-product.php`, `archive-product.php`, taxonomy templates, `WC_TEMPLATE_DEBUG_MODE`, template `@version` headers, WooCommerce Status outdated-template checks, hook/filter-first customization, child themes, escaping, and when not to override cart/checkout/account/email templates.
 metadata:
   wp-skills-author: "Soczó Kristóf"
   wp-skills-contact: "mailto:lonsdale201@hotmail.com"
   wp-skills-plugin: "woocommerce"
   wp-skills-plugin-version-tested: "10.8.1"
-  wp-skills-wp-version-tested: "7.0"
+  wp-skills-wp-version-tested: "7.1"
   wp-skills-php-min: "7.4"
-  wp-skills-last-updated: "2026-06-14"
+  wp-skills-last-updated: "2026-08-20"
 ---
 
 # Classic WooCommerce Template Overrides

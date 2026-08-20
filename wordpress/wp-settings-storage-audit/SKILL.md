@@ -5,9 +5,10 @@ metadata:
   wp-skills-author: "Soczó Kristóf"
   wp-skills-contact: "mailto:lonsdale201@hotmail.com"
   wp-skills-plugin: "wordpress"
-  wp-skills-plugin-version-tested: "7.0.1"
+  wp-skills-plugin-version-tested: "7.1"
+  wp-skills-wp-version-tested: "7.1"
   wp-skills-php-min: "7.4"
-  wp-skills-last-updated: "2026-07-12"
+  wp-skills-last-updated: "2026-08-20"
 ---
 
 # WP Settings Storage Audit
@@ -169,7 +170,7 @@ Core calls `sanitize_option( $option, $value )`, the registered `sanitize_option
 
 ### 5. Decide autoload deliberately
 
-WP 7.0 uses the WP 6.6+ autoload model: `add_option()` and `update_option()` accept `true`, `false`, or `null`; internal stored values include `on`, `off`, `auto`, `auto-on`, and `auto-off`. The legacy strings `'yes'` and `'no'` are deprecated since 6.7.
+WP 7.1 retains the WP 6.6+ autoload model: `add_option()` and `update_option()` accept `true`, `false`, or `null`; internal stored values include `on`, `off`, `auto`, `auto-on`, and `auto-off`. The legacy strings `'yes'` and `'no'` are deprecated since 6.7.
 
 Audit decisions:
 

@@ -12,9 +12,10 @@ metadata:
   wp-skills-author: "Soczó Kristóf"
   wp-skills-contact: "mailto:lonsdale201@hotmail.com"
   wp-skills-plugin: "wordpress"
-  wp-skills-plugin-version-tested: "6.0 - 7.0.2"
+  wp-skills-plugin-version-tested: "6.0 - 7.1"
+  wp-skills-wp-version-tested: "7.1"
   wp-skills-php-min: "7.4"
-  wp-skills-last-updated: "2026-07-21"
+  wp-skills-last-updated: "2026-08-20"
 ---
 
 # WordPress File Upload Security
@@ -35,6 +36,13 @@ matching alone is not malware scanning or content safety.
 
 Do not manually combine `move_uploaded_file()`, a client MIME, and the original
 name when core already provides unique naming, upload checks, and hooks.
+
+WordPress 7.1 also supports browser-side image processing and new REST flows
+for dimension validation, size-aware quality, and registering one sideloaded
+file for multiple sizes. This changes where bytes may be transformed, not the
+trust boundary: server-side capability, intent, MIME/dimension/resource checks,
+metadata validation, and cleanup remain mandatory. Use
+`wp-client-side-media-processing` for that protocol.
 
 ## Browser-to-Media-Library pattern
 
@@ -242,6 +250,11 @@ For contracts, medical records, exports, or licensed downloads:
 - Apply site/multisite quotas via `wp_max_upload_size()` plus a narrower feature
   limit; browser `MAX_FILE_SIZE` is UX only, not a security boundary.
 - Store attachment IDs rather than URLs and render through attachment helpers.
+- Treat `wp_get_attachment_metadata()` as `array|false`. WordPress 7.1 rejects
+  non-array stored/filtered metadata and normalizes a present non-array `sizes`
+  value to an empty array.
+- `wp_filesize()` is non-negative in WordPress 7.1, but zero is ambiguous; do
+  not use it alone to distinguish an empty file from a read/filter failure.
 
 ## Tests
 
@@ -270,16 +283,17 @@ Run tests with and without `fileinfo`, and with a user that has
 - Use **`wp-filesystem-api`** for non-upload filesystem transports.
 - Use **`wp-http-api-client`** for remote URLs and downloads.
 - Use **`wp-privacy-personal-data`** for personal documents and retention.
+- Use **`wp-client-side-media-processing`** for the WordPress 7.1 browser/REST
+  multi-request upload protocol and its fallback behavior.
 
-## Core references
+## References
 
 - `wp-admin/includes/file.php`: `_wp_handle_upload()`, `wp_handle_upload()`,
   `download_url()`, and `unzip_file()`.
 - `wp-admin/includes/media.php`: `media_handle_upload()` and sideload handling.
 - `wp-includes/functions.php`: `wp_check_filetype_and_ext()` and allowed mimes.
 
-## References
-
 - Official documentation: <https://developer.wordpress.org/reference/functions/media_handle_upload/>
 - Official documentation: <https://developer.wordpress.org/reference/functions/wp_handle_upload/>
 - Official documentation: <https://developer.wordpress.org/reference/functions/wp_check_filetype_and_ext/>
+- WordPress 7.1 client-side media processing: <https://make.wordpress.org/core/2026/07/22/client-side-media-processing-in-wordpress-7-1/>

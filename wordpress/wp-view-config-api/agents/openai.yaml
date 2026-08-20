@@ -1,0 +1,4 @@
+interface:
+  display_name: "WP View Config API"
+  short_description: "Extend WordPress 7.1 DataViews entity configurations"
+  default_prompt: "Use $wp-view-config-api to implement or audit a WordPress 7.1 entity View Config API extension."

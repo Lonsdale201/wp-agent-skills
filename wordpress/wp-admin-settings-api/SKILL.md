@@ -5,9 +5,10 @@ metadata:
   wp-skills-author: "Soczó Kristóf"
   wp-skills-contact: "mailto:lonsdale201@hotmail.com"
   wp-skills-plugin: "wordpress"
-  wp-skills-plugin-version-tested: "6.0 - 7.0.1"
+  wp-skills-plugin-version-tested: "6.0 - 7.1"
+  wp-skills-wp-version-tested: "7.1"
   wp-skills-php-min: "7.4"
-  wp-skills-last-updated: "2026-07-10"
+  wp-skills-last-updated: "2026-08-20"
 ---
 
 # WordPress Settings API
@@ -103,6 +104,13 @@ add_action( 'admin_init', static function (): void {
     );
 } );
 ```
+
+WordPress 7.1 gives each non-empty section title a generated unique `<h2 id>`
+when `do_settings_sections()` renders it. This improves programmatic heading
+association, but the ID contains a `wp_unique_id()` suffix and is not a stable
+plugin selector. Use your own wrapper/classes or the section slug for CSS/JS;
+do not parse or persist the generated heading ID. Repeated section rendering in
+one request intentionally yields different IDs.
 
 ### 3. Field render callbacks
 

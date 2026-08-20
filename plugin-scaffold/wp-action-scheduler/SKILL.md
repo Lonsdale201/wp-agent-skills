@@ -11,10 +11,11 @@ description: Design and review Action Scheduler jobs in WordPress plugins
   as_schedule_recurring_action, as_schedule_cron_action,
   as_get_scheduled_actions, or integrates with WooCommerce background queues.
 metadata:
-  wp-skills-author: "Soczó Kristóf"
+  wp-skills-author: "Soczo Kristof"
   wp-skills-contact: "mailto:lonsdale201@hotmail.com"
   wp-skills-plugin: "action-scheduler"
   wp-skills-plugin-version-tested: "4.0.0"
+  wp-skills-wp-version-tested: "7.1"
   wp-skills-php-min: "7.2"
   wp-skills-last-updated: "2026-08-05"
 ---

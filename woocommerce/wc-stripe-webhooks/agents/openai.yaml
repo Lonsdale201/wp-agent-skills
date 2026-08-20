@@ -1,0 +1,4 @@
+interface:
+  display_name: "WooCommerce Stripe Webhooks"
+  short_description: "Audit Stripe webhook settlement"
+  default_prompt: "Use $wc-stripe-webhooks to implement or audit WooCommerce Stripe webhook observers and asynchronous settlement."

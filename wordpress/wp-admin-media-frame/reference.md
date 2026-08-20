@@ -22,6 +22,31 @@
 
 The toolbar Select button dispatches `select`. Do not listen to `close` for "user picked something"; `close` fires on cancellation too.
 
+## Infinite scrolling in WordPress 7.1
+
+Core initializes Media Library infinite scrolling to true. A user can opt out
+through the profile personal option, stored so that the literal string
+`'false'` disables it. Core then applies:
+
+```php
+apply_filters( 'media_library_infinite_scrolling', $infinite_scrolling );
+```
+
+The filter runs after the user preference, so an extension can technically
+override either state. Do that only for a documented site-wide reason; silently
+undoing a user's accessibility/performance preference is hostile.
+
+Audit code that listens for a one-time "load more" interaction or assumes the
+initial Backbone collection is complete. Infinite loading changes timing, not
+the server's collection limits. Keep search/filter state stable, debounce
+expensive observers, avoid per-attachment DOM scans on every append, and test:
+
+- default infinite mode and the user's opt-out;
+- empty, one-page, and many-page libraries;
+- switching MIME/search/author filters while a request is in flight;
+- keyboard and screen-reader access to newly appended items;
+- a slow/failed next-page request without duplicate models.
+
 ## Saving and Rendering Server-Side
 
 ```php

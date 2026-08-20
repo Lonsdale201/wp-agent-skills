@@ -13,9 +13,10 @@ metadata:
   wp-skills-author: "Soczó Kristóf"
   wp-skills-contact: "mailto:lonsdale201@hotmail.com"
   wp-skills-plugin: "wordpress"
-  wp-skills-plugin-version-tested: "6.0 - 7.0.1"
+  wp-skills-plugin-version-tested: "6.0 - 7.1"
+  wp-skills-wp-version-tested: "7.1"
   wp-skills-php-min: "7.4"
-  wp-skills-last-updated: "2026-07-10"
+  wp-skills-last-updated: "2026-08-20"
 ---
 
 # WordPress Admin Postboxes & Sortable
@@ -133,6 +134,12 @@ After this call, the user gets click-to-collapse, drag-to-reorder, the move-up /
 move-down accessibility buttons, and Screen Options visibility. The three
 postbox states below persist to user meta. One/two-column layout is separate
 screen-layout state and requires the corresponding Screen Options setup.
+
+In WordPress 7.1, core-generated postboxes also receive a named `role="region"`,
+an ID on the `.hndle` heading, and `wp_get_tooltip()` wrappers for move/show-hide
+controls. The `postbox` handle depends on `wp-tooltip`. Prefer `do_meta_boxes()`
+so these semantics update with core. If you hand-copy postbox markup, you own
+the region name, heading/control association, tooltip assets, and future drift.
 
 ## Per-user persistence — the three storage keys
 

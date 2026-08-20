@@ -10,7 +10,7 @@ description: Designs and reviews the three lifecycle events of a WordPress
   against register_uninstall_hook in favor of uninstall.php. Use when
   scaffolding a plugin or debugging ghost cron events / orphan options.
   Does not cover update-time version migrations; use
-  wp-plugin-update-migrations for stored-version < code-version upgrades.
+  wp-plugin-update-migrations when the stored version is older than code.
   Triggers on register_activation_hook, register_deactivation_hook,
   uninstall.php, WP_UNINSTALL_PLUGIN, dbDelta, wp_unschedule_hook,
   switch_to_blog.
@@ -18,9 +18,10 @@ metadata:
   wp-skills-author: "Soczó Kristóf"
   wp-skills-contact: "mailto:lonsdale201@hotmail.com"
   wp-skills-plugin: "wordpress"
-  wp-skills-plugin-version-tested: "6.5 - 7.0"
+  wp-skills-plugin-version-tested: "6.5 - 7.1"
+  wp-skills-wp-version-tested: "7.1"
   wp-skills-php-min: "7.4"
-  wp-skills-last-updated: "2026-07-06"
+  wp-skills-last-updated: "2026-08-20"
 ---
 
 # WordPress plugin: lifecycle (activate / deactivate / uninstall)
@@ -191,102 +192,20 @@ register_deactivation_hook( __FILE__, static function ( bool $network_deactivati
 
 ## Uninstall — full removal via `uninstall.php`
 
-```php
-<?php
-// uninstall.php — at the plugin root.
-//
-// WP defines WP_UNINSTALL_PLUGIN before include_once'ing this file.
-// Bail if it's missing — some misconfiguration is loading us directly.
-if ( ! defined( 'WP_UNINSTALL_PLUGIN' ) ) {
-    exit;
-}
+Place `uninstall.php` at the plugin root, guard it with
+`WP_UNINSTALL_PLUGIN`, and assume the plugin bootstrap/autoloader did not run.
+Use raw WordPress functions or deliberately require a dependency-free constants
+file. Delete every owned option, meta key, transient, cron event, capability,
+post/object, upload, and custom table unless an explicit preserve-data policy
+says otherwise.
 
-global $wpdb;
+On multisite, distinguish per-site data from network options and shared users.
+Loop sites for per-site cleanup and call `delete_site_option()` for network
+state. Prefer `uninstall.php` to `register_uninstall_hook()` so uninstall does
+not need to load the complete plugin while its dependencies may be inactive.
 
-if ( is_multisite() ) {
-    // For a network-wide preserve toggle, store + read it as a site option:
-    //     get_site_option( 'myplugin_preserve_on_uninstall' )
-    // For a per-site toggle, check INSIDE the loop after switch_to_blog().
-    // Below we honor a per-site toggle so different sites can choose differently.
-    foreach ( get_sites( array( 'fields' => 'ids' ) ) as $site_id ) {
-        switch_to_blog( $site_id );
-
-        $opts = (array) get_option( 'myplugin_settings', array() );
-        if ( empty( $opts['preserve_data_on_uninstall'] ) ) {
-            myplugin_cleanup_site_data( $wpdb );
-        }
-
-        restore_current_blog();
-    }
-    delete_site_option( 'myplugin_network_settings' );
-} else {
-    $opts = (array) get_option( 'myplugin_settings', array() );
-    if ( empty( $opts['preserve_data_on_uninstall'] ) ) {
-        myplugin_cleanup_site_data( $wpdb );
-    }
-}
-
-function myplugin_cleanup_site_data( $wpdb ): void {
-    // 1. Options
-    delete_option( 'myplugin_settings' );
-    delete_option( 'myplugin_version' );
-
-    // 2. Per-user meta the plugin set
-    delete_metadata( 'user', 0, 'myplugin_dismissed_notice', '', true );
-
-    // 3. CPT posts + their meta (optional — destructive)
-    $post_ids = get_posts( array(
-        'post_type'      => 'myplugin_log',
-        'posts_per_page' => -1,
-        'fields'         => 'ids',
-        'post_status'    => 'any',
-    ) );
-    foreach ( $post_ids as $post_id ) {
-        wp_delete_post( $post_id, true );
-    }
-
-    // 4. Custom table
-    $wpdb->query( "DROP TABLE IF EXISTS {$wpdb->prefix}myplugin_log" );
-
-    // 5. Transients (pattern-delete, since names may include dynamic IDs)
-    $wpdb->query(
-        "DELETE FROM {$wpdb->options}
-         WHERE option_name LIKE '\\_transient\\_myplugin\\_%'
-            OR option_name LIKE '\\_transient\\_timeout\\_myplugin\\_%'"
-    );
-
-    // 6. Cron events
-    wp_unschedule_hook( 'myplugin_daily_cleanup' );
-    wp_unschedule_hook( 'myplugin_token_refresh' );
-
-    // 7. Capabilities
-    foreach ( wp_roles()->roles as $role_slug => $role_data ) {
-        $role = get_role( $role_slug );
-        if ( $role ) {
-            $role->remove_cap( 'manage_myplugin' );
-        }
-    }
-}
-```
-
-Constraints `uninstall.php` has to live with:
-
-- **Plugin classes are NOT autoloaded.** The composer / spl_autoload_register in your bootstrap file is not running here. Don't `use MyPlugin\Schema;` or `MyPlugin\Plugin::instance()`. Either inline the meta key strings, or `require` your `Schema.php` constants file manually.
-- **`WP_UNINSTALL_PLUGIN` is your guard.** WP defines it (`wp-admin/includes/plugin.php:1324`). If it's not defined, bail — something's loading the file directly.
-- **Be multisite-aware.** Single-site `delete_option` doesn't reach other sites. Wrap per-site cleanup in a `get_sites()` loop, and use `delete_site_option` for any network-level options.
-- **Honor a `preserve_data_on_uninstall` toggle** if you offer one. Some users delete + reinstall to fix issues and want data preserved.
-- **The "wp_options" table cleanup** for transients uses LIKE pattern matching with escaped underscores — `\\_transient\\_myplugin\\_%`. The escape (`\\_`) prevents `_` from being a single-char wildcard.
-
-### `register_uninstall_hook` — explicitly avoid
-
-WP itself recommends `uninstall.php` over `register_uninstall_hook` (`wp-includes/plugin.php docblock` for `register_uninstall_hook`):
-
-> *"If the plugin can not be written without running code within the plugin, then the plugin should create a file named 'uninstall.php' in the base plugin folder. This file will be called, if it exists, during the uninstallation process."*
-
-Reasons:
-- `register_uninstall_hook` requires the callback to be a static function or function name (not a closure, not an instance method) — already a code-smell constraint.
-- It also requires the plugin's main file to be `include`-ed at uninstall time, which means your bootstrap code runs during uninstall — fragile when classes might fail to autoload, dependencies might be inactive, etc.
-- `uninstall.php` runs in isolation with only WP available, which is exactly what you want for a destructive cleanup.
+Read `references/uninstall-and-multisite.md` before implementing destructive
+cleanup; it contains the isolated-file pattern and failure cases.
 
 ## Critical rules
 
@@ -302,31 +221,9 @@ Reasons:
 
 ## Common mistakes
 
-```php
-// WRONG — overwrites user's existing settings on reactivation
-register_activation_hook( __FILE__, function () {
-    update_option( 'myplugin_settings', $defaults );
-} );
-
-// WRONG — args mismatch leaves the cron event dangling
-wp_clear_scheduled_hook( 'myplugin_cleanup', array( 'mode' => 'fast' ) );
-// scheduled with array( 'mode' => 'aggressive' ) earlier — never matches
-
-// WRONG — uninstall.php using plugin classes (autoloader not running)
-require __DIR__ . '/uninstall.php';
-use MyPlugin\Schema;          // fatal: class not found
-delete_option( Schema::OPTION_KEY );
-
-// WRONG — register_uninstall_hook to do anything non-trivial
-register_uninstall_hook( __FILE__, array( 'MyPlugin\\Plugin', 'uninstall' ) );
-// callback can't be a closure or instance method, plus the plugin main
-// file gets re-included at uninstall time
-
-// WRONG — deletes user data on deactivation
-register_deactivation_hook( __FILE__, function () {
-    delete_option( 'myplugin_settings' );  // user re-activates -> loses preferences
-} );
-```
+Use `references/uninstall-and-multisite.md` to review reactivation overwrites,
+cron-argument mismatches, unavailable plugin classes, non-trivial registered
+uninstall callbacks, and destructive deactivation.
 
 ## Cross-references
 
@@ -344,6 +241,8 @@ register_deactivation_hook( __FILE__, function () {
 
 ## References
 
+- Isolated uninstall and multisite examples:
+  `references/uninstall-and-multisite.md`.
 - Uninstall methods: [Plugin Handbook](https://developer.wordpress.org/plugins/plugin-basics/uninstall-methods/)
 - `register_activation_hook` / `register_deactivation_hook` / `register_uninstall_hook`: `wp-includes/plugin.php`
 - `uninstall_plugin()` (the function that includes `uninstall.php`): `wp-admin/includes/plugin.php:1302-1330`
