@@ -1,13 +1,14 @@
 ---
 name: classic-theme-customizer
-description: Add or audit WordPress Customizer options for classic PHP themes on WP 7.0. Covers `customize_register`, `WP_Customize_Manager`, settings, sections, controls, `theme_mod` vs `option`, option-backed Customizer autoload, multidimensional setting IDs, `sanitize_callback`, `validate_callback`, `WP_Customize_Color_Control`, allowlisted select values, `postMessage`, `customize_preview_init`, selective refresh partials, escaping `get_theme_mod()` output in templates, and common bugs such as raw Customizer values, missing sanitization, or `postMessage` without preview JavaScript.
+description: Add or audit WordPress Customizer options for classic PHP themes on WP 7.1. Covers `customize_register`, `WP_Customize_Manager`, settings, sections, controls, `theme_mod` vs `option`, option-backed Customizer autoload, multidimensional setting IDs, `sanitize_callback`, `validate_callback`, `WP_Customize_Color_Control`, allowlisted select values, `postMessage`, `customize_preview_init`, selective refresh partials, escaping `get_theme_mod()` output in templates, and common bugs such as raw Customizer values, missing sanitization, or `postMessage` without preview JavaScript.
 metadata:
   wp-skills-author: "Soczó Kristóf"
   wp-skills-contact: "mailto:lonsdale201@hotmail.com"
   wp-skills-plugin: "wordpress"
-  wp-skills-plugin-version-tested: "7.0"
+  wp-skills-plugin-version-tested: "7.1"
+  wp-skills-wp-version-tested: "7.1"
   wp-skills-php-min: "7.4"
-  wp-skills-last-updated: "2026-07-09"
+  wp-skills-last-updated: "2026-08-20"
 ---
 
 # Classic Theme Customizer

@@ -21,7 +21,7 @@ or isolated request tests.
 
 ### WordPress global
 
-Enqueue `wp-api-fetch` through WordPress. In WordPress 7.0.1,
+Enqueue `wp-api-fetch` through WordPress. In WordPress 7.1,
 `wp_default_packages_inline_scripts()` attaches configuration to that registered
 handle after the package loads. It registers:
 
@@ -90,7 +90,7 @@ Prefer externalization unless isolation is deliberate and tested.
 
 ## Option and return contract
 
-Use the following matrix for WordPress 7.0.1's bundled package:
+Use the following matrix for WordPress 7.1's bundled package:
 
 | Option | Meaning | Review concern |
 |---|---|---|
@@ -169,6 +169,20 @@ explicit `path` in new code because it is easier to trace and test.
 Logical `PATCH`, `PUT`, and `DELETE` requests are sent as `POST` with
 `X-HTTP-Method-Override` containing the original method. A network trace showing
 POST is not enough to report a method bug. Verify the header and server routing.
+
+In WordPress 7.1 the method-override middleware applies its default JSON
+`Content-Type` before merging caller headers, so an explicit caller content type
+is preserved. It applies `X-HTTP-Method-Override` after caller headers, so the
+logical method cannot be spoofed by that option. WordPress 7.0 used a different
+merge order and overwrote the caller content type.
+
+### Preload internals
+
+WordPress 7.1 distinguishes preloaded GET and OPTIONS data and adds internal
+multi-use/cleanup controls. They are exposed only through the package's locked
+`privateApis` contract. Do not use the dangerous core-only opt-in from a plugin
+or theme; its warning promises breakage. Public callers should continue to
+treat a preload as an implementation detail and must not assume it is reusable.
 
 ### Fetch all
 
@@ -302,9 +316,15 @@ The WordPress-configured media middleware recognizes `POST` requests containing
 to five times and requests forced deletion after repeated failure. This recovery
 does not replace plugin-owned cleanup for separate files or records.
 
+WordPress 7.1 also has a higher-level client-side image-processing flow that can
+create an attachment record and finalize metadata through multiple REST
+requests. Do not infer that every media create is the single multipart request
+shown above. Use `wp-client-side-media-processing` for that lifecycle and its
+hook/idempotency audit.
+
 Test large images, unsupported types, interrupted upload, post-processing
-failure, and permission denial. Use `wp-file-upload-security` for the server-side
-boundary.
+failure, duplicate/finalize requests, and permission denial. Use
+`wp-file-upload-security` for the server-side boundary.
 
 ## Testing and mocking
 
@@ -343,7 +363,7 @@ api-fetch is expected to normalize.
 
 ## Core source map
 
-Verify version-sensitive claims in these WordPress 7.0.1 files:
+Verify version-sensitive claims in these WordPress 7.1 files:
 
 | Concern | Core source |
 |---|---|
@@ -356,4 +376,3 @@ Verify version-sensitive claims in these WordPress 7.0.1 files:
 Re-check source when the supported WordPress range changes. Package middleware
 is client implementation, while REST permissions and validation remain server
 contracts.
-

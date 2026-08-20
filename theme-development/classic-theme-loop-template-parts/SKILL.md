@@ -1,13 +1,14 @@
 ---
 name: classic-theme-loop-template-parts
-description: Build or audit classic theme loops and PHP template parts for WP 7.0 without block/FSE assumptions. Covers the main Loop with `have_posts()` and `the_post()`, archive/search/single/page content choices, `get_template_part()` with `$args`, `content-none.php`, `post_class()`, secondary `WP_Query` loops with `wp_reset_postdata()`, `rewind_posts()`, pagination, single post navigation, and common bugs such as `query_posts()`, nested loops without reset, raw globals in template parts, and missing no-results states.
+description: Build or audit classic theme loops and PHP template parts for WP 7.1 without block/FSE assumptions. Covers the main Loop with `have_posts()` and `the_post()`, archive/search/single/page content choices, `get_template_part()` with `$args`, `content-none.php`, `post_class()`, secondary `WP_Query` loops with `wp_reset_postdata()`, `rewind_posts()`, pagination, single post navigation, and common bugs such as `query_posts()`, nested loops without reset, raw globals in template parts, and missing no-results states.
 metadata:
   wp-skills-author: "Soczó Kristóf"
   wp-skills-contact: "mailto:lonsdale201@hotmail.com"
   wp-skills-plugin: "wordpress"
-  wp-skills-plugin-version-tested: "7.0"
+  wp-skills-plugin-version-tested: "7.1"
+  wp-skills-wp-version-tested: "7.1"
   wp-skills-php-min: "7.4"
-  wp-skills-last-updated: "2026-06-04"
+  wp-skills-last-updated: "2026-08-20"
 ---
 
 # Classic Theme Loop and Template Parts

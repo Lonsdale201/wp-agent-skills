@@ -1,13 +1,14 @@
 ---
 name: classic-theme-sidebars-widgets
-description: Build or audit classic theme widget areas and sidebars for WP 7.0. Covers `widgets_init`, `register_sidebar()`, stable sidebar IDs, `before_widget` and `before_title` wrappers, `dynamic_sidebar()`, `is_active_sidebar()`, `get_sidebar()`, `sidebar-{name}.php`, `show_in_rest`, semantic aside/footer/header widget areas, block-widget era compatibility, and common mistakes such as missing IDs, changing IDs after release, hardcoded widgets, bad wrapper placeholders, and rendering empty sidebars.
+description: Build or audit classic theme widget areas and sidebars for WP 7.1. Covers `widgets_init`, `register_sidebar()`, stable sidebar IDs, `before_widget` and `before_title` wrappers, `dynamic_sidebar()`, `is_active_sidebar()`, `get_sidebar()`, `sidebar-{name}.php`, `show_in_rest`, semantic aside/footer/header widget areas, block-widget era compatibility, and common mistakes such as missing IDs, changing IDs after release, hardcoded widgets, bad wrapper placeholders, and rendering empty sidebars.
 metadata:
   wp-skills-author: "Soczó Kristóf"
   wp-skills-contact: "mailto:lonsdale201@hotmail.com"
   wp-skills-plugin: "wordpress"
-  wp-skills-plugin-version-tested: "7.0"
+  wp-skills-plugin-version-tested: "7.1"
+  wp-skills-wp-version-tested: "7.1"
   wp-skills-php-min: "7.4"
-  wp-skills-last-updated: "2026-06-04"
+  wp-skills-last-updated: "2026-08-20"
 ---
 
 # Classic Theme Sidebars and Widgets

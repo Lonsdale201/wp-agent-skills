@@ -1,6 +1,6 @@
 # wp-agent-skills
 
-**237 skills · 30 plugins**
+**252 skills · 31 plugins**
 
 A community-maintained collection of **portable Agent Skills** for WordPress plugin and theme development.
 
@@ -20,7 +20,7 @@ Skills are grouped by domain. Each domain has its own README listing the skills 
 
 | Domain | What it covers |
 |---|---|
-| [`wordpress/`](wordpress) | Core WP topics that apply to any plugin or theme — security, i18n, REST API, the Abilities API, HTML/UTF-8 helpers, query cache. |
+| [`wordpress/`](wordpress) | Core WP topics that apply to any plugin or theme — security, i18n, REST API, the Abilities API, HTML/UTF-8 helpers, query cache, and the WP 7.1 editor/block surface (Interactivity API, Block Bindings, DataViews/DataForms, Style Engine, View Config, JSON Schema, speculative loading). |
 | [`plugin-scaffold/`](plugin-scaffold) | Building a new plugin from scratch — bootstrap, lifecycle, architecture, options storage, cron, hooks, rewrite rules, asset loading, Action Scheduler. |
 | [`woocommerce/`](woocommerce) | WooCommerce **core** ([`wc-*`](woocommerce#woocommerce-core)) — HPOS, payment gateways, Store API, order lifecycle, cart/checkout, variations & pricing, product CRUD & request caching, emails, Action Scheduler, logging, and per-release extension upgrade audits. The extension families below live in the same folder. |
 | &nbsp;&nbsp;↳ [WooCommerce Subscriptions](woocommerce#woocommerce-subscriptions) | `wcs-*` — subscription hooks, renewal scheduler, data model / switching / gifting, 8.8+ health-check & processing, subscription downloads, All Products for Subscriptions, cart / checkout / recurring coupons, and the WCS REST API. |
@@ -37,7 +37,7 @@ Skills are grouped by domain. Each domain has its own README listing the skills 
 | [`fluentcart/`](fluentcart) | Extending **FluentCart** (`fluent-cart` + Pro `fluent-cart-pro` + the `fluent-cart-migrator` companion) — the extension bootstrap / container / custom-table data model, products & inventory, cart & checkout trust boundaries, orders / transactions / refunds, payment gateways and subscriptions, customers & the account portal, downloads & storage, coupons, shipping & tax, the `/fluent-cart/v2` REST surface, integration feeds & scheduled jobs, Pro licensing, and EDD / WooCommerce migrations. Every skill marks its Free / Pro / Migrator boundary. |
 | [`fluentcrm/`](fluentcrm) | Extending FluentCRM — funnel triggers / actions / benchmarks, `rest_selector` option lists, and the Free / Pro extension contract. |
 | [`fluentform/`](fluentform) | Extending **Fluent Forms** (`fluentform` + Pro `fluentformpro`) from a third-party plugin — custom form-builder fields (`BaseFieldManager`), the server-side submission lifecycle (parse → validate → persist → notify → confirm) and its hook timing, reading/managing entries & submission meta (`fluentFormApi`, `Submission` / `SubmissionMeta`), and configurable feed integrations (`IntegrationManagerController`, async Action Scheduler dispatch). Every skill marks the Free vs Pro boundary. |
-| [`theme-development/`](theme-development) | Classic (non-FSE) PHP theme development — structure, template hierarchy, the Loop, menus, widgets, comments, media, the Customizer, assets, i18n, accessibility, security, and classic-theme WooCommerce integration. |
+| [`theme-development/`](theme-development) | Theme development — `theme.json` / Global Styles for block themes, plus the full classic (non-FSE) PHP set: structure, template hierarchy, the Loop, menus, widgets, comments, media, the Customizer, assets, i18n, accessibility, security, and classic-theme WooCommerce integration. |
 | [`translatepress/`](translatepress) | Making your own plugin/theme **TranslatePress-compatible** — translatable output and exclusions, URL/SEO/slug and Different-Domain behavior, language switchers and navigation, and recipient-language emails. Covers the free core plus the Business add-ons. |
 | [`elementor/`](elementor) | Building **Elementor** addon plugins — registering Dynamic Tags, their controls and fallback behavior, AJAX item pickers for large datasets, and auditing deprecated Elementor APIs. Extends the free base classes and feature-detects Pro. |
 | [`szamlazzhu/`](szamlazzhu) | Making your own WooCommerce extension cooperate with **Integration for Szamlazz.hu & WooCommerce** — invoice line items / XML / document timing and B2B VAT-number checkout, via the plugin's hooks and canonical data model rather than duplicating it. |

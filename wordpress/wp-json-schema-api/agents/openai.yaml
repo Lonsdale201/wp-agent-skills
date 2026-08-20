@@ -1,0 +1,4 @@
+interface:
+  display_name: "WordPress JSON Schema API"
+  short_description: "Prepare safe client schemas with WordPress 7.1"
+  default_prompt: "Use $wp-json-schema-api to prepare or audit this WordPress JSON Schema contract."

@@ -5,8 +5,8 @@ description: >
   Covers `wp scaffold plugin-tests` / `wp scaffold theme-tests` and the files it
   generates (`phpunit.xml.dist`, `bin/install-wp-tests.sh`, `tests/bootstrap.php`,
   `tests/test-sample.php`, `.phpcs.xml.dist`, a CI workflow), installing the
-  WordPress test suite with `install-wp-tests.sh` (curl-based, no SVN), the test
-  database, `yoast/phpunit-polyfills`, the critical fact that the WP core test
+  WordPress test suite with the current tarball-and-SVN `install-wp-tests.sh`, the
+  disposable test database, `yoast/phpunit-polyfills`, the critical fact that the WP core test
   suite is capped at PHPUnit 9.x, composer `require-dev` / scripts wiring, a
   GitHub Actions PHP x WP matrix with `shivammathur/setup-php`, and the modern
   `wp-env` / `wp-phpunit/wp-phpunit` alternatives. Use when adding a test
@@ -17,10 +17,11 @@ metadata:
   wp-skills-author: "Soczó Kristóf"
   wp-skills-contact: "mailto:lonsdale201@hotmail.com"
   wp-skills-plugin: "wordpress"
-  wp-skills-plugin-version-tested: "WP-CLI scaffold-command 2.x; PHPUnit 9.x; phpunit-polyfills 1.1; WP 7.0"
-  wp-skills-wp-version-tested: "7.0"
+  wp-skills-plugin-version-tested: "7.1"
+  wp-skills-wp-version-tested: "7.1"
+  wp-skills-toolchain-tested: "WP-CLI scaffold-command 2.x; PHPUnit 9.x; phpunit-polyfills 1.1"
   wp-skills-php-min: "7.4"
-  wp-skills-last-updated: "2026-06-17"
+  wp-skills-last-updated: "2026-08-20"
 ---
 
 # WordPress PHPUnit test setup
@@ -36,7 +37,12 @@ Get a real WordPress integration test harness running for a plugin or theme. The
 
 ## The PHPUnit version reality (read this first)
 
-The most common setup mistake: requiring PHPUnit 10 or 11. **The WordPress core PHPUnit test suite is capped at PHPUnit 9.x** — there is no PHPUnit 10/11/12 support in any WordPress version, including WP 7.0. See the official [compatibility table](https://make.wordpress.org/core/handbook/references/phpunit-compatibility-and-wordpress-versions/).
+The most common setup mistake: requiring PHPUnit 10 or 11 for a
+`WP_UnitTestCase` integration suite. **WordPress 7.1's core test library remains
+on PHPUnit 9.x**: the official matrix assigns PHPUnit 9 to WordPress 7.1 on PHP
+7.4 through 8.5, and core's `phpunit.xml.dist` uses the PHPUnit 9.2 schema.
+Check the official [compatibility table](https://make.wordpress.org/core/handbook/references/phpunit-compatibility-and-wordpress-versions/)
+for each WordPress/PHP branch instead of extrapolating from the newest PHP.
 
 `WP_UnitTestCase`-based tests boot the real WordPress test suite, so they run on the PHPUnit version the suite supports — **PHPUnit 9.x for current WordPress**. The bridge across PHPUnit majors is **`yoast/phpunit-polyfills`**, a hard dependency of the WP test suite since WordPress 5.9.
 
@@ -78,10 +84,21 @@ The first three arguments are required; `db-host` defaults to `localhost`, `wp-v
 What it does:
 
 - Downloads WordPress core to `/tmp/wordpress/` and the test library (`includes/` + `data/`) to `/tmp/wordpress-tests-lib/` (override with `WP_CORE_DIR` / `WP_TESTS_DIR`).
-- **Downloads via `curl`/`wget` from the WordPress develop GitHub mirror — Subversion is no longer required** by the current script. (Older tutorials say "install SVN first"; that is outdated.)
+- Downloads release builds of core as WordPress.org tarballs, but uses `svn export`
+  for the matching `wordpress-develop` test `includes/` and `data/`; nightly/trunk
+  core also uses SVN. The generated installer therefore needs `curl` or `wget`,
+  `tar`, an SVN client, and MySQL client tools as applicable.
+- Treat generated CI as a starting point and inspect it together with the
+  installer. Generator/runner versions may assume tools such as SVN are already
+  installed, use an outdated PHP/WP matrix, or emit a malformed matrix
+  expression. Confirm `${{ matrix.php-version }}` (or your chosen key), install
+  missing clients explicitly, and validate the workflow before relying on it.
 - Writes `wp-tests-config.php` with your DB credentials.
 
-The test suite uses a **separate, disposable database** — every test runs in a transaction that is rolled back, so the schema is reused but data never persists. Never point it at a real site DB.
+The test suite uses a **separate, disposable database** that it assumes it may
+modify and clean. Core test cases and factories perform cleanup, but there is no
+universal per-test transaction/rollback guarantee for plugin code, custom
+tables, raw SQL, or external side effects. Never point it at a real site DB.
 
 ## Run the tests
 
@@ -157,13 +174,26 @@ Two newer paths avoid the shell installer:
 - **`@wordpress/env` (`wp-env`)** — a Docker-based local environment. Run tests through the CLI container, e.g. `wp-env run cli phpunit` (scope to a plugin with `--env-cwd=wp-content/plugins/my-plugin`). Good for "no local LAMP" setups.
 - **`wp-phpunit/wp-phpunit`** — a Composer package that ships the WordPress core PHPUnit library as a managed dependency (no `install-wp-tests.sh`, no download step). You still supply DB config and a bootstrap that `require`s its autoloaded path.
 
-Both still run on the same PHPUnit 9.x ceiling. Pick the classic `install-wp-tests.sh` for parity with WordPress core/most plugins; pick `wp-env`/`wp-phpunit` when you want a Composer- or Docker-native flow.
+Both still need a WordPress test-library/PHPUnit combination that the selected
+WordPress branch supports. Pick `install-wp-tests.sh` for a small conventional
+CI harness; pick `wp-env`/`wp-phpunit` when a Docker- or Composer-native flow is
+a better fit. None of these choices removes the disposable-database requirement.
+
+## WordPress 7.1 CI guidance
+
+Core's own 7.1 CI reduced redundant database combinations while retaining PHP
+coverage. Apply the principle, not core's exact matrix: test the minimum and
+maximum supported PHP/WP boundaries on every change, then schedule broader
+database and intermediate-version coverage when risk justifies it. Avoid a full
+Cartesian product that delays feedback without exercising a distinct boundary.
 
 ## Critical rules
 
-- **Do not require PHPUnit 10/11.** The WP test suite is PHPUnit 9.x; use `yoast/phpunit-polyfills` and pin `phpunit/phpunit:^9`.
-- **Do not assume SVN is needed** — the current `install-wp-tests.sh` uses curl against the GitHub mirror.
-- **Never run the test suite against a production database.** Use a throwaway `*_test` DB; the suite rolls back per test but assumes it owns the DB.
+- **Do not require PHPUnit 10/11/12 for the WordPress 7.1 integration suite.** Use PHPUnit 9.x and `yoast/phpunit-polyfills`; a separate pure-unit suite may choose a newer PHPUnit.
+- **Inspect the generated workflow and installer together.** Release core uses
+  a tarball, while test-library files (and nightly/trunk core) still require SVN;
+  also verify every generated matrix expression and supported-version boundary.
+- **Never run the test suite against a production database.** Use a throwaway `*_test` DB; the suite assumes it owns and may reset that database.
 - **Commit `phpunit.xml.dist` and `.phpcs.xml.dist`**, not the un-suffixed local overrides.
 - **Match `phpunit-polyfills` to your WordPress version**; verify the constraint, don't copy a random number.
 - **In CI, pass `skip-database-creation = true`** when a MySQL service already created the DB.
@@ -184,5 +214,6 @@ Both still run on the same PHPUnit 9.x ceiling. Pick the classic `install-wp-tes
 - PHPUnit Polyfills: <https://github.com/Yoast/PHPUnit-Polyfills>
 - `wp-phpunit/wp-phpunit`: <https://github.com/wp-phpunit/wp-phpunit>
 - `@wordpress/env`: <https://developer.wordpress.org/block-editor/reference-guides/packages/packages-env/>
+- WordPress 7.1 leaner PHPUnit CI: <https://make.wordpress.org/core/2026/07/30/leaner-steadier-phpunit-runs-for-upcoming-releases/>
 - Related documentation: <https://github.com/wp-cli/scaffold-command/blob/main/templates/plugin-github.mustache>
 - Related documentation: <https://github.com/WordPress/wordpress-develop>

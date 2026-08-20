@@ -1,0 +1,4 @@
+interface:
+  display_name: "WordPress block registration"
+  short_description: "Build secure, compatible metadata and PHP blocks"
+  default_prompt: "Use $wp-block-registration-and-assets to build or audit this WordPress block and its asset/support contracts."

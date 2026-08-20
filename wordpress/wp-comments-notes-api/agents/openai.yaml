@@ -1,0 +1,3 @@
+interface:
+  display_name: "WP Comments and Notes API"
+  short_description: "Extend comments, editor Notes, notifications, and pings"

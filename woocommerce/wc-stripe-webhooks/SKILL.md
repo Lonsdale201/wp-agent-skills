@@ -1,14 +1,14 @@
 ---
 name: wc-stripe-webhooks
-description: Build or audit integrations around WooCommerce Stripe Gateway webhooks and asynchronous payment settlement. Covers the canonical wc-api endpoint, Stripe-Signature validation, trusted webhook health state, order resolution, PaymentIntent and Checkout Session deferral, settlement amount/currency integrity, Action Scheduler, order locks, idempotency, safe observer hooks, Adaptive Pricing, unexpected charges, logging, and deprecated Stripe surfaces. Use for `wc_stripe_webhook_received`, `payment_intent` or `checkout.session` events, on-hold Stripe orders, duplicate settlement, custom observers, or reconciliation.
+description: Build or audit integrations around WooCommerce Stripe Gateway webhooks and asynchronous payment settlement. Covers the canonical wc-api endpoint, Stripe-Signature and connected-account checks, trusted webhook health state, order resolution, PaymentIntent and Checkout Session deferral, settlement amount/currency integrity, Action Scheduler, order locks, idempotency, safe observer hooks, Adaptive Pricing opt-out, unexpected charges, logging, and deprecated Stripe surfaces. Use for `wc_stripe_webhook_received`, `wc_stripe_is_adaptive_pricing_supported`, `payment_intent` or `checkout.session` events, on-hold Stripe orders, duplicate settlement, custom observers, or reconciliation.
 metadata:
   wp-skills-author: "Soczó Kristóf"
   wp-skills-contact: "mailto:lonsdale201@hotmail.com"
   wp-skills-plugin: "woocommerce-gateway-stripe"
-  wp-skills-plugin-version-tested: "10.8.5"
-  wp-skills-woocommerce-version-tested: "11.0.0"
+  wp-skills-plugin-version-tested: "10.9.0"
+  wp-skills-woocommerce-version-tested: "11.0.1"
   wp-skills-php-min: "7.4"
-  wp-skills-last-updated: "2026-08-05"
+  wp-skills-last-updated: "2026-08-19"
 ---
 
 # WooCommerce Stripe webhooks
@@ -34,7 +34,13 @@ For normal Stripe events it verifies:
 
 Never parse `php://input`, trust `metadata.order_id`, or update an order before the installed handler validates the request. Agentic Commerce uses the same URL but a separate secret and event family; do not treat its delegated checkout payload as an ordinary order webhook.
 
-Stripe Gateway 10.8.5 updates the stored pending-webhook count only after signature validation succeeds. Do not write health/status counters from an unverified payload in custom webhook code. Webhook timestamps and pending counts are scalar non-negative integer state; 10.8.5 ignores invalid array/object/non-digit values instead of persisting them.
+Stripe Gateway 10.9.0 updates the stored pending-webhook count only after signature validation succeeds. Do not write health/status counters from an unverified payload in custom webhook code. Webhook timestamps and pending counts are scalar non-negative integer state; 10.9.0 ignores invalid array/object/non-digit values instead of persisting them.
+
+### Connected-account binding in 10.9
+
+After signature validation, the gateway compares a Connect event's `account` or an agentic delegated-checkout event's `context` with the cached connected Stripe account ID for the active mode. A known mismatch is logged, acknowledged with HTTP 200, and is not processed; it does not update pending/success health state or fire `wc_stripe_webhook_received`.
+
+The check deliberately fails open when the event carries no account/context or the connected account is unknown. Do not describe the account check as a replacement for signature verification, and do not copy the fail-open policy into a custom multi-account endpoint without an explicit compatibility reason. A custom endpoint that knows its expected account should fail closed before order lookup.
 
 ## Event families
 
@@ -68,6 +74,8 @@ wc_stripe_deferred_webhook
 ```
 
 Default PaymentIntent deferral is two minutes. A webhook that loses the order-payment lock race can retry after a shorter delay. Do not assume a 200 response means order settlement completed synchronously.
+
+Stripe 10.9 serializes deferred PaymentIntent success and Checkout Session success against the return/3DS path with the order lock. A collision is re-queued rather than dropped, and `wc_stripe_webhook_received` is withheld until the retry actually processes the event. This prevents duplicate transitions while preserving the initial paid transition's stock, notes, and email side effects. The observer still does not guarantee payment success: tolerate delayed execution and inspect the final order state instead of inferring success from the event name or original delivery time.
 
 Do not disable async processing with `wc_stripe_process_payment_intent_webhook_async` merely to make custom code run sooner. If changed, test redirect methods, concurrent checkout, duplicate delivery, and order locks.
 
@@ -123,6 +131,8 @@ Do not use this observer as the only fulfillment signal: filter to the exact eve
 
 Adaptive Pricing uses Checkout Sessions and requires healthy webhooks. Stripe 10.8 disables Adaptive Pricing when webhooks are disabled. The gateway distinguishes Adaptive Pricing sessions from agentic sessions via checkout metadata and defers early events until order metadata exists.
 
+Stripe 10.9 exposes `wc_stripe_is_adaptive_pricing_supported( true, WC_Cart|null $cart )` as a final opt-out after its own account, settings, page, subscription, pre-order, and deposit checks pass. Return `false` for a narrowly identified incompatible cart; it cannot force an otherwise unavailable flow on. The older `wc_stripe_is_checkout_sessions_available` filter was removed, so delete integrations that still depend on it.
+
 For custom order fields:
 
 - Store durable Woo data before redirect whenever possible.
@@ -130,12 +140,12 @@ For custom order fields:
 - Do not create an order from an unmatched Adaptive Pricing session; the gateway intentionally refuses to route it into agentic order creation.
 - Reconcile presentment currency/amount from gateway helpers rather than replacing the Woo order currency/total.
 
-### Settlement amount and currency integrity in 10.8.5
+### Settlement amount and currency integrity in 10.9.0
 
 Before marking a Checkout Session paid, the gateway now compares the settlement amount/currency with the Woo order total/currency. It understands both Stripe schemas:
 
 - before the `2025-03-31.basil` API version, settlement values for Adaptive Pricing are under `currency_conversion.source_currency` and `currency_conversion.amount_total`;
-- Basil and later use top-level `currency` and `amount_total` for settlement, while buyer-facing figures can live in `presentment_details`.
+- Basil and later, including the gateway's `2026-03-25.dahlia` API version, use top-level `currency` and `amount_total` for settlement, while buyer-facing figures can live in `presentment_details`.
 
 On a missing or mismatched settlement value, the gateway refuses payment completion, writes a diagnostic order note with the Checkout Session and available PaymentIntent reference, and moves the order to `on-hold`. Holding prevents Woo's unpaid-pending cancellation from restoring stock for a payment Stripe may already have captured.
 
@@ -175,16 +185,17 @@ Stripe 10.8 contains read-only Stripe abilities, but registration is gated by `w
 - `WC_Gateway_Stripe` is deprecated; use the runtime `WC_Stripe_UPE_Payment_Gateway` only when direct class integration is unavoidable.
 - `wc_gateway_stripe_process_payment` is deprecated since 9.7; the replacement is `wc_gateway_stripe_process_payment_charge`.
 - `WC_Stripe_Webhook_Handler::process_checkout_session()` is deprecated since 10.6; success/failure handlers replaced it.
+- `wc_stripe_is_checkout_sessions_available` was removed in 10.9; use `wc_stripe_is_adaptive_pricing_supported` only for final cart-specific opt-out.
 - Payment Request Button naming/classes are legacy; use Express Checkout terminology and current helpers.
 - Gateway/webhook classes are plugin internals. Prefer documented actions and Woo order lifecycle hooks over subclassing or direct handler calls.
 
 ## Test matrix
 
-1. Valid, missing, stale, and wrong webhook signatures.
-2. Duplicate event delivery and duplicate checkout return.
+1. Valid, missing, stale, and wrong webhook signatures; matching, mismatched, absent, and unknown account context.
+2. Duplicate event delivery and duplicate checkout/3DS return.
 3. PaymentIntent success before and after order meta persistence.
 4. Checkout Session success, async success/failure, expiration, and amount/currency mismatch across pre-Basil and Basil schemas.
-5. Lock collision followed by deferred retry.
+5. Lock collision followed by deferred retry, with the observer firing only after actual processing.
 6. Redirect/SCA, capture, refund, dispute, and failed payment.
 7. Adaptive Pricing enabled with healthy/disabled webhooks.
 8. Invalid webhook-state values and pending-count updates only after a valid signature.

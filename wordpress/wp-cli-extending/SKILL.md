@@ -5,9 +5,11 @@ metadata:
   wp-skills-author: "Soczó Kristóf"
   wp-skills-contact: "mailto:lonsdale201@hotmail.com"
   wp-skills-plugin: "wordpress"
-  wp-skills-plugin-version-tested: "WP-CLI 2.10 - 2.11; WP 6.0 - 7.0.1"
+  wp-skills-plugin-version-tested: "7.1"
+  wp-skills-wp-version-tested: "7.1"
+  wp-skills-toolchain-tested: "WP-CLI 2.10 - 2.11"
   wp-skills-php-min: "7.4"
-  wp-skills-last-updated: "2026-07-10"
+  wp-skills-last-updated: "2026-08-20"
 ---
 
 # WP-CLI: Extending with Custom Commands

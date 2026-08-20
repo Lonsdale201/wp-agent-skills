@@ -2,6 +2,141 @@
 
 This collection is continuously evolving — entries are date-based, not version-tagged. New skills land when they're ready; updates go in when they cover real ground (a new release of an upstream plugin, a verified misconception, a corrected example).
 
+## 2026-08-20 (wordpress + plugin-scaffold + theme-development + dev-tooling: WordPress 7.1 re-grounding, 15 new skills)
+
+The four WordPress-core domains move from **7.0.1** to **WordPress 7.1**, sourced from the [7.1 Field Guide](https://make.wordpress.org/core/2026/08/05/wordpress-7-1-field-guide/) and its dev notes. **15 new skills** cover the 7.1 surface the collection had no skill for at all — the editor/block layer (Interactivity API, Block Bindings, block registration and assets, the always-iframed editor, editor components, DataViews/DataForms), the new public core APIs (View Config, JSON Schema preparation, SVG Icons, Style Engine), client-side media processing, speculative loading, comment Notes, the admin toolbar, and a first block-theme skill (`theme.json` / Global Styles). **66 existing skills** were re-grounded, 36 of them with real content changes rather than a version bump. Every touched skill records `wp-skills-wp-version-tested: "7.1"`, and 26 skills across these four domains now ship an `agents/openai.yaml`.
+
+Three themes run through the batch. First, **7.1 moves several editor assumptions**: the post editor is always iframed, so `document` / `window` in editor JavaScript no longer means the canvas; `@wordpress/components` removed Navigation and `__experimentalApplyValueToSides` and defaults form controls to 40px; and `WP_List_Table` renders the primary column as `<th scope="row">`, which breaks CSS/JS that assumed every body cell is a `td`. Second, **exposure is not authorization** — the Abilities API's new `meta.public` seeds `show_in_rest` but grants nothing, the SVG Icons and View Config REST routes are authenticated rather than public, and `wp_prepare_json_schema_for_client()` publishes a schema without adding server-side validation for the keywords it allows. Third, **a toolchain that passes is not a 7.1 audit**: WPCS 3.4.x knows symbols through 7.0 and the newest tagged `wordpress-stubs` is 7.0.1, so a green lint / PHPStan run cannot prove 7.1 compatibility.
+
+### Added — `wordpress/wp-interactivity-api`
+
+Server-directed interactive blocks: `block.json` `interactivity` support and `viewScriptModule`, the PHP state/config/context helpers, the `data-wp-*` directive rules, `@wordpress/interactivity` stores, hydration, async actions, and the 7.1 binding rules to audit. Covers server/client mismatch debugging and client-side-navigation compatibility, with the directive table, store contract and hydration-mismatch playbook in `references/contracts-and-debugging.md`.
+
+### Added — `wordpress/wp-block-bindings-api`
+
+Binding block attributes to post meta, post/term data, pattern overrides, custom tables, or remote data. Separates **PHP source registration from editor registration** (two different concerns, commonly conflated), and covers `metadata.bindings` markup, the supported-attribute filters, context, editing callbacks, permissions, caching, and 7.1's `core/list-item` addition. `references/editor-and-security.md` holds the editor half plus the permission and caching detail.
+
+### Added — `wordpress/wp-block-registration-and-assets`
+
+Block metadata and assets through the public APIs: `register_block_type` / `register_block_type_from_metadata`, API version 3, metadata collections, PHP-only `autoRegister` blocks on 7.0+, dynamic rendering and wrapper attributes, editor/frontend asset fields versus script modules, deprecations, transforms, and variations. The 7.1 support changes (`background.gradient`, `dimensions.minWidth`, Custom HTML `innerContent`, List Item bindings) and the always-iframed asset consequences are tabulated in `references/wp-71-block-contracts.md`.
+
+### Added — `wordpress/wp-block-editor-iframe-compatibility`
+
+The migration skill for the always-iframed post editor. The load-bearing rule is that **global `document` is the parent UI, not the canvas**: use `ownerDocument` / `defaultView` and `useRefEffect` from `@wordpress/compose`, put block styles in the block's own metadata so they reach the iframe document, and prefer editor APIs over DOM scraping for selection and measurement. Also covers portals/popovers, the persistent admin toolbar's effect on measurements, Document-Isolation-Policy interaction with media, classic-theme behavior, and a migration audit plus test matrix.
+
+### Added — `wordpress/wp-editor-components`
+
+Public `@wordpress/components` usage and the 7.1 migration: correct dependency handles, accessible controlled controls, the **40px form-control default** that shifts existing layouts, the removed Navigation and `__experimentalApplyValueToSides` APIs, the Navigator migration, the Emotion-to-SCSS styling change, and `View`'s now-no-op `css` prop. `references/wp-71-migration-matrix.md` carries the per-component removal/replacement matrix.
+
+### Added — `wordpress/wp-dataviews-dataform`
+
+Admin data interfaces built on the public `@wordpress/dataviews` DataViews, DataViewsPicker and DataForm components — the WordPress build contract, controlled data flow, defining fields once, action/write contracts, server-driven REST queries with bounded pagination, and the rule that **DataForm is an edit buffer**, not a store. Includes the 7.1 component migration notes and an accessibility/selection test matrix; contracts and security detail in `references/contracts-and-security.md`.
+
+### Added — `wordpress/wp-view-config-api`
+
+7.1's entity list/form defaults for DataViews-based Site Editor screens. Built around **generating the dynamic hook instead of guessing it** (`wp_get_entity_view_config_hook_name( 'postType', 'book' )`, kind/name segments lowercased), the four top-level keys, `WP_View_Config_Data`'s merge/replace/set/remove semantics and which is least destructive, null/reset behavior, composing with other plugins' callbacks, and the authenticated `wp/v2/view-config` route with CPT/taxonomy capability mapping. Patch semantics in `references/patch-semantics.md`.
+
+### Added — `wordpress/wp-json-schema-api`
+
+`wp_prepare_json_schema_for_client()` and `wp_get_json_schema_allowed_keywords()`: draft-04 versus `rest-api` profiles, required-property conversion, recursive cleanup, empty-object defaults, and the `wp_json_schema_allowed_keywords` filter. The boundary is stated explicitly — **preparation is publication, not enforcement**: allowing a keyword does not make the server validate it, and schema publication, REST validation, sanitization and application authorization stay four separate jobs. Profiles and normalization detail in `references/profiles-and-normalization.md`.
+
+### Added — `wordpress/wp-svg-icon-api`
+
+The 7.1 Icons API: `wp_register_icon_collection` / `wp_register_icon` / `wp_get_icon`, collection-before-icon ordering, `content` versus `file_path` (with lazy file reads), core's SVG sanitization limits and what they do **not** cover, accessible label versus decorative rendering, deliberate unregistration, duplicate handling, and the fact that the REST icon/collection routes are **authenticated, not public-anonymous**. API contract in `references/api-contract.md`.
+
+### Added — `wordpress/wp-style-engine`
+
+The public Style Engine surface — `wp_style_engine_get_styles`, `wp_style_engine_get_stylesheet_from_css_rules`, `wp_style_engine_get_stylesheet_from_context`, style objects, preset tokens, selectors, rule groups, and 7.1's declaration options including `!important` support. Two rules carry the skill: **contexts are request-local aggregation, not persistence**, and selector / at-rule input is a security boundary, not a passthrough. Output and testing detail in `references/output-and-testing.md`.
+
+### Added — `wordpress/wp-client-side-media-processing`
+
+7.1's browser-side media pipeline. The core requirement is to **model both processing paths** — `wp_is_client_side_media_processing_enabled()` can be on or off for the same site — and to keep upload integrations path-independent: the REST create/sideload/finalize workflow can call `wp_generate_attachment_metadata` more than once, and server-only image hooks must not be assumed to run. Also covers `generate_sub_sizes` / `convert_format`, byte and dimension limits, Document-Isolation-Policy, `crossorigin` and WASM/CSP requirements, external-image sideloading, and fallback behavior.
+
+### Added — `wordpress/wp-speculative-loading`
+
+Speculation Rules configuration and audit: prefetch versus prerender, eagerness, safe URL exclusions, custom rules, per-link opt-out, and 7.1's host default constants. The safety model is the point — **speculative GETs must be side-effect-free**, so plugin-owned carts, logout and other destructive links, and personalized or session-dependent pages need explicit exclusion. Rule shapes and the verification matrix in `references/rules-and-test-matrix.md`.
+
+### Added — `wordpress/wp-comments-notes-api`
+
+Comments and editor Notes as **two different things sharing one table** — public comments versus Notes, enabling Notes for a custom post type, capability-aware queries and mutations, REST note permissions, note status and mentions, inline markers, and the 7.1 changes to the notification filter and ping behavior. Query arguments, notification filters and ping semantics in `references/queries-notifications-pings.md`.
+
+### Added — `wordpress/wp-admin-toolbar`
+
+`admin_bar_menu` and the `WP_Admin_Bar` node contract: capability-aware links, parent/child ordering, accessible markup, and the frontend/admin/network/editor contexts — including 7.1's **persistent toolbar in the Post and Site Editors**, which is where most existing toolbar code needs a fix or a hide. Covers performance/state discipline (no per-request query in a node callback) and a context test matrix; node contract in `references/node-contract.md`.
+
+### Added — `theme-development/block-theme-global-styles`
+
+The domain's first block-theme skill: `theme.json` schema version 3, responsive mobile/tablet viewport states, block and element pseudo-states, Navigation Link current-state styles, style variations, CSS generation, 7.1's background gradients / minimum width / text shadow / block visibility controls, sanitization, merge order and the cascade, and editor / front-end parity. Frames responsive design **as states rather than ad-hoc media queries**, and insists on validating behavior, not just JSON syntax. `references/theme-json-71.md` holds the 7.1 schema delta.
+
+### Updated — `wordpress/wp-presence-api` (v0.1.4 awareness note to v0.1.23 integration skill)
+
+The largest single change in the batch. The skill was deliberately awareness-only ("do not invent function signatures"); Presence API 0.1.23 is documented enough to integrate against, so it is now a real integration skill: the seven public PHP functions, post and admin rooms, the per-site `wp_presence` table and TTL, Heartbeat transport, the REST read/write/delete/rooms endpoints, per-room capabilities and ownership, pagination and payload limits, post-type opt-in, the `usePresenceUsers` source hook, stale-screen revisions, collaboration hooks, and cleanup / multisite provisioning. It still states plainly that this is an **experimental feature plugin, not WordPress 7.1 core** — pin it and feature-detect, because the `0.1.x` contract can still change. `wp-skills-plugin` moves from `wordpress` to `presence-api`, so it is the batch's only new product.
+
+### Updated — `wordpress/wp-abilities-api`
+
+7.1 adds unified public exposure metadata, filtered discovery, a complete execution-filter lifecycle, client-safe schema preparation, REST collection filters/pagination, and schema-aware run-input coercion. The exposure section was rewritten around the new precedence: **`meta.public` seeds `show_in_rest`, an explicit `show_in_rest => false` overrides it, and neither flag grants execution permission**. `wp_get_abilities()` now takes an `$args` array; schemas going to non-WordPress clients go through `wp_prepare_json_schema_for_client()`; and the MCP-adapter claim was corrected — exposure is adapter configuration and metadata dependent, so a registered or merely `public` Ability does not automatically become an MCP tool. The 7.1 route, lifecycle and filtering detail moved to `reference.md`.
+
+### Updated — `wordpress/wp-connectors-api`
+
+7.1 adds `application_password` alongside `api_key` and `none`. Documents the credential-source precedence (environment, constant, database), the single `username:password` environment / constant string split on the **first** colon so passwords may contain colons, the generated `connectors_{$type}_{$id}_{$method}` setting name, and the boundary that this is for an *external* WordPress-style Basic pair — not for an API key and not for the current site's Application Passwords UI. Adds a feature-detection note for sites still on 7.0.
+
+### Updated — `wordpress/wp-admin-list-table`
+
+7.1 renders the primary column as `<th scope="row">` and the checkbox column as `<td>`, and adds `get_primary_column_aria_label( $item )` (the base implementation returns an empty string, so the `aria-label` is omitted unless a subclass opts in). The skill now covers overriding it with a short plain identifier, the rule that a subclass overriding `single_row_columns()` or a `_column_<slug>()` renderer must emit the same semantics itself, and the migration consequence: **CSS/JS selectors that required `td.column-primary` must target column classes instead of element names**.
+
+### Updated — `dev-tooling/wp-phpunit-test-setup`
+
+Two previously stated facts were wrong and are corrected. The installer does **not** avoid Subversion — it pulls release core as a WordPress.org tarball but uses `svn export` for the matching `wordpress-develop` test `includes/` and `data/`, so SVN, `tar` and MySQL client tools all have to be present. And there is **no universal per-test transaction rollback** for plugin code: core test cases and factories clean up after themselves, but custom tables, raw SQL and external side effects do not, so "the suite rolls back" is not a cleanup strategy. The PHPUnit-9.x ceiling is re-verified for 7.1 (PHPUnit 9 on PHP 7.4 through 8.5, core's `phpunit.xml.dist` on the 9.2 schema), and generated CI is reframed as a starting point to inspect rather than trust.
+
+### Updated — `dev-tooling/wp-phpcs-coding-standards`
+
+WPCS moves to **3.4.1, which is a security release**: it fixes arbitrary command execution in `WordPress.WP.EnqueuedResourceParameters` when scanning untrusted PHP, affecting the `WordPress` and `WordPress-Extra` rulesets — so developer machines and CI runners need the update, not just production dependencies. Pins are now `wpcs ^3.4.1` with `phpcs ^3.13.5`. Adds the 7.1 caveat: WPCS 3.4.x knows core symbols and deprecations through 7.0, so a missing 7.1 rule is not evidence of compatibility.
+
+### Updated — `dev-tooling/wp-phpstan-static-analysis`
+
+Corrects a claim about the extension: the narrow `apply_filters()` extra-argument `ignoreErrors` regex comes from `phpstan-wordpress`'s **documented example**, not from the installed `extension.neon` — so it has to be added deliberately, and not generalized to unrelated calls. Adds the stub-freshness rule: the newest tagged `php-stubs/wordpress-stubs` is 7.0.1, so 7.1-only symbols may report as unknown; feature-detect and add a small reviewed project stub rather than suppressing broadly, and treat a green run as incomplete for a 7.1 API audit.
+
+### Updated — `plugin-scaffold/wp-plugin-bootstrap`
+
+Adds 7.1's `get_file_data()` change (a header line prefixed by either `<?php` or the short open tag is now recognized) with the explicit warning that this is **parsing compatibility, not a new recommended style** — it does not justify short open tags or expressions in metadata. The header matrix, verified load order, common-mistakes examples and i18n detail moved into `references/bootstrap-contracts-and-mistakes.md`, keeping SKILL.md under the spec's length recommendation.
+
+### Updated — `plugin-scaffold/wp-plugin-lifecycle`, `wp-plugin-rewrite-rules`, `wp-plugin-architecture`, `wordpress/wp-filesystem-api`
+
+Progressive-disclosure restructures: the long code walkthroughs moved into a new `references/` companion each (`uninstall-and-multisite.md`, `custom-rules-and-endpoints.md`, `layout-and-review-examples.md`, `patterns-and-mistakes.md`) with net more material than before, not less. The uninstall reference also tightens its own example — dynamic transient cleanup now escapes `LIKE` wildcards with `$wpdb->esc_like()` and goes through `$wpdb->prepare()` instead of interpolating a prefix into query text.
+
+### Updated — `wordpress/wp-admin-drag-and-drop`
+
+7.1 ships jQuery UI **1.14.2** (was 1.13.3) and sets `jQuery.uiBackCompat = true` before `jquery-ui-core`. The documented widget APIs are unchanged, but the skill now says what the flag does not promise: code reaching into underscored widget methods, copied internals, generated class details, or deprecated `$.ui.plugin` behavior needs regression testing. The `jquery-touch-punch` note is reframed as compatibility support rather than a modern pointer-events accessibility layer.
+
+### Updated — 7.1 re-grounding across the remaining core skills
+
+Additive 7.1 passes, each stating the new behavior and what it does not change: `wordpress/wp-admin-notices` (the 7.1 `wp_dashboard_quick_press( $message, $notice_type )` second argument), `wp-admin-media-frame`, `wp-api-fetch-client`, `wp-rest-api`, `wp-html-api`, `wp-utf8-text`, `wp-ai-client`, `wp-http-api-client`, `wp-security-audit`, `wp-file-upload-security`, `wp-privacy-personal-data`, `wp-accessibility-audit` (plus `references/tooltips-71.md`), `wp-admin-form-controls`, `wp-admin-settings-api`, `wp-admin-postbox-sortable`, `dev-tooling/wp-phpunit-writing-tests`, `plugin-scaffold/wp-plugin-assets-loading`, `wp-plugin-cron`, and the classic-theme skills `classic-template-hierarchy`, `classic-theme-structure`, `classic-theme-assets-build`, `classic-theme-media-images` and `classic-theme-comments-discussion`. A further 30 skills received version metadata only.
+
+### Housekeeping
+
+Four corrections were applied on top of the incoming batch, where it had drifted from the repo:
+
+- **The 2026-08-14 i18n finding was restored.** The batch predated commit `ebe4a60` and replaced the verified version boundary with "on WordPress 6.5+ ... normally auto-discovered", which is wrong. `plugin-scaffold/wp-plugin-bootstrap` (SKILL.md and its new reference) and `wordpress/wp-i18n-audit` again state that a **bundled** translation is registered from the plugin header only on **WP 6.8 and up** — from `Domain Path`, or the plugin root when that header is absent — and that on 6.7 and earlier nothing looks inside the plugin folder. `Domain Path` is back to load-bearing rather than an optional LOW finding: a bundled translation with neither `Domain Path` nor `load_plugin_textdomain()` is a MEDIUM.
+- **`dev-tooling/README.md`** dropped `wp-strauss-namespace-prefixing`, `wp-env-local-dev` and `wp-docker-compose-stack` (the batch's source predated them). All three rows and the intro mention are restored; the domain lists 7 skills again.
+- **`## References` normalized in 8 new skills.** Two ended with `## Primary sources` and six had no sources section at all; all now use the collection's standard `## References`. All 252 skills use the same section name.
+- **`plugin-scaffold/README.md`** regained the `references/native-wp-cron-patterns.md` pointer on the `wp-plugin-cron` row.
+
+Root README counters bumped (skills 237 to 252, plugins 30 to 31 — `presence-api` is the one new product); the `wordpress/` and `theme-development/` domain rows describe the new 7.1 and block-theme coverage. Domain READMEs rewritten for `wordpress`, `theme-development`, `plugin-scaffold` and `dev-tooling`. `skills-index.json` regenerated. `node .github/scripts/validate-skill.js --all` passes; the only warning in these four domains is the pre-existing `wp-i18n-audit` length note.
+
+## 2026-08-20 (woocommerce: WooCommerce Stripe Gateway 10.9.0 re-grounding)
+
+Five `wc-stripe-*` skills re-verified against **WooCommerce Stripe Gateway 10.9.0** on WooCommerce 11.0.1, from local plugin source. No new skills; the changes are the kind an integration only finds after an upstream release moves a boundary.
+
+`wc-stripe-add-payment-method` records that **`WC_Stripe_UPE_Payment_Gateway` is the `stripe` gateway** and `WC_Gateway_Stripe` is only a deprecated compatibility subclass, that Optimized Checkout is deliberately disabled on Add payment method, and — new in 10.9 — that Stripe.js is loaded from `https://js.stripe.com/dahlia/stripe.js` with API version `2026-03-25.dahlia` under the `stripe` handle. Treat that origin and version as a deployment invariant: do not deregister the handle or substitute an older Stripe.js, and test Add payment method, classic checkout, Blocks, Optimized Checkout and Express Checkout together whenever another extension touches it.
+
+`wc-stripe-webhooks` documents that 10.9 updates the stored pending-webhook count **only after signature validation succeeds** (custom webhook code must not write health counters from an unverified payload), and adds the new connected-account binding: after signature validation the gateway compares a Connect event's `account`, or an agentic delegated-checkout event's `context`, against the cached connected account ID for the active mode. The skill is explicit that this check **fails open** when the event carries no account/context or the connected account is unknown — it is not a substitute for signature verification. Also covers 10.9 serializing deferred PaymentIntent and Checkout Session success against the return/3DS path with the order lock, re-queueing a collision rather than dropping it.
+
+`wc-stripe-subscriptions` adds the internal shared hook manager that keeps the main gateway and the lazily created Optimized Checkout method from registering the same subscription callbacks twice (so do not instantiate Stripe gateway objects yourself), and the new public `wc_stripe_subscription_renewal_blocked_by_radar` observer that fires after a Radar-blocked renewal order has been handled — the 10.7+ behavior of cancelling the pending WCS retry is now paired with a supported extension point instead of a private path.
+
+`wc-stripe-future-payments` and `wc-stripe-link-payments` cover Adaptive Pricing and Link. Adaptive Pricing runs through a Stripe Checkout Session rather than an ordinary PaymentIntent, and 10.9 exposes `wc_stripe_is_adaptive_pricing_supported( true, WC_Cart|null $cart )` as a **final opt-out after** Stripe's own account, settings, page, subscription, pre-order and deposit checks — the documented place to exclude an incompatible plan. Link gains its own `link_button_locations` and `link_button_size` settings instead of inheriting Apple Pay / Google Pay appearance (existing stores are migrated), its Express Checkout client now uses Woo Store API calls for shipping and variable-product cart mutations, and the local-token projection behavior on disable / re-enable now depends on Optimized Checkout state.
+
+`wc-stripe-link-payments` also had its trailing `## Verified sources` heading normalized to the standard `## References` with a `- Verified source paths:` sub-list — the same drift the 2026-08-06 housekeeping entry fixed, reintroduced by this drop's source.
+
 ## 2026-08-17 (jet-engine: JetEngine 3.8.14 re-grounding, 2 new skills, 3 rewritten)
 
 The whole `jet-engine/` domain moves from **3.8.8.2** to **JetEngine 3.8.14**, source-audited against the locally installed plugin and smoke-tested on **WordPress 7.0.4 / PHP 8.3.30** where module state allowed it (the inactive CCT and Data Stores modules were initialized only inside an isolated WP-CLI process, without changing saved module settings). **Two new skills** cover the two data-owning modules the domain never documented — Custom Content Types and Data Stores — and the **three existing skills were rewritten**, not just re-versioned: each one carried at least one claim that no longer holds on 3.8.14. All five now ship a `references/` companion and an `agents/openai.yaml`, and record `wp-skills-wp-version-tested: "7.0.4"`.

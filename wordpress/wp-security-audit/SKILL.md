@@ -12,9 +12,10 @@ metadata:
   wp-skills-author: "Soczó Kristóf"
   wp-skills-contact: "mailto:lonsdale201@hotmail.com"
   wp-skills-plugin: "wordpress"
-  wp-skills-plugin-version-tested: "6.0 - 7.0.1"
+  wp-skills-plugin-version-tested: "6.0 - 7.1"
+  wp-skills-wp-version-tested: "7.1"
   wp-skills-php-min: "7.4"
-  wp-skills-last-updated: "2026-07-21"
+  wp-skills-last-updated: "2026-08-20"
 ---
 
 # WordPress security audit
@@ -102,6 +103,12 @@ Authentication ≠ authorization. A logged-in subscriber is still a user.
   `__return_true` is dangerous on privileged writes, but can be intentional
   for genuinely public endpoints. Signed webhook routes should verify the
   signature before mutation, preferably in `permission_callback`.
+- In multisite, `is_user_member_of_blog()` is a membership predicate, not a
+  capability check. WordPress 7.1 adds the `is_user_member_of_blog` filter, but
+  it runs only after both the user and an active site have resolved. Returning
+  `true` can affect core REST user/application-password checks and admin UI
+  visibility globally; do not use the filter to manufacture authorization.
+  Keep an object-appropriate `current_user_can()` check at the protected sink.
 
 ### 3. Input: unslash → normalize when needed → validate
 
@@ -147,6 +154,14 @@ Escape **at the point of output**, in the right context:
 
 `echo $foo;` where `$foo` came from input or DB without escaping → XSS.
 This is the most common finding in plugin audits.
+
+WordPress 7.1 expanded what Core KSES accepts: `tabindex` is a global allowed
+attribute, and safe inline CSS recognizes additional gradient, transform,
+`clip-path`, and SVG presentation forms. This is not a bypass and does not make
+raw HTML safe, but code must not rely on older Core stripping those values as
+its business rule. When the product needs a narrower policy, pass an explicit
+allowlist to `wp_kses()` and test it on every supported Core version. Keep
+escaping at output even after KSES sanitization.
 
 ### 5. SQL: always prepare
 
@@ -312,3 +327,4 @@ Date: <YYYY-MM-DD>
 - Official documentation: <https://developer.wordpress.org/apis/security/>
 - Official documentation: <https://developer.wordpress.org/reference/functions/wp_verify_nonce/>
 - Official documentation: <https://developer.wordpress.org/reference/functions/current_user_can/>
+- WordPress 7.1 source: `wp-includes/user.php` (`is_user_member_of_blog`).

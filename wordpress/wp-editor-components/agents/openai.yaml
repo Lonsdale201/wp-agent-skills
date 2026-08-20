@@ -1,0 +1,4 @@
+interface:
+  display_name: "WordPress editor components"
+  short_description: "Migrate accessible editor UI to WordPress 7.1"
+  default_prompt: "Use $wp-editor-components to build or migrate this WordPress editor interface with public component APIs."

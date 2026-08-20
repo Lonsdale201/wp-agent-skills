@@ -14,9 +14,10 @@ metadata:
   wp-skills-author: "Soczó Kristóf"
   wp-skills-contact: "mailto:lonsdale201@hotmail.com"
   wp-skills-plugin: "wordpress"
-  wp-skills-plugin-version-tested: "6.0 - 7.0.1"
+  wp-skills-plugin-version-tested: "6.0 - 7.1"
+  wp-skills-wp-version-tested: "7.1"
   wp-skills-php-min: "7.4"
-  wp-skills-last-updated: "2026-08-14"
+  wp-skills-last-updated: "2026-08-20"
 ---
 
 # WordPress i18n audit
@@ -260,9 +261,12 @@ Flag mismatched domain between PHP and JS calls. Out of scope: deep JS audit (di
   text-domain, or dynamic first argument that extraction tools cannot find.
 - **MEDIUM:** unescaped `_e` in HTML, missing translator comment on `sprintf`,
   concatenation across translated strings, an actual pre-`after_setup_theme`
-  translation load, or plural handled with an English-only `if`.
-- **LOW:** ambiguous short strings without `_x`
-  context, or header/tooling metadata that does not break runtime lookup.
+  translation load, plural handled with an English-only `if`, or a bundled
+  translation with neither `Domain Path` nor `load_plugin_textdomain()`
+  (nothing loads it below 6.8; above 6.8 WP registers the plugin root, not
+  `languages/`).
+- **LOW:** ambiguous short strings without `_x` context, or header/tooling
+  metadata that does not break runtime lookup.
   Absence of `load_plugin_textdomain()` is no finding for a normal
   wp.org-distributed plugin.
 

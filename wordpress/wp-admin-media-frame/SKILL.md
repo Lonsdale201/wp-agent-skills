@@ -13,9 +13,10 @@ metadata:
   wp-skills-author: "Soczó Kristóf"
   wp-skills-contact: "mailto:lonsdale201@hotmail.com"
   wp-skills-plugin: "wordpress"
-  wp-skills-plugin-version-tested: "6.0 - 7.0.1"
+  wp-skills-plugin-version-tested: "6.0 - 7.1"
+  wp-skills-wp-version-tested: "7.1"
   wp-skills-php-min: "7.4"
-  wp-skills-last-updated: "2026-07-10"
+  wp-skills-last-updated: "2026-08-20"
 ---
 
 # WordPress Admin Media Picker (`wp.media`)
@@ -146,9 +147,7 @@ jQuery( function ( $ ) {
 
 ## Filtering the library
 
-The `library` attribute is a `wp.media.query` filter. Common shapes:
-
-Common shapes: `library: { type: 'image' }`, `library: { type: [ 'image', 'video' ] }`, `library: { type: 'application/pdf' }`, `library: { uploadedTo: postId }`, and `library: { author: MyPluginMedia.currentUserId }`.
+The `library` attribute is a `wp.media.query` filter. Common shapes: `library: { type: 'image' }`, `library: { type: [ 'image', 'video' ] }`, `library: { type: 'application/pdf' }`, `library: { uploadedTo: postId }`, and `library: { author: MyPluginMedia.currentUserId }`.
 
 Localize `MyPluginMedia.currentUserId` from PHP with `get_current_user_id()` if you need an author filter. Do not read it from `wp.media.view.settings.post.featuredImageId` — that value is an attachment/post ID, not a user ID.
 
@@ -201,8 +200,7 @@ frame.on( 'open', function () {
 
 ## What you get from `selection.first().toJSON()`
 
-The same shape `wp_prepare_attachment_for_js()` returns server-side
-(`wp-includes/media.php:4541` in WP 7.0.1). Useful fields for plugin code:
+The same shape `wp_prepare_attachment_for_js()` returns server-side. Useful fields for plugin code:
 
 | Field | What it is |
 |---|---|
@@ -235,6 +233,11 @@ function getDisplayUrl( attachment, sizeName = 'thumbnail' ) {
 ## The Backbone events you can hook
 
 Use `select` for actual picks, `open` for preselecting an existing attachment, and `close` only for cleanup or refocusing. Do not save on `close`; cancellation fires it too. See `reference.md` for the event table.
+
+WordPress 7.1 enables Media Library infinite scrolling by default, with a
+per-user opt-out and the `media_library_infinite_scrolling` filter. Do not assume
+all attachments or a final page are already loaded into a frame collection.
+Read `reference.md` for preference/filter precedence and test implications.
 
 ## Saving and rendering server-side
 
@@ -270,6 +273,7 @@ Use one cached frame, but track the active row before opening it. On `select`, w
 - See **`wp-plugin-assets-loading`** for the `$hook_suffix` enqueue gate.
 - See **`wp-admin-settings-api`** when the picker lives inside an options page; the hidden input goes through the `sanitize_callback`.
 - See **`wp-admin-drag-and-drop`** when building a gallery with reorderable thumbnails — `wp.media` gives you the IDs, sortable gives you the order.
+- See **`wp-client-side-media-processing`** for WordPress 7.1 browser-side image processing and REST finalization; it is separate from selecting an existing attachment.
 
 ## What this skill does NOT cover
 
@@ -280,9 +284,8 @@ Use one cached frame, but track the active row before opening it. On `select`, w
 
 ## References
 
-- `wp-includes/media.php:4812` — `wp_enqueue_media()` source.
-- `wp-includes/media.php:4541` — `wp_prepare_attachment_for_js()`, the source of the JSON shape you receive.
-- `wp-includes/js/media-models.js:1412` — `wp.media = function( attributes )` entry point; the frame-type switch starts here.
+- `wp-includes/media.php` — `wp_enqueue_media()`, `wp_prepare_attachment_for_js()`, and Media Library settings.
+- `wp-includes/js/media-models.js` — `wp.media()` entry point and frame-type switch.
 - `wp-includes/js/media-views.js` — the Backbone views; useful when you actually need to subclass.
 - `wp-includes/script-loader.php` — `media-editor`, `media-views`, `media-models` handle registrations.
 - `reference.md` — server render snippets, event table, per-row picker, and common mistakes.

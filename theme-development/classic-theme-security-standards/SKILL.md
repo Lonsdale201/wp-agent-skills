@@ -1,13 +1,14 @@
 ---
 name: classic-theme-security-standards
-description: Write or audit secure modern classic PHP WordPress theme code for WP 7.0. Covers template output escaping, `esc_html`, `esc_attr`, `esc_url`, `wp_kses_post`, `wp_json_encode`, translation escaping, `wp_unslash` + sanitize input, validation, nonces and capability checks for theme forms, safe `template_include`/`get_template_part`, enqueued assets instead of inline tags, `$wpdb->prepare`, WPCS naming/filenames, namespacing/prefixing, no shorthand PHP tags, and no closing PHP tag. Use when reviewing `functions.php`, `header.php`, `page.php`, `404.php`, template parts, search/comment forms, or any classic theme code touching request data or dynamic output.
+description: Write or audit secure modern classic PHP WordPress theme code for WP 7.1. Covers template output escaping, `esc_html`, `esc_attr`, `esc_url`, `wp_kses_post`, `wp_json_encode`, translation escaping, unslashing plus sanitizing input, validation, nonces and capability checks for theme forms, safe `template_include`/`get_template_part`, enqueued assets instead of inline tags, prepared database queries, WPCS naming/filenames, namespacing/prefixing, no shorthand PHP tags, and no closing PHP tag. Use when reviewing `functions.php`, `header.php`, `page.php`, `404.php`, template parts, search/comment forms, or any classic theme code touching request data or dynamic output.
 metadata:
   wp-skills-author: "Soczó Kristóf"
   wp-skills-contact: "mailto:lonsdale201@hotmail.com"
   wp-skills-plugin: "wordpress"
-  wp-skills-plugin-version-tested: "7.0"
+  wp-skills-plugin-version-tested: "7.1"
+  wp-skills-wp-version-tested: "7.1"
   wp-skills-php-min: "7.4"
-  wp-skills-last-updated: "2026-06-04"
+  wp-skills-last-updated: "2026-08-20"
 ---
 
 # Classic Theme Security Standards
