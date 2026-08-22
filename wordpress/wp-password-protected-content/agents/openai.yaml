@@ -1,0 +1,4 @@
+interface:
+  display_name: "WP Password-Protected Content"
+  short_description: "Extend built-in post password protection"
+  default_prompt: "Use $wp-password-protected-content to implement or audit WordPress post password protection safely."
