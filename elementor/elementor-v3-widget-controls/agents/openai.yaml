@@ -1,0 +1,4 @@
+interface:
+  display_name: "Elementor V3 Widget Controls"
+  short_description: "Design safe built-in controls for classic widgets."
+  default_prompt: "Use $elementor-v3-widget-controls to design or review built-in controls for a classic Elementor widget."

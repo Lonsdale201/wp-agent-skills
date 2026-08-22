@@ -12,7 +12,7 @@
     "skill_file": "SKILL.md"
   },
   "domain_count": 23,
-  "skill_count": 253,
+  "skill_count": 255,
   "domains": [
     {
       "slug": "better-data",
@@ -36,7 +36,7 @@
       "slug": "elementor",
       "path": "elementor",
       "readme_path": "elementor/README.md",
-      "skill_count": 5
+      "skill_count": 7
     },
     {
       "slug": "fluentcart",
@@ -1640,6 +1640,98 @@
         "bytes": 13991,
         "lines": 183,
         "sha256": "5eee674c51a4a75896b854c15bcf9bf406e8d34229c6d9be0f1d39b182331244"
+      }
+    },
+    {
+      "slug": "elementor-v3-widget-controls",
+      "name": "elementor-v3-widget-controls",
+      "domain": "elementor",
+      "description": "Designs and reviews built-in controls for classic Elementor `Widget_Base` widgets: content/style sections, control value shapes, responsive and group controls, CSS selectors, conditions, dynamic tags, URL/media/icons values, repeaters, inline editing, and safe PHP rendering. Use when code calls `start_controls_section()`, `add_control()`, `add_responsive_control()`, `add_group_control()`, creates `Repeater`, uses `selectors` or `condition`, or reads `get_settings_for_display()`. Excludes custom control classes and Atomic/V4 controls.",
+      "path": "elementor/elementor-v3-widget-controls",
+      "skill_path": "elementor/elementor-v3-widget-controls/SKILL.md",
+      "url": "https://raw.githubusercontent.com/Lonsdale201/wp-agent-skills/main/elementor/elementor-v3-widget-controls/SKILL.md",
+      "raw_url": "https://raw.githubusercontent.com/Lonsdale201/wp-agent-skills/main/elementor/elementor-v3-widget-controls/SKILL.md",
+      "html_url": "https://github.com/Lonsdale201/wp-agent-skills/blob/main/elementor/elementor-v3-widget-controls/SKILL.md",
+      "directory_url": "https://github.com/Lonsdale201/wp-agent-skills/tree/main/elementor/elementor-v3-widget-controls",
+      "metadata": {
+        "author": "Soczó Kristóf",
+        "contact": "mailto:lonsdale201@hotmail.com",
+        "plugin": "elementor",
+        "plugin-version-tested": "4.2.3 (free) / 4.2.2 (pro)",
+        "wp-version-tested": "7.1",
+        "php-min": "7.4",
+        "api-stable-since": "3.5.0",
+        "last-updated": "2026-08-22"
+      },
+      "resources": [
+        {
+          "path": "agents/openai.yaml",
+          "repo_path": "elementor/elementor-v3-widget-controls/agents/openai.yaml",
+          "type": "resource",
+          "bytes": 256,
+          "sha256": "f5d1be1605129dd57086ef919ebb352a2a9be2019adaaf3c350a08556e67faa0"
+        },
+        {
+          "path": "references/built-in-controls-and-patterns.md",
+          "repo_path": "elementor/elementor-v3-widget-controls/references/built-in-controls-and-patterns.md",
+          "type": "reference",
+          "bytes": 14150,
+          "sha256": "af291dd7010a8288c0cee784f6d266f3b2b3fa3093e77e25e2a9b618b4b5c234"
+        }
+      ],
+      "has_reference": true,
+      "has_examples": false,
+      "has_scripts": false,
+      "skill_md": {
+        "bytes": 12726,
+        "lines": 239,
+        "sha256": "fdb49a372d3dab285bba0fb559f0b0e66b752a5dc27bcddea2b0dcbe352a732e"
+      }
+    },
+    {
+      "slug": "elementor-v3-widget-development",
+      "name": "elementor-v3-widget-development",
+      "domain": "elementor",
+      "description": "Builds and reviews production-ready classic Elementor widgets based on `Elementor\\Widget_Base`: companion-plugin bootstrap and compatibility gates, `elementor/widgets/register`, widget identity, PHP and editor rendering, render attributes, asset dependencies, frontend handlers, accessibility, output caching, and regression tests. Use when code extends `Widget_Base`, implements `register_controls()` or `render()`, registers an Elementor widget/category, or must distinguish the established V3 widget API from Atomic Widgets / Editor V4. Does not cover custom control types.",
+      "path": "elementor/elementor-v3-widget-development",
+      "skill_path": "elementor/elementor-v3-widget-development/SKILL.md",
+      "url": "https://raw.githubusercontent.com/Lonsdale201/wp-agent-skills/main/elementor/elementor-v3-widget-development/SKILL.md",
+      "raw_url": "https://raw.githubusercontent.com/Lonsdale201/wp-agent-skills/main/elementor/elementor-v3-widget-development/SKILL.md",
+      "html_url": "https://github.com/Lonsdale201/wp-agent-skills/blob/main/elementor/elementor-v3-widget-development/SKILL.md",
+      "directory_url": "https://github.com/Lonsdale201/wp-agent-skills/tree/main/elementor/elementor-v3-widget-development",
+      "metadata": {
+        "author": "Soczó Kristóf",
+        "contact": "mailto:lonsdale201@hotmail.com",
+        "plugin": "elementor",
+        "plugin-version-tested": "4.2.3 (free) / 4.2.2 (pro)",
+        "wp-version-tested": "7.1",
+        "php-min": "7.4",
+        "api-stable-since": "3.5.0",
+        "last-updated": "2026-08-22"
+      },
+      "resources": [
+        {
+          "path": "agents/openai.yaml",
+          "repo_path": "elementor/elementor-v3-widget-development/agents/openai.yaml",
+          "type": "resource",
+          "bytes": 250,
+          "sha256": "c1918af140367752ddae34a72af79ce3a315a6682292ca803e06e02645609f42"
+        },
+        {
+          "path": "references/widget-contract-and-example.md",
+          "repo_path": "elementor/elementor-v3-widget-development/references/widget-contract-and-example.md",
+          "type": "reference",
+          "bytes": 15561,
+          "sha256": "5fe5317b0ee616435f90072c2a83eb58b1c6848b0932d8e9e21b689274008bed"
+        }
+      ],
+      "has_reference": true,
+      "has_examples": false,
+      "has_scripts": false,
+      "skill_md": {
+        "bytes": 12728,
+        "lines": 210,
+        "sha256": "976b01fd1126321e9c37bd238c668c40fa95516af88a0e7d144f9c9075ee7ec2"
       }
     },
     {
