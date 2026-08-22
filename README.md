@@ -1,6 +1,6 @@
 # wp-agent-skills
 
-**253 skills · 31 plugins**
+**255 skills · 31 plugins**
 
 A community-maintained collection of **portable Agent Skills** for WordPress plugin and theme development.
 
@@ -39,7 +39,7 @@ Skills are grouped by domain. Each domain has its own README listing the skills 
 | [`fluentform/`](fluentform) | Extending **Fluent Forms** (`fluentform` + Pro `fluentformpro`) from a third-party plugin — custom form-builder fields (`BaseFieldManager`), the server-side submission lifecycle (parse → validate → persist → notify → confirm) and its hook timing, reading/managing entries & submission meta (`fluentFormApi`, `Submission` / `SubmissionMeta`), and configurable feed integrations (`IntegrationManagerController`, async Action Scheduler dispatch). Every skill marks the Free vs Pro boundary. |
 | [`theme-development/`](theme-development) | Theme development — `theme.json` / Global Styles for block themes, plus the full classic (non-FSE) PHP set: structure, template hierarchy, the Loop, menus, widgets, comments, media, the Customizer, assets, i18n, accessibility, security, and classic-theme WooCommerce integration. |
 | [`translatepress/`](translatepress) | Making your own plugin/theme **TranslatePress-compatible** — translatable output and exclusions, URL/SEO/slug and Different-Domain behavior, language switchers and navigation, and recipient-language emails. Covers the free core plus the Business add-ons. |
-| [`elementor/`](elementor) | Building **Elementor** addon plugins — registering Dynamic Tags, their controls and fallback behavior, AJAX item pickers for large datasets, and auditing deprecated Elementor APIs. Extends the free base classes and feature-detects Pro. |
+| [`elementor/`](elementor) | Building **Elementor** addon plugins — production-ready classic `Widget_Base` widgets and their built-in control schemas, registering Dynamic Tags, their controls and fallback behavior, AJAX item pickers for large datasets, and auditing deprecated Elementor APIs. Extends the free base classes and feature-detects Pro; Atomic Widgets / Editor V4 is deliberately out of scope. |
 | [`szamlazzhu/`](szamlazzhu) | Making your own WooCommerce extension cooperate with **Integration for Szamlazz.hu & WooCommerce** — invoice line items / XML / document timing and B2B VAT-number checkout, via the plugin's hooks and canonical data model rather than duplicating it. |
 | [`dev-tooling/`](dev-tooling) | Testing & QA tooling for plugins/themes — PHPUnit (scaffold, harness, CI, writing tests), PHP_CodeSniffer + WordPress Coding Standards, PHPStan, Strauss namespace prefixing for bundled Composer dependencies, and local Docker environments (wp-env, custom compose stacks with Redis/Mailpit/Xdebug), wired through Composer. The developer pipeline beside the code, not WP runtime APIs. |
 | [`polylang/`](polylang) | Making your own plugin/theme **Polylang-compatible** — the guarded public language API, translated post/term groups via the model (not raw DB writes), Pro slugs / sync / ACF behavior, REST & headless `lang` semantics, string/option translation, and Polylang for WooCommerce data stores. Covers the free core plus Polylang Pro and Polylang for WooCommerce. |

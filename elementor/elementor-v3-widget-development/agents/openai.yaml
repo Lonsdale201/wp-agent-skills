@@ -1,0 +1,4 @@
+interface:
+  display_name: "Elementor V3 Widget Development"
+  short_description: "Build production-ready classic Elementor widgets."
+  default_prompt: "Use $elementor-v3-widget-development to build or review a classic Widget_Base Elementor widget."
