@@ -12,7 +12,7 @@
     "skill_file": "SKILL.md"
   },
   "domain_count": 23,
-  "skill_count": 252,
+  "skill_count": 253,
   "domains": [
     {
       "slug": "better-data",
@@ -138,7 +138,7 @@
       "slug": "wordpress",
       "path": "wordpress",
       "readme_path": "wordpress/README.md",
-      "skill_count": 48
+      "skill_count": 49
     },
     {
       "slug": "wp-rocket",
@@ -8316,6 +8316,52 @@
         "bytes": 9713,
         "lines": 223,
         "sha256": "d35ae8e638373ec7e81636690cc438c6754ca4780e45927399548e6527e5f1a9"
+      }
+    },
+    {
+      "slug": "wp-password-protected-content",
+      "name": "wp-password-protected-content",
+      "domain": "wordpress",
+      "description": "Implements and audits WordPress built-in password-protected posts, pages, and custom post types. Covers `post_password`, `post_password_required()`, `get_the_password_form()`, the `wp-login.php?action=postpass` handler, `wp-postpass_` cookie semantics, REST `password` requests, cache isolation, protected comments/feeds, and guarding custom meta, blocks, media, and API output. Use when extending the password form, changing cookie lifetime or protected titles, adding editor/role bypasses, building a headless reader, or reviewing leaks where content visibility relies on a post password. Do not use for user login, Application Password, membership, private-file auth, or an internal data store that merely reuses the `post_password` column.",
+      "path": "wordpress/wp-password-protected-content",
+      "skill_path": "wordpress/wp-password-protected-content/SKILL.md",
+      "url": "https://raw.githubusercontent.com/Lonsdale201/wp-agent-skills/main/wordpress/wp-password-protected-content/SKILL.md",
+      "raw_url": "https://raw.githubusercontent.com/Lonsdale201/wp-agent-skills/main/wordpress/wp-password-protected-content/SKILL.md",
+      "html_url": "https://github.com/Lonsdale201/wp-agent-skills/blob/main/wordpress/wp-password-protected-content/SKILL.md",
+      "directory_url": "https://github.com/Lonsdale201/wp-agent-skills/tree/main/wordpress/wp-password-protected-content",
+      "metadata": {
+        "author": "Soczó Kristóf",
+        "contact": "mailto:lonsdale201@hotmail.com",
+        "plugin": "wordpress",
+        "plugin-version-tested": "7.1",
+        "wp-version-tested": "7.1",
+        "php-min": "7.4",
+        "last-updated": "2026-08-22",
+        "license": "GPLv2-or-later"
+      },
+      "resources": [
+        {
+          "path": "agents/openai.yaml",
+          "repo_path": "wordpress/wp-password-protected-content/agents/openai.yaml",
+          "type": "resource",
+          "bytes": 243,
+          "sha256": "d90d496904cb7dee31631449daf10ff2e01e06055415cbd2d289d720fc85e505"
+        },
+        {
+          "path": "references/runtime-and-extension-contracts.md",
+          "repo_path": "wordpress/wp-password-protected-content/references/runtime-and-extension-contracts.md",
+          "type": "reference",
+          "bytes": 13011,
+          "sha256": "039f30c7cb24aa3402f171614cd7bd75837467adfb231f6143e4ed1d8c4945d7"
+        }
+      ],
+      "has_reference": true,
+      "has_examples": false,
+      "has_scripts": false,
+      "skill_md": {
+        "bytes": 14071,
+        "lines": 300,
+        "sha256": "fbf075d3e841d852127cbfed2fdcb2835f653085d2103e8c026745fbb8444663"
       }
     },
     {
