@@ -1,0 +1,4 @@
+interface:
+  display_name: "FluentCRM custom opt-in forms"
+  short_description: "Build secure FluentCRM double opt-in signup flows"
+  default_prompt: "Use $fluentcrm-custom-optin-forms to design or audit a public custom signup flow with safe contact updates, lists, tags, abuse controls, and FluentCRM double opt-in confirmation."

@@ -1,21 +1,21 @@
 ---
 name: fluentcrm-smartcodes-segments
-description: Add and parse FluentCRM 3.x SmartCodes and build Pro dynamic contact segments. Covers FluentCrmApi('extender')->addSmartCode, parser syntax, fallback/default values, transformers, funnel context smart codes, dynamic segment filters, and ContactsQuery advanced filter providers. Use when a plugin exposes custom merge tags, parses personalized text, adds automation context values, registers dynamic segments, or extends advanced contact filtering. Triggers on addSmartCode, fluent_crm/extended_smart_codes, fluent_crm/smartcode_group_callback_, Parser::parse, fluent_crm_funnel_context_smart_codes, fluentcrm_dynamic_segments, fluentcrm_dynamic_segment_, fluentcrm_contacts_filter_.
+description: Add and parse FluentCRM 3.x SmartCodes and build Pro dynamic contact segments. Covers the addSmartCode method of FluentCrmApi('extender'), parser syntax, fallback/default values, transformers, funnel context smart codes, dynamic segment filters, and ContactsQuery advanced filter providers. Use when a plugin exposes custom merge tags, parses personalized text, adds automation context values, registers dynamic segments, or extends advanced contact filtering. Triggers on addSmartCode, fluent_crm/extended_smart_codes, fluent_crm/smartcode_group_callback_, Parser::parse, fluent_crm_funnel_context_smart_codes, fluentcrm_dynamic_segments, fluentcrm_dynamic_segment_, fluentcrm_contacts_filter_.
 metadata:
   wp-skills-author: "Soczó Kristóf"
   wp-skills-contact: "mailto:lonsdale201@hotmail.com"
   wp-skills-plugin: "fluent-crm"
-  wp-skills-plugin-version-tested: "FluentCRM 3.1.8 + FluentCRM Pro 3.1.8"
-  wp-skills-wp-version-tested: "7.0"
+  wp-skills-plugin-version-tested: "3.1.13"
+  wp-skills-wp-version-tested: "7.1"
   wp-skills-php-min: "7.4"
-  wp-skills-last-updated: "2026-07-09"
+  wp-skills-last-updated: "2026-08-25"
 ---
 
 # FluentCRM: SmartCodes and dynamic segments
 
 Use this skill when a plugin needs to expose custom values inside FluentCRM emails, automation fields, templates, or Pro dynamic segments. Keep SmartCode parsing read-only and privacy-aware; these values can appear in outgoing emails.
 
-Verification note: SmartCode registration and parsing are core FluentCRM 3.1.8 behavior. Dynamic segments are Pro behavior verified against local FluentCampaign Pro 3.1.8.
+Verification note: SmartCode registration and parsing are core FluentCRM 3.1.13 behavior. Dynamic segments are Pro behavior verified against local FluentCampaign Pro 3.1.13.
 
 ## When to use this skill
 
@@ -97,7 +97,7 @@ Transformers use double pipe:
 {{contact.email||strtolower}}
 ```
 
-Supported local transformers in 3.1.8 include `trim`, `ucfirst`, `strtolower`, `strtoupper`, `ucwords`, `concat_first`, `concat_last`, and `show_if`.
+Supported local transformers in 3.1.13 include `trim`, `ucfirst`, `strtolower`, `strtoupper`, `ucwords`, `concat_first`, `concat_last`, and `show_if`.
 
 When rendering custom text yourself, use the same filter FluentCRM uses:
 
@@ -242,7 +242,7 @@ Keep provider SQL bounded and allowlist every property/operator. Do not interpol
 - Official documentation: <https://developers.fluentcrm.com/helpers/parser>
 - Official documentation: <https://developers.fluentcrm.com/database/orm/>
 - Verified source paths:
-  - `wp-content/plugins/fluent-crm/app/Api/config.php`
-  - `wp-content/plugins/fluent-crm/app/Hooks/filters.php`
-  - `wp-content/plugins/fluent-crm/app/Services/Helper.php`
-  - `wp-content/plugins/fluentcampaign-pro/app/Services/DynamicSegments/BaseSegment.php`
+  - `fluent-crm/app/Api/config.php`
+  - `fluent-crm/app/Hooks/filters.php`
+  - `fluent-crm/app/Services/Helper.php`
+  - `fluentcampaign-pro/app/Services/DynamicSegments/BaseSegment.php`

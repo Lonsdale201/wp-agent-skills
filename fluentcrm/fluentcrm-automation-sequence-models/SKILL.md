@@ -5,17 +5,17 @@ metadata:
   wp-skills-author: "Soczó Kristóf"
   wp-skills-contact: "mailto:lonsdale201@hotmail.com"
   wp-skills-plugin: "fluent-crm"
-  wp-skills-plugin-version-tested: "FluentCRM 3.1.8 + FluentCRM Pro 3.1.8"
-  wp-skills-wp-version-tested: "7.0"
+  wp-skills-plugin-version-tested: "3.1.13"
+  wp-skills-wp-version-tested: "7.1"
   wp-skills-php-min: "7.4"
-  wp-skills-last-updated: "2026-07-09"
+  wp-skills-last-updated: "2026-08-25"
 ---
 
 # FluentCRM: automation and email sequence models
 
 Use this skill when code needs to start or inspect FluentCRM automations, or enroll contacts into FluentCampaign Pro email sequences. Keep these two systems separate: `FunnelSequence` is an automation step; `FluentCampaign\App\Models\Sequence` is a Pro email sequence stored in `fc_campaigns`.
 
-Verification note: local source was FluentCRM core 3.1.8 and FluentCampaign Pro 3.1.8. Core 3.1.8 declares `FLUENTCRM_MIN_PRO_VERSION` as 3.1.8.
+Verification note: local source was FluentCRM core 3.1.13 and FluentCampaign Pro 3.1.13. Core 3.1.13 declares `FLUENTCRM_MIN_PRO_VERSION` as 3.1.13.
 
 ## When to use this skill
 
@@ -115,7 +115,7 @@ The follow-up processor selects published funnels, due `next_execution_time`, an
 apply_filters('fluent_crm/funnel_subscriber_statuses', ['active']);
 ```
 
-In 3.1.8 it also has batch controls:
+In 3.1.13 it also has batch controls:
 
 - `fluent_crm/funnel_processor_batch_limit`, default `200`
 - `fluent_crm/funnel_processor_max_processing_seconds`, default `55`
@@ -210,8 +210,8 @@ This marks the tracker `cancelled` and cancels scheduled sequence emails. Do not
 - Official documentation: <https://developers.fluentcrm.com/database/models/funnelSequence>
 - Official documentation: <https://developers.fluentcrm.com/database/orm/>
 - Verified source paths:
-  - `wp-content/plugins/fluent-crm/app/Models/Funnel.php`
-  - `wp-content/plugins/fluent-crm/app/Models/FunnelMetric.php`
-  - `wp-content/plugins/fluent-crm/app/Http/Controllers/SubscriberController.php`
-  - `wp-content/plugins/fluentcampaign-pro/app/Models/SequenceMail.php`
-  - `wp-content/plugins/fluentcampaign-pro/app/Http/Controllers/SequenceController.php`
+  - `fluent-crm/app/Models/Funnel.php`
+  - `fluent-crm/app/Models/FunnelMetric.php`
+  - `fluent-crm/app/Http/Controllers/SubscriberController.php`
+  - `fluentcampaign-pro/app/Models/SequenceMail.php`
+  - `fluentcampaign-pro/app/Http/Controllers/SequenceController.php`

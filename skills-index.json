@@ -12,7 +12,7 @@
     "skill_file": "SKILL.md"
   },
   "domain_count": 23,
-  "skill_count": 255,
+  "skill_count": 256,
   "domains": [
     {
       "slug": "better-data",
@@ -48,7 +48,7 @@
       "slug": "fluentcrm",
       "path": "fluentcrm",
       "readme_path": "fluentcrm/README.md",
-      "skill_count": 10
+      "skill_count": 11
     },
     {
       "slug": "fluentform",
@@ -2379,19 +2379,19 @@
         "author": "Soczó Kristóf",
         "contact": "mailto:lonsdale201@hotmail.com",
         "plugin": "fluent-crm",
-        "plugin-version-tested": "FluentCRM 3.1.8 + FluentCRM Pro 3.1.8",
-        "wp-version-tested": "7.0",
+        "plugin-version-tested": "3.1.13",
+        "wp-version-tested": "7.1",
         "php-min": "7.4",
-        "last-updated": "2026-07-09"
+        "last-updated": "2026-08-25"
       },
       "resources": [],
       "has_reference": false,
       "has_examples": false,
       "has_scripts": false,
       "skill_md": {
-        "bytes": 10448,
+        "bytes": 10327,
         "lines": 218,
-        "sha256": "14ac9123d1e42df4b5adfc9515da0270306787fe9f90d780f11d5c7908389c54"
+        "sha256": "c517549a6adeddd439530e365240e1bbbe90a7da51f4f163550107b6dff020d9"
       }
     },
     {
@@ -2409,19 +2409,19 @@
         "author": "Soczó Kristóf",
         "contact": "mailto:lonsdale201@hotmail.com",
         "plugin": "fluent-crm",
-        "plugin-version-tested": "FluentCRM 3.1.8",
-        "wp-version-tested": "7.0",
+        "plugin-version-tested": "3.1.13",
+        "wp-version-tested": "7.1",
         "php-min": "7.4",
-        "last-updated": "2026-07-09"
+        "last-updated": "2026-08-25"
       },
       "resources": [],
       "has_reference": false,
       "has_examples": false,
       "has_scripts": false,
       "skill_md": {
-        "bytes": 8760,
+        "bytes": 8527,
         "lines": 210,
-        "sha256": "6a427728c0ce09049fa9a732a3ffe352d65cb0bb3ea1ab2cad43fe3ccd2d05dd"
+        "sha256": "c93ddc8d05d69a34f1ae5de70b6ee9adae088105b1121b456ff98203eb6a9242"
       }
     },
     {
@@ -2439,26 +2439,71 @@
         "author": "Soczó Kristóf",
         "contact": "mailto:lonsdale201@hotmail.com",
         "plugin": "fluent-crm",
-        "plugin-version-tested": "FluentCRM 3.1.8",
-        "wp-version-tested": "7.0",
+        "plugin-version-tested": "3.1.13",
+        "wp-version-tested": "7.1",
         "php-min": "7.4",
-        "last-updated": "2026-07-09"
+        "last-updated": "2026-08-25"
       },
       "resources": [],
       "has_reference": false,
       "has_examples": false,
       "has_scripts": false,
       "skill_md": {
-        "bytes": 10236,
-        "lines": 229,
-        "sha256": "397be487739023577cb89a4b82547efef6139f4ce53b4589a3d491e2a0fee4a8"
+        "bytes": 11349,
+        "lines": 259,
+        "sha256": "b96ca4fc1816a56b42d4dd686a991f51f6d08b8fb44c3dc7d07a896e70f29049"
+      }
+    },
+    {
+      "slug": "fluentcrm-custom-optin-forms",
+      "name": "fluentcrm-custom-optin-forms",
+      "domain": "fluentcrm",
+      "description": "Builds and audits public custom subscription forms that create or update FluentCRM contacts and carry them through double opt-in. Covers explicit consent, server-owned list/tag mapping, pending and suppressed status policy, createOrUpdate, sendDoubleOptinEmail, list-specific confirmation settings, generic responses, abuse controls, confirmation hooks, and verified-only automations. Use when implementing a newsletter, lead-magnet, registration, checkout, headless, REST, or AJAX signup flow that references FluentCrmApi, pending, double opt-in, subscriber_confirmed_via_double_optin, lists, or tags.",
+      "path": "fluentcrm/fluentcrm-custom-optin-forms",
+      "skill_path": "fluentcrm/fluentcrm-custom-optin-forms/SKILL.md",
+      "url": "https://raw.githubusercontent.com/Lonsdale201/wp-agent-skills/main/fluentcrm/fluentcrm-custom-optin-forms/SKILL.md",
+      "raw_url": "https://raw.githubusercontent.com/Lonsdale201/wp-agent-skills/main/fluentcrm/fluentcrm-custom-optin-forms/SKILL.md",
+      "html_url": "https://github.com/Lonsdale201/wp-agent-skills/blob/main/fluentcrm/fluentcrm-custom-optin-forms/SKILL.md",
+      "directory_url": "https://github.com/Lonsdale201/wp-agent-skills/tree/main/fluentcrm/fluentcrm-custom-optin-forms",
+      "metadata": {
+        "author": "Soczó Kristóf",
+        "contact": "mailto:lonsdale201@hotmail.com",
+        "plugin": "fluent-crm",
+        "plugin-version-tested": "3.1.13",
+        "wp-version-tested": "7.1",
+        "php-min": "7.4",
+        "last-updated": "2026-08-25"
+      },
+      "resources": [
+        {
+          "path": "agents/openai.yaml",
+          "repo_path": "fluentcrm/fluentcrm-custom-optin-forms/agents/openai.yaml",
+          "type": "resource",
+          "bytes": 331,
+          "sha256": "22d1bde18edf3d928b753afb0d3ef88117860448e517562579782d1dbf248f83"
+        },
+        {
+          "path": "references/implementation-contract.md",
+          "repo_path": "fluentcrm/fluentcrm-custom-optin-forms/references/implementation-contract.md",
+          "type": "reference",
+          "bytes": 11407,
+          "sha256": "d589be1c1127339a1da00efc23918c1c9205a165ffc1457604a53c9d5d74020b"
+        }
+      ],
+      "has_reference": true,
+      "has_examples": false,
+      "has_scripts": false,
+      "skill_md": {
+        "bytes": 9727,
+        "lines": 206,
+        "sha256": "6cb117eb398fd3a3cfd4424d9d07e9a080696ae0b8140b79dbca0d087fc26472"
       }
     },
     {
       "slug": "fluentcrm-event-tracking",
       "name": "fluentcrm-event-tracking",
       "domain": "fluentcrm",
-      "description": "Track and consume FluentCRM 3.x contact events from companion plugins. Covers the experimental event_tracking flag, FluentCrmApi('event_tracker')->track(), fc_event_tracking, repeatable counter semantics, subscriber resolution by subscriber/email/user/current contact, fluent_crm/event_tracked, the fluent_crm/track_event_activity action bridge, event_tracking advanced contact filters, event_tracking_keys option source, and FluentCampaign Pro's Tracking Event Recorded trigger / Add Event Tracking action. Use when a plugin records user activity, builds event-based automations, filters contacts by tracked events, or audits code touching EventTracker, Tracker, fluent_crm/event_tracked, or fc_event_tracking.",
+      "description": "Track and consume FluentCRM 3.x contact events from companion plugins. Covers the experimental event_tracking flag, the track method of FluentCrmApi('event_tracker'), fc_event_tracking, repeatable counter semantics, subscriber resolution by subscriber/email/user/current contact, fluent_crm/event_tracked, the fluent_crm/track_event_activity action bridge, event_tracking advanced contact filters, event_tracking_keys option source, and FluentCampaign Pro's Tracking Event Recorded trigger / Add Event Tracking action. Use when a plugin records user activity, builds event-based automations, filters contacts by tracked events, or audits code touching EventTracker, Tracker, fluent_crm/event_tracked, or fc_event_tracking.",
       "path": "fluentcrm/fluentcrm-event-tracking",
       "skill_path": "fluentcrm/fluentcrm-event-tracking/SKILL.md",
       "url": "https://raw.githubusercontent.com/Lonsdale201/wp-agent-skills/main/fluentcrm/fluentcrm-event-tracking/SKILL.md",
@@ -2469,19 +2514,19 @@
         "author": "Soczó Kristóf",
         "contact": "mailto:lonsdale201@hotmail.com",
         "plugin": "fluent-crm",
-        "plugin-version-tested": "FluentCRM 3.1.8 + FluentCRM Pro 3.1.8",
-        "wp-version-tested": "7.0",
+        "plugin-version-tested": "3.1.13",
+        "wp-version-tested": "7.1",
         "php-min": "7.4",
-        "last-updated": "2026-07-09"
+        "last-updated": "2026-08-25"
       },
       "resources": [],
       "has_reference": false,
       "has_examples": false,
       "has_scripts": false,
       "skill_md": {
-        "bytes": 8067,
+        "bytes": 7840,
         "lines": 191,
-        "sha256": "0ae4ba7e2d9a84d71cfa341d46f0afb274b73bbc1c0b19b56c45901465de5cc7"
+        "sha256": "e7f4e8b7f4ef07f94b5c4ebd8df08851435a99b8df9b02476a72be81d4ef281a"
       }
     },
     {
@@ -2638,7 +2683,7 @@
       "slug": "fluentcrm-smartcodes-segments",
       "name": "fluentcrm-smartcodes-segments",
       "domain": "fluentcrm",
-      "description": "Add and parse FluentCRM 3.x SmartCodes and build Pro dynamic contact segments. Covers FluentCrmApi('extender')->addSmartCode, parser syntax, fallback/default values, transformers, funnel context smart codes, dynamic segment filters, and ContactsQuery advanced filter providers. Use when a plugin exposes custom merge tags, parses personalized text, adds automation context values, registers dynamic segments, or extends advanced contact filtering. Triggers on addSmartCode, fluent_crm/extended_smart_codes, fluent_crm/smartcode_group_callback_, Parser::parse, fluent_crm_funnel_context_smart_codes, fluentcrm_dynamic_segments, fluentcrm_dynamic_segment_, fluentcrm_contacts_filter_.",
+      "description": "Add and parse FluentCRM 3.x SmartCodes and build Pro dynamic contact segments. Covers the addSmartCode method of FluentCrmApi('extender'), parser syntax, fallback/default values, transformers, funnel context smart codes, dynamic segment filters, and ContactsQuery advanced filter providers. Use when a plugin exposes custom merge tags, parses personalized text, adds automation context values, registers dynamic segments, or extends advanced contact filtering. Triggers on addSmartCode, fluent_crm/extended_smart_codes, fluent_crm/smartcode_group_callback_, Parser::parse, fluent_crm_funnel_context_smart_codes, fluentcrm_dynamic_segments, fluentcrm_dynamic_segment_, fluentcrm_contacts_filter_.",
       "path": "fluentcrm/fluentcrm-smartcodes-segments",
       "skill_path": "fluentcrm/fluentcrm-smartcodes-segments/SKILL.md",
       "url": "https://raw.githubusercontent.com/Lonsdale201/wp-agent-skills/main/fluentcrm/fluentcrm-smartcodes-segments/SKILL.md",
@@ -2649,19 +2694,19 @@
         "author": "Soczó Kristóf",
         "contact": "mailto:lonsdale201@hotmail.com",
         "plugin": "fluent-crm",
-        "plugin-version-tested": "FluentCRM 3.1.8 + FluentCRM Pro 3.1.8",
-        "wp-version-tested": "7.0",
+        "plugin-version-tested": "3.1.13",
+        "wp-version-tested": "7.1",
         "php-min": "7.4",
-        "last-updated": "2026-07-09"
+        "last-updated": "2026-08-25"
       },
       "resources": [],
       "has_reference": false,
       "has_examples": false,
       "has_scripts": false,
       "skill_md": {
-        "bytes": 10047,
+        "bytes": 9956,
         "lines": 249,
-        "sha256": "640ba2f5777700e8ce1996bd5977f44bb88ab1c82f28131a0f1c29ca0160e0c7"
+        "sha256": "cb2ba5fd4949ccf372874a1ce383ef0990c284d71dfccd40309c0a8127c7bdd1"
       }
     },
     {
