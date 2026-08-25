@@ -5,15 +5,15 @@ metadata:
   wp-skills-author: "Soczó Kristóf"
   wp-skills-contact: "mailto:lonsdale201@hotmail.com"
   wp-skills-plugin: "fluent-crm"
-  wp-skills-plugin-version-tested: "FluentCRM 3.1.8"
-  wp-skills-wp-version-tested: "7.0"
+  wp-skills-plugin-version-tested: "3.1.13"
+  wp-skills-wp-version-tested: "7.1"
   wp-skills-php-min: "7.4"
-  wp-skills-last-updated: "2026-07-09"
+  wp-skills-last-updated: "2026-08-25"
 ---
 
 # FluentCRM: Companies model and contact-company relations
 
-Use this skill when a plugin needs to sync B2B account/company records into FluentCRM or attach contacts to existing companies. Companies are core FluentCRM 3.1.8 code, but the UI/automation surface is behind the experimental `company_module` setting.
+Use this skill when a plugin needs to sync B2B account/company records into FluentCRM or attach contacts to existing companies. Companies are core FluentCRM 3.1.13 code, but the UI/automation surface is behind the experimental `company_module` setting.
 
 ## Guard the feature
 
@@ -61,7 +61,7 @@ Important behavior from `Companies::createOrUpdate()`:
 - `custom_values` are formatted by `CustomCompanyField` and stored under serialized `Company.meta['custom_values']`.
 - Create fires `fluent_crm/company_created`; update fires `fluent_crm/company_updated`.
 
-Do not call `FluentCrmApi('companies')->getCompany($name)` for name lookup. The method name says `$idOrName`, but the 3.1.8 source checks `id` for numeric values and `email` for strings. For name lookup use:
+Do not call `FluentCrmApi('companies')->getCompany($name)` for name lookup. The method name says `$idOrName`, but the 3.1.13 source checks `id` for numeric values and `email` for strings. For name lookup use:
 
 ```php
 use FluentCrm\App\Models\Company;
@@ -131,7 +131,7 @@ Company record hooks:
 - `fluent_crm/company_type_to_{type}` with `($company, $oldType)`
 - `fluent_crm/company_category_to_{industry}` with `($company, $oldIndustry)`
 
-Contact-company pivot hooks are legacy underscore hooks only in 3.1.8:
+Contact-company pivot hooks are legacy underscore hooks only in 3.1.13:
 
 - `fluentcrm_contact_added_to_companies` with `($companyIds, $subscriber)`
 - `fluentcrm_contact_removed_from_companies` with `($companyIds, $subscriber)`
@@ -160,7 +160,7 @@ Keep custom controllers bounded and allowlisted. Do not query serialized `Compan
 
 ## Automation company actions
 
-Core 3.1.8 registers `ApplyCompanyAction` and `DetachCompanyAction` only when `Helper::isCompanyEnabled()` is true. If a companion action depends on Companies, follow the same guard and seed `getBlock()['settings']` with a company field default:
+Core 3.1.13 registers `ApplyCompanyAction` and `DetachCompanyAction` only when `Helper::isCompanyEnabled()` is true. If a companion action depends on Companies, follow the same guard and seed `getBlock()['settings']` with a company field default:
 
 ```php
 'settings' => [
@@ -195,15 +195,15 @@ That option key is provided by `OptionsController::companies()` and returns `[{i
 
 - Official documentation: <https://developers.fluentcrm.com/database/orm/>
 - Verified source paths:
-  - `wp-content/plugins/fluent-crm/app/Api/config.php`
-  - `wp-content/plugins/fluent-crm/app/Api/Classes/Companies.php`
-  - `wp-content/plugins/fluent-crm/app/Models/Company.php`
-  - `wp-content/plugins/fluent-crm/app/Models/CompanyNote.php`
-  - `wp-content/plugins/fluent-crm/app/Models/CustomCompanyField.php`
-  - `wp-content/plugins/fluent-crm/app/Models/Subscriber.php`
-  - `wp-content/plugins/fluent-crm/app/Services/Helper.php`
-  - `wp-content/plugins/fluent-crm/app/Http/Controllers/CompanyController.php`
-  - `wp-content/plugins/fluent-crm/app/Services/Funnel/Actions/ApplyCompanyAction.php`
-  - `wp-content/plugins/fluent-crm/app/Services/Funnel/Actions/DetachCompanyAction.php`
-  - `wp-content/plugins/fluent-crm/database/migrations/CompaniesMigrator.php`
-  - `wp-content/plugins/fluent-crm/database/migrations/Subscribers.php`
+  - `fluent-crm/app/Api/config.php`
+  - `fluent-crm/app/Api/Classes/Companies.php`
+  - `fluent-crm/app/Models/Company.php`
+  - `fluent-crm/app/Models/CompanyNote.php`
+  - `fluent-crm/app/Models/CustomCompanyField.php`
+  - `fluent-crm/app/Models/Subscriber.php`
+  - `fluent-crm/app/Services/Helper.php`
+  - `fluent-crm/app/Http/Controllers/CompanyController.php`
+  - `fluent-crm/app/Services/Funnel/Actions/ApplyCompanyAction.php`
+  - `fluent-crm/app/Services/Funnel/Actions/DetachCompanyAction.php`
+  - `fluent-crm/database/migrations/CompaniesMigrator.php`
+  - `fluent-crm/database/migrations/Subscribers.php`

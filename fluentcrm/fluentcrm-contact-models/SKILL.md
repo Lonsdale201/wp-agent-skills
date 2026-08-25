@@ -5,17 +5,17 @@ metadata:
   wp-skills-author: "Soczó Kristóf"
   wp-skills-contact: "mailto:lonsdale201@hotmail.com"
   wp-skills-plugin: "fluent-crm"
-  wp-skills-plugin-version-tested: "FluentCRM 3.1.8"
-  wp-skills-wp-version-tested: "7.0"
+  wp-skills-plugin-version-tested: "3.1.13"
+  wp-skills-wp-version-tested: "7.1"
   wp-skills-php-min: "7.4"
-  wp-skills-last-updated: "2026-07-09"
+  wp-skills-last-updated: "2026-08-25"
 ---
 
 # FluentCRM: contact, list, tag, and user models
 
 Use this skill for companion plugins that need to write or query FluentCRM contacts. Prefer `FluentCrmApi()` wrappers for writes, and use the ORM models for reads, reports, migrations, and carefully scoped queries.
 
-Verification note: this skill is based on FluentCRM core 3.1.8 source. The contact/list/tag/user APIs covered here are core APIs and do not require FluentCampaign Pro.
+Verification note: this skill is based on FluentCRM core 3.1.13 source. The contact/list/tag/user APIs covered here are core APIs and do not require FluentCampaign Pro.
 
 ## When to use this skill
 
@@ -75,7 +75,7 @@ $contact = FluentCrmApi('contacts')->getCurrentContact();
 
 ## Status rules
 
-Use `fluentcrm_subscriber_statuses()` for the current status list. In FluentCRM 3.1.8 the local source returns:
+Use `fluentcrm_subscriber_statuses()` for the current status list. In FluentCRM 3.1.13 the local source returns:
 
 ```php
 [
@@ -97,6 +97,30 @@ Important write behavior:
 - Existing `bounced`, `complained`, and `spammed` contacts keep their status unless forced.
 - Incoming `unsubscribed` is always respected.
 - Use `$contact->updateStatus($status)` for an explicit status change; it fires `fluent_crm/subscriber_status_changed` and the legacy `fluentcrm_subscriber_status_to_{status}` hook.
+
+## Double opt-in boundary
+
+`createOrUpdate()` stores the contact and synchronizes the supplied relations,
+but it does **not** send a double opt-in email. The caller must deliberately use
+the two-step core flow:
+
+```php
+$contact = FluentCrmApi('contacts')->createOrUpdate([
+    'email'  => sanitize_email($email),
+    'status' => 'pending',
+    'lists'  => $serverOwnedListIds,
+    'tags'   => $serverOwnedTagIds,
+], false, false);
+
+if ($contact && $contact->status === 'pending') {
+    $contact->sendDoubleOptinEmail();
+}
+```
+
+Do not pass `$forceUpdate = true` from a public form merely to move an
+unsubscribed/bounced/complained/spammed contact. Use
+`fluentcrm-custom-optin-forms` for the re-consent status matrix, public endpoint
+security, list-specific DOI precedence, confirmation hooks, and abuse controls.
 
 ## Custom fields
 
@@ -150,7 +174,12 @@ $contact->detachLists([4]);
 $contact->detachTags([12]);
 ```
 
-In 3.1.8 `attachLists()` and `attachTags()` return early for unsaved subscribers, sanitize IDs, use per-row `INSERT IGNORE`, refresh the relation, and only fire added hooks for IDs that were actually new. `detachLists()` and `detachTags()` read fresh pivot state and only fire removed hooks for rows actually deleted. `attachCompanies()` / `detachCompanies()` follow the same pivot-table pattern for the experimental Companies module, but their current hooks are legacy helper functions only; use `fluentcrm-companies-model` for company-specific APIs and hooks.
+In 3.1.13 `attachLists()` and `attachTags()` return early for unsaved subscribers, sanitize IDs, use per-row `INSERT IGNORE`, refresh the relation, and only fire added hooks for IDs that were actually new. `detachLists()` and `detachTags()` read fresh pivot state and only fire removed hooks for rows actually deleted. `attachCompanies()` / `detachCompanies()` follow the same pivot-table pattern for the experimental Companies module, but their current hooks are legacy helper functions only; use `fluentcrm-companies-model` for company-specific APIs and hooks.
+
+Do not pass public request values directly as lists/tags. The sanitizer accepts
+names/slugs and may create missing definitions; numeric IDs are converted but do
+not prove that the visitor is allowed to select that list/tag. Resolve a
+server-owned choice map, verify the definitions exist, then pass only those IDs.
 
 Current attach/detach hooks:
 
@@ -209,6 +238,7 @@ When replacing direct writes, ensure these still fire where relevant:
 - Smart codes and dynamic segments. Use `fluentcrm-smartcodes-segments`.
 - Companies / account records. Use `fluentcrm-companies-model`.
 - Event tracking. Use `fluentcrm-event-tracking`.
+- Public subscription, re-consent, and double opt-in orchestration. Use `fluentcrm-custom-optin-forms`.
 
 ## References
 
@@ -220,9 +250,9 @@ When replacing direct writes, ensure these still fire where relevant:
 - Official documentation: <https://developers.fluentcrm.com/database/models/user>
 - Official documentation: <https://developers.fluentcrm.com/database/orm/>
 - Verified source paths:
-  - `wp-content/plugins/fluent-crm/app/Api/config.php`
-  - `wp-content/plugins/fluent-crm/app/Api/Classes/Lists.php`
-  - `wp-content/plugins/fluent-crm/app/Api/Classes/Tags.php`
-  - `wp-content/plugins/fluent-crm/app/Models/Lists.php`
-  - `wp-content/plugins/fluent-crm/app/Models/Tag.php`
-  - `wp-content/plugins/fluent-crm/app/Models/User.php`
+  - `fluent-crm/app/Api/config.php`
+  - `fluent-crm/app/Api/Classes/Lists.php`
+  - `fluent-crm/app/Api/Classes/Tags.php`
+  - `fluent-crm/app/Models/Lists.php`
+  - `fluent-crm/app/Models/Tag.php`
+  - `fluent-crm/app/Models/User.php`
