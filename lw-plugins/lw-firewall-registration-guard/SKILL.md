@@ -1,191 +1,168 @@
 ---
 name: lw-firewall-registration-guard
-description: Integrate custom WordPress registration forms with LW Firewall's registration spam protection. Use when code renders or validates custom signup forms, AJAX/REST registration endpoints, Woo/CRM/LMS registration flows, or files referencing `RegisterGuard::render_fields`, `RegisterGuard::validate`, `RegisterToken::issue`, `RegisterToken::verify`, `lw_fw_reg_token`, `lw_fw_url`, `registration_errors`, honeypot fields, proof-of-render tokens, single-use tokens, or spam auto-ban behavior.
+description: Integrate custom WordPress registration forms and signup REST endpoints with LW Firewall's registration honeypot, signed timing token, single-use storage, rejection tracking, and rate limiting. Use when code creates users outside the core `wp-login.php?action=register` flow or references `RegisterGuard`, `RegisterToken`, `RegisterTracker`, `lw_fw_reg_token`, `lw_fw_url`, `registration_errors`, `wp_insert_user`, public registration REST routes, proof-of-render, honeypots, replay protection, or registration auto-bans.
 metadata:
   wp-skills-author: "Soczó Kristóf"
   wp-skills-contact: "mailto:lonsdale201@hotmail.com"
   wp-skills-plugin: "lw-firewall"
-  wp-skills-plugin-version-tested: "1.3.2"
-  wp-skills-php-min: "8.1"
-  wp-skills-last-updated: "2026-07-09"
+  wp-skills-plugin-version-tested: "1.5.4"
+  wp-skills-wp-version-tested: "7.1"
+  wp-skills-php-min: "8.2"
+  wp-skills-last-updated: "2026-08-27"
 ---
 
-# LW Firewall: registration spam guard
+# LW Firewall registration guard
 
-Use this when a plugin/theme renders its own registration form and still wants
-LW Firewall's proof-of-render token, honeypot, single-use replay protection, and
-rejected-registration auto-ban.
+Use this skill when a companion plugin owns the signup UI or transport. LW
+Firewall automatically wires only the core WordPress registration form; a
+custom PHP, AJAX, headless, WooCommerce, CRM, LMS, or REST flow must opt in.
 
-LW Firewall automatically protects only the default WordPress registration form
-via `register_form` and `registration_errors`, and only when `users_can_register`
-is enabled. Custom forms must opt in.
+Read [registration-and-rest-integration.md](references/registration-and-rest-integration.md)
+before implementing a JSON endpoint or copying the manual validation adapter.
 
-## Core contract
+## Automatic coverage boundary
 
-Verified field names:
+The plugin registers `RegisterGuard` only when all of these are true:
 
-| Field | Purpose |
+- the MU worker is installed and matches `LW_FIREWALL_VERSION`;
+- the master `enabled` option is true;
+- `register_protect_enabled` is true;
+- WordPress `users_can_register` is true.
+
+It then hooks `register_form` for rendering and `registration_errors` for
+validation. A custom route that calls `wp_insert_user()` does not pass through
+this guard automatically. Decide separately whether the custom product should
+honour `users_can_register`.
+
+## Verified public surface
+
+| Contract | Current behavior |
 |---|---|
-| `lw_fw_reg_token` | signed HMAC proof-of-render token |
-| `lw_fw_url` | honeypot text field; must stay empty |
+| `RegisterGuard::render_fields()` | Echoes `lw_fw_reg_token` and, when enabled, `lw_fw_url` |
+| `RegisterGuard::validate( WP_Error )` | Reads the current `$_POST`, records rejection, adds a generic error |
+| `RegisterToken::issue()` | Returns a signed timestamp token |
+| `RegisterToken::verify( $token, $min, $max, $storage, $scope )` | Checks signature, age and optional atomic single use |
+| `RegisterTracker::record_reject()` | Counts non-whitelisted rejected registrations and may write a shared ban |
 
-Verified public methods:
+`RegisterGuard`'s field constants and spam predicate are private. Do not call
+private methods or edit the copied MU worker.
 
-| Method | Use |
-|---|---|
-| `LightweightPlugins\Firewall\Rules\RegisterGuard::render_fields()` | echo hidden token and optional honeypot |
-| `LightweightPlugins\Firewall\Rules\RegisterGuard::validate( WP_Error $errors )` | validate current `$_POST`, record reject, add generic error |
-| `LightweightPlugins\Firewall\Rules\RegisterToken::issue()` | issue token for headless/custom rendering |
-| `LightweightPlugins\Firewall\Rules\RegisterToken::verify()` | verify token manually |
-| `LightweightPlugins\Firewall\Rules\RegisterTracker::record_reject()` | count reject and auto-ban after threshold |
+## Classic server-rendered form
 
-Do not call private methods or edit `worker/lw-firewall-worker.php`.
-
-## Preferred integration
-
-If the form is server-rendered PHP, render fields directly inside the form:
+Respect the plugin settings because `render_fields()` and `validate()` do not
+self-check the master or registration toggles:
 
 ```php
+use LightweightPlugins\Firewall\Options;
 use LightweightPlugins\Firewall\Rules\RegisterGuard;
 
-if ( class_exists( RegisterGuard::class ) ) {
-	RegisterGuard::render_fields();
+$lw_guard_enabled = class_exists(RegisterGuard::class)
+    && class_exists(Options::class)
+    && (bool) Options::get('enabled', true)
+    && (bool) Options::get('register_protect_enabled', true);
+
+if ($lw_guard_enabled) {
+    RegisterGuard::render_fields();
 }
 ```
 
-Then validate before creating the user:
+Before creating the user:
 
 ```php
-use LightweightPlugins\Firewall\Rules\RegisterGuard;
-
 $errors = new WP_Error();
 
-if ( class_exists( RegisterGuard::class ) ) {
-	$errors = RegisterGuard::validate( $errors );
+if ($lw_guard_enabled) {
+    $errors = RegisterGuard::validate($errors);
 }
 
-if ( $errors->has_errors() ) {
-	return $errors;
+if ($errors->has_errors()) {
+    return $errors;
 }
 
-// Create the user only after the guard passes.
+// Validate the remaining business fields, then create the user.
 ```
 
-This path keeps the plugin's own behavior intact: honeypot check, token age
-check, optional single-use storage, reject counting, whitelist skip, and auto-ban
-through the shared firewall ban store.
+This convenience path is valid only when the request data is in `$_POST`.
 
-## Headless or REST form
+## REST and headless registration
 
-If the form is not rendered by PHP output, issue the token server-side and send
-it in the response that renders the form:
+`RegisterGuard::validate()` does not read `WP_REST_Request`; a JSON body can
+therefore fail even when it contains the fields. Extract request parameters and
+call `RegisterToken::verify()` manually, using the fixed registration scope
+`reg` and `RegisterTracker::record_reject()` on failure. The reference contains
+a transport-independent implementation.
 
-```php
-use LightweightPlugins\Firewall\Options;
-use LightweightPlugins\Firewall\Rules\RegisterToken;
+Mint a token as part of the form/bootstrap response or through a narrowly
+rate-limited bootstrap route. The token endpoint is public by necessity for an
+anonymous signup and is not an authentication boundary.
 
-$payload['lwFirewall'] = [
-	'enabled'   => class_exists( RegisterToken::class ),
-	'token'     => class_exists( RegisterToken::class ) ? RegisterToken::issue() : '',
-	'tokenName' => 'lw_fw_reg_token',
-	'honeyName' => 'lw_fw_url',
-	'honeypot'  => (bool) Options::get( 'register_honeypot', true ),
-];
-```
+`protect_rest_api` is only a shared per-IP rate limiter for URLs containing
+`/wp-json/`. It does not validate signup fields, authorize user creation, or
+target registration routes specifically. WordPress core's `wp/v2/users` create
+route requires `create_users`; a deliberately public custom registration route
+must implement its own permission policy and abuse controls. In v1.5.4 the
+bare `/wp-json` index and alternate `?rest_route=/...` URL form are not detected
+by the worker.
 
-Render the honeypot as a hidden/off-screen text input and submit both fields
-with the registration request. Do not create a public "give me a token" endpoint
-that can be spammed independently from the form render.
+## Security meaning of the token
 
-## Manual validation
+Keep normal CSRF, capability, authentication, validation, email-verification,
+and account-policy checks. The LW token is an anti-automation signal, not a
+WordPress nonce and not proof that a human submitted the form.
 
-Use manual validation only when `RegisterGuard::validate()` cannot fit the
-handler shape:
+In v1.5.4 the signed payload contains only the issue timestamp:
 
-```php
-use LightweightPlugins\Firewall\Options;
-use LightweightPlugins\Firewall\Rules\RegisterToken;
-use LightweightPlugins\Firewall\Rules\RegisterTracker;
+- it is not bound to form ID, route, user, IP, field name, or `$scope`;
+- `$scope` changes only the single-use storage key;
+- tokens issued in the same second are identical;
+- with single use enabled, two legitimate same-scope forms rendered in the
+  same second collide and the second submit is rejected;
+- a token accepted in one scope can also be accepted once in another scope;
+- the honeypot rejects a non-empty value, but an omitted honeypot is treated as
+  empty.
 
-$honeypot = isset( $_POST['lw_fw_url'] )
-	? sanitize_text_field( wp_unslash( $_POST['lw_fw_url'] ) )
-	: '';
+Treat these as verified 1.5.4 constraints. Do not describe the token as
+form-bound or unforgeable proof of user interaction.
 
-if ( Options::get( 'register_honeypot', true ) && '' !== $honeypot ) {
-	RegisterTracker::record_reject();
-	return new WP_Error( 'lw_fw_spam', __( 'Registration failed, please try again.', 'text-domain' ) );
-}
+## Auto-ban caveat in 1.5.4
 
-$token = isset( $_POST['lw_fw_reg_token'] )
-	? sanitize_text_field( wp_unslash( $_POST['lw_fw_reg_token'] ) )
-	: '';
+`RegisterTracker` writes `ban_<ip>` after `register_ban_threshold` failures.
+The MU worker currently checks shared ban keys only when either
+`auto_ban_enabled` or `login_limit_enabled` is on. A registration-only default
+configuration can therefore list a `register_spam` ban without enforcing it on
+the next request. Do not promise site-wide blocking without testing the actual
+settings and worker behavior.
 
-$storage = null;
-if ( Options::get( 'register_single_use', true ) && function_exists( 'lw_firewall_resolve_storage' ) ) {
-	$storage = lw_firewall_resolve_storage( (string) Options::get( 'storage', 'auto' ) );
-}
+## Review checklist
 
-$ok = RegisterToken::verify(
-	$token,
-	(int) Options::get( 'register_min_fill_time', 2 ),
-	(int) Options::get( 'register_token_max_age', 3600 ),
-	$storage
-);
-
-if ( ! $ok ) {
-	RegisterTracker::record_reject();
-	return new WP_Error( 'lw_fw_spam', __( 'Registration failed, please try again.', 'text-domain' ) );
-}
-```
-
-Use a generic error. Do not tell bots whether the honeypot, token age, expiry, or
-single-use check failed.
-
-## Important behavior
-
-- Missing token is spam.
-- Filled honeypot is spam when `register_honeypot` is enabled.
-- Token age lower than `register_min_fill_time` is spam.
-- Token age higher than `register_token_max_age` is spam.
-- Reused token is spam when `register_single_use` is enabled.
-- `RegisterTracker::record_reject()` skips whitelisted IPs.
-- After `register_ban_threshold` rejects, the IP is banned for `register_ban_duration`.
-- Auto-ban is written to the same storage used by the MU-plugin worker, so later
-  requests are blocked before WordPress fully loads.
-
-## Checklist
-
-- Render the guard fields inside every custom registration form.
-- Preserve both fields through AJAX/REST serialization.
-- Validate before calling `wp_insert_user()`, `wp_create_user()`, Woo customer
-  creation, CRM contact creation, or LMS enrollment.
-- Keep normal CSRF nonce/capability checks; LW Firewall token is anti-spam, not a WordPress nonce.
-- Test too-fast submit, expired token, reused token, filled honeypot, and valid submit.
-- Confirm whether your custom form should respect `users_can_register`; LW
-  Firewall's automatic core hook does.
+- Feature-detect LW Firewall and define fail-open or fail-closed behavior.
+- Respect `enabled` and `register_protect_enabled` in custom rendering and validation.
+- Use `RegisterGuard` only for form-encoded `$_POST`; adapt JSON explicitly.
+- Validate the guard before every user/customer/contact/enrollment write.
+- Keep field names server-owned and return one generic signup failure.
+- Add route-local rate limiting; the global REST toggle is coarse and optional.
+- Test valid, missing, filled honeypot, too-fast, expired, replayed, and two
+  same-second token submissions.
+- Test `/wp-json/`, bare `/wp-json`, and `?rest_route=` transports separately.
+- Verify that a recorded registration ban is actually enforced.
 
 ## Cross-references
 
-- Run `wp-security-audit` for nonce/sanitization/escaping checks around the form.
-- Run `lw-firewall-rate-limit-worker` when the endpoint also needs rate limiting.
-- Run `wp-rest-api` if the form submits through a REST route.
-
-## What this skill does NOT cover
-
-- Captcha provider integration.
-- Non-registration contact-form spam.
-- Editing LW Firewall internals or the MU-plugin worker.
+- Use `lw-firewall-custom-form-adapter` for non-registration forms.
+- Use `lw-firewall-rate-limit-worker` for worker detection and local counters.
+- Use `lw-firewall-password-reset-protection` for lost-password flows.
+- Use `wp-rest-api` for route permissions, schemas, authentication, and errors.
 
 ## References
 
-- Official documentation: <https://github.com/lwplugins/lw-firewall>
-- Verified source paths:
-  - `wp-content/plugins/lw-firewall/includes/Plugin.php`
-  - `wp-content/plugins/lw-firewall/includes/Rules/RegisterGuard.php`
-  - `wp-content/plugins/lw-firewall/includes/Rules/RegisterToken.php`
-  - `wp-content/plugins/lw-firewall/includes/Rules/RegisterTracker.php`
-  - `wp-content/plugins/lw-firewall/includes/Rules/AutoBanner.php`
-  - `wp-content/plugins/lw-firewall/includes/Options.php`
-  - `wp-content/plugins/lw-firewall/includes/helpers.php`
-  - `wp-content/plugins/lw-firewall/tests/register-token-test.php`
-  - `wp-content/plugins/lw-firewall/CHANGELOG.md`
+- Official project: <https://github.com/lwplugins/lw-firewall>
+- Verified plugin-root-relative sources:
+  - `lw-firewall.php`
+  - `includes/Plugin.php`
+  - `includes/Options.php`
+  - `includes/Rules/RegisterGuard.php`
+  - `includes/Rules/RegisterToken.php`
+  - `includes/Rules/RegisterTracker.php`
+  - `includes/Rules/AutoBanner.php`
+  - `worker/lw-firewall-worker.php`
+  - `CHANGELOG.md`

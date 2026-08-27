@@ -1,4 +1,4 @@
 interface:
   display_name: "LW Firewall Registration Guard"
-  short_description: "Custom signup honeypot and token integration."
-  default_prompt: "Use $lw-firewall-registration-guard to wire my custom registration form into LW Firewall spam protection."
+  short_description: "Protect custom signup and REST registration flows"
+  default_prompt: "Use $lw-firewall-registration-guard to design or audit my custom WordPress registration form or REST signup endpoint with LW Firewall token, honeypot, rate-limit, and ban behavior."

@@ -12,7 +12,7 @@
     "skill_file": "SKILL.md"
   },
   "domain_count": 23,
-  "skill_count": 256,
+  "skill_count": 258,
   "domains": [
     {
       "slug": "better-data",
@@ -84,7 +84,7 @@
       "slug": "lw-plugins",
       "path": "lw-plugins",
       "readme_path": "lw-plugins/README.md",
-      "skill_count": 11
+      "skill_count": 13
     },
     {
       "slug": "plugin-scaffold",
@@ -3733,10 +3733,55 @@
       }
     },
     {
+      "slug": "lw-firewall-custom-form-adapter",
+      "name": "lw-firewall-custom-form-adapter",
+      "domain": "lw-plugins",
+      "description": "Design or audit an LW Firewall adapter for a custom public form that is not the built-in registration or lost-password form, or specify a future generic form-guard extension contract without claiming it already exists. Covers the absence of a generic guard, reusable `RegisterToken` and `RateLimiter` primitives, strict honeypot presence, developer-owned replay scopes, REST/headless transport, shared-cache safety, fail-open policy, and route-local abuse limits. Use for contact, lead, quote, application, custom signup, AJAX, or REST forms mentioning LW Firewall honeypots, timing tokens, proof fields, custom anti-bot adapters, or a generic form-protection API.",
+      "path": "lw-plugins/lw-firewall-custom-form-adapter",
+      "skill_path": "lw-plugins/lw-firewall-custom-form-adapter/SKILL.md",
+      "url": "https://raw.githubusercontent.com/Lonsdale201/wp-agent-skills/main/lw-plugins/lw-firewall-custom-form-adapter/SKILL.md",
+      "raw_url": "https://raw.githubusercontent.com/Lonsdale201/wp-agent-skills/main/lw-plugins/lw-firewall-custom-form-adapter/SKILL.md",
+      "html_url": "https://github.com/Lonsdale201/wp-agent-skills/blob/main/lw-plugins/lw-firewall-custom-form-adapter/SKILL.md",
+      "directory_url": "https://github.com/Lonsdale201/wp-agent-skills/tree/main/lw-plugins/lw-firewall-custom-form-adapter",
+      "metadata": {
+        "author": "Soczó Kristóf",
+        "contact": "mailto:lonsdale201@hotmail.com",
+        "plugin": "lw-firewall",
+        "plugin-version-tested": "1.5.4",
+        "wp-version-tested": "7.1",
+        "php-min": "8.2",
+        "last-updated": "2026-08-27"
+      },
+      "resources": [
+        {
+          "path": "agents/openai.yaml",
+          "repo_path": "lw-plugins/lw-firewall-custom-form-adapter/agents/openai.yaml",
+          "type": "resource",
+          "bytes": 312,
+          "sha256": "4ec1f5440a22cc773000a5e0052f76e1b404e3900032f5d7fe16da2e6223e827"
+        },
+        {
+          "path": "references/generic-form-guard-proposal.md",
+          "repo_path": "lw-plugins/lw-firewall-custom-form-adapter/references/generic-form-guard-proposal.md",
+          "type": "reference",
+          "bytes": 6110,
+          "sha256": "a4bafac4f65372448d5916dd1ac1213412409bb57ff31a39f978b4f5f7238e71"
+        }
+      ],
+      "has_reference": true,
+      "has_examples": false,
+      "has_scripts": false,
+      "skill_md": {
+        "bytes": 9363,
+        "lines": 217,
+        "sha256": "4772159bcd1eb23f1921fc01ebbd507f8e1e55dbc6f7c4de5f8e4800f97ce3f2"
+      }
+    },
+    {
       "slug": "lw-firewall-management-abilities",
       "name": "lw-firewall-management-abilities",
       "domain": "lw-plugins",
-      "description": "Automate or audit LW Firewall management through WP-CLI, Site Manager abilities, config import/export, options, logs, worker status, IP blacklist changes, and wp-config overrides. Use when code or operational runbooks mention `wp lw-firewall`, `lw-firewall/get-options`, `lw-firewall/get-log`, `lw-firewall/block-ip`, `lw-firewall/unblock-ip`, `Options::save`, `LW_FIREWALL_*` constants, `log_enabled`, worker install/reinstall, config-items, or firewall settings migration.",
+      "description": "Manage and audit LW Firewall 1.5.4 through its options API, admin UI, WP-CLI, LW Site Manager abilities, worker controls, logs, administrator alerts, password-reset settings, and manual or automatic IP bans. Use when code or runbooks reference `wp lw-firewall`, `Options::save`, `LW_FIREWALL_*`, `lw-firewall/get-options`, `block-ip`, `lw_firewall_bans`, `BanList`, `AutoBanner::unban`, worker reinstall, alert baseline, reset protection, import/export, or firewall configuration migration.",
       "path": "lw-plugins/lw-firewall-management-abilities",
       "skill_path": "lw-plugins/lw-firewall-management-abilities/SKILL.md",
       "url": "https://raw.githubusercontent.com/Lonsdale201/wp-agent-skills/main/lw-plugins/lw-firewall-management-abilities/SKILL.md",
@@ -3747,33 +3792,72 @@
         "author": "Soczó Kristóf",
         "contact": "mailto:lonsdale201@hotmail.com",
         "plugin": "lw-firewall",
-        "plugin-version-tested": "1.3.2",
-        "php-min": "8.1",
-        "last-updated": "2026-07-09"
+        "plugin-version-tested": "1.5.4",
+        "wp-version-tested": "7.1",
+        "php-min": "8.2",
+        "last-updated": "2026-08-27"
       },
       "resources": [
         {
           "path": "agents/openai.yaml",
           "repo_path": "lw-plugins/lw-firewall-management-abilities/agents/openai.yaml",
           "type": "resource",
-          "bytes": 250,
-          "sha256": "e522a1f04c5733b6ae309b49ad3eeb1f953307d679031278f26d8a449be8563b"
+          "bytes": 324,
+          "sha256": "9fe988f25de036f6d51bd2352662d673cf595e3cd1d5c63c50840bfa450ab553"
         }
       ],
       "has_reference": false,
       "has_examples": false,
       "has_scripts": false,
       "skill_md": {
-        "bytes": 7399,
-        "lines": 218,
-        "sha256": "609542741d5e472378b5436e555ee6f30d257bee8000d3cb7f4d88a2129db604"
+        "bytes": 11657,
+        "lines": 248,
+        "sha256": "7474472f7196cd1ce3731ee1f77e3c6e7b5c1b008ee77a51efc7716a3b685442"
+      }
+    },
+    {
+      "slug": "lw-firewall-password-reset-protection",
+      "name": "lw-firewall-password-reset-protection",
+      "domain": "lw-plugins",
+      "description": "Integrate, configure, or audit LW Firewall's password-reset flood protection across core WordPress, WooCommerce, custom lost-password forms, REST handlers, administrator recovery, proof tokens, per-IP/account/global limits, alerts, and reset auto-bans. Use when code references `lostpassword_post`, `lostpassword_form`, `allow_password_reset`, `PasswordResetGuard`, `ResetLimiter`, `ResetPenalty`, `reset_*` options, `retrieve_password`, reset email floods, reset honeypots, `lw_fw_reset_token`, or `wp lw-firewall reset`.",
+      "path": "lw-plugins/lw-firewall-password-reset-protection",
+      "skill_path": "lw-plugins/lw-firewall-password-reset-protection/SKILL.md",
+      "url": "https://raw.githubusercontent.com/Lonsdale201/wp-agent-skills/main/lw-plugins/lw-firewall-password-reset-protection/SKILL.md",
+      "raw_url": "https://raw.githubusercontent.com/Lonsdale201/wp-agent-skills/main/lw-plugins/lw-firewall-password-reset-protection/SKILL.md",
+      "html_url": "https://github.com/Lonsdale201/wp-agent-skills/blob/main/lw-plugins/lw-firewall-password-reset-protection/SKILL.md",
+      "directory_url": "https://github.com/Lonsdale201/wp-agent-skills/tree/main/lw-plugins/lw-firewall-password-reset-protection",
+      "metadata": {
+        "author": "Soczó Kristóf",
+        "contact": "mailto:lonsdale201@hotmail.com",
+        "plugin": "lw-firewall",
+        "plugin-version-tested": "1.5.4",
+        "wp-version-tested": "7.1",
+        "php-min": "8.2",
+        "last-updated": "2026-08-27"
+      },
+      "resources": [
+        {
+          "path": "agents/openai.yaml",
+          "repo_path": "lw-plugins/lw-firewall-password-reset-protection/agents/openai.yaml",
+          "type": "resource",
+          "bytes": 334,
+          "sha256": "25acd9febae0b23e732ee411f21d744533503bc47cb5110685346006ca98a01b"
+        }
+      ],
+      "has_reference": false,
+      "has_examples": false,
+      "has_scripts": false,
+      "skill_md": {
+        "bytes": 8154,
+        "lines": 177,
+        "sha256": "c8faeb6190289ae9a8a85f042145bec275db8384f376959ae913084ce7e55b7d"
       }
     },
     {
       "slug": "lw-firewall-rate-limit-worker",
       "name": "lw-firewall-rate-limit-worker",
       "domain": "lw-plugins",
-      "description": "Make plugins compatible with LW Firewall's MU-plugin worker, endpoint detection, rate limiting, IP rules, auto-ban, bot blocking, REST protection, and storage backends. Use when code touches custom REST/AJAX endpoints, query-string filters, Woo filters, `wp-login.php`, `wp-cron.php`, `xmlrpc.php`, `filter_params`, `ip_whitelist`, `ip_blacklist`, `LW_FIREWALL_*` constants, `RateLimiter`, `AutoBanner`, `IpDetector`, or worker install/outdated/fail-open behavior.",
+      "description": "Build or audit companion endpoints against LW Firewall's early MU-plugin worker, URI classification, shared and route-local rate limits, logged-in buckets, IP/geo rules, automatic bans, backend consistency, configuration overrides, logging load, and worker lifecycle. Use when code exposes REST, AJAX, login, cron, XML-RPC, WooCommerce filter, webhook, or custom endpoints or references `protect_rest_api`, `filter_params`, `RateLimiter`, `AutoBanner`, `IpDetector`, `lw_firewall_resolve_storage`, `LW_FIREWALL_*`, worker installation, 429 responses, whitelists, blacklists, geo blocking, storage, or ban enforcement.",
       "path": "lw-plugins/lw-firewall-rate-limit-worker",
       "skill_path": "lw-plugins/lw-firewall-rate-limit-worker/SKILL.md",
       "url": "https://raw.githubusercontent.com/Lonsdale201/wp-agent-skills/main/lw-plugins/lw-firewall-rate-limit-worker/SKILL.md",
@@ -3784,33 +3868,34 @@
         "author": "Soczó Kristóf",
         "contact": "mailto:lonsdale201@hotmail.com",
         "plugin": "lw-firewall",
-        "plugin-version-tested": "1.3.2",
-        "php-min": "8.1",
-        "last-updated": "2026-07-09"
+        "plugin-version-tested": "1.5.4",
+        "wp-version-tested": "7.1",
+        "php-min": "8.2",
+        "last-updated": "2026-08-27"
       },
       "resources": [
         {
           "path": "agents/openai.yaml",
           "repo_path": "lw-plugins/lw-firewall-rate-limit-worker/agents/openai.yaml",
           "type": "resource",
-          "bytes": 254,
-          "sha256": "185767f2125cc7d901b8f4c9fe09fa1e2b3b1c36d08d848d85be79f1139b90ad"
+          "bytes": 277,
+          "sha256": "75870b4446f56592fab9b754d64acd46ec4729ae1735d9b3706a035dd98b5f2a"
         }
       ],
       "has_reference": false,
       "has_examples": false,
       "has_scripts": false,
       "skill_md": {
-        "bytes": 6985,
-        "lines": 179,
-        "sha256": "4f14e1556783156bf303a4cbf596b0742c2dd2ad121520613693bfd42bca2b44"
+        "bytes": 11820,
+        "lines": 255,
+        "sha256": "607cf3e599f8a8f28b48af40733b2325a2af417368ab1104e537620521eb49e4"
       }
     },
     {
       "slug": "lw-firewall-registration-guard",
       "name": "lw-firewall-registration-guard",
       "domain": "lw-plugins",
-      "description": "Integrate custom WordPress registration forms with LW Firewall's registration spam protection. Use when code renders or validates custom signup forms, AJAX/REST registration endpoints, Woo/CRM/LMS registration flows, or files referencing `RegisterGuard::render_fields`, `RegisterGuard::validate`, `RegisterToken::issue`, `RegisterToken::verify`, `lw_fw_reg_token`, `lw_fw_url`, `registration_errors`, honeypot fields, proof-of-render tokens, single-use tokens, or spam auto-ban behavior.",
+      "description": "Integrate custom WordPress registration forms and signup REST endpoints with LW Firewall's registration honeypot, signed timing token, single-use storage, rejection tracking, and rate limiting. Use when code creates users outside the core `wp-login.php?action=register` flow or references `RegisterGuard`, `RegisterToken`, `RegisterTracker`, `lw_fw_reg_token`, `lw_fw_url`, `registration_errors`, `wp_insert_user`, public registration REST routes, proof-of-render, honeypots, replay protection, or registration auto-bans.",
       "path": "lw-plugins/lw-firewall-registration-guard",
       "skill_path": "lw-plugins/lw-firewall-registration-guard/SKILL.md",
       "url": "https://raw.githubusercontent.com/Lonsdale201/wp-agent-skills/main/lw-plugins/lw-firewall-registration-guard/SKILL.md",
@@ -3821,26 +3906,34 @@
         "author": "Soczó Kristóf",
         "contact": "mailto:lonsdale201@hotmail.com",
         "plugin": "lw-firewall",
-        "plugin-version-tested": "1.3.2",
-        "php-min": "8.1",
-        "last-updated": "2026-07-09"
+        "plugin-version-tested": "1.5.4",
+        "wp-version-tested": "7.1",
+        "php-min": "8.2",
+        "last-updated": "2026-08-27"
       },
       "resources": [
         {
           "path": "agents/openai.yaml",
           "repo_path": "lw-plugins/lw-firewall-registration-guard/agents/openai.yaml",
           "type": "resource",
-          "bytes": 255,
-          "sha256": "2bd0565428bf73b3ff1e96d899681a86f8547cae510acbb459ed2eaaac67009c"
+          "bytes": 334,
+          "sha256": "8355a219648e16ae819d2cb6a176d2cedc974a9c1355c72c0daae0fe220baf68"
+        },
+        {
+          "path": "references/registration-and-rest-integration.md",
+          "repo_path": "lw-plugins/lw-firewall-registration-guard/references/registration-and-rest-integration.md",
+          "type": "reference",
+          "bytes": 6133,
+          "sha256": "b90390e72f3874cc8581dffa14eb5062d16ff12a902ceebe9228d4777179dffa"
         }
       ],
-      "has_reference": false,
+      "has_reference": true,
       "has_examples": false,
       "has_scripts": false,
       "skill_md": {
-        "bytes": 7225,
-        "lines": 192,
-        "sha256": "7f40aceec290a03ac5ef4d741c120416b74813c64eb957277f0a5d17eff16484"
+        "bytes": 7307,
+        "lines": 169,
+        "sha256": "02774a35a96eb92d2cadaa5247a3489b70a3c34caaf6786d542489b2e0983c44"
       }
     },
     {

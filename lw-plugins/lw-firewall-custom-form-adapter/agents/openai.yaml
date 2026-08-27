@@ -1,0 +1,4 @@
+interface:
+  display_name: "LW Firewall custom form adapter"
+  short_description: "Adapt LW proof and limits to custom public forms"
+  default_prompt: "Use $lw-firewall-custom-form-adapter to design or audit a custom form adapter with explicit honeypot, token, caching, rate-limit, REST, and fallback behavior."

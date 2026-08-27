@@ -1,4 +1,4 @@
 interface:
   display_name: "LW Firewall Management Abilities"
-  short_description: "WP-CLI and Site Manager firewall operations."
-  default_prompt: "Use $lw-firewall-management-abilities to automate LW Firewall configuration and IP blocking safely."
+  short_description: "Manage firewall config, alerts, reset, and bans"
+  default_prompt: "Use $lw-firewall-management-abilities to automate or audit LW Firewall options, WP-CLI, Site Manager abilities, alerts, reset protection, worker state, logs, and IP bans."
