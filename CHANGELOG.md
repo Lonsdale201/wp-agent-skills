@@ -2,6 +2,108 @@
 
 This collection is continuously evolving — entries are date-based, not version-tagged. New skills land when they're ready; updates go in when they cover real ground (a new release of an upstream plugin, a verified misconception, a corrected example).
 
+## 2026-08-27 (lw-plugins: LW Firewall 1.5.4 re-grounding, password-reset + custom-form skills)
+
+The three LW Firewall skills were still grounded on **v1.3.2**, and the plugin has since grown two
+surfaces they never described: password-reset flood protection, and the question companion
+developers actually keep asking — "can I point this firewall at *my* form?". All five skills in the
+family are now verified against **LW Firewall 1.5.4** on **WordPress 7.1 / PHP 8.3** (plugin minimum
+8.2), with the behaviours below re-checked in the running plugin rather than read off the changelog.
+
+### Added — `lw-plugins/lw-firewall-password-reset-protection`
+
+The reset guard hooks `lostpassword_post`, `lostpassword_form` and `allow_password_reset`, so it
+covers core `wp-login.php` and WooCommerce's lost-password form alike — and a companion that ships
+its own reset form gets none of it. The skill documents the **three counters and the order they are
+actually evaluated in**: per-IP, then the site-wide `reset_all` budget, then the target account.
+That order is load-bearing, and the skill states the consequence plainly — `reset_global_max` is
+documented as "total reset emails per hour", but a **refused** request (failed proof token, or a
+target already over its own limit) increments the same global counter without any email being sent,
+so a distributed flood against one known account can exhaust the budget for **every** account until
+the window rolls over. A companion form that adds its own reset path must not assume the global cap
+means what its label says.
+
+Also covered: the proof token and honeypot on the reset form, `ResetLimiter` verdicts and why
+`ResetPenalty` deliberately refuses to ban the requester on a `global` or `user` verdict (on a
+distributed flood the last submitter is as likely to be the real user as the attacker), the opt-in
+`reset_block_admins` hardening — whose check is `administrator`-role-slug only, so multisite super
+admins and custom administrative roles fall outside it — reset alerts, reset auto-ban, and the
+`reset_*` option surface with `wp lw-firewall reset`. Ships an `agents/openai.yaml`.
+
+### Added — `lw-plugins/lw-firewall-custom-form-adapter`
+
+The skill exists to answer a request the plugin **cannot** currently satisfy, and to stop that
+answer being improvised. LW Firewall 1.5.4 exposes **no generic "protect this form" API**: both
+guards are built around fixed private field names and direct `$_POST` reads, the spam predicates are
+private, and nothing accepts an input array or a `WP_REST_Request`. So the skill names exactly which
+primitives may be reused — `RegisterToken`, `RateLimiter::is_allowed_key()`,
+`lw_firewall_resolve_storage()` — and, more importantly, **where they stop**: the proof token signs
+only a second-precision timestamp, so every render inside the same second produces a byte-identical
+token (shared page caches hand one token to many visitors, and with single-use on, exactly one of
+them wins); `$scope` only namespaces the replay key and is **not** part of the signed payload, so a
+token issued by one form is not cryptographically bound to it; and the limiter lets a caller
+override the count but not the window.
+
+The adapter pattern therefore requires a developer-owned replay scope, a honeypot that must be
+**present *and* empty** (the built-in check only rejects a non-empty value, so a bot that omits the
+field entirely passes it), render-neutral token issue for REST/headless callers, `private, no-store`
+on anonymous token responses, and an explicit fail-open/fail-closed decision for storage outages.
+Two prohibitions are stated outright: do not log an arbitrary contact-form failure as a
+`register_spam` event (it pollutes the shared ban store and the firewall log with the wrong reason),
+and do not advertise a version-pinned adapter as a built-in LW feature.
+`references/generic-form-guard-proposal.md` specifies the contract a first-class upstream form guard
+would need — registry and policy, render-neutral issue, a versioned token payload binding form ID +
+issued-at + a ≥128-bit random nonce, transport-neutral validation, structured verdicts, atomic
+form-bound replay and rate limits, and a cache/outage contract — plus its acceptance tests. Ships an
+`agents/openai.yaml`.
+
+### Changed — three skills re-grounded from 1.3.2 to 1.5.4
+
+`lw-firewall-rate-limit-worker`, `lw-firewall-registration-guard` and
+`lw-firewall-management-abilities` were rewritten against 1.5.4 source: `wp-skills-php-min` 8.1 →
+8.2, a new `wp-skills-wp-version-tested: 7.1`, refreshed descriptions, and `agents/openai.yaml`
+prompts that describe auditing as well as building.
+
+The substantive additions are the **verified current limitations** a companion has to design around,
+each one confirmed against the running plugin:
+
+- **Endpoint coverage is narrower than "REST is protected" suggests.** The worker classifies on
+  substrings of the raw `REQUEST_URI`, and only `/wp-json/` counts — so a bare `/wp-json`,
+  `?rest_route=/…`, a modified REST prefix, `admin-ajax.php`, webhooks and arbitrary pretty routes
+  are **not** rate-limited at all. A route that needs a limit must protect itself with
+  `RateLimiter::is_allowed_key()`.
+- **The logged-in bucket is a cookie *shape* check, not authentication.** Any client can present a
+  four-part `wordpress_logged_in_*` cookie and be routed into the separate, 10×-by-default REST/filter
+  bucket. It is never a full exemption — every hard block and the login/xmlrpc/cron throttles still
+  apply — but it must not be the only defence on an expensive public route.
+- **`LW_FIREWALL_*` constants do not reach the early runtime.** They win on single-value
+  `Options::get()` reads, but `Options::get_all()` — which the MU worker, the runtime hook bootstrap,
+  the geo `.htaccess` sync and the CLI status all use — ignores them. The effective config is mixed,
+  not simply "constants win", so a runbook must verify behaviour rather than trust a `define()`.
+- **A written ban is not necessarily an enforced ban.** The worker reads the shared `ban_<ip>` key
+  only when `auto_ban_enabled` or `login_limit_enabled` is on, while the registration and
+  password-reset producers write that same key independently — and registration protection is on by
+  default while both of those toggles are off. A `register_spam` ban can therefore be listed in the
+  admin UI and still not block the next request, so no companion should promise site-wide blocking
+  without testing the actual settings.
+- **`AutoBanner::unban()` is not a full release.** It clears `ban_<ip>` and the six threshold
+  counters including `rl_<ip>`, but not the `<reason>_<ip>` / `<reason>_li_<ip>` endpoint counters the
+  worker actually checks, so a just-unbanned client can stay rate-limited until `rate_window`
+  expires.
+
+`lw-firewall-registration-guard` also gained
+`references/registration-and-rest-integration.md` (transport-independent validator, REST route
+shape, bootstrap response, route-local rate limit, required tests, source anchors) and a section
+that states the token's real security meaning — an anti-automation signal, not a WordPress nonce and
+not proof that a human filled the form, so CSRF and capability checks remain the caller's job.
+`lw-firewall-management-abilities` picked up the administrator-alert baseline and password-reset
+option surfaces, and notes that the Site Manager abilities sit behind the manager's
+`can_manage_options` callback rather than a public `__return_true`.
+
+Domain README gained the two new rows, refreshed the three existing ones and an intro paragraph
+explaining the five-way split; root README domain row updated and skill counter 256 → 258;
+`skills-index.json` regenerated.
+
 ## 2026-08-25 (fluentcrm: custom double opt-in signup forms + 3.1.13 re-grounding)
 
 The domain covered the funnel chassis and the model layer, but had **no skill for the single most common FluentCRM integration**: a plugin that owns its own signup UI and hands the contact to FluentCRM. That gap has a specific, repeatable failure mode, so it gets a dedicated skill. Five existing skills were re-verified against **FluentCRM 3.1.13 / FluentCampaign Pro 3.1.13** on WordPress 7.1 at the same time.

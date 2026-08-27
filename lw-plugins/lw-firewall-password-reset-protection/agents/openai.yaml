@@ -1,0 +1,4 @@
+interface:
+  display_name: "LW Firewall password reset protection"
+  short_description: "Audit reset flood limits, proof, and recovery"
+  default_prompt: "Use $lw-firewall-password-reset-protection to audit my WordPress or WooCommerce lost-password flow, rate limits, proof coverage, automatic bans, and administrator recovery path."
