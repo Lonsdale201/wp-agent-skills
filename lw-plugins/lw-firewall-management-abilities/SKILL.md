@@ -1,14 +1,14 @@
 ---
 name: lw-firewall-management-abilities
-description: Manage and audit LW Firewall 1.5.4 through its options API, admin UI, WP-CLI, LW Site Manager abilities, worker controls, logs, administrator alerts, password-reset settings, and manual or automatic IP bans. Use when code or runbooks reference `wp lw-firewall`, `Options::save`, `LW_FIREWALL_*`, `lw-firewall/get-options`, `block-ip`, `lw_firewall_bans`, `BanList`, `AutoBanner::unban`, worker reinstall, alert baseline, reset protection, import/export, or firewall configuration migration.
+description: Manage and audit LW Firewall 1.5.6 through its options API, admin UI, WP-CLI, LW Site Manager abilities, worker controls, logs, administrator alerts, password-reset settings, and manual or automatic IP bans. Use when code or runbooks reference `wp lw-firewall`, `Options::save`, `LW_FIREWALL_*`, `lw-firewall/get-options`, `block-ip`, `lw_firewall_bans`, `BanList`, `AutoBanner::unban`, worker reinstall, alert baseline, reset protection, import/export, or firewall configuration migration.
 metadata:
   wp-skills-author: "Soczó Kristóf"
   wp-skills-contact: "mailto:lonsdale201@hotmail.com"
   wp-skills-plugin: "lw-firewall"
-  wp-skills-plugin-version-tested: "1.5.4"
+  wp-skills-plugin-version-tested: "1.5.6"
   wp-skills-wp-version-tested: "7.1"
   wp-skills-php-min: "8.2"
-  wp-skills-last-updated: "2026-08-27"
+  wp-skills-last-updated: "2026-08-29"
 ---
 
 # LW Firewall management, abilities and CLI
@@ -33,11 +33,27 @@ Do not assume a new admin or CLI feature also exists as an ability.
 The persisted option is `LightweightPlugins\Firewall\Options::OPTION_NAME`,
 whose value is `lw_firewall`.
 
-`Options::get_all()` merges stored values with defaults and normalizes list
-keys. `Options::save()` accepts a partial array, preserves other known values,
-and persists only keys present in `get_defaults()`. It does not run the admin
-form's type/range/IP/country validation; programmatic callers must supply
-validated values of the correct type:
+There are now three read views, and picking the wrong one is the classic bug:
+
+| Call | Returns |
+|---|---|
+| `Options::get_stored()` | defaults + database, **no** constant overlay — the editing/persistence view |
+| `Options::get_all()` | stored values with `LW_FIREWALL_*` constants layered on top — the **effective runtime** view |
+| `Options::get($key)` | the constant if defined, otherwise the `get_all()` value |
+| `Options::overridden()` | the option keys a constant currently pins |
+
+Since 1.5.5 `get_all()` applies constants (it did not in 1.5.4, which is why the
+worker, the hook bootstrap, the `.htaccess` sync and the status screen all ran
+on a configuration the operator had not chosen). Saving reads `get_stored()`,
+so a pinned value is never written into the database and never survives the
+constant's removal.
+
+`Options::save()` accepts a partial array, preserves other known values, and
+persists only keys present in `get_defaults()`. Since 1.5.6 it also runs
+`OptionSchema::apply()` on **every** key — one server-side value policy that
+clamps numeric ranges and allowlists enums for the form, WP-CLI and the settings
+import alike. Passing a well-typed value is still good practice, but a bad one
+is now clamped rather than stored:
 
 ```php
 use LightweightPlugins\Firewall\Options;
@@ -52,22 +68,22 @@ Do not call `update_option('lw_firewall', $partial)`; that bypasses the merge,
 normalization, and known-key boundary.
 
 List keys are `filter_params`, `blocked_bots`, `ip_whitelist`, `ip_blacklist`,
-and `blocked_countries`.
+`blocked_countries`, and `trusted_proxies`.
 
-`geo_action` is currently persisted and rendered as `403`/`redirect`, but the
-1.5.4 PHP worker always calls its 403 response and the generated `.htaccess`
-rule always uses `[F,L]`. Do not promise or test a redirect as an effective
-runtime choice until the implementation consumes this option.
+`geo_action` was **removed in 1.5.5**. It had never been read at runtime — the
+worker always returned 403 and the `.htaccess` rule was always `[F,L]` — and it
+is unimplementable as documented, since geo blocking applies to every path and
+redirecting a blocked visitor to the homepage would loop. Do not reference the
+option, and drop it from migrations and import files.
 
-`Options::get($key)` checks `LW_FIREWALL_<UPPERCASE_KEY>` first. Constants can
-therefore make a single option read differ from the saved value. However,
-`Options::get_all()` does not overlay constants. The 1.5.4 worker, its main
-runtime-hook bootstrap, the admin screen and several status/management paths
-use `get_all()`, so many documented constants do not affect or even accurately
-describe those paths. This includes the master/toggle/list/storage decisions;
-verify each intended override with a real request. `LW_FIREWALL_DISABLE_WORKER`
-is checked directly and remains a separate early-worker kill switch;
-`LW_FIREWALL_LOGGEDIN_MULTIPLIER` is also read directly.
+New in 1.5.6: `trusted_proxies` and `proxy_header` (IP Rules → Reverse Proxy).
+Opt-in reverse-proxy support; without it a site behind nginx-on-the-same-host
+sees every visitor as `127.0.0.1`, which the worker treats as the server's own
+address — a silent total bypass. See `lw-firewall-rate-limit-worker`.
+
+`LW_FIREWALL_DISABLE_WORKER` is checked directly and remains a separate
+early-worker kill switch; `LW_FIREWALL_LOGGEDIN_MULTIPLIER` is also read
+directly.
 
 ## WP-CLI map
 
@@ -111,7 +127,8 @@ confirm an alternative recovery path first.
 
 ## Site Manager abilities
 
-When LW Site Manager is active, v1.5.4 registers exactly these abilities:
+When LW Site Manager is active, v1.5.6 registers exactly these abilities (the
+set is unchanged since 1.5.4):
 
 | Ability | Operation |
 |---|---|
@@ -126,13 +143,24 @@ through ability metadata. There are no ability contracts for automatic bans,
 alerts, reset controls, worker install, or full option writes. Do not call the
 manual `unblock-ip` ability to release an automatic ban.
 
-In v1.5.4 the ability's CIDR validator casts the suffix before validating its
-syntax. Values such as `10.0.0.0/foo` and `10.0.0.0/24junk` are accepted; the
-runtime matcher then treats `foo` as prefix zero, which can match every address
-in that IP family. Validate an exact decimal suffix and its family-specific
-range in the calling workflow. The write abilities also read-modify-write the
-whole option without concurrency control and do not check `Options::save()`'s
-result before returning success.
+The dangerous half of the 1.5.4 CIDR defect is fixed, the cosmetic half is not
+— and the distinction matters:
+
+- **Fixed (1.5.5, in `IpMatcher::ip_in_cidr()`).** The prefix must be an exact
+  decimal (`ctype_digit`) within the family's range. `10.0.0.0/foo` and
+  `10.0.0.0/-1` no longer collapse to a zero-width mask, so one typo in the
+  whitelist can no longer disable the firewall and one in the blacklist can no
+  longer take the site down. A malformed rule simply never matches.
+- **Not fixed (`FirewallService::is_valid_ip_or_cidr()`).** The ability's own
+  validator still casts the suffix with `(int)` before range-checking, so
+  `10.0.0.0/foo` is still *accepted and stored*. It is now inert rather than
+  catastrophic, but it is a rule the operator believes is active and is not.
+  Validate an exact decimal suffix and its family-specific range in the calling
+  workflow.
+
+The write abilities still read-modify-write the whole option without
+concurrency control and still do not check `Options::save()`'s result before
+returning success.
 
 The block/unblock abilities are marked `destructive: false`. Blocking the
 caller's own IP is still a site-wide access-policy change with a lockout risk,
@@ -145,19 +173,24 @@ require explicit confirmation even though the annotation does not request it.
 - Enforced automatic ban: TTL key `ban_<ip>` in the selected storage backend.
 - Listable automatic-ban index: non-autoloaded `lw_firewall_bans`, capped at 500.
 
+Ban durations are clamped since 1.5.6: a zero duration used to mean "no TTL" to
+every backend, i.e. an accidentally permanent ban.
+
 The storage key is authoritative. The index records IP, reason, start and
 rounded expiry so administrators can list and remove bans; an entry may remain
 temporarily visible as inactive after storage loss/expiry.
 
 Use `AutoBanner::unban($ip)` or the `ban remove` command, not raw option or
-storage deletion. It removes the ban key, its index row, and several producer
-counters. In v1.5.4 it does not clear the worker's reason-specific
-`<reason>_<ip>` or `<reason>_li_<ip>` rate buckets, so the IP may still receive
-429 until `rate_window` expires.
+storage deletion. It removes the ban key, its index row, the producer counters
+and — since 1.5.5 — the worker's reason-specific `<reason>_<ip>` /
+`<reason>_li_<ip>` rate buckets, so a released address is actually released
+instead of staying 429 until `rate_window` aged out.
 
-Also verify enforcement: the worker currently checks shared ban keys only when
-`auto_ban_enabled` or `login_limit_enabled` is true. A registration/reset ban
-can be indexed but dormant when both are off.
+Enforcement is also no longer conditional: since 1.5.5 the worker reads the ban
+key whenever the firewall is on. A registration or password-reset ban is no
+longer indexed-but-dormant while `auto_ban_enabled` and `login_limit_enabled`
+are off. Still verify with a real follow-up request — the storage key, not the
+index row, is the authority.
 
 ## Administrator alerts and reset protection
 
@@ -174,35 +207,43 @@ limits or proof settings.
 
 ## Import, logs and worker
 
-Admin import accepts known keys, fills missing keys from defaults, and cleans
-list values plus country codes. In v1.5.4 it does not run the admin form's full
-scalar type/range validation before `Options::save()`. Treat imported JSON as
-untrusted: validate booleans, integers, enums, IP/CIDR values, email recipients,
-and policy before production. A syntactically valid file can also intentionally
-enable broad blocking.
+The 1.5.4 gap this skill described as "until a central option schema exists"
+is closed. `OptionSchema` (`includes/OptionSchema.php`) is now the single
+server-side value policy: `ranges()` clamps every numeric setting, `enums()`
+allowlists every enumerated one, and `Options::save()` runs `apply()` over all
+keys. The form, WP-CLI (`config set`, `config-items`, `ip add`) and the settings
+import therefore share one policy — the form's only numeric bounds used to be
+HTML `min`/`max` attributes, which nothing but a browser enforces.
 
-The admin form itself applies `absint()` and `sanitize_key()` but does not
-enforce the HTML controls' numeric bounds or enum allowlists server-side. The
-IP textareas and general `config set` / `config-items` / `ip add` CLI paths also
-do not share the Site Manager validator. Treat every management surface as a
-typed-but-not-policy-validated caller until a central option schema exists.
+That is type/range/enum policy, not trust. Imported JSON is still untrusted
+input: a syntactically valid, fully in-range file can intentionally enable broad
+blocking, blacklist the operator's own range, or redirect alert mail. Review
+IP/CIDR values, country codes, email recipients and blocking policy before
+importing into production. The Site Manager ability validator still differs
+from `IpMatcher` (see above).
 
 `lw_firewall_log` holds at most 100 newest entries and is written only when
 `log_enabled` is true. Rows contain IP, reason, User-Agent, URL and time; treat
-them as operational/personal data. The row cap does not cap writes: every
-blocked request may read and rewrite the option, so enable logging cautiously
-under a live flood.
+them as operational/personal data. Since 1.5.6 `Logger` collapses a repeated
+IP/reason pair for five minutes into one counted entry, so a flood no longer
+rewrites the option on every blocked request — the write amplification is
+bounded, not gone, since distinct IPs still each write.
 
-Administrator alert hooks and scans advance the baseline before/independently
-of confirmed mail delivery. If `wp_mail()` fails, a transient warns the admin,
-but that security event is already considered known and is not retried. The
-manual scan UI/CLI can also report that an alert was sent without checking the
-mailer result returned inside the scanner. Monitor delivery externally; a
-successful scan is not proof that the notification arrived.
+Alert delivery is now retried. `AlertQueue` holds notifications whose send
+failed and the next scan retries them, giving up only after a capped number of
+attempts (the admin transient still shows the failure). The baseline snapshot is
+explicitly a **deduplication record, not a delivery receipt** — treating it as
+one is what let a single SMTP hiccup permanently lose the notice that an
+administrator had appeared. Still monitor transport externally: a scan that
+reports success means the alert was queued or sent, not that it was received.
 
 The worker is expected at `wp-content/mu-plugins/lw-firewall-worker.php`. A
-missing or mismatched worker triggers one repair attempt and an admin notice.
-Never edit the installed copy because activation and upgrade overwrite it.
+missing or mismatched worker triggers one repair attempt and an admin notice;
+since 1.5.6 the check compares file content (`filemtime`) as well as the version
+constant, and the worker writes a `lw_firewall_worker_alive` transient so the
+Status tab can distinguish "installed" from "has actually run". Manage it with
+`wp lw-firewall worker install|remove`. Never edit the installed copy because
+activation and upgrade overwrite it.
 
 ## Automation checklist
 
@@ -213,8 +254,9 @@ Never edit the installed copy because activation and upgrade overwrite it.
 - Distinguish manual blacklist, active storage ban, and listable ban index.
 - Confirm worker version and active storage before interpreting ban state.
 - Confirm logging before relying on logs and redact them from non-admin output.
-- Confirm alert transport delivery; do not acknowledge an incident only from
-  baseline advancement or the scan command's success text.
+- Confirm alert transport delivery; a queued/retried alert is not a received
+  one, and the scan command's success text is not a delivery receipt.
+- Check `Options::overridden()` before telling an operator a setting took effect.
 - Treat `alerts baseline --reset` as a security-state mutation requiring review.
 - Verify ban removal with a real follow-up request, not only an index row.
 - Use WP-CLI/admin for features absent from Site Manager abilities.
@@ -241,6 +283,11 @@ Never edit the installed copy because activation and upgrade overwrite it.
   - `includes/CLI/BanCommand.php`
   - `includes/CLI/ResetCommand.php`
   - `includes/CLI/AlertsCommand.php`
+  - `includes/OptionSchema.php`
+  - `includes/Logger.php`
+  - `includes/Alerts/AlertQueue.php`
+  - `includes/Rules/IpMatcher.php`
+  - `includes/CLI/WorkerCommand.php`
   - `includes/SiteManager/FirewallAbilities.php`
   - `includes/SiteManager/FirewallService.php`
   - `docs/management.md`

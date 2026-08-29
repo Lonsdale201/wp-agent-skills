@@ -5,10 +5,10 @@ metadata:
   wp-skills-author: "Soczó Kristóf"
   wp-skills-contact: "mailto:lonsdale201@hotmail.com"
   wp-skills-plugin: "lw-firewall"
-  wp-skills-plugin-version-tested: "1.5.4"
+  wp-skills-plugin-version-tested: "1.5.6"
   wp-skills-wp-version-tested: "7.1"
   wp-skills-php-min: "8.2"
-  wp-skills-last-updated: "2026-08-27"
+  wp-skills-last-updated: "2026-08-29"
 ---
 
 # LW Firewall registration guard
@@ -39,9 +39,15 @@ honour `users_can_register`.
 | Contract | Current behavior |
 |---|---|
 | `RegisterGuard::render_fields()` | Echoes `lw_fw_reg_token` and, when enabled, `lw_fw_url` |
-| `RegisterGuard::validate( WP_Error )` | Reads the current `$_POST`, records rejection, adds a generic error |
-| `RegisterToken::issue()` | Returns a signed timestamp token |
-| `RegisterToken::verify( $token, $min, $max, $storage, $scope )` | Checks signature, age and optional atomic single use |
+| `RegisterGuard::validate( $errors = null, $login = '', $email = '' )` | Reads the current `$_POST`, records rejection, adds a generic error |
+| `RegisterToken::issue( string $scope = 'reg' )` | Returns a signed per-render token |
+| `RegisterToken::make( int $issued, string $scope = 'reg', string $nonce = '' )` | Deterministic seam for tests |
+| `RegisterToken::verify( $token, $min, $max, ?$storage = null, $scope = 'reg' )` | Checks signature, scope, age and optional atomic single use |
+| `RegisterToken::check( $token, $now, $min, $max, ?$storage = null, $scope = 'reg' )` | Same, against an explicit "now" |
+
+`validate()` deliberately does **not** hard-type its first parameter (1.5.6):
+another plugin on `registration_errors` returning a non-`WP_Error` used to cause
+an uncatchable `TypeError` on a public form.
 | `RegisterTracker::record_reject()` | Counts non-whitelisted rejected registrations and may write a shared ban |
 
 `RegisterGuard`'s field constants and spam predicate are private. Do not call
@@ -100,9 +106,9 @@ anonymous signup and is not an authentication boundary.
 `/wp-json/`. It does not validate signup fields, authorize user creation, or
 target registration routes specifically. WordPress core's `wp/v2/users` create
 route requires `create_users`; a deliberately public custom registration route
-must implement its own permission policy and abuse controls. In v1.5.4 the
-bare `/wp-json` index and alternate `?rest_route=/...` URL form are not detected
-by the worker.
+must implement its own permission policy and abuse controls. Since 1.5.6 the
+worker also classifies the bare `/wp-json` index and the `?rest_route=/...`
+form, so those no longer slip past the REST bucket.
 
 ## Security meaning of the token
 
@@ -110,28 +116,36 @@ Keep normal CSRF, capability, authentication, validation, email-verification,
 and account-policy checks. The LW token is an anti-automation signal, not a
 WordPress nonce and not proof that a human submitted the form.
 
-In v1.5.4 the signed payload contains only the issue timestamp:
+Since 1.5.6 the signed payload is `v2.<issued>.<scope>.<nonce>` with 16 random
+bytes of per-render nonce:
 
-- it is not bound to form ID, route, user, IP, field name, or `$scope`;
-- `$scope` changes only the single-use storage key;
-- tokens issued in the same second are identical;
-- with single use enabled, two legitimate same-scope forms rendered in the
-  same second collide and the second submit is rejected;
-- a token accepted in one scope can also be accepted once in another scope;
-- the honeypot rejects a non-empty value, but an omitted honeypot is treated as
-  empty.
+- the **scope is signed**, so a token issued for one form is no longer accepted
+  by another — and `issue()` and `verify()` must be given the **same** scope
+  (both default to `'reg'`; a bare `issue()` verified against a custom scope
+  fails every time);
+- tokens issued in the same second are distinct, so two legitimate same-scope
+  renders no longer collide under single use, and a shared page cache no longer
+  hands one token to every visitor;
+- the format version is signed, so a token rendered by 1.5.4 fails on 1.5.6 —
+  expect rejections from cached pages right after the upgrade;
+- scope is normalized to `[a-z0-9_-]` after `strtolower()`, so `my form!` and
+  `myform` are the same scope;
+- it is still not bound to route, user, IP or field name;
+- the honeypot rejects a non-empty value, but an omitted honeypot is still
+  treated as empty.
 
-Treat these as verified 1.5.4 constraints. Do not describe the token as
-form-bound or unforgeable proof of user interaction.
+The token is now a per-render, form-bound proof of render. It is still not proof
+that a human submitted the form, and not a WordPress nonce.
 
-## Auto-ban caveat in 1.5.4
+## Auto-ban (fixed in 1.5.5)
 
 `RegisterTracker` writes `ban_<ip>` after `register_ban_threshold` failures.
-The MU worker currently checks shared ban keys only when either
-`auto_ban_enabled` or `login_limit_enabled` is on. A registration-only default
-configuration can therefore list a `register_spam` ban without enforcing it on
-the next request. Do not promise site-wide blocking without testing the actual
-settings and worker behavior.
+The 1.5.4 defect — the worker reading shared ban keys only when
+`auto_ban_enabled` or `login_limit_enabled` was on, so a registration-only
+configuration listed a `register_spam` ban it never enforced — is fixed: the
+worker now reads the ban key whenever the firewall is enabled. Still confirm
+enforcement with a real follow-up request; the storage key, not the index row,
+is the authority.
 
 ## Review checklist
 

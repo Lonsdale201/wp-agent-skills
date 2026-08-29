@@ -1,7 +1,7 @@
 # Proposed generic form-guard contract
 
 This is an upstream design proposal for a future LW Firewall release. It is
-not part of LW Firewall 1.5.4, and companion plugins must not feature-detect or
+not part of LW Firewall 1.5.6, and companion plugins must not feature-detect or
 call the names below until the plugin ships a documented equivalent.
 
 ## Goal and boundary
@@ -78,9 +78,13 @@ form ID inside the signed payload and derive the replay key from both the form
 ID and nonce ID. Do not bind the client IP by default: mobile networks, proxies
 and privacy relays can legitimately change it between render and submit.
 
-The current 1.5.4 timestamp-only token is not a suitable wire format for this
-API because same-second renders collide and the caller's replay scope is not
-signed.
+As of 1.5.6 `RegisterToken` already meets most of this: the payload is
+`v2.<issued>.<scope>.<nonce>` with a 16-byte per-render nonce, HMAC-signed, so
+same-second renders no longer collide and the caller's scope IS signed. What a
+generic guard would still add on top is a public, versioned contract (the class
+name and its options remain registration-oriented), a caller-supplied form ID
+distinct from the replay scope, transport-neutral validation, and a documented
+fail policy. Treat the wire format as adequate and the API surface as the gap.
 
 ## Transport-neutral validation
 
@@ -158,7 +162,7 @@ argument shapes and whether a hook may change the verdict.
    follow the documented policy.
 10. Public errors do not reveal which anti-bot check failed.
 
-## Verified 1.5.4 source boundary
+## Verified 1.5.6 source boundary
 
 - `includes/Rules/RegisterToken.php`
 - `includes/Rules/RegisterGuard.php`

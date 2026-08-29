@@ -3747,10 +3747,10 @@
         "author": "Soczó Kristóf",
         "contact": "mailto:lonsdale201@hotmail.com",
         "plugin": "lw-firewall",
-        "plugin-version-tested": "1.5.4",
+        "plugin-version-tested": "1.5.6",
         "wp-version-tested": "7.1",
         "php-min": "8.2",
-        "last-updated": "2026-08-27"
+        "last-updated": "2026-08-29"
       },
       "resources": [
         {
@@ -3764,24 +3764,24 @@
           "path": "references/generic-form-guard-proposal.md",
           "repo_path": "lw-plugins/lw-firewall-custom-form-adapter/references/generic-form-guard-proposal.md",
           "type": "reference",
-          "bytes": 6110,
-          "sha256": "a4bafac4f65372448d5916dd1ac1213412409bb57ff31a39f978b4f5f7238e71"
+          "bytes": 6492,
+          "sha256": "c04265232c616bbaa65f7ac9eef3fc791f0224a061f1d40e11e88fa2e62730fa"
         }
       ],
       "has_reference": true,
       "has_examples": false,
       "has_scripts": false,
       "skill_md": {
-        "bytes": 9363,
-        "lines": 217,
-        "sha256": "4772159bcd1eb23f1921fc01ebbd507f8e1e55dbc6f7c4de5f8e4800f97ce3f2"
+        "bytes": 10681,
+        "lines": 236,
+        "sha256": "22981e612bfaca1c715c5e3901677197a00aa57c1d0a34249de759c1656445aa"
       }
     },
     {
       "slug": "lw-firewall-management-abilities",
       "name": "lw-firewall-management-abilities",
       "domain": "lw-plugins",
-      "description": "Manage and audit LW Firewall 1.5.4 through its options API, admin UI, WP-CLI, LW Site Manager abilities, worker controls, logs, administrator alerts, password-reset settings, and manual or automatic IP bans. Use when code or runbooks reference `wp lw-firewall`, `Options::save`, `LW_FIREWALL_*`, `lw-firewall/get-options`, `block-ip`, `lw_firewall_bans`, `BanList`, `AutoBanner::unban`, worker reinstall, alert baseline, reset protection, import/export, or firewall configuration migration.",
+      "description": "Manage and audit LW Firewall 1.5.6 through its options API, admin UI, WP-CLI, LW Site Manager abilities, worker controls, logs, administrator alerts, password-reset settings, and manual or automatic IP bans. Use when code or runbooks reference `wp lw-firewall`, `Options::save`, `LW_FIREWALL_*`, `lw-firewall/get-options`, `block-ip`, `lw_firewall_bans`, `BanList`, `AutoBanner::unban`, worker reinstall, alert baseline, reset protection, import/export, or firewall configuration migration.",
       "path": "lw-plugins/lw-firewall-management-abilities",
       "skill_path": "lw-plugins/lw-firewall-management-abilities/SKILL.md",
       "url": "https://raw.githubusercontent.com/Lonsdale201/wp-agent-skills/main/lw-plugins/lw-firewall-management-abilities/SKILL.md",
@@ -3792,10 +3792,10 @@
         "author": "Soczó Kristóf",
         "contact": "mailto:lonsdale201@hotmail.com",
         "plugin": "lw-firewall",
-        "plugin-version-tested": "1.5.4",
+        "plugin-version-tested": "1.5.6",
         "wp-version-tested": "7.1",
         "php-min": "8.2",
-        "last-updated": "2026-08-27"
+        "last-updated": "2026-08-29"
       },
       "resources": [
         {
@@ -3810,9 +3810,9 @@
       "has_examples": false,
       "has_scripts": false,
       "skill_md": {
-        "bytes": 11657,
-        "lines": 248,
-        "sha256": "7474472f7196cd1ce3731ee1f77e3c6e7b5c1b008ee77a51efc7716a3b685442"
+        "bytes": 14235,
+        "lines": 295,
+        "sha256": "f0b67b01a4c558f4a117597c888b4fc3a423ed181ae3aefba7ff8f4c2d2df0da"
       }
     },
     {
@@ -3830,10 +3830,10 @@
         "author": "Soczó Kristóf",
         "contact": "mailto:lonsdale201@hotmail.com",
         "plugin": "lw-firewall",
-        "plugin-version-tested": "1.5.4",
+        "plugin-version-tested": "1.5.6",
         "wp-version-tested": "7.1",
         "php-min": "8.2",
-        "last-updated": "2026-08-27"
+        "last-updated": "2026-08-29"
       },
       "resources": [
         {
@@ -3848,9 +3848,9 @@
       "has_examples": false,
       "has_scripts": false,
       "skill_md": {
-        "bytes": 8154,
-        "lines": 177,
-        "sha256": "c8faeb6190289ae9a8a85f042145bec275db8384f376959ae913084ce7e55b7d"
+        "bytes": 8977,
+        "lines": 194,
+        "sha256": "2b6d37dec752fbe49186033c8875890b881551e13c58f86ef86c32885085e131"
       }
     },
     {
@@ -3868,10 +3868,10 @@
         "author": "Soczó Kristóf",
         "contact": "mailto:lonsdale201@hotmail.com",
         "plugin": "lw-firewall",
-        "plugin-version-tested": "1.5.4",
+        "plugin-version-tested": "1.5.6",
         "wp-version-tested": "7.1",
         "php-min": "8.2",
-        "last-updated": "2026-08-27"
+        "last-updated": "2026-08-29"
       },
       "resources": [
         {
@@ -3886,9 +3886,9 @@
       "has_examples": false,
       "has_scripts": false,
       "skill_md": {
-        "bytes": 11820,
-        "lines": 255,
-        "sha256": "607cf3e599f8a8f28b48af40733b2325a2af417368ab1104e537620521eb49e4"
+        "bytes": 15700,
+        "lines": 319,
+        "sha256": "94deab03ea7cee73b682678d24914d936e8b0cbf138252c4d222d47779a46981"
       }
     },
     {
@@ -3906,10 +3906,10 @@
         "author": "Soczó Kristóf",
         "contact": "mailto:lonsdale201@hotmail.com",
         "plugin": "lw-firewall",
-        "plugin-version-tested": "1.5.4",
+        "plugin-version-tested": "1.5.6",
         "wp-version-tested": "7.1",
         "php-min": "8.2",
-        "last-updated": "2026-08-27"
+        "last-updated": "2026-08-29"
       },
       "resources": [
         {
@@ -3923,17 +3923,17 @@
           "path": "references/registration-and-rest-integration.md",
           "repo_path": "lw-plugins/lw-firewall-registration-guard/references/registration-and-rest-integration.md",
           "type": "reference",
-          "bytes": 6133,
-          "sha256": "b90390e72f3874cc8581dffa14eb5062d16ff12a902ceebe9228d4777179dffa"
+          "bytes": 6509,
+          "sha256": "17ce46a2f333ee5f1326772636cb1ae3e767c7f3b1c8998c8043c2a030b60dd5"
         }
       ],
       "has_reference": true,
       "has_examples": false,
       "has_scripts": false,
       "skill_md": {
-        "bytes": 7307,
-        "lines": 169,
-        "sha256": "02774a35a96eb92d2cadaa5247a3489b70a3c34caaf6786d542489b2e0983c44"
+        "bytes": 8370,
+        "lines": 183,
+        "sha256": "fc6516bebf1ca4a717259db32931d9de14d12dfe488b0b37ab0355eed4f0ce6a"
       }
     },
     {
