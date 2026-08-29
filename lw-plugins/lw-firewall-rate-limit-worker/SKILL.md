@@ -5,10 +5,10 @@ metadata:
   wp-skills-author: "Soczó Kristóf"
   wp-skills-contact: "mailto:lonsdale201@hotmail.com"
   wp-skills-plugin: "lw-firewall"
-  wp-skills-plugin-version-tested: "1.5.4"
+  wp-skills-plugin-version-tested: "1.5.6"
   wp-skills-wp-version-tested: "7.1"
   wp-skills-php-min: "8.2"
-  wp-skills-last-updated: "2026-08-27"
+  wp-skills-last-updated: "2026-08-29"
 ---
 
 # LW Firewall rate-limit worker compatibility
@@ -22,42 +22,58 @@ before normal plugin callbacks.
 After bootstrap/version checks, the request path is:
 
 1. `LW_FIREWALL_DISABLE_WORKER` and master `enabled` exits.
-2. Server/localhost IP exemption.
-3. `ip_whitelist` exemption.
-4. `ip_blacklist` 403.
-5. Geo blocking.
-6. Existing shared-ban lookup, conditionally enabled as described below.
-7. 404-flood lookup.
-8. User-Agent bot blocking.
-9. Endpoint detection.
-10. Per-IP counter, 429/redirect, and optional violation escalation.
+2. Worker heartbeat transient (`lw_firewall_worker_alive`), written before any
+   decision so the Status tab can tell "installed" from "actually running".
+3. Server/localhost IP exemption.
+4. `ip_whitelist` exemption.
+5. `ip_blacklist` 403.
+6. Geo blocking.
+7. Storage resolution (memoized per request).
+8. Shared-ban lookup — **unconditional whenever the firewall is on** since 1.5.5.
+9. 404-flood lookup.
+10. User-Agent bot blocking.
+11. Endpoint detection.
+12. Per-IP counter, 429/redirect, and optional violation escalation.
 
 Whitelisting bypasses every later worker check. A blacklist or geo block runs
 before endpoint-specific code.
 
+The server-IP exemption covers `127.0.0.1`, `::1` and `SERVER_ADDR` only. Since
+1.5.6 the site's own hostname is deliberately **not** resolved into an
+exemption: `SERVER_NAME` comes from the client's `Host` header under Apache's
+default `UseCanonicalName Off`, so resolving it was a full bypass for any
+address an attacker could point a hostname at.
+
 ## Exact endpoint detection
 
-| Reason | v1.5.4 condition |
+Since 1.5.6 classification runs on the **decoded path**, never the raw URI.
+`lw_firewall_parse_uri()` splits path from query, `rawurldecode()`s the path,
+collapses repeated slashes and strips a trailing one; `lw_firewall_path_is()`
+then compares with `str_ends_with` so a subdirectory install's
+`/blog/wp-login.php` still matches.
+
+| Reason | v1.5.6 condition |
 |---|---|
-| `cron` | URI contains `/wp-cron.php`, `protect_cron`; requests containing `doing_wp_cron=` are exempt |
-| `xmlrpc` | URI contains `/xmlrpc.php`, `protect_xmlrpc` |
-| `login` | URI contains `/wp-login.php`, `protect_login` |
-| `rest` | URI contains `/wp-json/`, `protect_rest_api` |
+| `cron` | decoded path is/ends with `/wp-cron.php`, `protect_cron`; exempt only when `doing_wp_cron` is a query arg **on that path** |
+| `xmlrpc` | decoded path is/ends with `/xmlrpc.php`, `protect_xmlrpc` |
+| `login` | decoded path is/ends with `/wp-login.php`, `protect_login` |
+| `rest` | decoded path contains `/wp-json/` (bare `/wp-json` included) **or** a `rest_route` query arg is present, `protect_rest_api` |
 | `filter` | raw query string contains a configured `filter_params` substring |
 
-The cron exemption is not authenticated. In 1.5.4 any external request whose
-URI contains both `/wp-cron.php` and `doing_wp_cron=` is treated as a loopback
-and gets no endpoint limit. Because detection scans the complete raw URI in a
-fixed order, a protected REST URL can also add those strings in its query and
-return early before REST detection. Parse and compare the path plus the actual
-loopback trust boundary in regression tests; do not treat the current helper as
-proof that WordPress originated the request.
+This closes the 1.5.4 substring hole: `/wp-json/x?next=/wp-cron.php&doing_wp_cron=1`
+no longer escapes rate limiting, and `?redirect=/wp-login.php` is no longer
+billed to the login quota. Both REST shapes are now covered — the pretty
+`/wp-json/` prefix, the bare `/wp-json` index, and `?rest_route=/namespace/path`.
 
-The worker does not detect arbitrary pretty URLs, normal `admin-ajax.php`
-actions, route/method combinations, the bare REST index `/wp-json`, or
-WordPress REST URLs written as `?rest_route=/namespace/path`. A global REST
-toggle is coarse protection for a shared bucket, not registration blocking or
-route authorization.
+The cron loopback marker is still **not authenticated** — it is only a path-scoped
+`doing_wp_cron` presence check. It can no longer be used to skip classification
+on another endpoint, but do not treat it as proof that WordPress originated the
+request.
+
+The worker still does not detect arbitrary pretty URLs, normal `admin-ajax.php`
+actions, or route/method combinations. A global REST toggle is coarse
+protection for a shared bucket, not registration blocking or route
+authorization.
 
 ## Logged-in REST/filter bucket
 
@@ -131,81 +147,118 @@ must preserve a JSON error contract.
 
 Use `IpDetector::get_ip()` so companion counters agree with the worker.
 `CF-Connecting-IP` is trusted only when `REMOTE_ADDR` belongs to a known
-Cloudflare network. Do not independently trust `X-Forwarded-For`.
+Cloudflare network. Never independently trust `X-Forwarded-For`.
 
-That safe client-IP rule does not currently extend to geo detection:
-`GeoDetector` accepts any non-empty `CF-IPCountry` header without checking that
-`REMOTE_ADDR` is Cloudflare. On an origin reachable directly, a caller can send
-an allowed/invalid country header and skip CIDR fallback. Do not use the geo
-result as authorization, and close direct origin access when relying on the
-1.5.4 Cloudflare-header path.
+Since 1.5.6 that same trust test also gates geo: `GeoDetector` calls
+`IpDetector::is_cloudflare_request()` before reading `CF-IPCountry`, and the
+value must be exactly two letters (`XX`/`T1` fall through to the CIDR index).
+The 1.5.4 hole — any non-empty country header believed straight at the origin —
+is closed. Geo is still a signal, not authorization.
+
+**Reverse proxies (new in 1.5.6, opt-in).** Behind the common "nginx in front
+of Apache on the same host" layout every request arrived as `127.0.0.1`, which
+the server-IP exemption treated as the server itself: a silent, total bypass
+while the Status tab reported health. Configure trusted proxies under
+IP Rules → Reverse Proxy (`trusted_proxies`, `proxy_header`). `ProxyTrust`
+reads the forwarded chain right to left, skipping hops that are themselves
+trusted, and only after `REMOTE_ADDR` matches a configured proxy; the header
+name is restricted to `x-forwarded-for` / `x-real-ip` / `forwarded`. It stays
+opt-in because a forwarded header is client-controlled until the hop that set
+it is known. If a companion computes its own client IP, it must honour the same
+configuration or its counters will disagree with the worker's.
 
 Manual whitelist/blacklist values support individual IPv4/IPv6 addresses and
 CIDR ranges. Whitelist payment/webhook providers only when their published
 source ranges are stable and verified; whitelisting bypasses bot, geo, rate,
 404, and shared-ban checks too.
 
-## Verified v1.5.4 ban limitations
+## Ban enforcement (fixed in 1.5.5)
 
-- The worker looks up `ban_<ip>` only when `auto_ban_enabled` or
-  `login_limit_enabled` is true. Registration and password-reset code can write
-  a ban while both toggles are false, leaving the indexed ban unenforced.
-- Worker endpoint counters are named `<reason>_<ip>` and
-  `<reason>_li_<ip>`. `AutoBanner::unban()` clears `rl_<ip>` but not those
-  reason-specific keys, so an unbanned client can remain rate-limited until the
-  normal `rate_window` expires.
+Both 1.5.4 ban defects are gone:
 
-Account for these current behaviors in tests and operational runbooks. They
-are not reasons to duplicate or edit the worker from a companion plugin.
+- The worker now reads `ban_<ip>` **unconditionally whenever the firewall is
+  on**. Gating it on `auto_ban_enabled` / `login_limit_enabled` had left every
+  other producer — registration spam, password-reset floods, a manual CLI or
+  admin ban — writing a key nothing ever read, so the admin screen listed an
+  address as banned while it browsed the site freely.
+- `AutoBanner::unban()` now also clears the worker's per-endpoint counters, so
+  a released address is actually released instead of staying 429 until
+  `rate_window` aged out.
+- Ban durations are clamped: a zero duration used to mean "no TTL" to every
+  backend, i.e. an accidentally permanent ban.
+
+Still verify a real follow-up request rather than an index row — the storage
+key remains the sole authority on whether an IP is blocked.
 
 ## Configuration and backend boundaries
 
-`Options::get()` applies an `LW_FIREWALL_<KEY>` constant, but
-`Options::get_all()` does not. The worker and `Plugin::init_runtime_hooks()`
-read `get_all()` for their master/toggle/list decisions. Consequently several
-documented constant overrides—including the master `enabled`, endpoint
-toggles, IP lists, geo/bot lists and storage preference—do not change those
-paths in 1.5.4. `LW_FIREWALL_DISABLE_WORKER` is checked directly and remains a
-real worker kill switch. Test the effective request, not only `Options::get()`
-or a status screen.
+Since 1.5.5 `wp-config.php` constants reach the runtime. `Options::get_all()`
+layers `LW_FIREWALL_<KEY>` constants over the stored values, so the worker,
+`Plugin::init_runtime_hooks()`, the `.htaccess` sync and the status screen all
+see the pinned configuration — including the master `enabled` switch. The new
+`Options::get_stored()` is the editing/persistence view with no constant
+overlay, so saving never writes a pinned value into the database, and
+`Options::overridden()` lists the keys a constant currently pins (the settings
+screen labels those fields). `LW_FIREWALL_DISABLE_WORKER` is still checked
+directly and remains a real worker kill switch.
 
-The storage implementations do not currently provide identical semantics:
+The 1.5.4 storage-semantics divergences are fixed:
 
-- Redis and APCu keep a counter's TTL from its first hit; file storage extends
-  expiry on every increment, so sustained low-rate traffic can accumulate and
-  later block only on the file backend.
-- APCu's missing-key path uses `apcu_store()` rather than an atomic add/retry;
-  simultaneous first hits can overwrite one another and undercount a burst.
-- file storage has no expired-file sweep. Distinct IP/token keys leave expired
-  files until that exact key is read again, so inode use can grow without bound.
-- APCu/Redis keys use the global `lw_fw_` prefix without an installation/site
-  namespace; independent WordPress installs sharing the backend can collide.
-- file storage is node-local unless the directory is truly shared. It cannot
-  enforce one cluster-wide quota by itself.
+- The file backend counts in a **fixed window** like Redis and APCu.
+  Re-stamping expiry on every increment made it a sliding window, so the same
+  traffic banned on one backend and never banned on another. `increment()` is
+  an atomic read-modify-write under an exclusive lock.
+- APCu uses `apcu_add()` for the first hit, so concurrent first requests can no
+  longer overwrite one another and undercount the start of a burst.
+- Expired cache files are swept probabilistically with a batch cap
+  (`CacheDirectory::sweep()`), instead of only when the identical hashed key
+  was read again.
+- Guard files are written unconditionally and cover the geo sub-directory
+  (`CacheDirectory::protect()`).
+- Keys are namespaced per installation: `StorageDetector::key_prefix()` returns
+  `lw_fw_<md5(ABSPATH) first 8>_`. Two installs sharing one APCu/Redis pool no
+  longer collide. Note the seed is `ABSPATH`, so a **multisite network shares
+  one prefix** — buckets are per network, not per subsite.
+- The CIDR cache is written to a temp file and renamed, so a reader cannot see
+  a half-written include and fail open.
+
+Remaining backend caveat: file storage is node-local unless the directory is
+truly shared. It cannot enforce one cluster-wide quota by itself.
 
 For a security-sensitive companion, verify atomicity, TTL semantics, backend
 health, installation isolation and multi-node behavior in the deployment. Do
 not advertise backend-independent quotas until those checks pass.
 
-`lw_firewall_resolve_storage()` probes APCu/Redis before the worker knows
-whether the request has an endpoint limit, and a usable Redis path opens one
-connection for availability and another for the backend object. Cache or defer
-companion backend resolution; never add another probe loop on every page view.
+`lw_firewall_resolve_storage()` is memoized per request since 1.5.6 (a static
+map keyed by preference, delegating to `lw_firewall_build_storage()`), so
+repeated calls no longer re-run the availability probes or open a second Redis
+connection. A companion may call it freely; still never add its own probe loop
+on every page view.
 
-When `log_enabled` is on, each blocked request can rewrite the 100-row
-`lw_firewall_log` option. The cap bounds stored rows but not database writes;
-high-volume logging needs sampling/aggregation or an external append-oriented
-sink so the defense does not amplify a flood.
+When `log_enabled` is on, `Logger` collapses repeated IP/reason pairs for five
+minutes (`DEDUPE_WINDOW = 300`) into one counted entry, so a flood no longer
+rewrites the 100-row `lw_firewall_log` option on every blocked request. The
+write amplification is bounded, not eliminated: distinct IPs still each write.
+High-volume sites should still prefer an external append-oriented sink.
 
 ## Worker lifecycle
 
 - Activation copies `worker/lw-firewall-worker.php` to the MU-plugin directory.
 - Upgrade hooks replace it; deactivation removes it.
 - Version drift makes the worker bail and the main plugin attempts one repair.
-- The copied worker resolves classes from the literal
-  `WP_PLUGIN_DIR . '/lw-firewall/'` directory. Renaming the plugin directory can
-  make the worker return before registering while its version constant still
-  lets the main plugin regard the installed copy as current.
+- Since 1.5.6 `Activator::is_worker_outdated()` also compares **content**, not
+  only the version constant: an installed copy older than
+  `worker/lw-firewall-worker.php` by `filemtime` is replaced. A worker edited
+  without a version bump used to leave the stale copy running against new
+  plugin classes, which can fatal the site on a duplicate declaration.
+- The copied worker still resolves classes from the literal
+  `WP_PLUGIN_DIR . '/lw-firewall/'` directory, so renaming the plugin directory
+  makes it return before registering. Since 1.5.6 that is visible: the worker
+  writes a `lw_firewall_worker_alive` transient before any decision, and the
+  Status tab reports a worker that is installed but has never run
+  (`Activator::worker_last_seen()`). The version constant is defined before the
+  worker proves it can load anything, so it alone never was evidence.
+- `wp lw-firewall worker install|remove` drives the lifecycle from the CLI.
 - If the worker remains missing/outdated, the plugin does not register its
   normal runtime hooks, including registration, reset, 404 tracking, and
   security headers. Administrator monitoring is initialized separately.
@@ -218,7 +271,9 @@ Never edit the installed copy: lifecycle operations overwrite it.
 
 - Test anonymous and cookie-bearing REST/filter requests separately.
 - Test `/wp-json/`, bare `/wp-json`, and `?rest_route=` separately.
-- Test a REST URI carrying `/wp-cron.php` plus `doing_wp_cron=` in its query.
+- Test a REST URI carrying `/wp-cron.php` plus `doing_wp_cron=` in its query,
+  and percent-encoded / doubled-slash / trailing-slash spellings of each endpoint.
+- Test from behind a reverse proxy with and without `trusted_proxies` set.
 - Test limits with `protect_rest_api` on and off.
 - Exercise 429/`Retry-After`, filter redirect, and the endpoint's JSON contract.
 - Test current, missing, outdated, and emergency-disabled worker states.
@@ -228,6 +283,7 @@ Never edit the installed copy: lifecycle operations overwrite it.
   selectable storage backend.
 - Inspect expired file count and database writes during a distributed smoke load.
 - Verify constant overrides against a real worker request, not only an option read.
+- Verify the worker heartbeat after a plugin-directory rename.
 
 ## Cross-references
 
@@ -251,4 +307,12 @@ Never edit the installed copy: lifecycle operations overwrite it.
   - `includes/Rules/IpMatcher.php`
   - `includes/Storage/StorageInterface.php`
   - `includes/Storage/FileStorage.php`
+  - `includes/Storage/ApcuStorage.php`
+  - `includes/Storage/StorageDetector.php`
+  - `includes/Storage/CacheDirectory.php`
+  - `includes/ProxyTrust.php`
+  - `includes/OptionSchema.php`
+  - `includes/Logger.php`
+  - `includes/Geo/GeoDetector.php`
+  - `includes/CLI/WorkerCommand.php`
   - `CHANGELOG.md`

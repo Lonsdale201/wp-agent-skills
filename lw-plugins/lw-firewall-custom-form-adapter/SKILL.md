@@ -5,15 +5,15 @@ metadata:
   wp-skills-author: "Soczó Kristóf"
   wp-skills-contact: "mailto:lonsdale201@hotmail.com"
   wp-skills-plugin: "lw-firewall"
-  wp-skills-plugin-version-tested: "1.5.4"
+  wp-skills-plugin-version-tested: "1.5.6"
   wp-skills-wp-version-tested: "7.1"
   wp-skills-php-min: "8.2"
-  wp-skills-last-updated: "2026-08-27"
+  wp-skills-last-updated: "2026-08-29"
 ---
 
 # LW Firewall custom-form adapter
 
-LW Firewall 1.5.4 has dedicated guards for core registration and password
+LW Firewall 1.5.6 has dedicated guards for core registration and password
 reset. It does not expose a generic “attach this firewall to any form” service,
 field descriptor, render/validate interface, or form registry.
 
@@ -43,16 +43,30 @@ counters, and can create a misleading `register_spam` ban.
 version-pinned adapter and explicit fallback policy; their class names and
 settings remain registration-oriented.
 
-The token in v1.5.4 signs only a timestamp. A developer-provided `$scope` is
-used solely in the replay-storage key, not in the signed token. Consequently a
-token is not cryptographically bound to the custom form, route, field name,
-user, or scope. Tokens minted in one second are identical and can collide under
-single-use enforcement.
+**The token format changed in 1.5.6 — this is a breaking change for adapters.**
+The payload is now `v2.<issued>.<scope>.<nonce>`, HMAC-signed as a whole, where
+the nonce is 16 random bytes per render. Three consequences:
 
-If form binding, cryptographic randomness, or high-assurance proof is required,
-the current primitive is insufficient. Use a purpose-built random, signed,
-form-bound protocol or an external challenge; do not hide the limitation behind
-an adapter name.
+- **The scope is signed, not just a storage-key prefix.** A token issued with
+  one scope can no longer be presented to another form — but it also means
+  `issue()` and `verify()` **must be given the same scope**. `issue()` defaults
+  to `'reg'`, so an adapter that calls a bare `issue()` and verifies with its
+  own scope now fails every submission. Always pass the scope on both sides.
+- **Same-second renders are distinct.** The 1.5.4 collision (identical tokens
+  within one second, single-use rejecting all but the first, a shared page cache
+  handing one token to everybody) is gone.
+- **Scope is normalized** to `[a-z0-9_-]` after `strtolower()`, and other
+  characters are stripped — `my form!` and `myform` are the same scope. Pick a
+  scope that is already in that alphabet.
+
+The format version is signed too, so a token rendered by 1.5.4 does not verify
+on 1.5.6. Expect a burst of rejections from cached pages immediately after the
+upgrade; that is the intended fail-closed behaviour, not a defect.
+
+The primitive is now a per-render, signed, form-bound proof of render. It is
+still not identity or a CAPTCHA: it proves a form was rendered, not who
+rendered it. For high-assurance proof, use a purpose-built protocol or an
+external challenge; do not hide the limitation behind an adapter name.
 
 ## Minimal adapter pattern
 
@@ -79,7 +93,9 @@ final class MyFormProof
         }
 
         return [
-            self::TOKEN => RegisterToken::issue(),
+            // Pass the scope: it is signed into the token in 1.5.6, and
+            // verify() below must be given the same one.
+            self::TOKEN => RegisterToken::issue(self::SCOPE),
             self::HONEYPOT => '',
         ];
     }
@@ -172,7 +188,7 @@ transport-neutral form-guard contract with:
 Read [generic-form-guard-proposal.md](references/generic-form-guard-proposal.md)
 for the proposed PHP contract, threat boundaries, hooks and acceptance tests.
 That document is a design proposal for a later LW Firewall version, not an API
-available in 1.5.4.
+available in 1.5.6.
 
 ## Layers the adapter must not replace
 
@@ -187,8 +203,11 @@ available in 1.5.4.
 
 - Valid, missing, filled, and omitted honeypot.
 - Valid, tampered, too-young, expired, and replayed token.
-- Two tokens issued in the same second for the same scope.
-- Token minted for one adapter and submitted to another scope.
+- Two tokens issued in the same second for the same scope (must both succeed).
+- Token minted for one adapter and submitted to another scope (must fail).
+- A token issued without an explicit scope and verified with one (must fail —
+  this is the common adapter bug after the 1.5.6 format change).
+- A token in the pre-1.5.6 format (must fail closed).
 - Shared-cache delivery to multiple anonymous clients.
 - Plugin inactive, helper unavailable, master disabled, and chosen fail policy.
 - Form-specific rate threshold and atomic concurrency.
