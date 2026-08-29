@@ -138,10 +138,12 @@ final class MyFormProof
 }
 ```
 
-`SCOPE` must be a developer-owned constant, never request input. It separates
-the atomic replay counter but does not bind the signature. Own timing values in
-the companion plugin; borrowing `register_*` options silently couples unrelated
-forms to registration policy.
+`SCOPE` must be a developer-owned constant, never request input. Since 1.5.6 it
+is signed into the token as well as namespacing the atomic replay counter, so it
+genuinely binds the proof to this form — which is also why `issue()` and
+`verify()` must receive the identical value. Own timing values in the companion
+plugin; borrowing `register_*` options silently couples unrelated forms to
+registration policy.
 
 ## Rendering and transport
 
@@ -161,9 +163,11 @@ with a form-specific key and `IpDetector::get_ip()`. Return the transport's own
 generic 429 contract rather than calling `RateLimiter::too_many()` when a JSON
 envelope is required.
 
-The global `protect_rest_api` toggle is shared across all detected `/wp-json/`
-traffic, does not recognize `?rest_route=`, and does not know which route
-submits this form.
+The global `protect_rest_api` toggle is shared across all detected REST traffic
+— since 1.5.6 that includes the pretty `/wp-json/` prefix, the bare `/wp-json`
+index and the `?rest_route=` form — but it is one shared bucket and does not
+know which route submits this form. It is not a substitute for a form-specific
+limit.
 
 `RateLimiter::is_allowed_key()` overrides the count limit only. Its window
 still comes from the global `rate_window` option. A companion that needs an
