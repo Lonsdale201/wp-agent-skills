@@ -1,6 +1,6 @@
 # Registration and REST integration contract
 
-This reference is verified against LW Firewall 1.5.4 and WordPress 7.1.
+This reference is verified against LW Firewall 1.5.6 and WordPress 7.1.
 
 ## Transport-independent validator
 
@@ -113,15 +113,19 @@ $bootstrap['lwFirewall'] = [
         && (bool) Options::get('enabled', true)
         && (bool) Options::get('register_protect_enabled', true),
     'tokenName' => 'lw_fw_reg_token',
-    'token' => class_exists(RegisterToken::class) ? RegisterToken::issue() : '',
+    // Scope is signed into the token since 1.5.6; issue and verify must agree.
+    // 'reg' is the built-in registration scope used by verify() below.
+    'token' => class_exists(RegisterToken::class) ? RegisterToken::issue('reg') : '',
     'honeypotName' => 'lw_fw_url',
     'honeypotEnabled' => (bool) Options::get('register_honeypot', true),
 ];
 ```
 
 Do not cache a single token into a shared page or CDN response when single-use
-is enabled. Every visitor receiving the cached value would contend for the same
-replay key. Mark the bootstrap private/no-store or fetch it per session/request.
+is enabled. 1.5.6's per-render nonce makes two *renders* distinct, but a cached
+page is one render served many times, so every visitor still contends for the
+same replay key. Mark the bootstrap private/no-store or fetch it per
+session/request.
 
 ## Route-local rate limit
 
@@ -153,7 +157,10 @@ namespace unique; never reuse worker keys such as `rest_<ip>`.
 2. Missing token and invalid signature.
 3. Token younger than the fill-time floor and older than the maximum age.
 4. First and second use with single use enabled.
-5. Two tokens issued in the same second and submitted by different clients.
+5. Two tokens issued in the same second and submitted by different clients
+   (both must succeed since 1.5.6).
+5b. A token issued under a different scope (must fail), and a pre-1.5.6 token
+   (must fail closed).
 6. Filled honeypot; optionally missing honeypot if the adapter requires presence.
 7. Plugin inactive, master disabled, registration guard disabled, worker outdated.
 8. Route-local limit and generic error response.

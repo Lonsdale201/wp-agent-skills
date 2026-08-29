@@ -5,10 +5,10 @@ metadata:
   wp-skills-author: "Soczó Kristóf"
   wp-skills-contact: "mailto:lonsdale201@hotmail.com"
   wp-skills-plugin: "lw-firewall"
-  wp-skills-plugin-version-tested: "1.5.4"
+  wp-skills-plugin-version-tested: "1.5.6"
   wp-skills-wp-version-tested: "7.1"
   wp-skills-php-min: "8.2"
-  wp-skills-last-updated: "2026-08-27"
+  wp-skills-last-updated: "2026-08-29"
 ---
 
 # LW Firewall password-reset protection
@@ -26,7 +26,7 @@ The reset guard initializes only when the MU worker is current, master
 |---|---|
 | `lostpassword_form` | render `lw_fw_reset_token` and `lw_fw_confirm_url` on core `wp-login.php` |
 | `lostpassword_post` | apply proof decision and three rate-limit axes before mail |
-| `allow_password_reset` | optionally refuse the `administrator` role when `reset_block_admins` is on |
+| `allow_password_reset` | optionally refuse every privileged account when `reset_block_admins` is on |
 
 Core `retrieve_password()` and WooCommerce's account implementation both fire
 `lostpassword_post` with `WP_Error` and `WP_User|false`, so their valid-account
@@ -58,20 +58,24 @@ than automatic reset-guard coverage.
 | Target account | 3 per 3600 seconds | `reset_user_<user-id>` | one known account |
 
 The first `max` attempts pass; the next is rejected because the comparison is
-`count > max`. A maximum of zero disables that axis. IP short-circuits global
-and target; global short-circuits target. The target uses user ID, so login,
-case variants resolved by WordPress, and email share a bucket.
+`count > max`. A maximum of zero disables that axis. The target uses user ID, so
+login, case variants resolved by WordPress, and email share a bucket.
+
+**Evaluation order changed in 1.5.6:** `ResetLimiter::record()` now charges
+**IP → target account → site-wide**, so the hourly email cap is charged last and
+only by a request that has cleared everything else. Charging it first let
+refused requests drain it: a flood against one account could exhaust the quota
+and deny password resets to every other user until the window rolled over.
+`record_rejected()` charges the sender's IP allowance only — bot traffic still
+earns its own ban but no longer spends the target's allowance or the site's
+email budget.
 
 `PasswordResetGuard` returns immediately when core/Woo has already put an error
 on the `WP_Error`, so unknown/empty accounts are not counted by this guard.
 
-The global counter is incremented before the target-account counter. Once one
-known account is over its target limit, later distributed attempts for that
-account still consume the global allowance before returning `user`. After the
-global maximum, the verdict changes to `global` and resets for every account
-are refused. Therefore the current counter is not the documented count of
-emails actually sent; treat it as a site-wide request budget with a distributed
-denial-of-service edge.
+The site-wide counter is still a request budget rather than a count of emails
+actually sent, but the 1.5.4 denial-of-service edge is closed: a request refused
+on the IP or target axis no longer charges it.
 
 ## Exemptions and refusal behavior
 
@@ -89,26 +93,37 @@ global limits never ban the last requester. Alerts use the Alerts-tab recipient
 policy and are throttled once per verdict per hour. Public messages remain
 generic within the proof/rate categories.
 
-## Verified v1.5.4 constraints
+## Verified v1.5.6 constraints
 
-- Reset and registration use the same timestamp-only `RegisterToken` format.
-  The `reset` argument namespaces only the single-use key; it is not signed into
-  the token and does not bind the token to the reset form.
-- Tokens minted in the same second are identical. Two reset forms rendered in
-  that second collide when single use is enabled.
+Fixed since this skill's 1.5.4 grounding — do not re-report these:
+
+- **The proof token is now form-bound and per-render.** `RegisterToken` signs a
+  per-render nonce and a scope into the payload, so tokens minted in the same
+  second are no longer identical (a shared page cache used to hand one token to
+  every visitor, and single-use rejected all but the first), and a token issued
+  by one form can no longer be presented to another. `verify()` and `check()`
+  take the scope as their fifth argument — pass the same scope you issued with.
+- **The site-wide counter is charged last** (see above), so failed-proof and
+  target-refused traffic no longer drains it.
+- **`reset_block_admins` covers every privileged account**, not just the
+  `administrator` role slug: multisite super admins and any custom role holding
+  `manage_options` are included.
+- **A reset ban is enforced whenever the firewall is on.** The worker's
+  shared-ban lookup is no longer gated on `auto_ban_enabled` /
+  `login_limit_enabled`, so `reset_auto_ban` alone now produces a real block.
+
+Still true in 1.5.6:
+
 - The honeypot checks only for a non-empty value; an omitted field is accepted.
-- A failed proof is passed through the IP/global limiter before its verdict is
-  overwritten to `spam`. Distributed valid-account spam can therefore consume
-  the global allowance even though those failed-proof requests send no email.
-- Requests already destined for a `user` refusal also increment the global
-  counter first. Repeating one known target across enough IPs can exhaust the
-  site-wide allowance after only the first target-limited emails were sent.
-- A reset ban is enforced by the worker only when `auto_ban_enabled` or
-  `login_limit_enabled` is also true; `reset_auto_ban` alone does not enable the
-  worker's shared-ban lookup.
+- The proof token is enforced only on `wp-login.php`, because
+  `lostpassword_form` is the only place it is rendered. Woo, custom and REST
+  reset paths get the rate limits but no LW proof check.
+- `reset_block_admins` answers differently for a privileged account, which
+  allows administrator enumeration. Upstream lists this as known and not fixed:
+  closing it needs the same generic-response handling as lost-password user
+  enumeration.
 
-Treat these as current implementation facts and regression-test them around any
-companion behavior. Do not advertise the token as form-bound human proof.
+Regression-test these around any companion behavior.
 
 ## Configuration and operations
 
@@ -145,11 +160,13 @@ it. `reset off` preserves the other values.
 - Keep anti-enumeration behavior consistent with the product's reset policy.
 - Test valid account, invalid account, IP/global/target thresholds, and recovery after TTL.
 - Test core, WooCommerce, custom POST, REST, privileged admin, CLI, and whitelisted IP.
-- Test same-second tokens and single-use replay on `wp-login.php`.
+- Test same-second tokens and single-use replay on `wp-login.php`, and assert a
+  reset-scope token is refused by the registration form (and vice versa).
 - Verify that an indexed reset ban is actually enforced and removable.
-- Test distributed failed-proof traffic against the global allowance.
-- Test repeated target-limited traffic from changing IPs and assert how many
-  actual emails versus `reset_all` increments occurred.
+- Assert that failed-proof and target-refused traffic does NOT charge
+  `reset_all` — that ordering is the 1.5.6 fix and is easy to regress.
+- Test `reset_block_admins` against a multisite super admin and a custom role
+  holding `manage_options`, not only the `administrator` slug.
 
 ## Cross-references
 
