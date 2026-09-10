@@ -2,11 +2,10 @@ name: Build skills index
 
 on:
   pull_request:
-    branches: [contrib, main]
+    branches: [main]
     types: [opened, synchronize, reopened, ready_for_review]
   push:
     branches:
-      - contrib
       - main
   workflow_dispatch:
 

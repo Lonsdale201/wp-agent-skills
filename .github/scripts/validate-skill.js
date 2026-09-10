@@ -7,7 +7,7 @@ const cp = require('child_process');
 const yaml = require('js-yaml');
 
 const ROOT = process.cwd();
-const BASE_REF = process.env.BASE_REF || 'origin/contrib';
+const BASE_REF = process.env.BASE_REF || 'origin/main';
 
 const ALLOWED_DOMAINS = new Set([
   'wordpress',
@@ -86,7 +86,7 @@ function sh(cmd) {
 
 function changedFiles() {
   // Resolve a meaningful base SHA. For pull_request, the base ref is fetched.
-  // For push, we compare against origin/contrib.
+  // For push, we compare against origin/main.
   let base;
   try {
     base = sh(`git merge-base HEAD ${BASE_REF}`);

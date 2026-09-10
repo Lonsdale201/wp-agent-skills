@@ -17,6 +17,5 @@ updates:
       - github-actions
     commit-message:
       prefix: "ci(deps)"
-    target-branch: contrib
     reviewers:
       - Lonsdale201

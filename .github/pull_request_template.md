@@ -17,7 +17,7 @@ New skills are written by the maintainer — see CONTRIBUTING.md.
 
 ## Checklist
 
-- [ ] Targets the `contrib` branch (not `main`).
+- [ ] Targets the `main` branch.
 - [ ] Only touches files I intend to change (no stray edits to other skills).
 - [ ] Frontmatter still parses; required fields present.
 - [ ] If the skill content changed: bumped `last-updated` to today.

@@ -11,10 +11,10 @@ Pick the row that matches your intent.
 | Report a problem with an existing skill | **[Report a skill problem](../../issues/new?template=report-skill.yml)** issue form | Maintainer triages; you (or a contributor) open a PR with the fix. |
 | Ask a question | **[Question](../../issues/new?template=question.yml)** issue form | Conversation in the issue thread. |
 | Suggest a skill that should exist (without writing it) | **[Request a skill](../../issues/new?template=request-skill.yml)** issue form | Maintainer evaluates demand and either picks it up or invites contributors. |
-| Tiny fix to an existing skill (typo, link, version bump) | Direct PR against `contrib` | CI validates; maintainer merges. |
-| Larger edit / refactor of an existing skill | Open a *Report a skill problem* or *Question* issue first to align on scope, then PR against `contrib` | Same as above. |
+| Tiny fix to an existing skill (typo, link, version bump) | Direct PR against `main` | CI validates; maintainer reviews and merges. |
+| Larger edit / refactor of an existing skill | Open a *Report a skill problem* or *Question* issue first to align on scope, then PR against `main` | Same as above. |
 
-> Only the maintainer (`@Lonsdale201`) merges `contrib` → `main` periodically. Direct pushes to `main` are blocked by branch protection.
+> `main` is the only branch. Direct pushes to it are blocked by branch protection; every change lands through a PR that the maintainer (`@Lonsdale201`) reviews and merges.
 
 ### Can I submit a finished skill?
 
