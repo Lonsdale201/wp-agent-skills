@@ -204,7 +204,6 @@ Stripe 10.8 contains read-only Stripe abilities, but registration is gated by `w
 ## Cross-references
 
 - Use `wc-stripe-future-payments` for charge-and-save and later off-session PaymentIntent state machines.
-- Use `wc-payment-gateway` for provider-neutral payment state and webhook design.
 - Use `wc-stripe-add-payment-method` for SetupIntent token creation in My Account.
 - Use `wc-stripe-subscriptions` for Stripe renewal and subscription change-payment behavior.
 - Use `wc-logging` and `wc-action-scheduler-jobs` for general diagnostics.

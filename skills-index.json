@@ -11,8 +11,8 @@
     "layout": "<domain>/<skill>/SKILL.md",
     "skill_file": "SKILL.md"
   },
-  "domain_count": 23,
-  "skill_count": 258,
+  "domain_count": 22,
+  "skill_count": 227,
   "domains": [
     {
       "slug": "better-data",
@@ -25,12 +25,6 @@
       "path": "better-route",
       "readme_path": "better-route/README.md",
       "skill_count": 23
-    },
-    {
-      "slug": "dev-tooling",
-      "path": "dev-tooling",
-      "readme_path": "dev-tooling/README.md",
-      "skill_count": 7
     },
     {
       "slug": "elementor",
@@ -90,7 +84,7 @@
       "slug": "plugin-scaffold",
       "path": "plugin-scaffold",
       "readme_path": "plugin-scaffold/README.md",
-      "skill_count": 12
+      "skill_count": 10
     },
     {
       "slug": "polylang",
@@ -120,7 +114,7 @@
       "slug": "theme-development",
       "path": "theme-development",
       "readme_path": "theme-development/README.md",
-      "skill_count": 17
+      "skill_count": 16
     },
     {
       "slug": "translatepress",
@@ -132,13 +126,13 @@
       "slug": "woocommerce",
       "path": "woocommerce",
       "readme_path": "woocommerce/README.md",
-      "skill_count": 44
+      "skill_count": 30
     },
     {
       "slug": "wordpress",
       "path": "wordpress",
       "readme_path": "wordpress/README.md",
-      "skill_count": 49
+      "skill_count": 42
     },
     {
       "slug": "wp-rocket",
@@ -1224,264 +1218,6 @@
       }
     },
     {
-      "slug": "wp-docker-compose-stack",
-      "name": "wp-docker-compose-stack",
-      "domain": "dev-tooling",
-      "description": "Build a custom docker-compose development stack for WordPress when wp-env's abstraction runs out — Redis object cache, Mailpit SMTP capture, custom PHP extensions (phpredis, Xdebug), php.ini overrides. Covers the official wordpress image's runtime-env config model (wp-config.php reads WORDPRESS_DB_* / WORDPRESS_CONFIG_EXTRA via getenv at request time, so every container sharing the volume — wp-cli included — needs the same environment, best shared via a YAML anchor), the mariadb healthcheck + service_healthy dependency, a wp-cli service as user 33:33, wiring the redis-cache plugin drop-in with WP_REDIS_HOST, why wp_mail silently fails (invalid wordpress@localhost From) and the phpmailer_init + Mailpit fix, pecl Dockerfiles for phpredis/Xdebug, and pinning image tags because wordpress:latest lags WP releases. Use when composing docker-compose.yml for WP, adding Redis/mail capture to local dev, or debugging a WP container where config env vars seem ignored.",
-      "path": "dev-tooling/wp-docker-compose-stack",
-      "skill_path": "dev-tooling/wp-docker-compose-stack/SKILL.md",
-      "url": "https://raw.githubusercontent.com/Lonsdale201/wp-agent-skills/main/dev-tooling/wp-docker-compose-stack/SKILL.md",
-      "raw_url": "https://raw.githubusercontent.com/Lonsdale201/wp-agent-skills/main/dev-tooling/wp-docker-compose-stack/SKILL.md",
-      "html_url": "https://github.com/Lonsdale201/wp-agent-skills/blob/main/dev-tooling/wp-docker-compose-stack/SKILL.md",
-      "directory_url": "https://github.com/Lonsdale201/wp-agent-skills/tree/main/dev-tooling/wp-docker-compose-stack",
-      "metadata": {
-        "author": "Soczó Kristóf",
-        "contact": "mailto:lonsdale201@hotmail.com",
-        "plugin": "wordpress",
-        "plugin-version-tested": "wordpress:latest image (WP 6.8.3 / PHP 8.3); mariadb:lts; redis-cache 2.8.0; Xdebug 3.5.3; Docker 29.3 / Compose v5.1",
-        "wp-version-tested": "7.0",
-        "php-min": "7.4",
-        "last-updated": "2026-07-14",
-        "license": "GPLv2-or-later"
-      },
-      "resources": [
-        {
-          "path": "examples/docker-compose.yml",
-          "repo_path": "dev-tooling/wp-docker-compose-stack/examples/docker-compose.yml",
-          "type": "example",
-          "bytes": 2805,
-          "sha256": "0577dadec5d52fc6d8462413045e3c1e9d2897c58a523d482661f40c380709d6"
-        },
-        {
-          "path": "examples/Dockerfile.xdebug",
-          "repo_path": "dev-tooling/wp-docker-compose-stack/examples/Dockerfile.xdebug",
-          "type": "example",
-          "bytes": 791,
-          "sha256": "dfd7a0e4fca6ccb02a3c2a343b70a30bb0de9c581fcf8ef938100c79e491c241"
-        },
-        {
-          "path": "examples/mu-plugin-mailpit.php",
-          "repo_path": "dev-tooling/wp-docker-compose-stack/examples/mu-plugin-mailpit.php",
-          "type": "example",
-          "bytes": 816,
-          "sha256": "a90c4c5ea6f3f81feb1af3596228568c8fe945c2890997cbeccc58cbeb2e2572"
-        },
-        {
-          "path": "examples/uploads.ini",
-          "repo_path": "dev-tooling/wp-docker-compose-stack/examples/uploads.ini",
-          "type": "example",
-          "bytes": 173,
-          "sha256": "59250e8ccb8b871960b6b53ac5ac81d8ed11475402a8c9444cc6b89860f87b54"
-        }
-      ],
-      "has_reference": false,
-      "has_examples": true,
-      "has_scripts": false,
-      "skill_md": {
-        "bytes": 11835,
-        "lines": 215,
-        "sha256": "d98b6c8170fc698fa20f4c97a5537d9798663a4775c93d858b164d6cefcb75b0"
-      }
-    },
-    {
-      "slug": "wp-env-local-dev",
-      "name": "wp-env-local-dev",
-      "domain": "dev-tooling",
-      "description": "Run a local WordPress development environment with wp-env (the official @wordpress/env Docker wrapper) — the default choice for plugin and block development. Covers the npx @wordpress/env command (and the trap that bare \"npx wp-env\" installs an unrelated stub package), the .wp-env.json config (core, phpVersion, plugins, themes, mappings, config constants, ports, multisite, lifecycleScripts, .wp-env.override.json merge rules), the twin instances (dev on 8888, tests on 8889 with separate databases), running wp-cli via \"wp-env run cli\", the preinstalled PHPUnit + Composer + WP test suite in the tests instance, step debugging with \"wp-env start --xdebug\", and start/stop/clean/destroy lifecycle. Use when setting up local WP for a plugin or theme, when a .wp-env.json is present or needs writing, when the user asks for a quick WordPress sandbox with Docker, or before reaching for a hand-written docker-compose stack.",
-      "path": "dev-tooling/wp-env-local-dev",
-      "skill_path": "dev-tooling/wp-env-local-dev/SKILL.md",
-      "url": "https://raw.githubusercontent.com/Lonsdale201/wp-agent-skills/main/dev-tooling/wp-env-local-dev/SKILL.md",
-      "raw_url": "https://raw.githubusercontent.com/Lonsdale201/wp-agent-skills/main/dev-tooling/wp-env-local-dev/SKILL.md",
-      "html_url": "https://github.com/Lonsdale201/wp-agent-skills/blob/main/dev-tooling/wp-env-local-dev/SKILL.md",
-      "directory_url": "https://github.com/Lonsdale201/wp-agent-skills/tree/main/dev-tooling/wp-env-local-dev",
-      "metadata": {
-        "author": "Soczó Kristóf",
-        "contact": "mailto:lonsdale201@hotmail.com",
-        "plugin": "wordpress",
-        "plugin-version-tested": "wp-env 11.10.0; WP 7.0.1; Xdebug 3.5.3; Docker 29.3 / Compose v5.1",
-        "wp-version-tested": "7.0",
-        "php-min": "7.4",
-        "last-updated": "2026-07-14",
-        "license": "GPLv2-or-later"
-      },
-      "resources": [],
-      "has_reference": false,
-      "has_examples": false,
-      "has_scripts": false,
-      "skill_md": {
-        "bytes": 9461,
-        "lines": 161,
-        "sha256": "00f900369ee97457f21f4076da16ee09e677ff600c908ca226d53b16184da507"
-      }
-    },
-    {
-      "slug": "wp-phpcs-coding-standards",
-      "name": "wp-phpcs-coding-standards",
-      "domain": "dev-tooling",
-      "description": "Set up and run PHP_CodeSniffer with the WordPress Coding Standards (WPCS) and PHPCompatibility on a plugin or theme. Covers the composer dev-dependencies and their exact (and confusingly-named) packages — `squizlabs/php_codesniffer`, `wp-coding-standards/wpcs`, `phpcompatibility/phpcompatibility-wp`, `dealerdirect/phpcodesniffer-composer-installer` — the required `allow-plugins` config, the `phpcs.xml.dist` ruleset (the `WordPress` / `-Core` / `-Extra` / `-Docs` standards, `prefixes`, `text_domain`, `minimum_wp_version`, `testVersion`), running `phpcs` (check) vs `phpcbf` (auto-fix), `phpcs -i`, `phpcs:ignore` / `disable` comments, and the WPCS 3.x breaking changes (sniff and property renames such as `minimum_supported_version` becoming `minimum_wp_version`). Use when adding coding-standards linting, writing/auditing a ruleset, or fixing \"standard not installed\" / WPCS 2.x-to-3.x migration problems.",
-      "path": "dev-tooling/wp-phpcs-coding-standards",
-      "skill_path": "dev-tooling/wp-phpcs-coding-standards/SKILL.md",
-      "url": "https://raw.githubusercontent.com/Lonsdale201/wp-agent-skills/main/dev-tooling/wp-phpcs-coding-standards/SKILL.md",
-      "raw_url": "https://raw.githubusercontent.com/Lonsdale201/wp-agent-skills/main/dev-tooling/wp-phpcs-coding-standards/SKILL.md",
-      "html_url": "https://github.com/Lonsdale201/wp-agent-skills/blob/main/dev-tooling/wp-phpcs-coding-standards/SKILL.md",
-      "directory_url": "https://github.com/Lonsdale201/wp-agent-skills/tree/main/dev-tooling/wp-phpcs-coding-standards",
-      "metadata": {
-        "author": "Soczó Kristóf",
-        "contact": "mailto:lonsdale201@hotmail.com",
-        "plugin": "wordpress",
-        "plugin-version-tested": "7.1",
-        "wp-version-tested": "7.1",
-        "toolchain-tested": "WPCS 3.4.1; PHP_CodeSniffer 3.13.5; PHPCompatibilityWP 2.1.8",
-        "php-min": "7.4",
-        "last-updated": "2026-08-20",
-        "license": "GPLv2-or-later"
-      },
-      "resources": [],
-      "has_reference": false,
-      "has_examples": false,
-      "has_scripts": false,
-      "skill_md": {
-        "bytes": 10608,
-        "lines": 192,
-        "sha256": "44ee2f8476a26187c8b3e9291af39aa9a11bd77d188bb902f135f3a874a0c8c5"
-      }
-    },
-    {
-      "slug": "wp-phpstan-static-analysis",
-      "name": "wp-phpstan-static-analysis",
-      "domain": "dev-tooling",
-      "description": "Run PHPStan static analysis on a WordPress plugin or theme using `szepeviktor/phpstan-wordpress`. Covers the composer dev-dependencies and what is pulled transitively (`phpstan/phpstan` ^2.0, `php-stubs/wordpress-stubs`), the optional `phpstan/extension-installer` that auto-registers the extension, the `phpstan.neon.dist` config (level 0-10 / `max`, `paths`, the `vendor/szepeviktor/phpstan-wordpress/extension.neon` include when not using the installer), why WordPress needs stubs, adding WooCommerce stubs (`php-stubs/woocommerce-stubs`) for cross-plugin analysis, the `--generate-baseline` workflow for legacy code, common WP false positives the extension fixes (apply_filters arg counts, is_wp_error narrowing, hook callbacks, dynamic constants), and running with `--level` / `--memory-limit`. Use when adding static analysis, writing phpstan.neon, raising the level, or taming WP-specific PHPStan errors.",
-      "path": "dev-tooling/wp-phpstan-static-analysis",
-      "skill_path": "dev-tooling/wp-phpstan-static-analysis/SKILL.md",
-      "url": "https://raw.githubusercontent.com/Lonsdale201/wp-agent-skills/main/dev-tooling/wp-phpstan-static-analysis/SKILL.md",
-      "raw_url": "https://raw.githubusercontent.com/Lonsdale201/wp-agent-skills/main/dev-tooling/wp-phpstan-static-analysis/SKILL.md",
-      "html_url": "https://github.com/Lonsdale201/wp-agent-skills/blob/main/dev-tooling/wp-phpstan-static-analysis/SKILL.md",
-      "directory_url": "https://github.com/Lonsdale201/wp-agent-skills/tree/main/dev-tooling/wp-phpstan-static-analysis",
-      "metadata": {
-        "author": "Soczó Kristóf",
-        "contact": "mailto:lonsdale201@hotmail.com",
-        "plugin": "wordpress",
-        "plugin-version-tested": "7.1",
-        "wp-version-tested": "7.1",
-        "toolchain-tested": "PHPStan 2.2.5; phpstan-wordpress 2.0.3; wordpress-stubs 7.0.1",
-        "php-min": "7.4",
-        "last-updated": "2026-08-20",
-        "license": "GPLv2-or-later"
-      },
-      "resources": [],
-      "has_reference": false,
-      "has_examples": false,
-      "has_scripts": false,
-      "skill_md": {
-        "bytes": 9759,
-        "lines": 197,
-        "sha256": "235984545aae067938662fa1e415d4080a1525a00cb5a56eb6566976d9bace41"
-      }
-    },
-    {
-      "slug": "wp-phpunit-test-setup",
-      "name": "wp-phpunit-test-setup",
-      "domain": "dev-tooling",
-      "description": "Set up the PHPUnit test harness for a WordPress plugin or theme, the WP way. Covers `wp scaffold plugin-tests` / `wp scaffold theme-tests` and the files it generates (`phpunit.xml.dist`, `bin/install-wp-tests.sh`, `tests/bootstrap.php`, `tests/test-sample.php`, `.phpcs.xml.dist`, a CI workflow), installing the WordPress test suite with the current tarball-and-SVN `install-wp-tests.sh`, the disposable test database, `yoast/phpunit-polyfills`, the critical fact that the WP core test suite is capped at PHPUnit 9.x, composer `require-dev` / scripts wiring, a GitHub Actions PHP x WP matrix with `shivammathur/setup-php`, and the modern `wp-env` / `wp-phpunit/wp-phpunit` alternatives. Use when adding a test harness, wiring CI, or debugging install-wp-tests / bootstrap / PHPUnit-version problems. For writing the tests themselves see wp-phpunit-writing-tests.",
-      "path": "dev-tooling/wp-phpunit-test-setup",
-      "skill_path": "dev-tooling/wp-phpunit-test-setup/SKILL.md",
-      "url": "https://raw.githubusercontent.com/Lonsdale201/wp-agent-skills/main/dev-tooling/wp-phpunit-test-setup/SKILL.md",
-      "raw_url": "https://raw.githubusercontent.com/Lonsdale201/wp-agent-skills/main/dev-tooling/wp-phpunit-test-setup/SKILL.md",
-      "html_url": "https://github.com/Lonsdale201/wp-agent-skills/blob/main/dev-tooling/wp-phpunit-test-setup/SKILL.md",
-      "directory_url": "https://github.com/Lonsdale201/wp-agent-skills/tree/main/dev-tooling/wp-phpunit-test-setup",
-      "metadata": {
-        "author": "Soczó Kristóf",
-        "contact": "mailto:lonsdale201@hotmail.com",
-        "plugin": "wordpress",
-        "plugin-version-tested": "7.1",
-        "wp-version-tested": "7.1",
-        "toolchain-tested": "WP-CLI scaffold-command 2.x; PHPUnit 9.x; phpunit-polyfills 1.1",
-        "php-min": "7.4",
-        "last-updated": "2026-08-20",
-        "license": "GPLv2-or-later"
-      },
-      "resources": [],
-      "has_reference": false,
-      "has_examples": false,
-      "has_scripts": false,
-      "skill_md": {
-        "bytes": 12191,
-        "lines": 220,
-        "sha256": "52394c6dec8d2190c7035e2eb05849f57870196b57df258639c7b20c8b6d418f"
-      }
-    },
-    {
-      "slug": "wp-phpunit-writing-tests",
-      "name": "wp-phpunit-writing-tests",
-      "domain": "dev-tooling",
-      "description": "Write PHPUnit tests for a WordPress plugin or theme. Covers the integration base class `WP_UnitTestCase` and its snake_case `set_up()` / `tear_down()` fixtures (and why WordPress uses them via phpunit-polyfills), verified cleanup boundaries (without promising universal transaction rollback), the factory system (post creation, `create_many()`, `create_and_get()`, and `wpSetUpBeforeClass()`), WP assertions (`assertWPError`, `assertEqualSets`), HTTP mocking with the `pre_http_request` filter, data providers and `@group`, and the crucial distinction that `WP_UnitTestCase` is an INTEGRATION test (real WP + DB) while true unit tests need Brain Monkey or WP_Mock to mock WP functions. Use when authoring or reviewing tests, choosing unit vs integration, mocking HTTP/WP functions, or fixing fixture/factory mistakes. For scaffolding and CI see wp-phpunit-test-setup.",
-      "path": "dev-tooling/wp-phpunit-writing-tests",
-      "skill_path": "dev-tooling/wp-phpunit-writing-tests/SKILL.md",
-      "url": "https://raw.githubusercontent.com/Lonsdale201/wp-agent-skills/main/dev-tooling/wp-phpunit-writing-tests/SKILL.md",
-      "raw_url": "https://raw.githubusercontent.com/Lonsdale201/wp-agent-skills/main/dev-tooling/wp-phpunit-writing-tests/SKILL.md",
-      "html_url": "https://github.com/Lonsdale201/wp-agent-skills/blob/main/dev-tooling/wp-phpunit-writing-tests/SKILL.md",
-      "directory_url": "https://github.com/Lonsdale201/wp-agent-skills/tree/main/dev-tooling/wp-phpunit-writing-tests",
-      "metadata": {
-        "author": "Soczó Kristóf",
-        "contact": "mailto:lonsdale201@hotmail.com",
-        "plugin": "wordpress",
-        "plugin-version-tested": "7.1",
-        "wp-version-tested": "7.1",
-        "toolchain-tested": "PHPUnit 9.x; phpunit-polyfills 1.1; Brain Monkey 2.7; WP_Mock 1.1",
-        "php-min": "7.4",
-        "last-updated": "2026-08-20",
-        "license": "GPLv2-or-later"
-      },
-      "resources": [
-        {
-          "path": "reference.md",
-          "repo_path": "dev-tooling/wp-phpunit-writing-tests/reference.md",
-          "type": "reference",
-          "bytes": 6327,
-          "sha256": "b63a892ec54c8bf59b5f58fb3733021f3ba2c523c6b8a0976780c27a6c8ae980"
-        }
-      ],
-      "has_reference": true,
-      "has_examples": false,
-      "has_scripts": false,
-      "skill_md": {
-        "bytes": 10893,
-        "lines": 220,
-        "sha256": "694ba9e5b51b9ed8696052ba287257ebdb13ef1fb2112c507317cf89802a119a"
-      }
-    },
-    {
-      "slug": "wp-strauss-namespace-prefixing",
-      "name": "wp-strauss-namespace-prefixing",
-      "domain": "dev-tooling",
-      "description": "Bundle Composer dependencies inside a WordPress plugin without conflicts by prefixing their namespaces, classnames, and constants with Strauss (brianhenryie/strauss, the maintained Mozart successor). Covers why shared vendor libraries collide between plugins (one PHP process, first-registered autoloader wins), running Strauss as a pinned strauss.phar from composer scripts (post-install-cmd / post-update-cmd, include-autoloader on post-autoload-dump) rather than require --dev, the extra.strauss config (target_directory vendor-prefixed, namespace_prefix, classmap_prefix, constant_prefix, packages, exclude_from_prefix, override_autoload, delete_vendor_packages, update_call_sites), loading vendor-prefixed/autoload.php, release/CI builds, and migrating from Mozart. Use when a plugin ships Guzzle, Monolog, an SDK, or any Composer runtime dependency, when two plugins fatal on conflicting library versions, or when composer.json contains extra.strauss or extra.mozart.",
-      "path": "dev-tooling/wp-strauss-namespace-prefixing",
-      "skill_path": "dev-tooling/wp-strauss-namespace-prefixing/SKILL.md",
-      "url": "https://raw.githubusercontent.com/Lonsdale201/wp-agent-skills/main/dev-tooling/wp-strauss-namespace-prefixing/SKILL.md",
-      "raw_url": "https://raw.githubusercontent.com/Lonsdale201/wp-agent-skills/main/dev-tooling/wp-strauss-namespace-prefixing/SKILL.md",
-      "html_url": "https://github.com/Lonsdale201/wp-agent-skills/blob/main/dev-tooling/wp-strauss-namespace-prefixing/SKILL.md",
-      "directory_url": "https://github.com/Lonsdale201/wp-agent-skills/tree/main/dev-tooling/wp-strauss-namespace-prefixing",
-      "metadata": {
-        "author": "Soczó Kristóf",
-        "contact": "mailto:lonsdale201@hotmail.com",
-        "plugin": "wordpress",
-        "plugin-version-tested": "Strauss 0.28.1 (2026-07-11); WP 7.0",
-        "wp-version-tested": "7.0",
-        "php-min": "7.4",
-        "last-updated": "2026-07-14",
-        "license": "GPLv2-or-later"
-      },
-      "resources": [],
-      "has_reference": false,
-      "has_examples": false,
-      "has_scripts": false,
-      "skill_md": {
-        "bytes": 12034,
-        "lines": 180,
-        "sha256": "6a3622b4dccd0a2958e84a90ff95d037b938bd7d2da6fa8aaf9fa167ef4b268d"
-      }
-    },
-    {
       "slug": "elementor-deprecations",
       "name": "elementor-deprecations",
       "domain": "elementor",
@@ -2179,9 +1915,9 @@
       "has_examples": false,
       "has_scripts": false,
       "skill_md": {
-        "bytes": 6524,
-        "lines": 147,
-        "sha256": "a5b781a6436c2a592a0fea40b3d601b7249c7b072101b9b7c4bfabd656f1ed75"
+        "bytes": 6461,
+        "lines": 146,
+        "sha256": "313d7faa4ddec9c91da80ed1ddf6102511c31547c3515584b107d1ab0c418add"
       }
     },
     {
@@ -2839,9 +2575,9 @@
       "has_examples": false,
       "has_scripts": false,
       "skill_md": {
-        "bytes": 9178,
-        "lines": 225,
-        "sha256": "305730904a44114fe6feb70aefda5e01551286cc40e3647f087282bf995049db"
+        "bytes": 9092,
+        "lines": 224,
+        "sha256": "bfecb020c81b624422981de828ff34305d139e3d0aa6d2a0b1768091f367b179"
       }
     },
     {
@@ -3169,9 +2905,9 @@
       "has_examples": false,
       "has_scripts": false,
       "skill_md": {
-        "bytes": 23721,
-        "lines": 424,
-        "sha256": "6403b630d80e87517d776fe6566e1c91b92cdd55eacda12cc5d36b6d6e407285"
+        "bytes": 23374,
+        "lines": 420,
+        "sha256": "216a0a26847f3df74f1bd10585b168f59e1dc3be2886c533cf6105926b04503c"
       }
     },
     {
@@ -3259,9 +2995,9 @@
       "has_examples": false,
       "has_scripts": false,
       "skill_md": {
-        "bytes": 33570,
-        "lines": 601,
-        "sha256": "91cf43173630f13ebc191322e29e41d565901454a27ad18153b504fb576ae77d"
+        "bytes": 33410,
+        "lines": 600,
+        "sha256": "c97c52498f4a4ac30bb986697abdcc95d08c1e92f788cd341d7ea89f4ecf7dc6"
       }
     },
     {
@@ -3848,9 +3584,9 @@
       "has_examples": false,
       "has_scripts": false,
       "skill_md": {
-        "bytes": 8977,
-        "lines": 194,
-        "sha256": "2b6d37dec752fbe49186033c8875890b881551e13c58f86ef86c32885085e131"
+        "bytes": 8871,
+        "lines": 192,
+        "sha256": "fa09818beb2a063898ea84862b420361e8ed4df9b9d4787207c54a689c9de605"
       }
     },
     {
@@ -4195,9 +3931,9 @@
       "has_examples": false,
       "has_scripts": false,
       "skill_md": {
-        "bytes": 17654,
-        "lines": 431,
-        "sha256": "f7dfed9e0d22c2e30ecb9b6c72dbcc216c411ddc0d991882f3bc174c8e1c2576"
+        "bytes": 17555,
+        "lines": 429,
+        "sha256": "4083d3eb724acee83942e80c568e7c1383759329b01130eb420453532ecdc15b"
       }
     },
     {
@@ -4345,51 +4081,6 @@
       }
     },
     {
-      "slug": "wp-plugin-dto",
-      "name": "wp-plugin-dto",
-      "domain": "plugin-scaffold",
-      "description": "Design and review native DTOs in WordPress plugins without requiring better-data - immutable data carriers, explicit from_array hydration, strict coercion instead of unchecked casts, WP_Error validation failures, sensitive-field discipline, nested DTO arrays, and clear separation from repositories, WP models, presenters, REST controllers, and HTML views. Use when a plugin introduces FooDto, request DTOs, settings DTOs, value objects, admin-row data shapes, REST response source objects, or when reviewing code that passes raw arrays, stdClass, WP_Post, WC_Order, $_POST, post meta, or option arrays through multiple layers. Mentions better-data only as an optional higher-level library; this skill is for native implementations.",
-      "path": "plugin-scaffold/wp-plugin-dto",
-      "skill_path": "plugin-scaffold/wp-plugin-dto/SKILL.md",
-      "url": "https://raw.githubusercontent.com/Lonsdale201/wp-agent-skills/main/plugin-scaffold/wp-plugin-dto/SKILL.md",
-      "raw_url": "https://raw.githubusercontent.com/Lonsdale201/wp-agent-skills/main/plugin-scaffold/wp-plugin-dto/SKILL.md",
-      "html_url": "https://github.com/Lonsdale201/wp-agent-skills/blob/main/plugin-scaffold/wp-plugin-dto/SKILL.md",
-      "directory_url": "https://github.com/Lonsdale201/wp-agent-skills/tree/main/plugin-scaffold/wp-plugin-dto",
-      "metadata": {
-        "author": "Soczo Kristof",
-        "contact": "mailto:lonsdale201@hotmail.com",
-        "plugin": "wordpress",
-        "plugin-version-tested": "6.3 - 7.1",
-        "wp-version-tested": "7.1",
-        "php-min": "7.4",
-        "last-updated": "2026-08-20"
-      },
-      "resources": [
-        {
-          "path": "references/before-after-raw-array.md",
-          "repo_path": "plugin-scaffold/wp-plugin-dto/references/before-after-raw-array.md",
-          "type": "reference",
-          "bytes": 3754,
-          "sha256": "a300f8d160145133403f25b00cb1e0a248087bef93357eb360c7a379312f5f80"
-        },
-        {
-          "path": "references/native-dto-patterns.md",
-          "repo_path": "plugin-scaffold/wp-plugin-dto/references/native-dto-patterns.md",
-          "type": "reference",
-          "bytes": 8168,
-          "sha256": "d81fe0285784c0673d4233ac8cd94170f701a145d7b8887d0f84d7e260257212"
-        }
-      ],
-      "has_reference": true,
-      "has_examples": false,
-      "has_scripts": false,
-      "skill_md": {
-        "bytes": 10550,
-        "lines": 228,
-        "sha256": "fc91501b64983fe519d106031ad66bcad445a5f32ff3c3424ea6993e56c17b2b"
-      }
-    },
-    {
       "slug": "wp-plugin-hooks",
       "name": "wp-plugin-hooks",
       "domain": "plugin-scaffold",
@@ -4423,7 +4114,7 @@
       "slug": "wp-plugin-lifecycle",
       "name": "wp-plugin-lifecycle",
       "domain": "plugin-scaffold",
-      "description": "Designs and reviews the three lifecycle events of a WordPress plugin — activation (one-shot setup, dbDelta, add_option seeding, cron schedule, cap seeding), deactivation (reversible cleanup, cron clear via wp_unschedule_hook, never delete user data), and uninstall.php (standalone file, WP_UNINSTALL_PLUGIN guard, no autoloader, full data removal). Multisite-aware patterns using the $network_wide / $network_deactivating callback args, plus the recommendation against register_uninstall_hook in favor of uninstall.php. Use when scaffolding a plugin or debugging ghost cron events / orphan options. Does not cover update-time version migrations; use wp-plugin-update-migrations when the stored version is older than code. Triggers on register_activation_hook, register_deactivation_hook, uninstall.php, WP_UNINSTALL_PLUGIN, dbDelta, wp_unschedule_hook, switch_to_blog.",
+      "description": "Designs and reviews the three lifecycle events of a WordPress plugin — activation (one-shot setup, dbDelta, add_option seeding, cron schedule, cap seeding), deactivation (reversible cleanup, cron clear via wp_unschedule_hook, never delete user data), and uninstall.php (standalone file, WP_UNINSTALL_PLUGIN guard, no autoloader, full data removal). Multisite-aware patterns using the $network_wide / $network_deactivating callback args, plus the recommendation against register_uninstall_hook in favor of uninstall.php. Use when scaffolding a plugin or debugging ghost cron events / orphan options. Does not cover update-time version migrations (running upgrade routines when the stored version is older than the code). Triggers on register_activation_hook, register_deactivation_hook, uninstall.php, WP_UNINSTALL_PLUGIN, dbDelta, wp_unschedule_hook, switch_to_blog.",
       "path": "plugin-scaffold/wp-plugin-lifecycle",
       "skill_path": "plugin-scaffold/wp-plugin-lifecycle/SKILL.md",
       "url": "https://raw.githubusercontent.com/Lonsdale201/wp-agent-skills/main/plugin-scaffold/wp-plugin-lifecycle/SKILL.md",
@@ -4452,9 +4143,9 @@
       "has_examples": false,
       "has_scripts": false,
       "skill_md": {
-        "bytes": 14940,
-        "lines": 256,
-        "sha256": "bad09f4cc8e21437b3325b348e9aa58ead955974e0041d29a15997c9e3fb1779"
+        "bytes": 14797,
+        "lines": 255,
+        "sha256": "cbe3b444f753a111539d3f15df2e85d8039f28005f361ddb902a4b3bc92c7774"
       }
     },
     {
@@ -4482,9 +4173,9 @@
       "has_examples": false,
       "has_scripts": false,
       "skill_md": {
-        "bytes": 17734,
-        "lines": 269,
-        "sha256": "58aa1d1c8d77514241053bf27b70047f05d86910946a330d2ed8c617a0ecbea1"
+        "bytes": 17557,
+        "lines": 268,
+        "sha256": "5d21ae7341c09b1b4c543e89d95d21cc3368d4efe6251d78d1b94ced221e487e"
       }
     },
     {
@@ -4527,9 +4218,9 @@
       "has_examples": false,
       "has_scripts": false,
       "skill_md": {
-        "bytes": 9145,
-        "lines": 209,
-        "sha256": "2500051fc2cf2194deda053f9f0fafdfeca799595f36779fb0cf59bd60834ec3"
+        "bytes": 9033,
+        "lines": 208,
+        "sha256": "b3555a78d613d6517d908119828a4fc694893557e2061388ff844aceb7819ee0"
       }
     },
     {
@@ -4568,36 +4259,6 @@
         "bytes": 13794,
         "lines": 246,
         "sha256": "e5c277de82bf27af48a82362df2fe838086fa4b7a07d9df8d0237165a64b80af"
-      }
-    },
-    {
-      "slug": "wp-plugin-update-migrations",
-      "name": "wp-plugin-update-migrations",
-      "domain": "plugin-scaffold",
-      "description": "Designs and reviews WordPress plugin update-time version migrations: stored schema/data version options, version_compare or integer schema versions, idempotent stepwise migrators, dbDelta inside migrations, locks, partial reruns, multisite handling, and safe use of upgrader_process_complete. Use when code mentions plugin updates, upgrade migrations, schema version, database version, data migration, upgrader_process_complete, Plugin_Upgrader, dbDelta after activation, or when activation hooks are being used to handle updates.",
-      "path": "plugin-scaffold/wp-plugin-update-migrations",
-      "skill_path": "plugin-scaffold/wp-plugin-update-migrations/SKILL.md",
-      "url": "https://raw.githubusercontent.com/Lonsdale201/wp-agent-skills/main/plugin-scaffold/wp-plugin-update-migrations/SKILL.md",
-      "raw_url": "https://raw.githubusercontent.com/Lonsdale201/wp-agent-skills/main/plugin-scaffold/wp-plugin-update-migrations/SKILL.md",
-      "html_url": "https://github.com/Lonsdale201/wp-agent-skills/blob/main/plugin-scaffold/wp-plugin-update-migrations/SKILL.md",
-      "directory_url": "https://github.com/Lonsdale201/wp-agent-skills/tree/main/plugin-scaffold/wp-plugin-update-migrations",
-      "metadata": {
-        "author": "Soczó Kristóf",
-        "contact": "mailto:lonsdale201@hotmail.com",
-        "plugin": "wordpress",
-        "plugin-version-tested": "7.1",
-        "wp-version-tested": "7.1",
-        "php-min": "7.4",
-        "last-updated": "2026-08-20"
-      },
-      "resources": [],
-      "has_reference": false,
-      "has_examples": false,
-      "has_scripts": false,
-      "skill_md": {
-        "bytes": 11192,
-        "lines": 252,
-        "sha256": "64e14e4d4d2b334ae846f948157126968a0a74e9b98b30a777aeb80f23b9b539"
       }
     },
     {
@@ -4861,9 +4522,9 @@
       "has_examples": false,
       "has_scripts": false,
       "skill_md": {
-        "bytes": 11635,
-        "lines": 247,
-        "sha256": "b3492bb3854f3b707eccf9dd2a5aafd909c7e9dd10790e3e556b90fc6de900d6"
+        "bytes": 11578,
+        "lines": 246,
+        "sha256": "ea0f5440f2edfb00525840072e71eebe1561cc50aae5c91b73e97a8ed3aeb97d"
       }
     },
     {
@@ -4975,9 +4636,9 @@
       "has_examples": false,
       "has_scripts": false,
       "skill_md": {
-        "bytes": 11073,
-        "lines": 200,
-        "sha256": "fb7f20eaf90a3819378b64979199c588cb59ef31b27a1484529d78c4dc130bf6"
+        "bytes": 10961,
+        "lines": 199,
+        "sha256": "1fe3153744a250f64f5439ab5de05d995d319b5f483d3a7d31463fe0fc8a25c9"
       }
     },
     {
@@ -5037,9 +4698,9 @@
       "has_examples": false,
       "has_scripts": false,
       "skill_md": {
-        "bytes": 17454,
-        "lines": 318,
-        "sha256": "c13fd2df3cd5312010efa879007f5d880cc95bf81db4cbc607a98837efa70e56"
+        "bytes": 17340,
+        "lines": 317,
+        "sha256": "babf69143d232c63f95433d996dd625d145a8d8f622fc0b31fbe4ef7f21beb77"
       }
     },
     {
@@ -5068,9 +4729,9 @@
       "has_examples": false,
       "has_scripts": false,
       "skill_md": {
-        "bytes": 17151,
-        "lines": 328,
-        "sha256": "b0993b2e0dc08c9b5407baf4d1bcb40f3b9e1bcc10180233a01dfbca25e73c0a"
+        "bytes": 16945,
+        "lines": 326,
+        "sha256": "bff92d7ee8b73ca6ebc4ee6efa9712172c772c5e0b847c3732aa84dd81a808c2"
       }
     },
     {
@@ -5144,9 +4805,9 @@
       "has_examples": false,
       "has_scripts": false,
       "skill_md": {
-        "bytes": 9926,
-        "lines": 249,
-        "sha256": "61fc176787c4c5c8a6abd3e946282bb47034d12cc33259f669e8d949c5fc8bb5"
+        "bytes": 9849,
+        "lines": 248,
+        "sha256": "c406bb20bc57dbec2905f562dd0ed0dfcb7a3a785be223caa13c241a5cf325cc"
       }
     },
     {
@@ -5390,36 +5051,6 @@
       }
     },
     {
-      "slug": "classic-theme-security-standards",
-      "name": "classic-theme-security-standards",
-      "domain": "theme-development",
-      "description": "Write or audit secure modern classic PHP WordPress theme code for WP 7.1. Covers template output escaping, `esc_html`, `esc_attr`, `esc_url`, `wp_kses_post`, `wp_json_encode`, translation escaping, unslashing plus sanitizing input, validation, nonces and capability checks for theme forms, safe `template_include`/`get_template_part`, enqueued assets instead of inline tags, prepared database queries, WPCS naming/filenames, namespacing/prefixing, no shorthand PHP tags, and no closing PHP tag. Use when reviewing `functions.php`, `header.php`, `page.php`, `404.php`, template parts, search/comment forms, or any classic theme code touching request data or dynamic output.",
-      "path": "theme-development/classic-theme-security-standards",
-      "skill_path": "theme-development/classic-theme-security-standards/SKILL.md",
-      "url": "https://raw.githubusercontent.com/Lonsdale201/wp-agent-skills/main/theme-development/classic-theme-security-standards/SKILL.md",
-      "raw_url": "https://raw.githubusercontent.com/Lonsdale201/wp-agent-skills/main/theme-development/classic-theme-security-standards/SKILL.md",
-      "html_url": "https://github.com/Lonsdale201/wp-agent-skills/blob/main/theme-development/classic-theme-security-standards/SKILL.md",
-      "directory_url": "https://github.com/Lonsdale201/wp-agent-skills/tree/main/theme-development/classic-theme-security-standards",
-      "metadata": {
-        "author": "Soczó Kristóf",
-        "contact": "mailto:lonsdale201@hotmail.com",
-        "plugin": "wordpress",
-        "plugin-version-tested": "7.1",
-        "wp-version-tested": "7.1",
-        "php-min": "7.4",
-        "last-updated": "2026-08-20"
-      },
-      "resources": [],
-      "has_reference": false,
-      "has_examples": false,
-      "has_scripts": false,
-      "skill_md": {
-        "bytes": 9002,
-        "lines": 246,
-        "sha256": "fc6e64781c949d84b762ad424d6584a05bef87e767a01411169ebe13eadd440c"
-      }
-    },
-    {
       "slug": "classic-theme-sidebars-widgets",
       "name": "classic-theme-sidebars-widgets",
       "domain": "theme-development",
@@ -5474,9 +5105,9 @@
       "has_examples": false,
       "has_scripts": false,
       "skill_md": {
-        "bytes": 9538,
+        "bytes": 9499,
         "lines": 284,
-        "sha256": "391890b3d5377e83f4cd346262e9d65185db83e7f49dd51b8904071e9582db0b"
+        "sha256": "d69122d1ce6f1fad3688e80598bec41b6c09a385ba1ca240047a49664f22b61d"
       }
     },
     {
@@ -5625,9 +5256,9 @@
       "has_examples": false,
       "has_scripts": false,
       "skill_md": {
-        "bytes": 11328,
-        "lines": 229,
-        "sha256": "017482d91d3d40c40b9b5bf7fbc7b0d24d168dc612e627c70629fb8814b3875b"
+        "bytes": 11242,
+        "lines": 228,
+        "sha256": "ab6118befcd07898885b1634d20e4a25f2b214dcdff1333709b49a043079005d"
       }
     },
     {
@@ -5656,9 +5287,9 @@
       "has_examples": false,
       "has_scripts": false,
       "skill_md": {
-        "bytes": 11077,
-        "lines": 198,
-        "sha256": "dfbbc22e10f7d7383679068107c69a399d88bcb923a57b18797df8a6ab8b508f"
+        "bytes": 10967,
+        "lines": 197,
+        "sha256": "19d53e42c60558f294126910c6bd34be3caba92f0026f56e284b4101ad48df78"
       }
     },
     {
@@ -5718,9 +5349,9 @@
       "has_examples": false,
       "has_scripts": false,
       "skill_md": {
-        "bytes": 11154,
-        "lines": 200,
-        "sha256": "91b9193578a3006ac05e303af78adea5ac9644bc5d47996d3d7d85cc90087bfc"
+        "bytes": 11042,
+        "lines": 199,
+        "sha256": "b4a34618fd0b8d74aac7ade47f96c3e7afeba15aec0fd7560dd74b660bb9fcc7"
       }
     },
     {
@@ -5755,9 +5386,9 @@
       "has_examples": false,
       "has_scripts": false,
       "skill_md": {
-        "bytes": 7883,
-        "lines": 144,
-        "sha256": "c008d278e194c98684c1fc9a88537bc54bbcdcb20815c1cf794444e8d960ad69"
+        "bytes": 7839,
+        "lines": 143,
+        "sha256": "1dca5b32e1279cbefe3b6da78c36e08b6dd812d3f905cd9ff53f9a4f4f1c1f0f"
       }
     },
     {
@@ -5792,9 +5423,9 @@
       "has_examples": false,
       "has_scripts": false,
       "skill_md": {
-        "bytes": 16585,
-        "lines": 263,
-        "sha256": "b91161c103e7d9e8af2df141c49110ef2c278daf1c0624276d7590025a1e1b2f"
+        "bytes": 16512,
+        "lines": 262,
+        "sha256": "d8f657c148a6e50c37679df009c7ee0e74ae9e1c2f8a03cca561070b15b4a205"
       }
     },
     {
@@ -5858,9 +5489,9 @@
       "has_examples": false,
       "has_scripts": false,
       "skill_md": {
-        "bytes": 11985,
-        "lines": 287,
-        "sha256": "99f16a5c548fc49286736c81390bc3cb93da4a9ad978f0e3e23df3f5188234c7"
+        "bytes": 11806,
+        "lines": 285,
+        "sha256": "4ca6dd51d98e6fde44a019a2a087406bf8df47627963a22dfd36eea909121fea"
       }
     },
     {
@@ -5902,9 +5533,9 @@
       "has_examples": false,
       "has_scripts": false,
       "skill_md": {
-        "bytes": 11407,
-        "lines": 233,
-        "sha256": "216d818d75b9446e14cbed98e3d823ca7a3c4cbaca9e9760db6175669cb716fb"
+        "bytes": 11201,
+        "lines": 230,
+        "sha256": "294e501b6afbb0e897cf28751f77da9c72dd4736bcf8e52d4ef9386c6e634292"
       }
     },
     {
@@ -5931,9 +5562,9 @@
       "has_examples": false,
       "has_scripts": false,
       "skill_md": {
-        "bytes": 12077,
-        "lines": 241,
-        "sha256": "c0728b3a6b78705d8dbcd889a713fb45a53d1ed0ccb7a28543c529cf1cf5035e"
+        "bytes": 11981,
+        "lines": 240,
+        "sha256": "2bf2f58c674e0a0c8e83cdec9175ca346b28d976c788aa1a1cdd4fb84f684319"
       }
     },
     {
@@ -5975,9 +5606,9 @@
       "has_examples": false,
       "has_scripts": false,
       "skill_md": {
-        "bytes": 12222,
-        "lines": 220,
-        "sha256": "162bbc3f22b82bba0c8f009e9b1402e882a750c6c040828b50b58558f7167d10"
+        "bytes": 12136,
+        "lines": 219,
+        "sha256": "8c1c5de5b4416f08c7617c9a0bfa06e929517d7497edbfc77a609defa55e609a"
       }
     },
     {
@@ -6004,9 +5635,9 @@
       "has_examples": false,
       "has_scripts": false,
       "skill_md": {
-        "bytes": 10219,
-        "lines": 221,
-        "sha256": "e106d81d1878e4e0a29edf84d7953f6ec6c867a20fadf10002c906b25f50fe41"
+        "bytes": 10063,
+        "lines": 219,
+        "sha256": "f9b82476abce36edb3d7c82463afd7c323543def41acb45d86216b755c3da3c2"
       }
     },
     {
@@ -6048,9 +5679,9 @@
       "has_examples": false,
       "has_scripts": false,
       "skill_md": {
-        "bytes": 9383,
-        "lines": 162,
-        "sha256": "45a5d6ccce964886a9d758a616efa61002326e4f32aa9bf96842d17a5a1de620"
+        "bytes": 9150,
+        "lines": 160,
+        "sha256": "a235226a6482326e4c5a10edffb2019ca981abf37863cbf88cf8583c7daa3794"
       }
     },
     {
@@ -6080,50 +5711,6 @@
         "bytes": 10766,
         "lines": 266,
         "sha256": "f38722f8fc3de30661087f8d7494f0d4a9fd4845e6599db98f35ca5f1a522f44"
-      }
-    },
-    {
-      "slug": "wc-extension-upgrade-audit",
-      "name": "wc-extension-upgrade-audit",
-      "domain": "woocommerce",
-      "description": "Audit a WooCommerce extension against a target WooCommerce release by diffing installed source, mapping public contracts, finding internal API dependencies, and running version-aware smoke tests. Covers hooks, CRUD timing, REST and Store API schemas, feature gates, templates, taxonomies, Action Scheduler, admin surfaces, caches, and companion gateways. Use before raising `WC tested up to`, after updating WooCommerce, or when an extension works on one Woo version but changes behavior on another.",
-      "path": "woocommerce/wc-extension-upgrade-audit",
-      "skill_path": "woocommerce/wc-extension-upgrade-audit/SKILL.md",
-      "url": "https://raw.githubusercontent.com/Lonsdale201/wp-agent-skills/main/woocommerce/wc-extension-upgrade-audit/SKILL.md",
-      "raw_url": "https://raw.githubusercontent.com/Lonsdale201/wp-agent-skills/main/woocommerce/wc-extension-upgrade-audit/SKILL.md",
-      "html_url": "https://github.com/Lonsdale201/wp-agent-skills/blob/main/woocommerce/wc-extension-upgrade-audit/SKILL.md",
-      "directory_url": "https://github.com/Lonsdale201/wp-agent-skills/tree/main/woocommerce/wc-extension-upgrade-audit",
-      "metadata": {
-        "author": "Soczó Kristóf",
-        "contact": "mailto:lonsdale201@hotmail.com",
-        "plugin": "woocommerce",
-        "plugin-version-tested": "11.0.0",
-        "php-min": "7.4",
-        "last-updated": "2026-08-05"
-      },
-      "resources": [
-        {
-          "path": "agents/openai.yaml",
-          "repo_path": "woocommerce/wc-extension-upgrade-audit/agents/openai.yaml",
-          "type": "resource",
-          "bytes": 263,
-          "sha256": "0bc2232cb9487b660f776a5c5c750f17b86d0c8e8b82ee490619576895e2f7c8"
-        },
-        {
-          "path": "references/woocommerce-11.md",
-          "repo_path": "woocommerce/wc-extension-upgrade-audit/references/woocommerce-11.md",
-          "type": "reference",
-          "bytes": 8176,
-          "sha256": "07e4cce1bb153f9ccea4e943dfcbe6a5c738f6f66ab3728aba1893b690ec740a"
-        }
-      ],
-      "has_reference": true,
-      "has_examples": false,
-      "has_scripts": false,
-      "skill_md": {
-        "bytes": 5198,
-        "lines": 96,
-        "sha256": "3e072217c8a306f0e5a696ed36557dfb5d592049b1ef0c676d7d73ffa4508cc9"
       }
     },
     {
@@ -6179,9 +5766,9 @@
       "has_examples": false,
       "has_scripts": false,
       "skill_md": {
-        "bytes": 9286,
-        "lines": 183,
-        "sha256": "ecd03f2130dd8564f7c373ac83c9886668fdc200584effeb8433941011593b3e"
+        "bytes": 9221,
+        "lines": 182,
+        "sha256": "3e2380cce30ec88af9e088f2e9e3c29c51a21f13cc7f49b715b2835489312a66"
       }
     },
     {
@@ -6208,67 +5795,9 @@
       "has_examples": false,
       "has_scripts": false,
       "skill_md": {
-        "bytes": 14420,
-        "lines": 277,
-        "sha256": "a9ae912b1b4d2b60c75abcfb46f355ca5ed01bae2cd0d1d3a92612b288ed7ecb"
-      }
-    },
-    {
-      "slug": "wc-payment-gateway",
-      "name": "wc-payment-gateway",
-      "domain": "woocommerce",
-      "description": "Build a secure WooCommerce core payment gateway. Covers `WC_Payment_Gateway` registration/settings, synchronous captured versus authorized/pending outcomes, `payment_complete()` versus status updates, refunds, core support flags, customer-safe errors, logging, signed and idempotent webhooks, callback URLs, tokenization boundaries, and Checkout Block compatibility. Use when creating or auditing a gateway or debugging charged orders, stale carts, duplicate webhooks, or unsafe provider errors.",
-      "path": "woocommerce/wc-payment-gateway",
-      "skill_path": "woocommerce/wc-payment-gateway/SKILL.md",
-      "url": "https://raw.githubusercontent.com/Lonsdale201/wp-agent-skills/main/woocommerce/wc-payment-gateway/SKILL.md",
-      "raw_url": "https://raw.githubusercontent.com/Lonsdale201/wp-agent-skills/main/woocommerce/wc-payment-gateway/SKILL.md",
-      "html_url": "https://github.com/Lonsdale201/wp-agent-skills/blob/main/woocommerce/wc-payment-gateway/SKILL.md",
-      "directory_url": "https://github.com/Lonsdale201/wp-agent-skills/tree/main/woocommerce/wc-payment-gateway",
-      "metadata": {
-        "author": "Soczó Kristóf",
-        "contact": "mailto:lonsdale201@hotmail.com",
-        "plugin": "woocommerce",
-        "plugin-version-tested": "11.0.0",
-        "php-min": "7.4",
-        "last-updated": "2026-08-05"
-      },
-      "resources": [],
-      "has_reference": false,
-      "has_examples": false,
-      "has_scripts": false,
-      "skill_md": {
-        "bytes": 10701,
-        "lines": 215,
-        "sha256": "4078850834275799fa27ec27c4c9c32a7a07df4554961da5da69cc9e4de3b306"
-      }
-    },
-    {
-      "slug": "wc-payment-tokens",
-      "name": "wc-payment-tokens",
-      "domain": "woocommerce",
-      "description": "Store and use WooCommerce saved payment methods safely through `WC_Payment_Tokens` and polymorphic `WC_Payment_Token` subclasses. Covers provider references versus payment credentials, CC/eCheck/custom token shapes, tokenization gateway support, creating/updating/deleting/defaulting tokens, My Account nonce and ownership checks, customer/order token queries, gateway and type validation, provider reconciliation filters, hooks, HPOS-safe order use, and checkout saved-token validation. Use for saved cards or wallets, charging a saved method, add-payment-method flows, token migrations, deletion/default endpoints, custom token types, or gateway tokenization.",
-      "path": "woocommerce/wc-payment-tokens",
-      "skill_path": "woocommerce/wc-payment-tokens/SKILL.md",
-      "url": "https://raw.githubusercontent.com/Lonsdale201/wp-agent-skills/main/woocommerce/wc-payment-tokens/SKILL.md",
-      "raw_url": "https://raw.githubusercontent.com/Lonsdale201/wp-agent-skills/main/woocommerce/wc-payment-tokens/SKILL.md",
-      "html_url": "https://github.com/Lonsdale201/wp-agent-skills/blob/main/woocommerce/wc-payment-tokens/SKILL.md",
-      "directory_url": "https://github.com/Lonsdale201/wp-agent-skills/tree/main/woocommerce/wc-payment-tokens",
-      "metadata": {
-        "author": "Soczó Kristóf",
-        "contact": "mailto:lonsdale201@hotmail.com",
-        "plugin": "woocommerce",
-        "plugin-version-tested": "11.0.0",
-        "php-min": "7.4",
-        "last-updated": "2026-08-05"
-      },
-      "resources": [],
-      "has_reference": false,
-      "has_examples": false,
-      "has_scripts": false,
-      "skill_md": {
-        "bytes": 13115,
-        "lines": 299,
-        "sha256": "c2b28df18cb0c4e8ee1696a872f8d98273ca2c78fd34cf4f78f87aa9fcbf94ea"
+        "bytes": 14352,
+        "lines": 276,
+        "sha256": "e6292afad8c2f511c9b08ce2ac144ddd860d69113e4c3f1d23c5a7d7c2f72112"
       }
     },
     {
@@ -6303,46 +5832,9 @@
       "has_examples": false,
       "has_scripts": false,
       "skill_md": {
-        "bytes": 11259,
+        "bytes": 11224,
         "lines": 215,
-        "sha256": "dd15faf00fc65d009704e5e1593962e185adb1ebadf5c154f43e7c671a1b3fe2"
-      }
-    },
-    {
-      "slug": "wc-product-crud-cache",
-      "name": "wc-product-crud-cache",
-      "domain": "woocommerce",
-      "description": "Read and write WooCommerce products safely through `WC_Product` CRUD while accounting for the WooCommerce 11.0 `product_instance_caching` request cache. Covers view versus edit context, save and invalidation boundaries, direct WordPress meta writes, raw SQL hazards, variation-parent synchronization, taxonomy recount filtering, bulk jobs, and tests with the feature both enabled and disabled. Use when code calls `wc_get_product()`, mutates product or variation data, imports catalogs, changes product term counts, reports stale values, or depends on repeated product loads returning fresh objects.",
-      "path": "woocommerce/wc-product-crud-cache",
-      "skill_path": "woocommerce/wc-product-crud-cache/SKILL.md",
-      "url": "https://raw.githubusercontent.com/Lonsdale201/wp-agent-skills/main/woocommerce/wc-product-crud-cache/SKILL.md",
-      "raw_url": "https://raw.githubusercontent.com/Lonsdale201/wp-agent-skills/main/woocommerce/wc-product-crud-cache/SKILL.md",
-      "html_url": "https://github.com/Lonsdale201/wp-agent-skills/blob/main/woocommerce/wc-product-crud-cache/SKILL.md",
-      "directory_url": "https://github.com/Lonsdale201/wp-agent-skills/tree/main/woocommerce/wc-product-crud-cache",
-      "metadata": {
-        "author": "Soczó Kristóf",
-        "contact": "mailto:lonsdale201@hotmail.com",
-        "plugin": "woocommerce",
-        "plugin-version-tested": "11.0.0",
-        "php-min": "7.4",
-        "last-updated": "2026-08-05"
-      },
-      "resources": [
-        {
-          "path": "agents/openai.yaml",
-          "repo_path": "woocommerce/wc-product-crud-cache/agents/openai.yaml",
-          "type": "resource",
-          "bytes": 260,
-          "sha256": "4a6468282af118d105da3972745e5ac61f00b4ed12b6894bd75162330a4b38ae"
-        }
-      ],
-      "has_reference": false,
-      "has_examples": false,
-      "has_scripts": false,
-      "skill_md": {
-        "bytes": 7086,
-        "lines": 142,
-        "sha256": "5685420fdd4f9ae3db0e188f07aed629c2e3c8775c8b21d67d78d596987874f7"
+        "sha256": "54d00230acfc56101cda6f3e8f782c1859d35ceaafeb544b50ac4c79124fdaaa"
       }
     },
     {
@@ -6372,43 +5864,6 @@
         "bytes": 16356,
         "lines": 267,
         "sha256": "2dd3c5c7ae8098d14d27df4e504d1f388ab92d87609e71100a873426d7b2a77f"
-      }
-    },
-    {
-      "slug": "wc-rest-api-v4",
-      "name": "wc-rest-api-v4",
-      "domain": "woocommerce",
-      "description": "Audit WooCommerce's source-gated `wc/v4` REST API. In WooCommerce 11.0.0 the core v4 controllers exist but the release build still sets `rest-api-v4` false, so core routes are not registered by default. Covers runtime discovery, safe v3 fallback, latent routes including refund preview, settings paths, hook prefixes, authentication, fulfillments, and internal caching. Use when code targets `/wc/v4` or assumes source files mean a live public API.",
-      "path": "woocommerce/wc-rest-api-v4",
-      "skill_path": "woocommerce/wc-rest-api-v4/SKILL.md",
-      "url": "https://raw.githubusercontent.com/Lonsdale201/wp-agent-skills/main/woocommerce/wc-rest-api-v4/SKILL.md",
-      "raw_url": "https://raw.githubusercontent.com/Lonsdale201/wp-agent-skills/main/woocommerce/wc-rest-api-v4/SKILL.md",
-      "html_url": "https://github.com/Lonsdale201/wp-agent-skills/blob/main/woocommerce/wc-rest-api-v4/SKILL.md",
-      "directory_url": "https://github.com/Lonsdale201/wp-agent-skills/tree/main/woocommerce/wc-rest-api-v4",
-      "metadata": {
-        "author": "Soczó Kristóf",
-        "contact": "mailto:lonsdale201@hotmail.com",
-        "plugin": "woocommerce",
-        "plugin-version-tested": "11.0.0",
-        "php-min": "7.4",
-        "last-updated": "2026-08-05"
-      },
-      "resources": [
-        {
-          "path": "reference.md",
-          "repo_path": "woocommerce/wc-rest-api-v4/reference.md",
-          "type": "reference",
-          "bytes": 3074,
-          "sha256": "339b28f8b1c31d729a094d3853d2a6983f650b777fb59ccdde999eed22cf578f"
-        }
-      ],
-      "has_reference": true,
-      "has_examples": false,
-      "has_scripts": false,
-      "skill_md": {
-        "bytes": 11741,
-        "lines": 242,
-        "sha256": "6c962205cd967a7e9f196e4ba84745c8942eee99114f9b2dec396e5232098f3e"
       }
     },
     {
@@ -6445,9 +5900,9 @@
       "has_examples": false,
       "has_scripts": false,
       "skill_md": {
-        "bytes": 10767,
-        "lines": 299,
-        "sha256": "dcb1a0230a09d8a9d5322fc9a5164a99dfec98e83b855ecc5ecb1dc281f7a6d4"
+        "bytes": 10608,
+        "lines": 297,
+        "sha256": "43fc0d643e466e4a30882b43c202afe6c98a5f7d60ac45fb0409ff591e056e21"
       }
     },
     {
@@ -6503,38 +5958,9 @@
       "has_examples": false,
       "has_scripts": false,
       "skill_md": {
-        "bytes": 7770,
-        "lines": 205,
-        "sha256": "6a6b2b1afb0c3c2cf590bda97a92ff54214d5f997d49eb929c2e26b48c1edda0"
-      }
-    },
-    {
-      "slug": "wc-store-api",
-      "name": "wc-store-api",
-      "domain": "woocommerce",
-      "description": "Build shopper-facing WooCommerce integrations with the Store API. Covers `/wc/store/v1`, public product reads, cart Nonce and Cart-Token authentication, CORS, Store API sessions, endpoint data and cart update extensions, collection-count query bounds, JSON input handling, add-to-cart validation, payment requirements, checkout draft timing, existing-order payment validation, and feature-gated routes. Use for headless carts, Checkout Block server integration, Store API extensions, cart mutations, or nonce/session/order timing bugs.",
-      "path": "woocommerce/wc-store-api",
-      "skill_path": "woocommerce/wc-store-api/SKILL.md",
-      "url": "https://raw.githubusercontent.com/Lonsdale201/wp-agent-skills/main/woocommerce/wc-store-api/SKILL.md",
-      "raw_url": "https://raw.githubusercontent.com/Lonsdale201/wp-agent-skills/main/woocommerce/wc-store-api/SKILL.md",
-      "html_url": "https://github.com/Lonsdale201/wp-agent-skills/blob/main/woocommerce/wc-store-api/SKILL.md",
-      "directory_url": "https://github.com/Lonsdale201/wp-agent-skills/tree/main/woocommerce/wc-store-api",
-      "metadata": {
-        "author": "Soczó Kristóf",
-        "contact": "mailto:lonsdale201@hotmail.com",
-        "plugin": "woocommerce",
-        "plugin-version-tested": "11.0.0",
-        "php-min": "7.4",
-        "last-updated": "2026-08-05"
-      },
-      "resources": [],
-      "has_reference": false,
-      "has_examples": false,
-      "has_scripts": false,
-      "skill_md": {
-        "bytes": 13824,
-        "lines": 258,
-        "sha256": "393cbd84eb49b3d20c20fbb2f0ec9808de73ecc96405e78df1410cf8d382171f"
+        "bytes": 7705,
+        "lines": 204,
+        "sha256": "a302d8df439d35e56108095d4a074623541f839f097d221c03b3d9dea822c704"
       }
     },
     {
@@ -6577,9 +6003,9 @@
       "has_examples": false,
       "has_scripts": false,
       "skill_md": {
-        "bytes": 13217,
-        "lines": 178,
-        "sha256": "15838cf597497562966aa79d785f04b4f00deb14b51cb08b4a9a6b553f8d024c"
+        "bytes": 13131,
+        "lines": 177,
+        "sha256": "b1ab5dbbfe14232153f3664dd11910ada98de7962fb61f86ef901354a6386fe5"
       }
     },
     {
@@ -6622,9 +6048,9 @@
       "has_examples": false,
       "has_scripts": false,
       "skill_md": {
-        "bytes": 14121,
-        "lines": 204,
-        "sha256": "9f5855c5a3d94bcb60dc74e346c7c96f0a62a2919aa4e80eaac4472fdd0f9600"
+        "bytes": 14037,
+        "lines": 203,
+        "sha256": "e0666aa662971376482a5ce7a79b592ea2af944d90bed3c9cfb59917ab4d13ce"
       }
     },
     {
@@ -6667,9 +6093,9 @@
       "has_examples": false,
       "has_scripts": false,
       "skill_md": {
-        "bytes": 13720,
-        "lines": 202,
-        "sha256": "4c08c005fe7441aafe32388bb8ef42ac2ba94ace8fcaeabcde2d53b4331b555c"
+        "bytes": 13650,
+        "lines": 201,
+        "sha256": "75035c4930361ba60d42581c4ed63fde44e4552b08c2f45491d4dceb7479f0e4"
       }
     },
     {
@@ -6706,9 +6132,9 @@
       "has_examples": false,
       "has_scripts": false,
       "skill_md": {
-        "bytes": 13647,
-        "lines": 218,
-        "sha256": "0f0c9d432088309eb9d0403eb94b4c1cedb215fa642c35beebdb641ecf06a36c"
+        "bytes": 13492,
+        "lines": 216,
+        "sha256": "b32533e4de868766491ff2126a2f25a15e109a79de387db01555796b4358f152"
       }
     },
     {
@@ -6744,9 +6170,9 @@
       "has_examples": false,
       "has_scripts": false,
       "skill_md": {
-        "bytes": 14969,
-        "lines": 223,
-        "sha256": "e9f3ae7e36418aeeae935f0b84c4c966827e87bc853d8a6a5c9f3524562ca296"
+        "bytes": 14887,
+        "lines": 222,
+        "sha256": "64054330f96aaa2d0117f6716df22590225335bdb8186cdba825a31191a79ddf"
       }
     },
     {
@@ -6773,9 +6199,9 @@
       "has_examples": false,
       "has_scripts": false,
       "skill_md": {
-        "bytes": 11493,
+        "bytes": 11363,
         "lines": 204,
-        "sha256": "cec5bccf6281cfd54398c95d593eea4faecbb1c1e311bc92d9b6f1ee952831eb"
+        "sha256": "e21f88a789edb95d4fdd45d0f8effa195e62b13509106308dcd988973c892be5"
       }
     },
     {
@@ -6802,9 +6228,9 @@
       "has_examples": false,
       "has_scripts": false,
       "skill_md": {
-        "bytes": 17604,
-        "lines": 279,
-        "sha256": "812a03285c4c162f19dfa9adfe47dd0c731c59301dc1b716b4fca40e4336bf85"
+        "bytes": 17445,
+        "lines": 278,
+        "sha256": "d4eae028f733f78ec69abcd87cdc071137d49b50dcc3777bd748dee52183e314"
       }
     },
     {
@@ -6831,9 +6257,9 @@
       "has_examples": false,
       "has_scripts": false,
       "skill_md": {
-        "bytes": 8809,
-        "lines": 209,
-        "sha256": "bfc40abc29b277c45f0b3a1b985d078fcc9887c1adc0373915dda04064e7ed36"
+        "bytes": 8759,
+        "lines": 208,
+        "sha256": "2a811687714a9b568c1ffefa1c5f90f798393738204bbd4bca5eea8e4a1d3ddb"
       }
     },
     {
@@ -6918,9 +6344,9 @@
       "has_examples": false,
       "has_scripts": false,
       "skill_md": {
-        "bytes": 13585,
-        "lines": 228,
-        "sha256": "9228aa2c89f05db0607fcfb62dc1971f9227ae0fa245a7b662fa781142db1e03"
+        "bytes": 13464,
+        "lines": 227,
+        "sha256": "16038b7fc080f114a2ed0f21edb23c9fee36cb91b1f0fdb3bfb5665af3f36f30"
       }
     },
     {
@@ -6947,289 +6373,9 @@
       "has_examples": false,
       "has_scripts": false,
       "skill_md": {
-        "bytes": 25255,
-        "lines": 295,
-        "sha256": "f86489b46891d16b66d18f748cda80336911004fc28b8e5938c65d55bce01d4d"
-      }
-    },
-    {
-      "slug": "wcs-cart-checkout-coupons",
-      "name": "wcs-cart-checkout-coupons",
-      "domain": "woocommerce",
-      "description": "Implement or audit WooCommerce Subscriptions 9.1 cart, classic checkout, Checkout block, Store API, recurring totals, sign-up fees, subscription coupon types, limited-payment coupons, renewal payment carts, and internal pseudo coupons. Use when code touches WC_Subscriptions_Cart, recurring_carts, recurring_fee, recurring_percent, sign_up_fee, _wcs_number_payments, renewal_fee, renewal_percent, renewal_cart, subscriptions_cart_meta, manual renewal checkout, due-today display, or subscription fee/coupon calculations.",
-      "path": "woocommerce/wcs-cart-checkout-coupons",
-      "skill_path": "woocommerce/wcs-cart-checkout-coupons/SKILL.md",
-      "url": "https://raw.githubusercontent.com/Lonsdale201/wp-agent-skills/main/woocommerce/wcs-cart-checkout-coupons/SKILL.md",
-      "raw_url": "https://raw.githubusercontent.com/Lonsdale201/wp-agent-skills/main/woocommerce/wcs-cart-checkout-coupons/SKILL.md",
-      "html_url": "https://github.com/Lonsdale201/wp-agent-skills/blob/main/woocommerce/wcs-cart-checkout-coupons/SKILL.md",
-      "directory_url": "https://github.com/Lonsdale201/wp-agent-skills/tree/main/woocommerce/wcs-cart-checkout-coupons",
-      "metadata": {
-        "author": "Soczó Kristóf",
-        "contact": "mailto:lonsdale201@hotmail.com",
-        "plugin": "woocommerce-subscriptions",
-        "plugin-version-tested": "9.1.0",
-        "woocommerce-version-tested": "11.0.0",
-        "php-min": "7.4",
-        "last-updated": "2026-08-06"
-      },
-      "resources": [
-        {
-          "path": "agents/openai.yaml",
-          "repo_path": "woocommerce/wcs-cart-checkout-coupons/agents/openai.yaml",
-          "type": "resource",
-          "bytes": 269,
-          "sha256": "73dbaf03eca5012bbcdb76112a6e818cf4f1f6803680f46ddcca793ec684860f"
-        },
-        {
-          "path": "references/cart-checkout-contract.md",
-          "repo_path": "woocommerce/wcs-cart-checkout-coupons/references/cart-checkout-contract.md",
-          "type": "reference",
-          "bytes": 8477,
-          "sha256": "29a89a097a658b3c8f6368faa15bc8e9bd9e39938d5cd69bdc2b5ef6a0ff2090"
-        }
-      ],
-      "has_reference": true,
-      "has_examples": false,
-      "has_scripts": false,
-      "skill_md": {
-        "bytes": 12287,
-        "lines": 178,
-        "sha256": "a8a5b08b1c8d3657e0d7c6f4196c9c305deeb95d352005eaedc89ac0ce434ad8"
-      }
-    },
-    {
-      "slug": "wcs-data-model-switching-gifting",
-      "name": "wcs-data-model-switching-gifting",
-      "domain": "woocommerce",
-      "description": "WooCommerce Subscriptions data model, switching, and gifting reference for order/product types, schedule and relation storage, switch cart/order payloads, proration hooks, recipient data, and WCS 9.0 APFS plan markers. Use for shop_subscription, _schedule_next_payment, _subscription_switch_data, subscription_switch, _switched_subscription_item_id, wcsg_gift_recipients_email, _recipient_user, _wcsatt_schemes, or _wcsatt_scheme.",
-      "path": "woocommerce/wcs-data-model-switching-gifting",
-      "skill_path": "woocommerce/wcs-data-model-switching-gifting/SKILL.md",
-      "url": "https://raw.githubusercontent.com/Lonsdale201/wp-agent-skills/main/woocommerce/wcs-data-model-switching-gifting/SKILL.md",
-      "raw_url": "https://raw.githubusercontent.com/Lonsdale201/wp-agent-skills/main/woocommerce/wcs-data-model-switching-gifting/SKILL.md",
-      "html_url": "https://github.com/Lonsdale201/wp-agent-skills/blob/main/woocommerce/wcs-data-model-switching-gifting/SKILL.md",
-      "directory_url": "https://github.com/Lonsdale201/wp-agent-skills/tree/main/woocommerce/wcs-data-model-switching-gifting",
-      "metadata": {
-        "author": "Soczó Kristóf",
-        "contact": "mailto:lonsdale201@hotmail.com",
-        "plugin": "woocommerce-subscriptions",
-        "plugin-version-tested": "9.1.0",
-        "woocommerce-version-tested": "11.0.0",
-        "php-min": "7.4",
-        "last-updated": "2026-08-06"
-      },
-      "resources": [
-        {
-          "path": "switching-reference.md",
-          "repo_path": "woocommerce/wcs-data-model-switching-gifting/switching-reference.md",
-          "type": "resource",
-          "bytes": 5226,
-          "sha256": "0c66736184bede0280457a7537505490496d60f5c2961a431436688db6c6c6fe"
-        }
-      ],
-      "has_reference": false,
-      "has_examples": false,
-      "has_scripts": false,
-      "skill_md": {
-        "bytes": 19697,
-        "lines": 266,
-        "sha256": "1f4ba775c0b9b5238dca4c17e1bd97cc476d6a277a6de124c6b444ff1dff4266"
-      }
-    },
-    {
-      "slug": "wcs-health-check-processing",
-      "name": "wcs-health-check-processing",
-      "domain": "woocommerce",
-      "description": "WooCommerce Subscriptions 8.8+ Health Check and Processing Reliability playbook for missing renewal schedules, automatic-renewal candidates, guarded Resolve actions, dedicated Action Scheduler processing, web cron, health-check tables, logs, AJAX nonces, and queue filters. Use for WCS Health Check, wcs_health_check_candidates, wcs_health_check_runs, Processing reliability, subscriptions/job-queue, or renewal remediation.",
-      "path": "woocommerce/wcs-health-check-processing",
-      "skill_path": "woocommerce/wcs-health-check-processing/SKILL.md",
-      "url": "https://raw.githubusercontent.com/Lonsdale201/wp-agent-skills/main/woocommerce/wcs-health-check-processing/SKILL.md",
-      "raw_url": "https://raw.githubusercontent.com/Lonsdale201/wp-agent-skills/main/woocommerce/wcs-health-check-processing/SKILL.md",
-      "html_url": "https://github.com/Lonsdale201/wp-agent-skills/blob/main/woocommerce/wcs-health-check-processing/SKILL.md",
-      "directory_url": "https://github.com/Lonsdale201/wp-agent-skills/tree/main/woocommerce/wcs-health-check-processing",
-      "metadata": {
-        "author": "Soczó Kristóf",
-        "contact": "mailto:lonsdale201@hotmail.com",
-        "plugin": "woocommerce-subscriptions",
-        "plugin-version-tested": "9.1.0",
-        "woocommerce-version-tested": "11.0.0",
-        "action-scheduler-version-tested": "4.0.0",
-        "php-min": "7.4",
-        "last-updated": "2026-08-06"
-      },
-      "resources": [],
-      "has_reference": false,
-      "has_examples": false,
-      "has_scripts": false,
-      "skill_md": {
-        "bytes": 12582,
-        "lines": 196,
-        "sha256": "8b3cb27c355370d440c6282a8695dd26769399b4fa7244351975eb8d970e8d82"
-      }
-    },
-    {
-      "slug": "wcs-renewal-scheduler",
-      "name": "wcs-renewal-scheduler",
-      "domain": "woocommerce",
-      "description": "Safely integrate with WooCommerce Subscriptions renewal scheduling, Action Scheduler, renewal-order creation, gateway charge dispatch, guarded process-renewal-now commands, and retries. Use for WC_Subscription::update_dates, wcs_create_renewal_order, woocommerce_scheduled_subscription_payment, gateway-specific scheduled payment hooks, renewal success/failure, missing renewals, or duplicate renewal orders.",
-      "path": "woocommerce/wcs-renewal-scheduler",
-      "skill_path": "woocommerce/wcs-renewal-scheduler/SKILL.md",
-      "url": "https://raw.githubusercontent.com/Lonsdale201/wp-agent-skills/main/woocommerce/wcs-renewal-scheduler/SKILL.md",
-      "raw_url": "https://raw.githubusercontent.com/Lonsdale201/wp-agent-skills/main/woocommerce/wcs-renewal-scheduler/SKILL.md",
-      "html_url": "https://github.com/Lonsdale201/wp-agent-skills/blob/main/woocommerce/wcs-renewal-scheduler/SKILL.md",
-      "directory_url": "https://github.com/Lonsdale201/wp-agent-skills/tree/main/woocommerce/wcs-renewal-scheduler",
-      "metadata": {
-        "author": "Soczó Kristóf",
-        "contact": "mailto:lonsdale201@hotmail.com",
-        "plugin": "woocommerce-subscriptions",
-        "plugin-version-tested": "9.1.0",
-        "woocommerce-version-tested": "11.0.0",
-        "php-min": "7.4",
-        "last-updated": "2026-08-06"
-      },
-      "resources": [
-        {
-          "path": "programmatic-renewal.md",
-          "repo_path": "woocommerce/wcs-renewal-scheduler/programmatic-renewal.md",
-          "type": "resource",
-          "bytes": 3004,
-          "sha256": "92e11486a5da6e63c5497c5dea8ddc943522fb502ee9e1c1b0b823c1f02c7bd8"
-        }
-      ],
-      "has_reference": false,
-      "has_examples": false,
-      "has_scripts": false,
-      "skill_md": {
-        "bytes": 17145,
+        "bytes": 25118,
         "lines": 294,
-        "sha256": "d77ec4b1837f1983001b7208d9b401f888072d916073e44b290655abc3b40a1d"
-      }
-    },
-    {
-      "slug": "wcs-rest-api",
-      "name": "wcs-rest-api",
-      "domain": "woocommerce",
-      "description": "Integrate with WooCommerce Subscriptions REST API v3. Covers subscription CRUD, status versus transition_status, GMT schedule fields, payment_details validation, related-order and order-to-subscriptions routes, notes, batch operations, creating subscriptions from an order, HPOS-safe behavior, APFS plan route boundaries, authentication, idempotency, and Store API separation. Use for /wc/v3/subscriptions, headless subscription administration, external subscription sync, or code attempting to expose subscription writes through the Store API.",
-      "path": "woocommerce/wcs-rest-api",
-      "skill_path": "woocommerce/wcs-rest-api/SKILL.md",
-      "url": "https://raw.githubusercontent.com/Lonsdale201/wp-agent-skills/main/woocommerce/wcs-rest-api/SKILL.md",
-      "raw_url": "https://raw.githubusercontent.com/Lonsdale201/wp-agent-skills/main/woocommerce/wcs-rest-api/SKILL.md",
-      "html_url": "https://github.com/Lonsdale201/wp-agent-skills/blob/main/woocommerce/wcs-rest-api/SKILL.md",
-      "directory_url": "https://github.com/Lonsdale201/wp-agent-skills/tree/main/woocommerce/wcs-rest-api",
-      "metadata": {
-        "author": "Soczó Kristóf",
-        "contact": "mailto:lonsdale201@hotmail.com",
-        "plugin": "woocommerce-subscriptions",
-        "plugin-version-tested": "9.1.0",
-        "woocommerce-version-tested": "11.0.0",
-        "php-min": "7.4",
-        "last-updated": "2026-08-06"
-      },
-      "resources": [],
-      "has_reference": false,
-      "has_examples": false,
-      "has_scripts": false,
-      "skill_md": {
-        "bytes": 12185,
-        "lines": 218,
-        "sha256": "69086b94545a3c47dda54cacb2fbb649ad3f3282b3dadc232bb2a1a07d83bf1d"
-      }
-    },
-    {
-      "slug": "wcs-subscription-downloads",
-      "name": "wcs-subscription-downloads",
-      "domain": "woocommerce",
-      "description": "Implement, extend, or audit WooCommerce Subscriptions download access. Distinguishes ordinary downloadable subscription line items from the bundled linked Subscription Downloads feature; covers WCS_Download_Handler, shop_subscription-owned permissions, renewal de-duplication, new-file drip behavior, subscription status access gates, the woocommerce_subscription_downloads catalog mapping, active/cancel/expire grants and revokes, counter resets, optional zero-cost line items, projections, switching, emails, and WCS Gifting. Use for missing or duplicate subscription downloads, WC_Subscription_Downloads, linked/shared files, drip downloadable content, subscription renewal access, or downloadable permissions tied to a subscription.",
-      "path": "woocommerce/wcs-subscription-downloads",
-      "skill_path": "woocommerce/wcs-subscription-downloads/SKILL.md",
-      "url": "https://raw.githubusercontent.com/Lonsdale201/wp-agent-skills/main/woocommerce/wcs-subscription-downloads/SKILL.md",
-      "raw_url": "https://raw.githubusercontent.com/Lonsdale201/wp-agent-skills/main/woocommerce/wcs-subscription-downloads/SKILL.md",
-      "html_url": "https://github.com/Lonsdale201/wp-agent-skills/blob/main/woocommerce/wcs-subscription-downloads/SKILL.md",
-      "directory_url": "https://github.com/Lonsdale201/wp-agent-skills/tree/main/woocommerce/wcs-subscription-downloads",
-      "metadata": {
-        "author": "Soczó Kristóf",
-        "contact": "mailto:lonsdale201@hotmail.com",
-        "plugin": "woocommerce-subscriptions",
-        "plugin-version-tested": "9.1.0",
-        "woocommerce-version-tested": "11.0.0",
-        "php-min": "7.4",
-        "last-updated": "2026-08-06"
-      },
-      "resources": [],
-      "has_reference": false,
-      "has_examples": false,
-      "has_scripts": false,
-      "skill_md": {
-        "bytes": 13811,
-        "lines": 244,
-        "sha256": "a7e23745359cfd5d7fbbe68ef525f2ae152e8a529e0d3420a99f03d6a1bb7c7c"
-      }
-    },
-    {
-      "slug": "wcs-subscription-hooks",
-      "name": "wcs-subscription-hooks",
-      "domain": "woocommerce",
-      "description": "Curated WooCommerce Subscriptions hook map for subscription creation, status/date transitions, renewal orders, scheduled payments, retries, gateway events, switching, gifting, related orders, APFS plans, REST, and account/admin UI. Use when choosing where to hook around WC_Subscription, wcs_create_subscription, wcs_create_renewal_order, woocommerce_scheduled_subscription_payment, payment_retry, wcsg_, subscription_switch, WCS_ATT, wcsatt_, or _wcsatt_scheme.",
-      "path": "woocommerce/wcs-subscription-hooks",
-      "skill_path": "woocommerce/wcs-subscription-hooks/SKILL.md",
-      "url": "https://raw.githubusercontent.com/Lonsdale201/wp-agent-skills/main/woocommerce/wcs-subscription-hooks/SKILL.md",
-      "raw_url": "https://raw.githubusercontent.com/Lonsdale201/wp-agent-skills/main/woocommerce/wcs-subscription-hooks/SKILL.md",
-      "html_url": "https://github.com/Lonsdale201/wp-agent-skills/blob/main/woocommerce/wcs-subscription-hooks/SKILL.md",
-      "directory_url": "https://github.com/Lonsdale201/wp-agent-skills/tree/main/woocommerce/wcs-subscription-hooks",
-      "metadata": {
-        "author": "Soczó Kristóf",
-        "contact": "mailto:lonsdale201@hotmail.com",
-        "plugin": "woocommerce-subscriptions",
-        "plugin-version-tested": "9.1.0",
-        "woocommerce-version-tested": "11.0.0",
-        "php-min": "7.4",
-        "last-updated": "2026-08-06"
-      },
-      "resources": [],
-      "has_reference": false,
-      "has_examples": false,
-      "has_scripts": false,
-      "skill_md": {
-        "bytes": 25622,
-        "lines": 268,
-        "sha256": "06bcd7887b91b8d3dd160ff533f090a2bc4f628fac30f2d56f1082ff25aff9a3"
-      }
-    },
-    {
-      "slug": "wcs-subscription-plans-apfs",
-      "name": "wcs-subscription-plans-apfs",
-      "domain": "woocommerce",
-      "description": "Build or audit WooCommerce Subscriptions 9.0+ All Products for Subscriptions / Subscription Plans integrations. Covers the bundled APFS loader, standalone-plugin bypass, storewide and product plans, `_wcsatt_schemes_status`, `_wcsatt_schemes`, `wcsatt_subscribe_to_cart_schemes`, `wcsatt_data.active_subscription_scheme`, `_wcsatt_scheme`, plan REST endpoints, `woocommerce_is_subscription`, Store API validation, gifting support, bulk edit, and safe extension hooks. Use when any Woo product can be sold one-time, subscription, or both without being a `subscription` product type.",
-      "path": "woocommerce/wcs-subscription-plans-apfs",
-      "skill_path": "woocommerce/wcs-subscription-plans-apfs/SKILL.md",
-      "url": "https://raw.githubusercontent.com/Lonsdale201/wp-agent-skills/main/woocommerce/wcs-subscription-plans-apfs/SKILL.md",
-      "raw_url": "https://raw.githubusercontent.com/Lonsdale201/wp-agent-skills/main/woocommerce/wcs-subscription-plans-apfs/SKILL.md",
-      "html_url": "https://github.com/Lonsdale201/wp-agent-skills/blob/main/woocommerce/wcs-subscription-plans-apfs/SKILL.md",
-      "directory_url": "https://github.com/Lonsdale201/wp-agent-skills/tree/main/woocommerce/wcs-subscription-plans-apfs",
-      "metadata": {
-        "author": "Soczó Kristóf",
-        "contact": "mailto:lonsdale201@hotmail.com",
-        "plugin": "woocommerce-subscriptions",
-        "plugin-version-tested": "9.1.0",
-        "woocommerce-version-tested": "11.0.0",
-        "php-min": "7.4",
-        "last-updated": "2026-08-06"
-      },
-      "resources": [
-        {
-          "path": "references/headless-admin-reference.md",
-          "repo_path": "woocommerce/wcs-subscription-plans-apfs/references/headless-admin-reference.md",
-          "type": "reference",
-          "bytes": 3473,
-          "sha256": "61a19b1eb202ea8d26a6b8938916258fbdc0e47a701bee0691c00b9618a4b753"
-        }
-      ],
-      "has_reference": true,
-      "has_examples": false,
-      "has_scripts": false,
-      "skill_md": {
-        "bytes": 17696,
-        "lines": 309,
-        "sha256": "d0b643c573e64b33b3ef20edf5e438512e2c90524bd58aa52145f661fc4499d1"
+        "sha256": "d48bca47b8bb835ea4abde7dff3dacafbe06759d464b69c5e0d6080d49083de1"
       }
     },
     {
@@ -7268,44 +6414,6 @@
         "bytes": 18579,
         "lines": 299,
         "sha256": "dfc853476c8ba7a9560a7f76b952fe1fa1bc01c7ee118b1ac3b7f556c008c3f7"
-      }
-    },
-    {
-      "slug": "wp-accessibility-audit",
-      "name": "wp-accessibility-audit",
-      "domain": "wordpress",
-      "description": "Audit or implement accessibility for WordPress plugins, admin screens, frontend plugin output, and classic themes against WCAG 2.2 A/AA and WordPress accessibility patterns. Use when the user asks for akadalymentesites/accessibility/a11y, form field labels, `aria-label`, `aria-describedby`, keyboard navigation, focus states, admin notices, live AJAX updates, modal/dialog UI, color contrast, font sizing, reduced motion, target size, screen-reader text, image alt text, or making a plugin/theme usable without a mouse or screen.",
-      "path": "wordpress/wp-accessibility-audit",
-      "skill_path": "wordpress/wp-accessibility-audit/SKILL.md",
-      "url": "https://raw.githubusercontent.com/Lonsdale201/wp-agent-skills/main/wordpress/wp-accessibility-audit/SKILL.md",
-      "raw_url": "https://raw.githubusercontent.com/Lonsdale201/wp-agent-skills/main/wordpress/wp-accessibility-audit/SKILL.md",
-      "html_url": "https://github.com/Lonsdale201/wp-agent-skills/blob/main/wordpress/wp-accessibility-audit/SKILL.md",
-      "directory_url": "https://github.com/Lonsdale201/wp-agent-skills/tree/main/wordpress/wp-accessibility-audit",
-      "metadata": {
-        "author": "Soczó Kristóf",
-        "contact": "mailto:lonsdale201@hotmail.com",
-        "plugin": "wordpress",
-        "plugin-version-tested": "7.0 - 7.1",
-        "wp-version-tested": "7.1",
-        "php-min": "7.4",
-        "last-updated": "2026-08-20"
-      },
-      "resources": [
-        {
-          "path": "references/tooltips-71.md",
-          "repo_path": "wordpress/wp-accessibility-audit/references/tooltips-71.md",
-          "type": "reference",
-          "bytes": 2902,
-          "sha256": "8ee2cf4b2294a6835e70a5416a36ce8f5af87caaac201eeb36a623b545c154b5"
-        }
-      ],
-      "has_reference": true,
-      "has_examples": false,
-      "has_scripts": false,
-      "skill_md": {
-        "bytes": 13295,
-        "lines": 311,
-        "sha256": "4fa11ebdf7d5f0b9e6453a735a217736bb9157b84867482846b0e4ddd91a1c66"
       }
     },
     {
@@ -7409,9 +6517,9 @@
       "has_examples": false,
       "has_scripts": false,
       "skill_md": {
-        "bytes": 14068,
+        "bytes": 14063,
         "lines": 300,
-        "sha256": "5e90479a11a221b76a2a8f583fc3bb9632d238965d6678833c1f1ffe6e5387c9"
+        "sha256": "b32d936332e4823eae76d67ad74fb317d20e6cbc48e32fcbce562c22c1a976c0"
       }
     },
     {
@@ -7629,9 +6737,9 @@
       "has_examples": false,
       "has_scripts": false,
       "skill_md": {
-        "bytes": 5204,
-        "lines": 143,
-        "sha256": "c90b4e5d58fafbfe983b4fd2d823d4658ded36d07c15a7eee18449109907b441"
+        "bytes": 5145,
+        "lines": 142,
+        "sha256": "4f05d6acfe98a31caad4c95da83b1358473b3c55a0dfdbfb4f6142ad368997dc"
       }
     },
     {
@@ -7662,51 +6770,6 @@
         "bytes": 10698,
         "lines": 240,
         "sha256": "72ed2dc6657253555b4c29a9feb328ea5abdeffaf9f99d6e7e311d1408f3de40"
-      }
-    },
-    {
-      "slug": "wp-api-fetch-client",
-      "name": "wp-api-fetch-client",
-      "domain": "wordpress",
-      "description": "Implement and audit browser-side WordPress REST clients with the bundled wp-api-fetch script handle, wp.apiFetch, and @wordpress/api-fetch. Covers PHP enqueue dependencies, WordPress-global versus bundled npm initialization, path/url/data/body/parse/signal options, cookie authentication and X-WP-Nonce, parsed REST errors, raw response headers and pagination, cancellation, stale-response protection, middleware side effects, media uploads, and request mocks. Use when plugin or theme JavaScript calls core or custom REST endpoints, replaces fetch or jQuery.ajax, or debugs nonce, 401/403, invalid_json, pagination, duplicate requests, or REST races. Trigger on wp-api-fetch, wp.apiFetch, @wordpress/api-fetch, apiFetch.use, createNonceMiddleware, createRootURLMiddleware, setFetchHandler, or parse:false; do not use for server-side wp_remote_* calls.",
-      "path": "wordpress/wp-api-fetch-client",
-      "skill_path": "wordpress/wp-api-fetch-client/SKILL.md",
-      "url": "https://raw.githubusercontent.com/Lonsdale201/wp-agent-skills/main/wordpress/wp-api-fetch-client/SKILL.md",
-      "raw_url": "https://raw.githubusercontent.com/Lonsdale201/wp-agent-skills/main/wordpress/wp-api-fetch-client/SKILL.md",
-      "html_url": "https://github.com/Lonsdale201/wp-agent-skills/blob/main/wordpress/wp-api-fetch-client/SKILL.md",
-      "directory_url": "https://github.com/Lonsdale201/wp-agent-skills/tree/main/wordpress/wp-api-fetch-client",
-      "metadata": {
-        "author": "Soczó Kristóf",
-        "contact": "mailto:lonsdale201@hotmail.com",
-        "plugin": "wordpress",
-        "plugin-version-tested": "7.0 - 7.1",
-        "wp-version-tested": "7.1",
-        "php-min": "7.4",
-        "last-updated": "2026-08-20"
-      },
-      "resources": [
-        {
-          "path": "agents/openai.yaml",
-          "repo_path": "wordpress/wp-api-fetch-client/agents/openai.yaml",
-          "type": "resource",
-          "bytes": 230,
-          "sha256": "4637eeffcb841acda45d2d604d2f366ed2dd14d9c58f2ef9c4bf7b468822fb52"
-        },
-        {
-          "path": "reference.md",
-          "repo_path": "wordpress/wp-api-fetch-client/reference.md",
-          "type": "reference",
-          "bytes": 16247,
-          "sha256": "2595f9a4d5b39ed39c339da997e8416056fc1bc377a4d2225e20855c092cb835"
-        }
-      ],
-      "has_reference": true,
-      "has_examples": false,
-      "has_scripts": false,
-      "skill_md": {
-        "bytes": 12625,
-        "lines": 296,
-        "sha256": "320bdc35fc1671e84766619064fb1dab6815ebfdcb566a4c92e0d8579835a174"
       }
     },
     {
@@ -7742,9 +6805,9 @@
       "has_examples": false,
       "has_scripts": false,
       "skill_md": {
-        "bytes": 8823,
-        "lines": 217,
-        "sha256": "0eb593dfafc633e746d267ea2de906750865291bd5eb24de7250cdb5b9924f65"
+        "bytes": 8647,
+        "lines": 214,
+        "sha256": "59ebf2301564484beaf985290c3f01f44f5168e44fb8e52305e49b3e90307220"
       }
     },
     {
@@ -7834,9 +6897,9 @@
       "has_examples": false,
       "has_scripts": false,
       "skill_md": {
-        "bytes": 8331,
-        "lines": 159,
-        "sha256": "6b40547e6502c480d4435ded27933c8a18aea3077c83528d351f8d939b6fc00c"
+        "bytes": 8254,
+        "lines": 158,
+        "sha256": "51739451c6640953900025ab0b085b124376028053398162a5f583ac22476201"
       }
     },
     {
@@ -7965,9 +7028,9 @@
       "has_examples": false,
       "has_scripts": false,
       "skill_md": {
-        "bytes": 8689,
+        "bytes": 8664,
         "lines": 153,
-        "sha256": "9d7fd44f298434e5c8bbb42d0a5d48a99fcda2a8aaaee780f5fb79498f026d51"
+        "sha256": "7157daa7232b4252be0a1cc8c0483f2c69ffea12cc506bfe2ec36e1d923c50a2"
       }
     },
     {
@@ -8041,47 +7104,9 @@
       "has_examples": false,
       "has_scripts": false,
       "skill_md": {
-        "bytes": 11078,
-        "lines": 234,
-        "sha256": "dbebdf7ee5f24da24fe0e2582d1d9439ff069100ab0cf4a08ff5e3db66f12db4"
-      }
-    },
-    {
-      "slug": "wp-database-performance-audit",
-      "name": "wp-database-performance-audit",
-      "domain": "wordpress",
-      "description": "Audits WordPress PHP data access for slow or unbounded SQL, LIMIT/OFFSET degradation, N+1 queries, missing cache priming, expensive postmeta joins, LONGTEXT sorting/aggregation, leading-wildcard LIKE, oversized result transfer, unsuitable indexes, cache stampedes, stale invalidation, and direct-write cache bypass. Use when reviewing $wpdb queries, WP_Query loops, metadata loops, admin reports, imports, migrations, bulk tools, transients, object-cache behavior, EXPLAIN plans, or performance problems that grow with posts/users/orders/meta rows.",
-      "path": "wordpress/wp-database-performance-audit",
-      "skill_path": "wordpress/wp-database-performance-audit/SKILL.md",
-      "url": "https://raw.githubusercontent.com/Lonsdale201/wp-agent-skills/main/wordpress/wp-database-performance-audit/SKILL.md",
-      "raw_url": "https://raw.githubusercontent.com/Lonsdale201/wp-agent-skills/main/wordpress/wp-database-performance-audit/SKILL.md",
-      "html_url": "https://github.com/Lonsdale201/wp-agent-skills/blob/main/wordpress/wp-database-performance-audit/SKILL.md",
-      "directory_url": "https://github.com/Lonsdale201/wp-agent-skills/tree/main/wordpress/wp-database-performance-audit",
-      "metadata": {
-        "author": "Soczó Kristóf",
-        "contact": "mailto:lonsdale201@hotmail.com",
-        "plugin": "wordpress",
-        "plugin-version-tested": "6.0 - 7.1",
-        "wp-version-tested": "7.1",
-        "php-min": "7.4",
-        "last-updated": "2026-08-20"
-      },
-      "resources": [
-        {
-          "path": "agents/openai.yaml",
-          "repo_path": "wordpress/wp-database-performance-audit/agents/openai.yaml",
-          "type": "resource",
-          "bytes": 283,
-          "sha256": "1454034fdcfd4b0b5a7f8286b0b1fef220d85c43718f13d58c26d2cf5c229a84"
-        }
-      ],
-      "has_reference": false,
-      "has_examples": false,
-      "has_scripts": false,
-      "skill_md": {
-        "bytes": 8767,
-        "lines": 207,
-        "sha256": "191c11a5702bb2be5db970d7111e21b8e3256088e39ce90619f864d82eb90a71"
+        "bytes": 11006,
+        "lines": 233,
+        "sha256": "994a954ac6fa5319ee726ad3aaf5eb1ba026ccec17d63239298b610812ed6510"
       }
     },
     {
@@ -8125,9 +7150,9 @@
       "has_examples": false,
       "has_scripts": false,
       "skill_md": {
-        "bytes": 6770,
-        "lines": 165,
-        "sha256": "3bb3481f7181a953f271d40af10590a0a551ffa5ebeb7b70432e1d03b9b7a320"
+        "bytes": 6669,
+        "lines": 164,
+        "sha256": "edc0c7abc10958004eca4452e2c13ae357e9473d44d32b811deb55bec7bb94b2"
       }
     },
     {
@@ -8163,9 +7188,9 @@
       "has_examples": false,
       "has_scripts": false,
       "skill_md": {
-        "bytes": 10834,
-        "lines": 212,
-        "sha256": "2e4cf649d47158913eb765e192167ed78bfbf5bc0727abf598964a7dda891d23"
+        "bytes": 10652,
+        "lines": 208,
+        "sha256": "c7e298ec073728262e8c4855f181255312a87ee3448c78e03a9139cc14b0a385"
       }
     },
     {
@@ -8209,9 +7234,9 @@
       "has_examples": false,
       "has_scripts": false,
       "skill_md": {
-        "bytes": 6449,
-        "lines": 136,
-        "sha256": "182e56161d47e9e3cde9448789ec2accf6a78a792e114346f34cd9e48a91894f"
+        "bytes": 6392,
+        "lines": 135,
+        "sha256": "6ef40151d791ce1a48449b04049adcedd1390bdecf8ca0e2bbdf0657e2be2e9d"
       }
     },
     {
@@ -8247,9 +7272,9 @@
       "has_examples": false,
       "has_scripts": false,
       "skill_md": {
-        "bytes": 13244,
-        "lines": 300,
-        "sha256": "ba4dde6f584b0c02b3af295735049b99ea902e437082484674e462ffca6fcb56"
+        "bytes": 13182,
+        "lines": 299,
+        "sha256": "4804ec7c2019d48d2b0adfb18cae9c759f19686855772c4c91355364d18bc564"
       }
     },
     {
@@ -8285,9 +7310,9 @@
       "has_examples": false,
       "has_scripts": false,
       "skill_md": {
-        "bytes": 13447,
+        "bytes": 13428,
         "lines": 235,
-        "sha256": "912f210cc9658c70220998b583c42ca6aaf9eae5c2abe12300172f33c1ee2105"
+        "sha256": "53861f70d49b2c2d033ce0eff4ec7e36e1b67fdbbf0c800d293688cc9531e85d"
       }
     },
     {
@@ -8321,44 +7346,6 @@
       }
     },
     {
-      "slug": "wp-http-api-client",
-      "name": "wp-http-api-client",
-      "domain": "wordpress",
-      "description": "Implement or audit outbound HTTP integrations in WordPress with wp_remote_request, wp_safe_remote_get/post/request, bounded timeouts, redirects and response sizes, host allowlists, JSON handling, authentication redaction, retries, idempotency, streaming downloads, and test hooks. Use when a plugin calls an external API, webhook destination, feed, license server, OAuth endpoint, remote file, private update service, remote report definition, or accepts a URL that WordPress fetches.",
-      "path": "wordpress/wp-http-api-client",
-      "skill_path": "wordpress/wp-http-api-client/SKILL.md",
-      "url": "https://raw.githubusercontent.com/Lonsdale201/wp-agent-skills/main/wordpress/wp-http-api-client/SKILL.md",
-      "raw_url": "https://raw.githubusercontent.com/Lonsdale201/wp-agent-skills/main/wordpress/wp-http-api-client/SKILL.md",
-      "html_url": "https://github.com/Lonsdale201/wp-agent-skills/blob/main/wordpress/wp-http-api-client/SKILL.md",
-      "directory_url": "https://github.com/Lonsdale201/wp-agent-skills/tree/main/wordpress/wp-http-api-client",
-      "metadata": {
-        "author": "Soczó Kristóf",
-        "contact": "mailto:lonsdale201@hotmail.com",
-        "plugin": "wordpress",
-        "plugin-version-tested": "6.0 - 7.1",
-        "wp-version-tested": "7.1",
-        "php-min": "7.4",
-        "last-updated": "2026-08-20"
-      },
-      "resources": [
-        {
-          "path": "agents/openai.yaml",
-          "repo_path": "wordpress/wp-http-api-client/agents/openai.yaml",
-          "type": "resource",
-          "bytes": 224,
-          "sha256": "bdc594ad05f7f9e6cdfcfca1cbd308547a2122e12f5d2b728100dac26bda2ad5"
-        }
-      ],
-      "has_reference": false,
-      "has_examples": false,
-      "has_scripts": false,
-      "skill_md": {
-        "bytes": 11287,
-        "lines": 263,
-        "sha256": "e2a39a043c2976c3680ecd690aaec51e89c4f5b01eff4eac7cd640b285a8614c"
-      }
-    },
-    {
       "slug": "wp-i18n-audit",
       "name": "wp-i18n-audit",
       "domain": "wordpress",
@@ -8383,9 +7370,9 @@
       "has_examples": false,
       "has_scripts": false,
       "skill_md": {
-        "bytes": 11679,
+        "bytes": 11655,
         "lines": 308,
-        "sha256": "e4af8146a84b522c66cae5eec666b8bfeb6e304e1a3fcc4a28f16e6fa5037cdb"
+        "sha256": "448c395e54531d4844b867573a2bd1e02cd40cc5aa058289d0229e507f3b16d9"
       }
     },
     {
@@ -8543,9 +7530,9 @@
       "has_examples": false,
       "has_scripts": false,
       "skill_md": {
-        "bytes": 9713,
-        "lines": 223,
-        "sha256": "d35ae8e638373ec7e81636690cc438c6754ca4780e45927399548e6527e5f1a9"
+        "bytes": 9637,
+        "lines": 222,
+        "sha256": "29cb1d333dd473217e33623ef919f67addb770146e9a912232322869cd4a8e56"
       }
     },
     {
@@ -8589,9 +7576,9 @@
       "has_examples": false,
       "has_scripts": false,
       "skill_md": {
-        "bytes": 14071,
-        "lines": 300,
-        "sha256": "fbf075d3e841d852127cbfed2fdcb2835f653085d2103e8c026745fbb8444663"
+        "bytes": 13965,
+        "lines": 298,
+        "sha256": "8144559a7e43660c398cb39ccd98ce6f26759b4578a384f831c2b67c169b1310"
       }
     },
     {
@@ -8635,9 +7622,9 @@
       "has_examples": false,
       "has_scripts": false,
       "skill_md": {
-        "bytes": 10964,
-        "lines": 229,
-        "sha256": "531f1e48f98e87ced25e47a8a0f74e9e13eee3021a43cddb8cb1704108f54981"
+        "bytes": 10886,
+        "lines": 228,
+        "sha256": "05da5562830aeeda537b6b489d0c8f236520b182a821c486fb91caed21384202"
       }
     },
     {
@@ -8673,9 +7660,9 @@
       "has_examples": false,
       "has_scripts": false,
       "skill_md": {
-        "bytes": 12038,
-        "lines": 264,
-        "sha256": "a045a036bfde19d3160ac02449f2162a951f61f308f8af4dc6fab730c9b97ac1"
+        "bytes": 11942,
+        "lines": 262,
+        "sha256": "0b553b0c11c46a6ea59b707373ec04ff3019109c34689663aff7cb65e7919044"
       }
     },
     {
@@ -8703,47 +7690,9 @@
       "has_examples": false,
       "has_scripts": false,
       "skill_md": {
-        "bytes": 7479,
-        "lines": 172,
-        "sha256": "8f55d6638266853b052a268d904a2e276c34d6e6089b776adadca6350b8d0e18"
-      }
-    },
-    {
-      "slug": "wp-relational-data-portability-audit",
-      "name": "wp-relational-data-portability-audit",
-      "domain": "wordpress",
-      "description": "Audit WordPress custom-table export, import, restore, merge, and date-range deletion workflows for relational integrity. Covers root selection and dependency closure, shared dimensions, portable identity and ID remapping, schema-versioned manifests, checksums, staging/conflict policy, transaction boundaries, post-import verification, streaming, compressed-size limits, and resumable batches. Use when code emits SQL/CSV/JSON backups, preserves auto-increment IDs, uses INSERT IGNORE, imports into non-empty databases, deletes analytics/log/session data by time range, or promises backup/restore for related custom tables.",
-      "path": "wordpress/wp-relational-data-portability-audit",
-      "skill_path": "wordpress/wp-relational-data-portability-audit/SKILL.md",
-      "url": "https://raw.githubusercontent.com/Lonsdale201/wp-agent-skills/main/wordpress/wp-relational-data-portability-audit/SKILL.md",
-      "raw_url": "https://raw.githubusercontent.com/Lonsdale201/wp-agent-skills/main/wordpress/wp-relational-data-portability-audit/SKILL.md",
-      "html_url": "https://github.com/Lonsdale201/wp-agent-skills/blob/main/wordpress/wp-relational-data-portability-audit/SKILL.md",
-      "directory_url": "https://github.com/Lonsdale201/wp-agent-skills/tree/main/wordpress/wp-relational-data-portability-audit",
-      "metadata": {
-        "author": "Soczó Kristóf",
-        "contact": "mailto:lonsdale201@hotmail.com",
-        "plugin": "wordpress",
-        "plugin-version-tested": "6.0 - 7.1",
-        "wp-version-tested": "7.1",
-        "php-min": "7.4",
-        "last-updated": "2026-08-20"
-      },
-      "resources": [
-        {
-          "path": "agents/openai.yaml",
-          "repo_path": "wordpress/wp-relational-data-portability-audit/agents/openai.yaml",
-          "type": "resource",
-          "bytes": 335,
-          "sha256": "9fb232e45d62ad46db2c4de0d70d00cd75c4c12c71086737df563d0731b9a2b1"
-        }
-      ],
-      "has_reference": false,
-      "has_examples": false,
-      "has_scripts": false,
-      "skill_md": {
-        "bytes": 10264,
-        "lines": 218,
-        "sha256": "8c92f2cbb7c882e767b17292539f988ec281caaafa528dc3316743e5cc00fe39"
+        "bytes": 7311,
+        "lines": 169,
+        "sha256": "ac2e818ad69102416baffa61e466351c80708a6b9f2b8c019ad4c7d4f36c957a"
       }
     },
     {
@@ -8779,9 +7728,9 @@
       "has_examples": false,
       "has_scripts": false,
       "skill_md": {
-        "bytes": 15325,
-        "lines": 340,
-        "sha256": "9b2f3c0fc139d59114a1b201a6d0476a555dd1eb9d352a9eb23a8dd069ba12d9"
+        "bytes": 15098,
+        "lines": 337,
+        "sha256": "f08c1d7a150f0b14fa7b252411606790bbe2170c4a0a3238dae8d299e320d5d8"
       }
     },
     {
@@ -8824,77 +7773,9 @@
       "has_examples": true,
       "has_scripts": false,
       "skill_md": {
-        "bytes": 14491,
-        "lines": 331,
-        "sha256": "c4d6f4fb541245d4deb1addf6e4b77d1bd321244e12b93274527629e39c6d6a8"
-      }
-    },
-    {
-      "slug": "wp-security-deep",
-      "name": "wp-security-deep",
-      "domain": "wordpress",
-      "description": "Deep security audit for WordPress plugin/theme PHP code, covering issues beyond the basic sanitize/escape/nonce checklist — PHP object injection (unserialize), SSRF in remote requests, CSRF on state-changing GET handlers, mass assignment via $_POST loops, insecure file include / template injection, mail header injection, ZipSlip in archive extraction, type-juggling in auth comparisons, and TOCTOU race patterns in option/meta locks. Use after or alongside wp-security-audit when reviewing complex plugins, REST APIs, integrations that fetch remote URLs, file processors, or any code that handles uploads, archives, self-rolled auth tokens or login rate-limiters, remote SQL/report definitions, or private plugin update channels.",
-      "path": "wordpress/wp-security-deep",
-      "skill_path": "wordpress/wp-security-deep/SKILL.md",
-      "url": "https://raw.githubusercontent.com/Lonsdale201/wp-agent-skills/main/wordpress/wp-security-deep/SKILL.md",
-      "raw_url": "https://raw.githubusercontent.com/Lonsdale201/wp-agent-skills/main/wordpress/wp-security-deep/SKILL.md",
-      "html_url": "https://github.com/Lonsdale201/wp-agent-skills/blob/main/wordpress/wp-security-deep/SKILL.md",
-      "directory_url": "https://github.com/Lonsdale201/wp-agent-skills/tree/main/wordpress/wp-security-deep",
-      "metadata": {
-        "author": "Soczó Kristóf",
-        "contact": "mailto:lonsdale201@hotmail.com",
-        "plugin": "wordpress",
-        "plugin-version-tested": "6.0 - 7.1",
-        "wp-version-tested": "7.1",
-        "php-min": "7.4",
-        "last-updated": "2026-08-20"
-      },
-      "resources": [
-        {
-          "path": "reference.md",
-          "repo_path": "wordpress/wp-security-deep/reference.md",
-          "type": "reference",
-          "bytes": 2841,
-          "sha256": "c42c90da06ccaea69370bba3969167c3dccfd84441d699dbae53462e8741fda1"
-        }
-      ],
-      "has_reference": true,
-      "has_examples": false,
-      "has_scripts": false,
-      "skill_md": {
-        "bytes": 14115,
-        "lines": 349,
-        "sha256": "455633a4194bd2c106c19f4eeb87abd93015d8d80dbbc097beaffdc8b89a1f78"
-      }
-    },
-    {
-      "slug": "wp-security-secrets",
-      "name": "wp-security-secrets",
-      "domain": "wordpress",
-      "description": "Audits WordPress plugin/theme code for secret-handling and credential issues — hardcoded API keys, DB credentials, or signing secrets in source; weak randomness (rand, mt_rand, uniqid) used for security tokens, password reset links, nonces, or session IDs; password storage with md5/sha1/crypt instead of password_hash; insecure cookie flags (missing Secure, HttpOnly, SameSite) on sensitive cookies; secrets logged via error_log / var_dump in production code paths. Use before plugin release, when reviewing auth/registration/login features, when integrating third-party APIs, or when the user mentions \"API key\", \"token\", \"session\", \"password reset\".",
-      "path": "wordpress/wp-security-secrets",
-      "skill_path": "wordpress/wp-security-secrets/SKILL.md",
-      "url": "https://raw.githubusercontent.com/Lonsdale201/wp-agent-skills/main/wordpress/wp-security-secrets/SKILL.md",
-      "raw_url": "https://raw.githubusercontent.com/Lonsdale201/wp-agent-skills/main/wordpress/wp-security-secrets/SKILL.md",
-      "html_url": "https://github.com/Lonsdale201/wp-agent-skills/blob/main/wordpress/wp-security-secrets/SKILL.md",
-      "directory_url": "https://github.com/Lonsdale201/wp-agent-skills/tree/main/wordpress/wp-security-secrets",
-      "metadata": {
-        "author": "Soczó Kristóf",
-        "contact": "mailto:lonsdale201@hotmail.com",
-        "plugin": "wordpress",
-        "plugin-version-tested": "6.0 - 7.1",
-        "wp-version-tested": "7.1",
-        "php-min": "7.4",
-        "last-updated": "2026-08-20"
-      },
-      "resources": [],
-      "has_reference": false,
-      "has_examples": false,
-      "has_scripts": false,
-      "skill_md": {
-        "bytes": 11085,
-        "lines": 294,
-        "sha256": "cfafbc173bb49351f576684e13a5ee864b42310aa1b1b22a27e5a1883259e3dd"
+        "bytes": 14487,
+        "lines": 330,
+        "sha256": "e751e3d0511fd75c0de8fde34fffce0f6d38f7885a42d23fbfc9d2d2bd661c2e"
       }
     },
     {
@@ -8930,9 +7811,9 @@
       "has_examples": false,
       "has_scripts": false,
       "skill_md": {
-        "bytes": 13657,
-        "lines": 289,
-        "sha256": "729bc8cea856cef1509c7dcd9d90afc709e1749b97e701d5d1cd6449a6d61e6c"
+        "bytes": 13456,
+        "lines": 287,
+        "sha256": "d546533e30ed9a116293c57f924f14b076adcc74dbc9c1d3d5e0b35282e5a4e8"
       }
     },
     {
@@ -8976,9 +7857,9 @@
       "has_examples": false,
       "has_scripts": false,
       "skill_md": {
-        "bytes": 5918,
-        "lines": 133,
-        "sha256": "c994a657e88429f7e1760d29bdc6173ab0fed5dc41298c764a7434be0155ec41"
+        "bytes": 5810,
+        "lines": 132,
+        "sha256": "559f8654442785215cbc83d6c01b38c2c10fd6dc678aeb9a3ae60122565d64ac"
       }
     },
     {
@@ -9068,9 +7949,9 @@
       "has_examples": false,
       "has_scripts": false,
       "skill_md": {
-        "bytes": 6407,
-        "lines": 140,
-        "sha256": "88b869fb8290ca9f2056c04721512af801ea9f7b1cc912a79e095af00cdadbcb"
+        "bytes": 6335,
+        "lines": 139,
+        "sha256": "7221aa1519fecc677ecf98f250d523766c0e2be6d4a9a32d2d8b0e71b420dd9a"
       }
     },
     {
@@ -9173,9 +8054,9 @@
       "has_examples": false,
       "has_scripts": false,
       "skill_md": {
-        "bytes": 20757,
-        "lines": 384,
-        "sha256": "0f43071a2374f2aceb33d3d82b4863a6892fb8dfb71ebab06176c814a21b0fef"
+        "bytes": 20650,
+        "lines": 383,
+        "sha256": "b16a3a428a96388c3ba0a4abdaafc15c2a1ecc5f0a242f777dcb43e45eacaf76"
       }
     },
     {
@@ -9231,9 +8112,9 @@
       "has_examples": false,
       "has_scripts": false,
       "skill_md": {
-        "bytes": 20043,
+        "bytes": 20015,
         "lines": 276,
-        "sha256": "79405ac1238062dbbe0401a6e7642c5f3681e21b899d8119045eccb4a108baa0"
+        "sha256": "be295b369e6f68209a23369947ef08b03f00364aa1eda47ac444d497f44a925f"
       }
     },
     {

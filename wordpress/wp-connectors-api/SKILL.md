@@ -216,7 +216,6 @@ wp_add_inline_script( 'myplugin-admin', 'window.apiKey = ' . wp_json_encode( get
 ## Cross-references
 
 - Run **`wp-ai-client`** when the connector config is used to make AI requests.
-- Run **`wp-security-secrets`** when reviewing API key storage or logs.
 - Run **`wp-plugin-options-storage`** when deciding whether connector-related plugin state belongs in options.
 
 ## What this skill does NOT cover

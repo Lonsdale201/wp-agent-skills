@@ -211,7 +211,7 @@ into REST, AJAX, cron, or CLI; the credentials form is admin-interactive.
 ## Cross-references
 
 - See **`wp-plugin-options-storage`** for storing config — most "I need to write a file" needs are better served by an option / transient.
-- See **`wp-security-deep`** for path traversal checks (`realpath()`, `wp_normalize_path()`) — `WP_Filesystem` doesn't validate paths for you.
+- Do your own path traversal checks (`realpath()`, `wp_normalize_path()`) — `WP_Filesystem` doesn't validate paths for you.
 - See **`wp-plugin-cron`** when an FS-touching task moves to background — note the `'direct'` requirement.
 
 ## What this skill does NOT cover

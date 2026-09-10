@@ -154,7 +154,6 @@ Adding a token and changing a subscription's payment method are different operat
 
 ## Cross-references
 
-- Use `wc-payment-tokens` for provider-neutral Woo token storage and ownership rules.
 - Use `wc-stripe-future-payments` for charge-now-and-save, later off-session PaymentIntents, consent, SCA recovery, and installment scheduling.
 - Use `wc-checkout-block-payment-method` for a custom payment method's Blocks PHP/JavaScript adapter.
 - Use `wc-stripe-link-payments` for native Link versus Link-wallet card tokens, consent, and remote reconciliation.

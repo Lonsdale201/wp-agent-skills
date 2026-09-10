@@ -245,7 +245,6 @@ When overlap would corrupt state, acquire an owned atomic claim in durable stora
 
 - Order lifecycle hooks that enqueue jobs: `wc-order-lifecycle-and-items`
 - HPOS-safe order reads/writes inside jobs: `wc-hpos-compatibility`
-- Store API/block cart updates that need async follow-up: `wc-store-api`
 
 ## References
 

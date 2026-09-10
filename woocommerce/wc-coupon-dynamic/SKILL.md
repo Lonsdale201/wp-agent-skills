@@ -225,7 +225,6 @@ Prefer simple normalized code characters. The Store API's coupon endpoints and o
 ## Cross-references
 
 - `wc-coupon-types-rules`: persisted coupon CRUD, complete custom discount types, native/custom rules, stacking, holds, and the full regression matrix.
-- `wc-store-api`: Cart/Checkout Blocks, Nonce/Cart-Token behavior, and headless shopper writes.
 - `wc-order-lifecycle-and-items`: safe idempotent order status and refund side effects.
 - `wc-cart-checkout-classic`: classic cart calculation and checkout transfer.
 

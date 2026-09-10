@@ -183,14 +183,13 @@ update_option( 'myplugin_last_presented', time() );
 
 ## Cross-references
 
-- Run **`wp-plugin-dto`** when the presenter input is still a raw array or unclear object.
 - Run **`wp-plugin-architecture`** when deciding folder placement, namespaces, or by-feature vs by-type organization.
 - Run **`wp-plugin-assets-loading`** when passing presenter output into `wp_add_inline_script()`.
 - Run **`bd-presenter`** only if the project intentionally uses the better-data library. better-data automates builder-style presentation; this skill is the native no-library version.
 
 ## What this skill does NOT cover
 
-- DTO hydration and validation. Use `wp-plugin-dto`.
+- DTO hydration and validation.
 - Template partial organization or block rendering architecture.
 - better-data Presenter internals.
 - REST route registration and permission callbacks.

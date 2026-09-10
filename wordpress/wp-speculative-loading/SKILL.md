@@ -123,7 +123,6 @@ Read [references/rules-and-test-matrix.md](references/rules-and-test-matrix.md) 
 ## Related skills
 
 - `plugin-scaffold/wp-plugin-assets-loading` for general frontend loading strategy.
-- `wordpress/wp-http-api-client` for server-side prefetching; it is unrelated to browser speculation rules.
 - `wordpress/wp-security-audit` for state-changing GET and authorization review.
 
 ## References

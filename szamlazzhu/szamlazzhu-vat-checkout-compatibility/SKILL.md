@@ -308,10 +308,8 @@ VAT numbers are personal/business identifiers. Treat them like billing data:
 ## Cross-references
 
 - Use `szamlazzhu-document-xml-compatibility` when VAT data must affect the final XML or document creation timing.
-- Use `wc-store-api` for nonce/cart-token, `/cart/extensions`, and headless checkout request details.
 - Use `wc-cart-checkout-classic` for classic checkout field placement and validation.
 - Use `wc-hpos-compatibility` for order meta persistence.
-- Use `wcs-subscription-hooks` and `wcs-renewal-scheduler` when VAT must survive subscription renewals.
 
 ## References
 

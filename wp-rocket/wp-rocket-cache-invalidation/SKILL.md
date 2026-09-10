@@ -355,7 +355,6 @@ foreach ( [ 'en', 'de', 'fr' ] as $lang ) {
 - Run **`wp-rocket-cache-rejection-and-filters`** when the answer isn't "clear cache after change" but "PREVENT this URL / path from being cached at all".
 - Run **`wp-rocket-mcp-and-abilities`** when the task is exposing WP Rocket settings to AI/MCP (the `wp-rocket/get-options` & `wp-rocket/set-option` abilities, the `/oauth/*` MCP OAuth server, or the `rocket_mcp_*` / `rocket_enable_abilities` filters) — new in 3.23.
 - Run **`wp-plugin-cron`** when invalidation is scheduled / batched (Action Scheduler, WP-Cron) — combine with `rocket_clean_*` calls in the cron handler.
-- Run **`wcs-renewal-scheduler`** if cache-invalidation triggers come from WC Subscription renewal events.
 - Run **`wp-plugin-options-storage`** when deciding "should I cache this manually OR let WP Rocket handle it" — most often: let WP Rocket do it.
 
 ## What this skill does NOT cover

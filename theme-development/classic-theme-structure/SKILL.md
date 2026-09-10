@@ -261,7 +261,7 @@ Without these, plugins and WordPress core cannot enqueue scripts/styles, inject 
 
 - Block themes, FSE, `theme.json`, block templates, block patterns, and Site Editor workflows.
 - Deep template hierarchy decisions; use `classic-template-hierarchy`.
-- Detailed escaping/security review; use `classic-theme-security-standards` and `wp-security-audit`.
+- Detailed escaping/security review; use `wp-security-audit`.
 
 ## References
 

@@ -184,7 +184,7 @@ Do not delete legacy meta as part of your integration. If your plugin imports or
 
 ## Cross-references
 
-Use `wc-variations-data` for variation CRUD/sync, `wc-product-attribute-swatches` for color/image attribute swatches, and `wc-rest-api-v4` only when working with WooCommerce's newer admin REST surfaces rather than classic `wc/v3` variation endpoints.
+Use `wc-variations-data` for variation CRUD/sync and `wc-product-attribute-swatches` for color/image attribute swatches.
 
 ## References
 

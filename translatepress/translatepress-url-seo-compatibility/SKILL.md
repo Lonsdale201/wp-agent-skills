@@ -177,7 +177,6 @@ If your plugin registers its own sitemap provider, test with SEO Pack active and
 - Run **`translatepress-output-compatibility`** for visible text, dynamic fragments, exclusions, and language-aware HTML caches.
 - Run **`translatepress-language-ui-navigation`** for language switchers, per-language menus, translator roles, and language detection UI.
 - Run **`translatepress-email-notification-compatibility`** for translated links inside emails and recipient-language notification flows.
-- Run **`wc-store-api`** when translated WooCommerce front-end endpoints or checkout/account URLs are involved.
 
 ## References
 

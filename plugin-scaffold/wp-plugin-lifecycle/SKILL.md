@@ -9,8 +9,8 @@ description: Designs and reviews the three lifecycle events of a WordPress
   $network_deactivating callback args, plus the recommendation
   against register_uninstall_hook in favor of uninstall.php. Use when
   scaffolding a plugin or debugging ghost cron events / orphan options.
-  Does not cover update-time version migrations; use
-  wp-plugin-update-migrations when the stored version is older than code.
+  Does not cover update-time version migrations (running upgrade routines
+  when the stored version is older than the code).
   Triggers on register_activation_hook, register_deactivation_hook,
   uninstall.php, WP_UNINSTALL_PLUGIN, dbDelta, wp_unschedule_hook,
   switch_to_blog.
@@ -34,7 +34,7 @@ The three events that frame a plugin's existence on a site. Each has a different
 
 This skill assumes the plugin already has a clean bootstrap (see `wp-plugin-bootstrap`). It covers ONLY what happens at the three lifecycle boundaries.
 
-For update-time migrations after plugin files are replaced, use `wp-plugin-update-migrations`. Activation does not fire on ordinary plugin update.
+Update-time migrations after plugin files are replaced are out of scope here; note that activation does not fire on an ordinary plugin update.
 
 ## When to use this skill
 
@@ -228,14 +228,13 @@ uninstall callbacks, and destructive deactivation.
 ## Cross-references
 
 - Run **`wp-plugin-bootstrap`** first — it covers the main plugin file (header, constants, autoload, requirements check at activation entry).
-- Run **`wp-plugin-update-migrations`** for stored schema/data version upgrades after plugin updates.
 - Run **`wp-security-audit`** on the activation handler — it's a write endpoint with admin context.
 - Run **`wp-i18n-audit`** if the lifecycle handlers emit translated strings (admin notices, `wp_die` messages).
 
 ## What this skill does NOT cover
 
 - Custom cron interval registration (`cron_schedules` filter), Action Scheduler integration — adjacent topic, separate skill (`wp-plugin-cron`, planned).
-- Database schema/data migrations beyond the initial `dbDelta` — versioned update migrations need their own pattern. Use `wp-plugin-update-migrations`; do not rely only on `upgrader_process_complete`.
+- Database schema/data migrations beyond the initial `dbDelta` — versioned update migrations need their own pattern; do not rely only on `upgrader_process_complete`.
 - WP-CLI `wp plugin activate` / `wp plugin deactivate` semantics — same hooks fire, but the multisite detection (`is_network_admin()`) is different.
 - Theme uninstall — themes don't have a `uninstall.php` equivalent; theme cleanup is generally less mechanized.
 

@@ -203,9 +203,7 @@ WC()->session->set_customer_session_cookie( true );
 
 ## Cross-references
 
-- `wc-store-api` for Nonce/Cart-Token request handling.
 - `wc-cart-checkout-classic` for cart-item and checkout persistence.
-- `wc-payment-tokens` for durable provider-token records; payment tokens do not belong in sessions.
 
 ## References
 

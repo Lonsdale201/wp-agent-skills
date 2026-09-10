@@ -281,7 +281,6 @@ Run tests with and without `fileinfo`, and with a user that has
 
 - Use **`wp-security-audit`** for handler authorization and traversal review.
 - Use **`wp-filesystem-api`** for non-upload filesystem transports.
-- Use **`wp-http-api-client`** for remote URLs and downloads.
 - Use **`wp-privacy-personal-data`** for personal documents and retention.
 - Use **`wp-client-side-media-processing`** for the WordPress 7.1 browser/REST
   multi-request upload protocol and its fallback behavior.

@@ -200,7 +200,6 @@ conditional and state the required write primitive.
 ## Cross-references
 
 - Use **`wp-batch-mutation-audit`** for multi-request or concurrent meta changes.
-- Use **`wp-security-deep`** for exploit-focused object-injection analysis.
 - Use **`wp-plugin-options-storage`** when deciding whether meta is the right
   storage primitive.
 

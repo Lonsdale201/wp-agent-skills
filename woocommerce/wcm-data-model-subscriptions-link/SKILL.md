@@ -207,7 +207,6 @@ $membership->update_status( 'active' );
 - Use `wcm-membership-hooks` for lifecycle hooks and REST/webhook extension points.
 - Use `wcm-access-discounts` for access checks, restrictions, drip timing, and member discounts.
 - Use `wcm-abilities-api` for Memberships 1.28+ WP Abilities API automation.
-- Use `wcs-data-model-switching-gifting` for Subscriptions order type, subscription meta, switch data, and gifting data.
 
 ## References
 

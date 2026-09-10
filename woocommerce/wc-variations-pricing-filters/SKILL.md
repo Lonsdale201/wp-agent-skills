@@ -198,7 +198,6 @@ $parent->get_variation_prices( true );
 
 - `wc-variations-data` for stored variation CRUD and deferred parent sync.
 - `wc-cart-checkout-classic` for captured cart prices.
-- `wc-store-api` for shopper API price responses.
 
 ## References
 

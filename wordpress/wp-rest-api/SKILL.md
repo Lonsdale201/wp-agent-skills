@@ -25,8 +25,8 @@ metadata:
 # WordPress REST API: scaffold, review, secure
 
 Use this skill for inbound REST endpoints. Prefer REST for new, versioned
-plugin APIs and external clients. Keep outbound HTTP integrations in
-`wp-http-api-client` and use `admin-ajax` only for a concrete legacy or
+plugin APIs and external clients. Keep outbound HTTP integrations out of
+the route handlers, and use `admin-ajax` only for a concrete legacy or
 WP-admin-specific reason.
 
 Read [reference.md](reference.md) for dispatch/auth debugging, controllers,
@@ -309,9 +309,6 @@ breaking an existing public contract in place.
 
 - Run `wp-security-audit` for the surrounding nonce, capability, input, SQL,
   filesystem, redirect, and output checks.
-- Run `wp-security-secrets` for credentials, token issuance, or custom authentication.
-- Run `wp-database-performance-audit` for large collections, count queries,
-  OFFSET scaling, N+1 queries, caching, or direct database access.
 - Run `wp-client-side-media-processing` for WordPress 7.1 media endpoints whose
   browser and server paths use different multi-request lifecycles.
 - Run `wp-abilities-api` when the desired contract is a discoverable typed

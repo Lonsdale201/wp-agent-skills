@@ -128,7 +128,6 @@ Do not call the singleton registry directly for normal plugin code. The helper A
 
 ## Cross-references
 
-- Use **`wp-accessibility-audit`** for icon-only controls and labeling.
 - Use **`wp-file-upload-security`** if users can provide SVG files; this registry does not make arbitrary SVG uploads safe.
 - Use **`wp-rest-api`** for REST client authentication and error handling.
 

@@ -124,7 +124,6 @@ contrast, zoom, and narrow viewports.
 - `wp-dataviews-dataform` for dataset and form abstractions.
 - `wp-block-editor-iframe-compatibility` for canvas/shell document boundaries.
 - `wp-plugin-assets-loading` for handles, generated metadata, and `wp-theme`.
-- `wp-accessibility-audit` for full interaction testing.
 
 ## References
 

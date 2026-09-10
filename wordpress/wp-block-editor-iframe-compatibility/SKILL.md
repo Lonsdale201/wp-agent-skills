@@ -147,7 +147,6 @@ Each occurrence is not automatically wrong. Classify whether it targets the shel
 
 - Use **`wp-plugin-assets-loading`** for PHP enqueue contracts.
 - Use **`wp-client-side-media-processing`** for DIP, CORS, CSP, and WASM effects.
-- Use **`wp-accessibility-audit`** for focus, keyboard, and dialog behavior.
 - Use **`wp-admin-postbox-sortable`** for classic metabox/postbox behavior outside the canvas contract.
 
 ## References

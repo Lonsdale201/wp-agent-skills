@@ -296,7 +296,6 @@ Do not translate invoice numbers, tax numbers, order IDs, SKU identifiers, or Sz
 - Use `wc-hpos-compatibility` for all order/meta reads and writes.
 - Use `wc-action-scheduler-jobs` when your integration queues sync after document creation.
 - Use `wc-order-lifecycle-and-items` when invoice timing depends on status, payment, refunds, or item totals.
-- Use `wc-store-api` for Checkout Block/headless checkout flows that must provide data before invoice generation.
 - Use `translatepress-output-compatibility` when invoice language or translated line names depend on TranslatePress state.
 
 ## References

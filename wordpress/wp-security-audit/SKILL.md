@@ -284,12 +284,11 @@ Findings to flag:
 - Frontend JS XSS — different skill.
 - Server / hosting hardening (file perms, disable_functions, etc.).
 - Object injection, SSRF, CSRF on GET, mass assignment, file include,
-  mail/zip injection, timing comparison, TOCTOU races — these are
-  covered by **`wp-security-deep`**. Run it after this one.
+  mail/zip injection, timing comparison, TOCTOU races — out of scope here;
+  they need a separate, deeper pass after this one.
 - Hardcoded credentials, weak randomness for tokens, password
-  storage, cookie flags, secrets in logs — covered by
-  **`wp-security-secrets`**. Run it whenever auth or third-party
-  integrations are in scope.
+  storage, cookie flags, secrets in logs — also out of scope; review them
+  separately whenever auth or third-party integrations are in scope.
 
 State this scope and recommend applicable deeper skills in the report footer.
 

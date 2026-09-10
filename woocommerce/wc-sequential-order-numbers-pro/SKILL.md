@@ -283,8 +283,6 @@ invoices, exports, webhooks, and sync retry paths.
 - Use `wc-hpos-compatibility` when the target code queries order tables.
 - Use `wc-order-lifecycle-and-items` when the target code creates or mutates
   orders and order items.
-- Use `wcs-subscription-hooks` when subscription renewal/copy behavior matters.
-- Use `wc-rest-api-v4` when exposing order numbers through custom REST routes.
 
 ## References
 

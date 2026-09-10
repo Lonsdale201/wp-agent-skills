@@ -101,7 +101,7 @@ $variation_id = $variation->save();
 
 In WooCommerce 11.0, variation CRUD clears variation and parent transients and `WC_Product::save()` queues the parent ID through `wc_deferred_product_sync()`. `WC_Post_Data::do_deferred_product_sync()` deduplicates and synchronizes parents at shutdown. Normal CRUD therefore needs no manual cache delete or parent sync.
 
-WooCommerce 11.0 enables `product_instance_caching` for newly installed stores while upgraded stores retain their previous state. Variation and parent CRUD invalidates that request cache; WordPress post/meta API writes also trigger its invalidation hooks, but raw SQL does not. Test both feature states and never depend on repeated `wc_get_product()` calls returning the identical PHP object. See `wc-product-crud-cache` for the complete contract.
+WooCommerce 11.0 enables `product_instance_caching` for newly installed stores while upgraded stores retain their previous state. Variation and parent CRUD invalidates that request cache; WordPress post/meta API writes also trigger its invalidation hooks, but raw SQL does not. Test both feature states and never depend on repeated `wc_get_product()` calls returning the identical PHP object.
 
 Direct post/meta/SQL writes bypass that contract and can leave the catalog stale. Avoid them. If the same request must read rebuilt parent aggregates before shutdown, call `WC_Product_Variable::sync( $parent_id )` explicitly after the final child write.
 
@@ -252,7 +252,6 @@ Also avoid: assuming parent stock applies to variation-managed stock, and queryi
 
 - Run **`wc-variations-pricing-filters`** for the price filter chain (`woocommerce_product_variation_get_price`, `woocommerce_variation_prices_price`, etc.) — when a plugin needs to mutate variation prices via filters rather than direct CRUD.
 - Run **`wc-variation-gallery`** for WooCommerce 10.9+ native variation gallery data (`gallery_image_ids`, `gallery_images_html`, REST v3 gallery payloads, and Additional Variation Images migration).
-- Run **`wc-product-crud-cache`** when a broader product import or cache-invalidation path is in scope.
 - Run **`wc-product-search-select`** when the UI needs an admin product picker — `woocommerce_json_search_products_and_variations` returns variation IDs alongside parent products.
 - Run **`wp-plugin-cron`** for batch imports — cron callbacks scheduled idempotently are the right place for bulk variation operations.
 

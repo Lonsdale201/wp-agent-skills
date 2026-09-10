@@ -130,7 +130,6 @@ two integrations are active.
 
 ## Cross-references
 
-- `wp-accessibility-audit` for keyboard and naming checks.
 - `wp-block-editor-iframe-compatibility` for editor document boundaries.
 - `wp-plugin-assets-loading` for context-gated styles and scripts.
 - `wp-security-audit` for destination authorization and nonces.

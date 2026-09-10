@@ -173,8 +173,6 @@ it. `reset off` preserves the other values.
 - Use `lw-firewall-custom-form-adapter` for a custom proof UI.
 - Use `lw-firewall-rate-limit-worker` for shared-ban and REST path behavior.
 - Use `lw-firewall-management-abilities` for reset, alert, and ban operations.
-- Use `wp-security-deep` for the surrounding reset-key, identity, and
-  anti-enumeration security review.
 
 ## References
 

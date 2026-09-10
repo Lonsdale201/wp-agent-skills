@@ -128,7 +128,6 @@ wrong amount/currency/account, and unavailable provider API.
 
 - Use fluentcart-orders-transactions for settlement and refund semantics.
 - Use fluentcart-subscriptions-renewals for recurring capabilities.
-- Use wp-http-api-client for outbound WordPress HTTP behavior.
 
 ## References
 

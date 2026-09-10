@@ -184,11 +184,10 @@ Use provider object type/capabilities, not an ID prefix or checkout label, to cl
 
 - `wc-stripe-add-payment-method` for the no-charge My Account SetupIntent flow.
 - `wc-checkout-block-payment-method` for a custom gateway's Blocks adapter.
-- `wc-payment-tokens` for local saved-method ownership.
 - `wc-stripe-link-payments` for Link-specific representations and consent.
 - `wc-stripe-webhooks` for verified asynchronous settlement.
 - `wc-action-scheduler-jobs` for delivery, retries, and remote idempotency.
-- `wc-stripe-subscriptions` and `wcs-renewal-scheduler` when WooCommerce Subscriptions owns the recurring contract.
+- `wc-stripe-subscriptions` when WooCommerce Subscriptions owns the recurring contract.
 - See [references/stripe-future-payment-lifecycle.md](references/stripe-future-payment-lifecycle.md) for intent parameters, installed gateway contracts, and state/recovery details.
 
 ## References

@@ -395,8 +395,6 @@ as_unschedule_all_actions( '', array(), 'myplugin' );
   Scheduler.
 - Run `wp-plugin-lifecycle` for activation/deactivation structure and multisite
   activation behavior.
-- Run `wp-plugin-dto` when queued args should hydrate a stable input object
-  inside the callback.
 - Run `wp-plugin-presenter` when an action produces admin/REST/email output.
 - Run `wp-security-audit` for callbacks processing persisted IDs, external API
   payloads, or user-supplied data.

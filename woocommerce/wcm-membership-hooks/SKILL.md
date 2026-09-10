@@ -273,7 +273,6 @@ foreach ( $statuses as $key => $data ) {
 - Use `wcm-data-model-subscriptions-link` for exact CPT names, meta keys, rule storage, profile-field storage, and Memberships-Subscriptions relation details.
 - Use `wcm-access-discounts` for access checks, restriction/drip hooks, member discounts, and price-adjustment recursion safety.
 - Use `wcm-abilities-api` for Memberships 1.29+ WP Abilities API names, permissions, schemas, REST route exposure, and guardrails.
-- Use `wcs-subscription-hooks` or `wcs-renewal-scheduler` when the membership is tied to WooCommerce Subscriptions renewal/payment flow.
 
 ## References
 

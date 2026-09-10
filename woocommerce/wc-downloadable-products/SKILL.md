@@ -142,9 +142,7 @@ Woo download links contain the order key, customer email (or hash), product ID, 
 
 ## Cross-references
 
-- Use `wcs-subscription-downloads` when a `shop_subscription`, renewal, drip setting, linked downloadable product, switching, or WCS Gifting is involved.
 - Use `wc-order-lifecycle-and-items` for order status, payment, refund, and item behavior.
-- Use `wc-rest-api-v4` for the authenticated administrative Woo REST boundary.
 - Use `wc-action-scheduler-jobs` for partial-download tracking or background reconciliation.
 
 ## References

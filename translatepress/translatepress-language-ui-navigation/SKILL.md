@@ -172,7 +172,6 @@ Run UI checks across:
 - Run **`translatepress-output-compatibility`** for dynamic strings, exclusions, AJAX fragments, and automatic translation behavior.
 - Run **`translatepress-url-seo-compatibility`** for switcher URL targets, translated slugs, multiple domains, canonical, and sitemap behavior.
 - Run **`translatepress-email-notification-compatibility`** for preferred user language and recipient-language emails.
-- Run **`wp-accessibility-audit`** for switcher semantics, focus behavior, aria labels, and keyboard support.
 
 ## References
 

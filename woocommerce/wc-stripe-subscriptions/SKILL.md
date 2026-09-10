@@ -199,8 +199,6 @@ Test at minimum:
 - Use `wc-stripe-future-payments` for provider-level charge-and-save/off-session principles or a custom installment model that WCS does not own.
 - Use `wc-stripe-add-payment-method` for My Account form and token creation contracts.
 - Use `wc-stripe-link-payments` for Link token shapes, consent, reconciliation, and gateway identifiers.
-- Use `wcs-renewal-scheduler` for WCS schedule/order creation and retry timing.
-- Use `wcs-subscription-hooks` for generic gateway-change hook signatures.
 - Use `wc-stripe-webhooks` for asynchronous Stripe settlement and webhook order locking.
 
 ## References

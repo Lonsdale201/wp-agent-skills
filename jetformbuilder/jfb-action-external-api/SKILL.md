@@ -203,7 +203,7 @@ Critical points:
 - **Body excerpt in error message** — `substr( $body, 0, 200 )` + `wp_strip_all_tags` keeps user-visible errors short and HTML-safe. Don't dump the full body — APIs sometimes return huge HTML error pages.
 - **Throw `Action_Exception`, not `Exception`** — JFB only translates `Action_Exception` to user-facing messages.
 
-For **SSRF protection** when the URL is admin-configurable (e.g. webhook URLs the user types in), additionally validate the URL host against an allowlist or use the `reject_unsafe_urls` request arg. See `wp-security-deep` for the full SSRF discussion.
+For **SSRF protection** when the URL is admin-configurable (e.g. webhook URLs the user types in), additionally validate the URL host against an allowlist or use the `reject_unsafe_urls` request arg.
 
 ## Step 5 — write the result back into form context
 
@@ -318,8 +318,6 @@ The `static $enabled` cache avoids re-reading options on every log call within o
 - PII unless the user has opted in
 - Full response bodies for high-volume endpoints
 
-See `wp-security-secrets` for the full secrets-in-logs discussion.
-
 ## End-to-end example: complete `do_action()`
 
 ```php
@@ -382,7 +380,7 @@ This shape — settings → macro → API → context write → event dispatch �
 - **API keys come from the settings tab via `Tab_Handler_Manager`** — never hardcode, never `wp-config.php` constants for plugin-feature credentials.
 - **Gate `error_log` behind a settings flag** — production logs flood otherwise.
 - **Strip secrets before logging** — `Authorization` headers, API keys, full bodies of auth-related endpoints.
-- **Validate URL host for SSRF** when the URL is user-configurable — see `wp-security-deep`.
+- **Validate URL host for SSRF** when the URL is user-configurable.
 - **Macros come from `%field_id%`** — JFB field ID format. Don't invent your own delimiter; admins expect this convention.
 
 ## Common pitfalls (failure modes inferred from the API contract)
@@ -402,8 +400,6 @@ This shape — settings → macro → API → context write → event dispatch �
 - Run **`jfb-action-events`** to register the events your action dispatches.
 - Run **`jfb-action-item-decorator`** if you also want the visual TRUE/FALSE/Always toggle on every action (the canonical UI for action-event branching).
 - Run **`jfb-settings-tab`** to register the settings tab where API credentials live.
-- Run **`wp-security-deep`** for SSRF protection when API URLs are user-configurable.
-- Run **`wp-security-secrets`** before release — credentials must come from the settings tab, never hardcoded.
 - Run **`wp-i18n-audit`** to verify all error messages are translatable.
 
 ## What this skill does NOT cover

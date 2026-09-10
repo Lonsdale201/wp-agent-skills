@@ -1,6 +1,6 @@
 # wp-agent-skills
 
-**258 skills · 31 plugins**
+**227 skills · 30 plugins**
 
 A community-maintained collection of **portable Agent Skills** for WordPress plugin and theme development.
 
@@ -22,8 +22,7 @@ Skills are grouped by domain. Each domain has its own README listing the skills 
 |---|---|
 | [`wordpress/`](wordpress) | Core WP topics that apply to any plugin or theme — security, i18n, REST API, the Abilities API, HTML/UTF-8 helpers, query cache, and the WP 7.1 editor/block surface (Interactivity API, Block Bindings, DataViews/DataForms, Style Engine, View Config, JSON Schema, speculative loading). |
 | [`plugin-scaffold/`](plugin-scaffold) | Building a new plugin from scratch — bootstrap, lifecycle, architecture, options storage, cron, hooks, rewrite rules, asset loading, Action Scheduler. |
-| [`woocommerce/`](woocommerce) | WooCommerce **core** ([`wc-*`](woocommerce#woocommerce-core)) — HPOS, payment gateways, Store API, order lifecycle, cart/checkout, variations & pricing, product CRUD & request caching, emails, Action Scheduler, logging, and per-release extension upgrade audits. The extension families below live in the same folder. |
-| &nbsp;&nbsp;↳ [WooCommerce Subscriptions](woocommerce#woocommerce-subscriptions) | `wcs-*` — subscription hooks, renewal scheduler, data model / switching / gifting, 8.8+ health-check & processing, subscription downloads, All Products for Subscriptions, cart / checkout / recurring coupons, and the WCS REST API. |
+| [`woocommerce/`](woocommerce) | WooCommerce **core** ([`wc-*`](woocommerce#woocommerce-core)) — HPOS, Checkout Block payment methods, order lifecycle, classic cart/checkout, variations & pricing, coupons, customers & sessions, shipping, downloads, emails, Action Scheduler, and logging. The extension families below live in the same folder. |
 | &nbsp;&nbsp;↳ [WooCommerce Memberships](woocommerce#woocommerce-memberships) | `wcm-*` — membership hooks, access & discounts, the data model + WCS-linked memberships, and the 1.29+ Abilities API surface. |
 | &nbsp;&nbsp;↳ [Other WooCommerce extensions](woocommerce#woocommerce-extensions) | The WooCommerce **Stripe** payment gateway (add-payment-method, Subscriptions integration, webhooks) and **Sequential Order Numbers Pro**. |
 | [`jetformbuilder/`](jetformbuilder) | Extending JetFormBuilder — settings tabs, form sidebar panels, custom Form Actions, action events, item decorators, external-API actions. |
@@ -37,11 +36,10 @@ Skills are grouped by domain. Each domain has its own README listing the skills 
 | [`fluentcart/`](fluentcart) | Extending **FluentCart** (`fluent-cart` + Pro `fluent-cart-pro` + the `fluent-cart-migrator` companion) — the extension bootstrap / container / custom-table data model, products & inventory, cart & checkout trust boundaries, orders / transactions / refunds, payment gateways and subscriptions, customers & the account portal, downloads & storage, coupons, shipping & tax, the `/fluent-cart/v2` REST surface, integration feeds & scheduled jobs, Pro licensing, and EDD / WooCommerce migrations. Every skill marks its Free / Pro / Migrator boundary. |
 | [`fluentcrm/`](fluentcrm) | Extending FluentCRM — funnel triggers / actions / benchmarks, `rest_selector` option lists, contact / company / event-tracking models, custom double opt-in signup forms, and the Free / Pro extension contract. |
 | [`fluentform/`](fluentform) | Extending **Fluent Forms** (`fluentform` + Pro `fluentformpro`) from a third-party plugin — custom form-builder fields (`BaseFieldManager`), the server-side submission lifecycle (parse → validate → persist → notify → confirm) and its hook timing, reading/managing entries & submission meta (`fluentFormApi`, `Submission` / `SubmissionMeta`), and configurable feed integrations (`IntegrationManagerController`, async Action Scheduler dispatch). Every skill marks the Free vs Pro boundary. |
-| [`theme-development/`](theme-development) | Theme development — `theme.json` / Global Styles for block themes, plus the full classic (non-FSE) PHP set: structure, template hierarchy, the Loop, menus, widgets, comments, media, the Customizer, assets, i18n, accessibility, security, and classic-theme WooCommerce integration. |
+| [`theme-development/`](theme-development) | Theme development — `theme.json` / Global Styles for block themes, plus the full classic (non-FSE) PHP set: structure, template hierarchy, the Loop, menus, widgets, comments, media, the Customizer, assets, i18n, accessibility, and classic-theme WooCommerce integration. |
 | [`translatepress/`](translatepress) | Making your own plugin/theme **TranslatePress-compatible** — translatable output and exclusions, URL/SEO/slug and Different-Domain behavior, language switchers and navigation, and recipient-language emails. Covers the free core plus the Business add-ons. |
 | [`elementor/`](elementor) | Building **Elementor** addon plugins — production-ready classic `Widget_Base` widgets and their built-in control schemas, registering Dynamic Tags, their controls and fallback behavior, AJAX item pickers for large datasets, and auditing deprecated Elementor APIs. Extends the free base classes and feature-detects Pro; Atomic Widgets / Editor V4 is deliberately out of scope. |
 | [`szamlazzhu/`](szamlazzhu) | Making your own WooCommerce extension cooperate with **Integration for Szamlazz.hu & WooCommerce** — invoice line items / XML / document timing and B2B VAT-number checkout, via the plugin's hooks and canonical data model rather than duplicating it. |
-| [`dev-tooling/`](dev-tooling) | Testing & QA tooling for plugins/themes — PHPUnit (scaffold, harness, CI, writing tests), PHP_CodeSniffer + WordPress Coding Standards, PHPStan, Strauss namespace prefixing for bundled Composer dependencies, and local Docker environments (wp-env, custom compose stacks with Redis/Mailpit/Xdebug), wired through Composer. The developer pipeline beside the code, not WP runtime APIs. |
 | [`polylang/`](polylang) | Making your own plugin/theme **Polylang-compatible** — the guarded public language API, translated post/term groups via the model (not raw DB writes), Pro slugs / sync / ACF behavior, REST & headless `lang` semantics, string/option translation, and Polylang for WooCommerce data stores. Covers the free core plus Polylang Pro and Polylang for WooCommerce. |
 | [`wpml/`](wpml) | Making your own plugin/theme **WPML-compatible** — the "WPML translates copies" model, detecting the base plugin vs the String Translation / Media / Translation Management add-ons, declaring translatable content in `wpml-config.xml`, the runtime language hook API (`wpml_object_id`, `wpml_switch_language`, `wpml_permalink`), and registering/translating dynamic strings. |
 | [`learndash/`](learndash) | Making your own plugin, theme, or integration cooperate with **LearnDash LMS** (`sfwd-lms`) and the **LearnDash WooCommerce** bridge — course and group access/enrollment through the public access APIs (not raw usermeta), the user/course/group/leader relationship model and hierarchical groups, learner progress / completion / reset lifecycle and activity synchronization, Woo order/subscription/refund-driven enrollment with the access counter, and the `ldlms/v2` + `learndash/v1` REST surfaces. |
@@ -139,11 +137,13 @@ Once installed, just ask the agent in natural language:
 - *"Check this file for i18n issues before I push."*
 - *"Add a custom checkout field to WooCommerce."*
 
-The skill's `description` matches your intent and the agent loads it automatically. You can also force one explicitly: *"Use the wp-security-deep skill on `class-rest-controller.php`."*
+The skill's `description` matches your intent and the agent loads it automatically. You can also force one explicitly: *"Use the wp-security-audit skill on `class-rest-controller.php`."*
 
 ## Changelog
 
 See [CHANGELOG.md](CHANGELOG.md) for what was added or updated and when. Entries are date-based — this is a continuously-evolving documentation collection, not a versioned release artifact.
+
+> **2026-09-10** — several skills were removed from this collection, permanently. See the changelog entry for that date.
 
 ## Contributing
 

@@ -151,9 +151,8 @@ overwrite a newer view.
 ## Cross-references
 
 - `wp-view-config-api` for Site Editor view configuration and persistence.
-- `wp-rest-api` and `wp-api-fetch-client` for the server/client boundary.
+- `wp-rest-api` for the server/client boundary.
 - `wp-plugin-assets-loading` for generated asset files and dependencies.
-- `wp-accessibility-audit` for keyboard, focus, labels, and live feedback.
 
 ## References
 

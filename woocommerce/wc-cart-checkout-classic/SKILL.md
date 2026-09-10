@@ -14,7 +14,7 @@ metadata:
 
 Use this for the PHP/classic cart and shortcode checkout flow. It covers product add-to-cart customization, cart item data, calculated prices/fees, checkout fields, checkout validation, and copying cart data to orders.
 
-It is not a Checkout Block UI skill. Some low-level cart hooks also run during Store API requests, but `woocommerce_checkout_fields` does not make fields appear in the Checkout Block. For block/headless cart state, use `wc-store-api`.
+It is not a Checkout Block UI skill. Some low-level cart hooks also run during Store API requests, but `woocommerce_checkout_fields` does not make fields appear in the Checkout Block.
 
 ## Misconception this skill corrects
 
@@ -270,10 +270,8 @@ WooCommerce 11.0 separates shape checking (`WC_Validation::is_phone_format()`), 
 
 ## Cross-skill routing
 
-- Checkout Block, Store API cart, headless checkout: `wc-store-api`
 - HPOS order storage concerns: `wc-hpos-compatibility`
 - Customer/session persistence: `wc-customer-and-sessions`
-- Payment gateway checkout processing: `wc-payment-gateway`
 
 ## References
 

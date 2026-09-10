@@ -228,7 +228,7 @@ The blue floating tooltip core uses for "new feature" onboarding (e.g. the first
 
 This is not WordPress 7.1's `wp_get_tooltip()` / `wp_get_toggletip()` API.
 Pointers are dismissible onboarding UI with user-meta persistence; tooltips are
-accessible control names or supporting context. Use `wp-accessibility-audit`
+accessible control names or supporting context. Reach for that core API
 when the requested UI is a tooltip/toggletip rather than a one-time tour.
 
 Handle `wp-pointer` is registered at `wp-includes/script-loader.php:860` and depends on `jquery-ui-core`. The matching stylesheet `wp-pointer` is registered at `:1655` and depends on `dashicons` — enqueue both.

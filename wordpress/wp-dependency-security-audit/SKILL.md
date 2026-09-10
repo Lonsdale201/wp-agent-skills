@@ -131,8 +131,8 @@ upstream score.
   Integrity plus appropriate `crossorigin`, and a documented outage/fallback
   policy. SRI verifies bytes; it does not make a vulnerable version safe.
 - Do not fetch executable dependency updates dynamically in normal requests.
-  Private plugin/library updates need the remote control-plane checks from
-  `wp-security-deep`.
+  Private plugin/library updates need their own remote control-plane review
+  (pinned hosts, signed manifests, no trust in executable responses).
 
 ## Remediation and verification
 
@@ -189,10 +189,6 @@ containment, upgrade target, and verification test. Keep “version affected” 
 
 ## Cross-references
 
-- Use **`wp-security-deep`** when remote metadata, SQL, or an update channel can
-  alter executable policy/code.
-- Use **`wp-http-api-client`** for CDN/download hosts, redirects, TLS, response
-  limits, and temporary-file cleanup.
 - Use **`wp-file-upload-security`** when a vulnerable parser processes uploads,
   archives, SVG, media, or remote sideloads.
 

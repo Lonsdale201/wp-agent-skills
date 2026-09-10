@@ -212,9 +212,6 @@ Once this handler sets a result status, Woo skips the legacy gateway bridge. Do 
 
 ## Cross-references
 
-- `wc-payment-gateway` for the PHP gateway and payment state machine.
-- `wc-store-api` for shopper identity, checkout, and payment requirements.
-- `wc-payment-tokens` for local token ownership and storage.
 - `wc-stripe-future-payments` for charge-now/save-for-later and off-session Stripe flows.
 - `wc-stripe-link-payments` for Link-specific token shapes and consent.
 - See [references/blocks-payment-lifecycle.md](references/blocks-payment-lifecycle.md) for the full request lifecycle, integration choices, and review checklist.

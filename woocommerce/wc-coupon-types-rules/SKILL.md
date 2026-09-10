@@ -202,7 +202,6 @@ For an existing order, use `$order->apply_coupon( $coupon_or_code )` and inspect
 
 - Use `wc-coupon-dynamic` for virtual/non-`shop_coupon` codes and external usage accounting.
 - Use `wc-cart-checkout-classic` for classic cart state and order-item transfer.
-- Use `wc-store-api` for Blocks/headless cart mutation and Cart-Token/Nonce behavior.
 - Use `wc-order-lifecycle-and-items` for order status and refund side effects.
 
 ## References

@@ -197,9 +197,6 @@ Separate confirmed behavior from concurrency scenarios that need dynamic tests.
 ## Cross-references
 
 - Use **`wp-metadata-api`** when batches read or write WordPress meta rows.
-- Use **`wp-database-performance-audit`** for query count, pagination cost, and
-  index analysis.
-- Use **`wp-plugin-update-migrations`** for versioned schema/data migrations.
 
 ## What this skill does NOT cover
 

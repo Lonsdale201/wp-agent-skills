@@ -206,7 +206,6 @@ other Pro-only capability. Guard that exact dependency with `class_exists()` or
 
 - Use `fluentform-submission-lifecycle` for feed dispatch timing.
 - Use `fluentform-entries-data` for entry fields, meta, and permissions.
-- Use `wp-http-api-client` for outbound HTTP, SSRF controls, timeouts, and redaction.
 
 ## References
 

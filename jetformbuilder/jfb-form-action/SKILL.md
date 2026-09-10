@@ -573,7 +573,6 @@ You don't need to read or write this directly — JFB handles the round-trip. If
 - Run **`jfb-form-sidebar-panel`** when the plugin also needs per-form settings outside of any action (e.g. media-storage's storage targets) — different subsystem.
 - Run **`jfb-settings-tab`** for site-wide settings (API keys, defaults). Most action plugins have all three: a global tab for credentials, a sidebar panel for per-form overrides if any, and the action itself.
 - Run **`wp-security-audit`** on `do_action()` — it processes user-submitted data and calls remote APIs. SSRF, sanitize, capability are all relevant.
-- Run **`wp-security-secrets`** when API credentials are stored — never hardcode, never commit, prefer `wp-config.php` constants or capability-gated options.
 - Run **`wp-i18n-audit`** on PHP labels and JS strings.
 
 ## What this skill does NOT cover

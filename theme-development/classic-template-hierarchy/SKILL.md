@@ -229,7 +229,6 @@ Missing `wp_head()` or `wp_footer()` breaks core, plugins, admin bar assets, and
 ## Cross-References
 
 - Theme bootstrapping, folders, assets: `classic-theme-structure`
-- Escaping, nonces, safe template output: `classic-theme-security-standards`
 - Broader WP security review: `wp-security-audit`
 
 ## References

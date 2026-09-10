@@ -112,7 +112,7 @@ Do not globally disable client processing to hide one incompatible asset. First 
 
 ## External media and replacement
 
-Do not fetch arbitrary remote images in the isolated browser. Use the `url` parameter on the core media create endpoint so WordPress performs a server-side, SSRF-checked HTTP request. For plugin-owned remote imports, apply the same URL validation, capability, MIME, size, timeout, and provenance controls described in `wp-file-upload-security` and `wp-http-api-client`.
+Do not fetch arbitrary remote images in the isolated browser. Use the `url` parameter on the core media create endpoint so WordPress performs a server-side, SSRF-checked HTTP request. For plugin-owned remote imports, apply the same URL validation, capability, MIME, size, timeout, and provenance controls described in `wp-file-upload-security`.
 
 When an API exposes file replacement, treat it as an update of the attachment's complete file/metadata graph. Do not overwrite a path directly and leave stale derivatives or cache entries.
 

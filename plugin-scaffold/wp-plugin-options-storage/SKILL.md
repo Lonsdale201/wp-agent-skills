@@ -199,7 +199,7 @@ Rules:
 - **Transients are cache, not storage.** Always TTL, always plugin-prefixed.
 - **Use the right primitive for the entity scope** — site (option), user (user-meta), post (post-meta), etc. Don't fake user-data in a global option keyed by user ID.
 - **Plugin-prefix every name** (option, meta, transient, custom table, hook).
-- **Never autoload secrets.** API keys and tokens belong in non-autoload options or, ideally, `wp-config.php` constants. Non-autoload is not encryption; it only keeps the secret out of the alloptions payload. (See `wp-security-secrets`.)
+- **Never autoload secrets.** API keys and tokens belong in non-autoload options or, ideally, `wp-config.php` constants. Non-autoload is not encryption; it only keeps the secret out of the alloptions payload.
 
 ## Common mistakes
 
@@ -244,7 +244,6 @@ wp_set_option_autoload( 'myplugin_large_report', false );
 
 - Run **`wp-plugin-lifecycle`** for default option seeding via `add_option` on activation, and `delete_option` / `delete_site_option` on uninstall.
 - Run **`wp-settings-storage-audit`** when reviewing a full settings contract: option array shape, Settings API registration, defaults, autoload, REST exposure, Customizer boundary, update hooks, and deprecations.
-- Run **`wp-security-secrets`** when the option holds API keys, tokens, OAuth secrets — autoload + plaintext storage warrants additional thought.
 - Run **`wp-plugin-architecture`** for the `Schema` / Constants centralization pattern that names every option key in one place.
 
 ## What this skill does NOT cover

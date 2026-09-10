@@ -165,7 +165,6 @@ The log can reference the durable record with an ID.
 
 ## Cross-references
 
-- `wc-payment-gateway` for customer-safe gateway/webhook errors.
 - `wc-action-scheduler-jobs` for job retries and aggregate logging.
 - `wc-order-lifecycle-and-items` for durable order notes/meta versus diagnostics.
 

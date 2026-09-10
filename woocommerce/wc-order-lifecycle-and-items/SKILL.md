@@ -258,7 +258,6 @@ Do not use `get_post_meta()`, `update_post_meta()`, `WP_Query` over `shop_order`
 
 ## Cross-skill routing
 
-- Payment gateway process and webhook success: `wc-payment-gateway`
 - HPOS storage/query compatibility: `wc-hpos-compatibility`
 - Background work from order hooks: `wc-action-scheduler-jobs`
 - Cart/checkout line-item meta before order creation: `wc-cart-checkout-classic`

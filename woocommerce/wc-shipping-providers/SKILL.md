@@ -191,7 +191,6 @@ The provider base class lives under `Admin\Features\Fulfillments`, and the featu
 ## Cross-references
 
 - `wc-shipping-method` for checkout rates.
-- `wc-rest-api-v4` for fulfillment endpoints and feature gating.
 - `wc-order-lifecycle-and-items` for order fulfillment side effects.
 
 ## References

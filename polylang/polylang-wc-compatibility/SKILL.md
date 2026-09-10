@@ -216,7 +216,6 @@ If your Woo extension stores customer-facing settings in a `WC_Settings_API` obj
 - Use `polylang-object-translations` for generic post/term linking.
 - Use `polylang-rest-headless` for REST `lang` and `translations` semantics.
 - Use `wc-hpos-compatibility` for general Woo HPOS plugin rules.
-- Use `wc-store-api` for shopper-facing Store API rules.
 
 ## Verification
 

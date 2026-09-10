@@ -2,6 +2,15 @@
 
 This collection is continuously evolving — entries are date-based, not version-tagged. New skills land when they're ready; updates go in when they cover real ground (a new release of an upstream plugin, a verified misconception, a corrected example).
 
+## 2026-09-10 (collection trimmed)
+
+Several skills have been removed from this repository, and they will not be coming back.
+This was a deliberate decision, not a clean-up of stale material. The removal is complete:
+the folders are gone from the tree and from the git history, `skills-index.json` no longer
+lists them, and a fresh clone or a `scripts/sync-skills.sh` run will not fetch them. The
+current folder layout and the index are the authoritative picture of what the collection
+holds now. Thank you for your understanding.
+
 ## 2026-08-27 (lw-plugins: LW Firewall 1.5.4 re-grounding, password-reset + custom-form skills)
 
 The three LW Firewall skills were still grounded on **v1.3.2**, and the plugin has since grown two

@@ -178,7 +178,6 @@ This clears all Rank Math sitemap storage, so debounce or defer it during bulk i
 
 - Use **`rankmath-plugin-compatibility`** for CPT visibility, canonical, robots, and bootstrap rules.
 - Use **`rankmath-schema-integration`** when sitemap content also owns structured data.
-- Use **`wp-database-performance-audit`** for provider queries, indexes, raw SQL, pagination, and N+1 analysis.
 
 ## What this skill does not cover
 

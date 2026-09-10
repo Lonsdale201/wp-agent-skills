@@ -130,7 +130,6 @@ Use a mail-capture transport and disposable orders. Never send to real customers
 - `wc-emails-classic` for email class/templates and send observability.
 - `wc-action-scheduler-jobs` for delivery and idempotency semantics.
 - `wc-order-lifecycle-and-items` for status behavior.
-- `wc-store-api` for checkout-draft orders.
 - `wc-hpos-compatibility` for order storage.
 
 ## References

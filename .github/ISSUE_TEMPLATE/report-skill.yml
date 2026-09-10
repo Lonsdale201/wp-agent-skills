@@ -13,7 +13,7 @@ body:
     attributes:
       label: Skill name
       description: The exact `name` from the SKILL.md frontmatter (also the folder name).
-      placeholder: wc-payment-gateway
+      placeholder: wc-hpos-compatibility
     validations:
       required: true
 

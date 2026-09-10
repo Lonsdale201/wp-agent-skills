@@ -53,10 +53,8 @@ Invariants for every WooCommerce plugin/theme PHP task. Builds on `wp-core-basel
 ## When depth is needed (defer to skills)
 
 - HPOS → `wc-hpos-compatibility`
-- Store API / block checkout → `wc-store-api`
 - Background jobs → `wc-action-scheduler-jobs`
 - Logging → `wc-logging`
-- REST → `wc-rest-api-v4`
 - Emails → `wc-emails-classic`
 - Product variations → `wc-variations-data`
 - Classic template overrides → `classic-woocommerce-template-overrides`

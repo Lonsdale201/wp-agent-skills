@@ -245,8 +245,6 @@ Test at least:
 
 - Use **`wp-security-audit`** for request handlers and authorization.
 - Use **`wp-settings-storage-audit`** for retention/autoload storage choices.
-- Use **`wp-http-api-client`** when privacy data is sent to or erased from a
-  remote provider.
 
 ## Core references
 

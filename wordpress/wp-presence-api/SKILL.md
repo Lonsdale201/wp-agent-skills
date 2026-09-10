@@ -206,7 +206,6 @@ and verify this implementation again after upgrading.
 
 ## Cross-references
 
-- Use **`wp-api-fetch-client`** for the authenticated JavaScript REST client.
 - Use **`wp-rest-api`** when implementing a separate custom endpoint.
 - Use **`wp-plugin-options-storage`** for the custom-table decision.
 - Use **`wp-plugin-cron`** for cleanup reliability and multisite scheduling.

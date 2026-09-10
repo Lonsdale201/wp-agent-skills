@@ -249,7 +249,7 @@ add_filter( 'rocket_mcp_trusted_publishers', function ( $p ) {
 - Run **`claude-api`** / MCP references when building the client side that connects to this server (Claude as the trusted publisher).
 - Run **`wp-rocket-cache-rejection-and-filters`** to understand what the exposed option keys actually do (`cache_reject_uri`, `cdn_*`, `lazyload*`, etc.) before allowlisting them.
 - Run **`wp-rocket-cache-invalidation`** when the task is clearing cache after a change rather than exposing settings.
-- Run **`wp-security-audit`** / **`wp-security-secrets`** when reviewing whether the allowlist or trusted-publisher list widens the attack surface.
+- Run **`wp-security-audit`** when reviewing whether the allowlist or trusted-publisher list widens the attack surface.
 
 ## What this skill does NOT cover
 

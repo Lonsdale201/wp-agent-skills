@@ -28,7 +28,6 @@ const ALLOWED_DOMAINS = new Set([
   'translatepress',
   'elementor',
   'szamlazzhu',
-  'dev-tooling',
   'polylang',
   'wpml',
   'learndash',

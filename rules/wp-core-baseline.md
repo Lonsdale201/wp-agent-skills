@@ -40,7 +40,6 @@ Invariants that hold for every WordPress plugin/theme PHP task, regardless of wh
 
 ## When depth is needed (defer to skills)
 
-- Security review → `wp-security-audit`, then `wp-security-deep`, `wp-security-secrets`.
+- Security review → `wp-security-audit`.
 - i18n pass → `wp-i18n-audit`.
-- Coding standards / CI → `wp-phpcs-coding-standards`.
 - REST endpoints → `wp-rest-api`.

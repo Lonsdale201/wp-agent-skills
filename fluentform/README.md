@@ -27,4 +27,4 @@ field, draft/payment feature, class, or table.
 - Entry dashboard or API: `fluentform-entries-data` + `wp-rest-api` where REST is
   involved.
 - CRM/webhook/provider addon: `fluentform-feed-integration` +
-  `wp-http-api-client` + `fluentform-submission-lifecycle`.
+  `fluentform-submission-lifecycle`.

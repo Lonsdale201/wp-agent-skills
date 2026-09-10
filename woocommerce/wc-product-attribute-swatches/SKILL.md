@@ -196,7 +196,7 @@ Use `type="button"`, accessible names, synchronized `aria-pressed`, visible focu
 - Treating image swatches as attachment arrays in Store API. The value is a URL string.
 - Do not hardcode Woo admin CSS classes as frontend contracts or confuse term swatches with per-variation galleries.
 
-Use `wc-variations-data` for real variation CRUD/sync, `wc-variation-gallery` for per-variation image sets, `wc-store-api` for headless reads, and `wc-variations-pricing-filters` when selection affects price/availability display.
+Use `wc-variations-data` for real variation CRUD/sync, `wc-variation-gallery` for per-variation image sets, and `wc-variations-pricing-filters` when selection affects price/availability display.
 
 ## References
 

@@ -275,8 +275,6 @@ changes, protect those mutations separately.
 - Run **`wp-rest-api`** for a custom protected REST resource or headless route.
 - Run **`wp-security-audit`** for capability, output, custom download, and
   endpoint review around the gate.
-- Run **`wp-security-deep`** for rate limits, lockout DoS, cache/proxy, and
-  secret-handling boundaries.
 
 ## What this skill does NOT cover
 

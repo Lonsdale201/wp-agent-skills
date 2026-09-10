@@ -206,7 +206,6 @@ Test these paths before release:
 
 - Run **`translatepress-output-compatibility`** for visible HTML fragments, exclusion attributes, and user-facing text.
 - Run **`translatepress-url-seo-compatibility`** for links inside emails that must point to translated pages/domains.
-- Run **`wc-store-api`** for WooCommerce Checkout Block/Store API checkout workflows.
 - Run **`wp-i18n-audit`** for gettext domains and translation-file correctness.
 
 ## References

@@ -268,8 +268,6 @@ Report findings in this shape:
 - Use `wp-admin-settings-api` for the classic plugin settings page scaffold.
 - Use `wp-plugin-options-storage` before changing the storage primitive or adding custom tables.
 - Use `classic-theme-customizer` for Customizer UI, preview, controls, and theme boundary details.
-- Use `wp-security-secrets` when a setting stores API keys, tokens, or OAuth credentials.
-- Use `wp-plugin-update-migrations` when moving old scalar options into a grouped option or changing autoload.
 
 ## References
 

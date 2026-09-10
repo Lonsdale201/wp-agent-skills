@@ -185,7 +185,7 @@ Skills can mention each other. Use this when one skill's scope cleanly ends wher
 ```markdown
 ## Cross-references
 - Run `wp-security-audit` first for the basic checklist.
-- Run `wp-security-secrets` whenever auth code is in scope.
+- Run `wp-settings-storage-audit` whenever settings storage is in scope.
 ```
 
 Claude doesn't auto-invoke cross-referenced skills, but it surfaces them to the user as a follow-up suggestion. Don't over-link — three references is plenty.

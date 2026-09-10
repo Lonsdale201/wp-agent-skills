@@ -178,7 +178,6 @@ On Express Checkout change-payment, the plugin replaces the subscription's attac
 ## Cross-references
 
 - `wc-stripe-add-payment-method`: complete My Account form and SetupIntent contract.
-- `wc-payment-tokens`: provider-neutral Woo token ownership and CRUD.
 - `wc-stripe-subscriptions`: renewal, WCS change-payment, SCA, and detached-token behavior.
 - `wc-stripe-webhooks`: asynchronous settlement and idempotent order transitions.
 

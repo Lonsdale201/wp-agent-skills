@@ -297,7 +297,7 @@ Date: <YYYY-MM-DD>
 ## Cross-references
 
 - **`wp-security-audit`** — covers escape correctness in non-translation contexts; complementary, not redundant.
-- For a release-readiness review, run `wp-security-audit`, `wp-security-secrets`, and this skill in sequence before submission.
+- For a release-readiness review, run `wp-security-audit` and this skill in sequence before submission.
 
 ## References
 
