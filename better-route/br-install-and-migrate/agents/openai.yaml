@@ -1,4 +1,4 @@
 interface:
   display_name: "Better Route Install And Migrate"
-  short_description: "Install or upgrade Better Route to 1.1 safely."
-  default_prompt: "Use Better Route 1.1 install and migration guidance for a WordPress project."
+  short_description: "Install or migrate Better Route 1.1.1 safely."
+  default_prompt: "Use $br-install-and-migrate to upgrade to Better Route 1.1.1 with coordinated idempotency rollout and rollback."

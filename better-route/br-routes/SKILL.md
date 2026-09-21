@@ -5,9 +5,9 @@ metadata:
   wp-skills-author: "Soczó Kristóf"
   wp-skills-contact: "mailto:lonsdale201@hotmail.com"
   wp-skills-plugin: "better-route"
-  wp-skills-plugin-version-tested: "1.1.0"
+  wp-skills-plugin-version-tested: "1.1.1"
   wp-skills-php-min: "8.1"
-  wp-skills-last-updated: "2026-07-13"
+  wp-skills-last-updated: "2026-09-21"
 ---
 
 # better-route: custom REST routes
@@ -102,6 +102,12 @@ A union containing `RequestContext` also selects the context for a one-parameter
 Callable forms supported by 1.1 include closures, callable objects, static `[ClassName::class, 'method']` handlers, and instantiable handler classes. If a non-static class handler needs constructor arguments, instantiate it through the plugin container and pass the object; the router will not invent dependencies.
 
 Return a `BetterRoute\Http\Response`, `WP_REST_Response`, array/scalar, or `WP_Error`. Arrays/scalars become `200` responses. Throw `ApiException` for an intentional normalized error.
+
+## Request route identity (1.1.1)
+
+Treat `RequestContext::routePath` as the registered template. The router adds `attributes['routeNamespace']`; the request's `get_route()` and `get_url_params()` expose the concrete path and URL captures. Default cache and classic/atomic idempotency keys and fingerprints include these distinct fields, so merged query/body params cannot hide URL IDs.
+
+Do not replace this with a template plus `get_params()` custom key: that loses namespace/target isolation. Follow `br-install-and-migrate` before deploying the changed default replay scope to existing writers. The Composer release does not require renaming your application namespace.
 
 ## Groups and middleware
 

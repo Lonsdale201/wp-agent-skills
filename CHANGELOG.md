@@ -2,6 +2,16 @@
 
 This collection is continuously evolving — entries are date-based, not version-tagged. New skills land when they're ready; updates go in when they cover real ground (a new release of an upstream plugin, a verified misconception, a corrected example).
 
+## 2026-09-21 (Better Route 1.1.1)
+
+### Changed
+
+- Updated eight existing Better Route skills for the released 1.1.1 contracts; no duplicate skills or runtime reports were added.
+- Added coordinated idempotency deployment/rollback guidance for namespace and URL key isolation, full retry-horizon reconciliation, and custom resolver responsibilities.
+- Documented downstream native-user restoration, unmapped token isolation, replaced auth attributes, and the WordPress permission/response-filter/embedding boundaries.
+- Corrected Woo order status/tax/payment ordering, address-only recalculation, transaction limits, opt-in idempotency, fractional quantity validation and number-typed OpenAPI schemas.
+- Clarified independent Composer/API versions and the existing administrative CRUD scope; Store API work remains outside this release.
+
 ## 2026-09-21 (Subscriptions 9.2 compatibility and WooCommerce 11.1 coupons)
 
 ### Added

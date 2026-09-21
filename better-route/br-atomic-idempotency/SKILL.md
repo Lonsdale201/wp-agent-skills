@@ -5,9 +5,9 @@ metadata:
   wp-skills-author: "Soczó Kristóf"
   wp-skills-contact: "mailto:lonsdale201@hotmail.com"
   wp-skills-plugin: "better-route"
-  wp-skills-plugin-version-tested: "1.1.0"
+  wp-skills-plugin-version-tested: "1.1.1"
   wp-skills-php-min: "8.1"
-  wp-skills-last-updated: "2026-07-13"
+  wp-skills-last-updated: "2026-09-21"
 ---
 
 # better-route: atomic idempotency
@@ -49,6 +49,14 @@ Use `ArrayAtomicIdempotencyStore` only in tests or non-WordPress single-process 
 - Invalid, non-printable, or overlong keys return `400 idempotency_key_invalid`; default maximum length is 200.
 
 The default fingerprint deeply canonicalizes route, method, identity, and request params. Associative key order does not change it; list order remains meaningful. Native logged-in WordPress users, auth middleware identities, and HMAC key identities scope defaults safely.
+
+## Route scope and 1.1.1 migration
+
+Scope default keys and fingerprints to the router namespace, registered template, concrete request path and separately captured URL parameters, alongside identity and the existing payload fields. Query/body parameters must not mask URL IDs. `routePath` remains the template. Test two namespaces and two URL targets with the same client key and shadowing query/body IDs; they must remain isolated.
+
+Existing default records cannot safely translate and are not replayed through a legacy fallback. Before switching, pause writers/retries, drain requests, reconcile uncertain business operations and retire old retries across the full client retry horizon. TTL expiry alone and deleting records are insufficient. Switch all workers together; apply the same coordination on rollback. Follow `br-install-and-migrate` for the full procedure.
+
+Custom key/fingerprint resolvers own equivalent isolation. A custom key alone still uses the changed default fingerprint. After uncertain failures, reconcile before retrying with any key, even after expiry; keep business-level deduplication for irreversible effects.
 
 ## Failure semantics
 

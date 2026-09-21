@@ -1,8 +1,10 @@
 # Better Route skills
 
-Consumer skills for [Better Route](https://github.com/Lonsdale201/better-route) 1.1.0, the PHP 8.1+ fluent REST layer for WordPress. Use this collection when building, reviewing, or migrating plugin APIs.
+Consumer skills for [Better Route](https://github.com/Lonsdale201/better-route) 1.1.1, the PHP 8.1+ fluent REST layer for WordPress. Use this collection when building, reviewing, or migrating plugin APIs.
 
 The collection is source-verified against the local 1.1 implementation. In particular, every raw route now denies by default—including `GET` and `OPTIONS`—until it declares `permission()`, `protectedByMiddleware()`, or an intentionally reviewed `publicRoute()`.
+
+The 1.1.1 update covers namespace/URL cache and replay isolation, coordinated idempotency migration, native auth user restoration, Woo order lifecycle, and fractional quantities. Start with `br-install-and-migrate` before deployment or rollback. Individual skill metadata records its tested version; unchanged skills retain their earlier baseline.
 
 ## Core and migration
 
