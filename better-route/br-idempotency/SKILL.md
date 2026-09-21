@@ -5,9 +5,9 @@ metadata:
   wp-skills-author: "Soczó Kristóf"
   wp-skills-contact: "mailto:lonsdale201@hotmail.com"
   wp-skills-plugin: "better-route"
-  wp-skills-plugin-version-tested: "1.1.0"
+  wp-skills-plugin-version-tested: "1.1.1"
   wp-skills-php-min: "8.1"
-  wp-skills-last-updated: "2026-07-13"
+  wp-skills-last-updated: "2026-09-21"
 ---
 
 # better-route: replay-cache idempotency
@@ -59,6 +59,14 @@ On retry:
 - same storage key + changed fingerprint returns `409 idempotency_conflict`;
 - two concurrent first requests can both execute because classic middleware has no reservation.
 
+## Route scope and 1.1.1 migration
+
+Scope default keys and fingerprints to the router namespace, registered template, concrete request path and separately captured URL parameters, alongside identity and the existing payload fields. Query/body parameters must not mask URL IDs. `routePath` remains the template. Test two namespaces and two URL targets with the same client key and shadowing query/body IDs; they must remain isolated.
+
+Existing default records cannot safely translate and are not replayed through a legacy fallback. Before switching, pause writers/retries, drain requests, reconcile uncertain business operations and retire old retries across the full client retry horizon. TTL expiry alone and deleting records are insufficient. Switch all workers together; apply the same coordination on rollback. Follow `br-install-and-migrate` for the full procedure.
+
+Custom key/fingerprint resolvers own equivalent isolation. A custom key alone still uses the changed default fingerprint. After uncertain failures, reconcile before retrying with any key, even after expiry; keep business-level deduplication for irreversible effects.
+
 ## Response behavior
 
 `WP_REST_Response` is normalized to a Better Route response before storage so status, data, and string headers can be replayed safely. Returned `WP_Error` is not stored. Thrown exceptions are not stored because the middleware never reaches its store call.
@@ -67,6 +75,8 @@ A returned `Response` with a 4xx/5xx status is still a completed return value an
 
 For wpdb replay, return arrays/scalars or `BetterRoute\Http\Response`; arbitrary domain objects are not a supported persisted response contract.
 
+The classic wpdb store retains a `Response::class` deserialization allowlist. Do not claim it uses the atomic store's data-only encoding or `allowed_classes => false`; the classic middleware only uses `StoredResponseCodec::normalizeForStorage()`.
+
 ## Custom scope
 
 ```php
@@ -74,11 +84,13 @@ $idempotency = new IdempotencyMiddleware(
     store: $store,
     requireKey: true,
     keyResolver: static fn ($context, string $clientKey): string =>
-        'tenant:' . current_tenant_id() . ':' . $clientKey,
+        hash('sha256', canonical_operation_scope($context, current_tenant_id(), $clientKey)),
     fingerprintResolver: static fn ($context): string =>
         hash('sha256', canonical_domain_payload($context->request)),
 );
 ```
+
+`canonical_operation_scope()` and `canonical_domain_payload()` are application-defined helpers, not library functions. The operation scope must include namespace, concrete route/URL params, identity and tenant; payload canonicalization must include every business-relevant field.
 
 Custom resolvers own collision resistance and canonicalization. Include every security/business dimension that distinguishes operations; do not concatenate attacker-controlled fields with an ambiguous delimiter.
 

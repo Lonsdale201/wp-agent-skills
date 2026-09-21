@@ -453,26 +453,26 @@
         "author": "Soczó Kristóf",
         "contact": "mailto:lonsdale201@hotmail.com",
         "plugin": "better-route",
-        "plugin-version-tested": "1.1.0",
+        "plugin-version-tested": "1.1.1",
         "php-min": "8.1",
-        "last-updated": "2026-07-13"
+        "last-updated": "2026-09-21"
       },
       "resources": [
         {
           "path": "agents/openai.yaml",
           "repo_path": "better-route/br-atomic-idempotency/agents/openai.yaml",
           "type": "resource",
-          "bytes": 219,
-          "sha256": "1c181d10e59abfdec965662b2527b44b29a3ec87a7d6c3472ad7a5d2024bb75d"
+          "bytes": 261,
+          "sha256": "383108ad1ad5001f5569ebc18e9681d3460f7ada21d93edbdd8bc9d3dd579675"
         }
       ],
       "has_reference": false,
       "has_examples": false,
       "has_scripts": false,
       "skill_md": {
-        "bytes": 5515,
-        "lines": 120,
-        "sha256": "f95f8bb841642e07a9547df1bd56f2f69c3ccab556d7ee62bf682fb74a88e96f"
+        "bytes": 6655,
+        "lines": 128,
+        "sha256": "11f455bf304f696ceb3f139da9a1ffb3693fe9e0574c1fe056090ac98fa2341e"
       }
     },
     {
@@ -516,7 +516,7 @@
       "slug": "br-auth-middleware",
       "name": "br-auth-middleware",
       "domain": "better-route",
-      "description": "Configure Better Route 1.1 authentication with JWT, custom bearer tokens, WordPress Application Passwords, or cookie nonces. Use when protecting routes, mapping verified claims to WordPress users, enforcing scopes, or consuming the shared AuthContext identity.",
+      "description": "Configure Better Route 1.1 authentication with JWT, custom bearer tokens, WordPress Application Passwords, or cookie nonces. Use when protecting routes, mapping verified claims to WordPress users, enforcing scopes, consuming the shared AuthContext identity, restoring native users after nested dispatch, or diagnosing response-filter/_embed auth boundaries.",
       "path": "better-route/br-auth-middleware",
       "skill_path": "better-route/br-auth-middleware/SKILL.md",
       "url": "https://raw.githubusercontent.com/Lonsdale201/wp-agent-skills/main/better-route/br-auth-middleware/SKILL.md",
@@ -527,26 +527,26 @@
         "author": "Soczó Kristóf",
         "contact": "mailto:lonsdale201@hotmail.com",
         "plugin": "better-route",
-        "plugin-version-tested": "1.1.0",
+        "plugin-version-tested": "1.1.1",
         "php-min": "8.1",
-        "last-updated": "2026-07-13"
+        "last-updated": "2026-09-21"
       },
       "resources": [
         {
           "path": "agents/openai.yaml",
           "repo_path": "better-route/br-auth-middleware/agents/openai.yaml",
           "type": "resource",
-          "bytes": 254,
-          "sha256": "8576e6f172596b1f50cee3d23710325fbc4df1259a6021119e5b650299003936"
+          "bytes": 271,
+          "sha256": "f283ef4efedf740f01cd26cf0b9835cdb1e4cd76cb528194d130f12bcc4fc322"
         }
       ],
       "has_reference": false,
       "has_examples": false,
       "has_scripts": false,
       "skill_md": {
-        "bytes": 4373,
-        "lines": 76,
-        "sha256": "1c3a77a0489bdf6e6265dd32d5323fd3012ab49b1e03327df95a58e39c4f0c55"
+        "bytes": 5775,
+        "lines": 87,
+        "sha256": "d64d5128a362019501e4cee211dbb7d9f15afb7d9d6a031c95785ca1eeca7d31"
       }
     },
     {
@@ -664,7 +664,7 @@
       "slug": "br-etag-cache",
       "name": "br-etag-cache",
       "domain": "better-route",
-      "description": "Add better-route 1.1 ETag and If-None-Match handling to GET or HEAD routes. Use for ETagMiddleware, strong or weak validators, custom etagResolver, WP_REST_Response preservation, comma-separated validators, wildcard matching, 304 responses, Cache-Control, proxy-stripped ETag troubleshooting, or reviewing conditional HTTP caching. The middleware skips WP_Error, 204, redirects, and non-2xx responses.",
+      "description": "Add better-route 1.1 ETag and If-None-Match handling to GET or HEAD routes. Use for ETagMiddleware, strong or weak validators, custom etagResolver, WP_REST_Response preservation, comma-separated validators, wildcard matching, 304 responses, Cache-Control, proxy-stripped ETag troubleshooting, reviewing conditional HTTP caching, or configuring identity/namespace/URL isolation in CachingMiddleware. The middleware skips WP_Error, 204, redirects, and non-2xx responses.",
       "path": "better-route/br-etag-cache",
       "skill_path": "better-route/br-etag-cache/SKILL.md",
       "url": "https://raw.githubusercontent.com/Lonsdale201/wp-agent-skills/main/better-route/br-etag-cache/SKILL.md",
@@ -675,18 +675,18 @@
         "author": "Soczó Kristóf",
         "contact": "mailto:lonsdale201@hotmail.com",
         "plugin": "better-route",
-        "plugin-version-tested": "1.1.0",
+        "plugin-version-tested": "1.1.1",
         "php-min": "8.1",
-        "last-updated": "2026-07-13"
+        "last-updated": "2026-09-21"
       },
       "resources": [],
       "has_reference": false,
       "has_examples": false,
       "has_scripts": false,
       "skill_md": {
-        "bytes": 4374,
-        "lines": 120,
-        "sha256": "46f3391c4d88e45a70abfd6814dd6775d33d20816780f0f1927561ecb0c49502"
+        "bytes": 5374,
+        "lines": 128,
+        "sha256": "0cdb17e2d2f281f95b3473c979cc3f137209d4566c786fbabbd8400349439aa4"
       }
     },
     {
@@ -741,18 +741,18 @@
         "author": "Soczó Kristóf",
         "contact": "mailto:lonsdale201@hotmail.com",
         "plugin": "better-route",
-        "plugin-version-tested": "1.1.0",
+        "plugin-version-tested": "1.1.1",
         "php-min": "8.1",
-        "last-updated": "2026-07-13"
+        "last-updated": "2026-09-21"
       },
       "resources": [],
       "has_reference": false,
       "has_examples": false,
       "has_scripts": false,
       "skill_md": {
-        "bytes": 5332,
-        "lines": 108,
-        "sha256": "ba557fef808f0895fd6354bc200b1c8554b1d31231c770b31d767d5909bb6c8e"
+        "bytes": 7035,
+        "lines": 120,
+        "sha256": "85137fbfc0b3820eaf8fa0429ec8b22cfc3bf67de36669f7596e53432e1fa64b"
       }
     },
     {
@@ -770,26 +770,26 @@
         "author": "Soczó Kristóf",
         "contact": "mailto:lonsdale201@hotmail.com",
         "plugin": "better-route",
-        "plugin-version-tested": "1.1.0",
+        "plugin-version-tested": "1.1.1",
         "php-min": "8.1",
-        "last-updated": "2026-07-13"
+        "last-updated": "2026-09-21"
       },
       "resources": [
         {
           "path": "agents/openai.yaml",
           "repo_path": "better-route/br-install-and-migrate/agents/openai.yaml",
           "type": "resource",
-          "bytes": 229,
-          "sha256": "3a339f22f819e1ed2f4d681185613e0ce306349a37963fb8334582aafe29f28c"
+          "bytes": 263,
+          "sha256": "a349b7f6c4c2065ac748b7f6053f99b68ab85e230d4504eff3b8dd75835e463b"
         }
       ],
       "has_reference": false,
       "has_examples": false,
       "has_scripts": false,
       "skill_md": {
-        "bytes": 9237,
-        "lines": 151,
-        "sha256": "04ebba27aca658d62c477413bb2077c1b760cb2e94d7f7037ac33ddc3ac38fdd"
+        "bytes": 12953,
+        "lines": 182,
+        "sha256": "88a3d4c8f4c75e582adae121186772d400bb2862e456613b4abaa14d390b6aca"
       }
     },
     {
@@ -881,18 +881,18 @@
         "author": "Soczó Kristóf",
         "contact": "mailto:lonsdale201@hotmail.com",
         "plugin": "better-route",
-        "plugin-version-tested": "1.1.0",
+        "plugin-version-tested": "1.1.1",
         "php-min": "8.1",
-        "last-updated": "2026-07-13"
+        "last-updated": "2026-09-21"
       },
       "resources": [],
       "has_reference": false,
       "has_examples": false,
       "has_scripts": false,
       "skill_md": {
-        "bytes": 6546,
-        "lines": 188,
-        "sha256": "f1cc45b1c182979176e01809e9fa001998b1034795dd5b7d38a2a45620544543"
+        "bytes": 7039,
+        "lines": 190,
+        "sha256": "2758f0b7ed45cbdc4371a298aedc33486427e8ded555d0a85192c3a2a124fbad"
       }
     },
     {
@@ -1108,18 +1108,18 @@
         "author": "Soczó Kristóf",
         "contact": "mailto:lonsdale201@hotmail.com",
         "plugin": "better-route",
-        "plugin-version-tested": "1.1.0",
+        "plugin-version-tested": "1.1.1",
         "php-min": "8.1",
-        "last-updated": "2026-07-13"
+        "last-updated": "2026-09-21"
       },
       "resources": [],
       "has_reference": false,
       "has_examples": false,
       "has_scripts": false,
       "skill_md": {
-        "bytes": 6628,
-        "lines": 167,
-        "sha256": "d4ee942a36318a251bc41612f2927684898cedd25b985da267aec6d876c467b4"
+        "bytes": 7315,
+        "lines": 173,
+        "sha256": "0d67c3f34e44079004de1a0a3e8b4815a1cfad06b3e27eed64697a6632adb8a6"
       }
     },
     {
@@ -1163,7 +1163,7 @@
       "slug": "br-woo-routes",
       "name": "br-woo-routes",
       "domain": "better-route",
-      "description": "Expose WooCommerce 10.x orders, products, customers, and coupons with better-route 1.1 WooRouteRegistrar. Use for BetterRoute::wooRouteRegistrar, HPOS guards, actions, permissions, strict list/body validation, pagination meta, stable sorting, protected metadata, atomic idempotency, transactional order writes, product price rules, customer role/capability rules, coupon uniqueness, or Woo OpenAPI components.",
+      "description": "Expose WooCommerce orders, products, customers, and coupons with better-route 1.1 WooRouteRegistrar. Use for BetterRoute::wooRouteRegistrar, HPOS guards, actions, permissions, strict list/body validation, pagination meta, stable sorting, protected metadata, atomic idempotency, transactional order writes, product price rules, customer role/capability rules, coupon uniqueness, or Woo OpenAPI components.",
       "path": "better-route/br-woo-routes",
       "skill_path": "better-route/br-woo-routes/SKILL.md",
       "url": "https://raw.githubusercontent.com/Lonsdale201/wp-agent-skills/main/better-route/br-woo-routes/SKILL.md",
@@ -1174,18 +1174,18 @@
         "author": "Soczó Kristóf",
         "contact": "mailto:lonsdale201@hotmail.com",
         "plugin": "better-route",
-        "plugin-version-tested": "1.1.0",
+        "plugin-version-tested": "1.1.1",
         "php-min": "8.1",
-        "last-updated": "2026-07-13"
+        "last-updated": "2026-09-21"
       },
       "resources": [],
       "has_reference": false,
       "has_examples": false,
       "has_scripts": false,
       "skill_md": {
-        "bytes": 7836,
-        "lines": 193,
-        "sha256": "c6feb894bb141dd0315336401198d3c639507e5a98cf50fd94489cc9799c6bb2"
+        "bytes": 9683,
+        "lines": 207,
+        "sha256": "1067e57157955593011e78b435167bd83825bbac9ba9e9f3b49d8dc1aa7a9f8b"
       }
     },
     {

@@ -1,13 +1,13 @@
 ---
 name: br-etag-cache
-description: Add better-route 1.1 ETag and If-None-Match handling to GET or HEAD routes. Use for ETagMiddleware, strong or weak validators, custom etagResolver, WP_REST_Response preservation, comma-separated validators, wildcard matching, 304 responses, Cache-Control, proxy-stripped ETag troubleshooting, or reviewing conditional HTTP caching. The middleware skips WP_Error, 204, redirects, and non-2xx responses.
+description: Add better-route 1.1 ETag and If-None-Match handling to GET or HEAD routes. Use for ETagMiddleware, strong or weak validators, custom etagResolver, WP_REST_Response preservation, comma-separated validators, wildcard matching, 304 responses, Cache-Control, proxy-stripped ETag troubleshooting, reviewing conditional HTTP caching, or configuring identity/namespace/URL isolation in CachingMiddleware. The middleware skips WP_Error, 204, redirects, and non-2xx responses.
 metadata:
   wp-skills-author: "Soczó Kristóf"
   wp-skills-contact: "mailto:lonsdale201@hotmail.com"
   wp-skills-plugin: "better-route"
-  wp-skills-plugin-version-tested: "1.1.0"
+  wp-skills-plugin-version-tested: "1.1.1"
   wp-skills-php-min: "8.1"
-  wp-skills-last-updated: "2026-07-13"
+  wp-skills-last-updated: "2026-09-21"
 ---
 
 # better-route: ETag conditional reads
@@ -82,6 +82,14 @@ return new Response($data, 200, [
 ```
 
 Use `private`/`no-store` as appropriate for user-specific data. Never let a shared CDN cache `/me` or another personalized URL merely because it has an ETag.
+
+## Server response-cache scope (1.1.1)
+
+`CachingMiddleware` is separate from ETag revalidation. Place authentication before its cache lookup. Default keys include the router namespace, route template, concrete request path, separate URL parameters, identity and merged request parameters. Query/body fields cannot shadow a URL ID into another target's cache entry.
+
+Keep `RequestContext::routePath` as the template; the router supplies `attributes['routeNamespace']`. Custom key resolvers own equivalent namespace/URL/identity/tenant isolation. Test same-template routes across namespaces and different URL IDs with identical shadowing query values.
+
+Old cache entries become cold and expire naturally. For idempotency, the same key-scope fix requires coordinated deployment; follow `br-install-and-migrate` rather than treating write replay like disposable read caching. Rate-limit buckets and optimistic-lock scope are unchanged.
 
 ## Troubleshooting
 

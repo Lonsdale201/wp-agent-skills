@@ -5,9 +5,9 @@ metadata:
   wp-skills-author: "Soczó Kristóf"
   wp-skills-contact: "mailto:lonsdale201@hotmail.com"
   wp-skills-plugin: "better-route"
-  wp-skills-plugin-version-tested: "1.1.0"
+  wp-skills-plugin-version-tested: "1.1.1"
   wp-skills-php-min: "8.1"
-  wp-skills-last-updated: "2026-07-13"
+  wp-skills-last-updated: "2026-09-21"
 ---
 
 # better-route: OpenAPI 3.1
@@ -26,7 +26,7 @@ $contracts = array_merge(
 
 $document = BetterRoute::openApiExporter()->export($contracts, [
     'title' => 'My API',
-    'version' => 'v1.1.0',
+    'version' => '1.0.0', // Your application's API version, independent of Composer.
     'serverUrl' => '/wp-json',
     'strictSchemas' => true,
     'components' => [
@@ -51,7 +51,7 @@ OpenApiRouteRegistrar::register(
     ]),
     options: [
         'title' => 'My API',
-        'version' => 'v1.1.0',
+        'version' => '1.0.0', // Your application's API version, independent of Composer.
         // Omit to keep the manage_options default.
         'permissionCallback' => static fn (): bool => current_user_can('view_api_docs'),
     ],
@@ -160,6 +160,8 @@ Merge components recursively so Woo and application schema maps do not overwrite
 ```
 
 Woo 1.1 components match runtime strict payloads: money is string-typed, product input excludes derived `price`, customer create requires email, coupon create requires code, and nested objects reject unknown properties where runtime does.
+
+Since 1.1.1, Woo line quantities use `number` (input `exclusiveMinimum: 0`); product stock is `number` or `null`, including negative values. Runtime also requires Woo's stock normalizer to preserve the requested value. Review/regenerate clients that assumed integers. Changing the library version does not automatically change the application's namespace or `info.version`.
 
 ## Review checklist
 

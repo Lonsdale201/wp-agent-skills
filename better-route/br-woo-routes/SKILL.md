@@ -1,13 +1,13 @@
 ---
 name: br-woo-routes
-description: Expose WooCommerce 10.x orders, products, customers, and coupons with better-route 1.1 WooRouteRegistrar. Use for BetterRoute::wooRouteRegistrar, HPOS guards, actions, permissions, strict list/body validation, pagination meta, stable sorting, protected metadata, atomic idempotency, transactional order writes, product price rules, customer role/capability rules, coupon uniqueness, or Woo OpenAPI components.
+description: Expose WooCommerce orders, products, customers, and coupons with better-route 1.1 WooRouteRegistrar. Use for BetterRoute::wooRouteRegistrar, HPOS guards, actions, permissions, strict list/body validation, pagination meta, stable sorting, protected metadata, atomic idempotency, transactional order writes, product price rules, customer role/capability rules, coupon uniqueness, or Woo OpenAPI components.
 metadata:
   wp-skills-author: "Soczó Kristóf"
   wp-skills-contact: "mailto:lonsdale201@hotmail.com"
   wp-skills-plugin: "better-route"
-  wp-skills-plugin-version-tested: "1.1.0"
+  wp-skills-plugin-version-tested: "1.1.1"
   wp-skills-php-min: "8.1"
-  wp-skills-last-updated: "2026-07-13"
+  wp-skills-last-updated: "2026-09-21"
 ---
 
 # better-route: WooCommerce routes
@@ -90,7 +90,7 @@ Orders:
 - validate the complete payload before persistence;
 - reject unknown billing/shipping/line-item keys;
 - require `product_id` for line items and validate product/variation existence and relationship;
-- require non-negative finite quantities/totals where applicable;
+- require positive finite line quantities supported by Woo's stock normalizer, and non-negative finite totals;
 - refuse line-item replacement after stock reduction with `409 woo_line_items_locked`;
 - run create/update inside `wc_transaction_query('start'/'commit'/'rollback')`.
 
@@ -115,6 +115,18 @@ Coupons:
 - exclude the current coupon ID when checking an update; conflicts return `409 coupon_exists`.
 
 Money response fields are decimal strings, not JSON floats.
+
+## 1.1.1 order lifecycle and quantities
+
+- Initialize payment gateways before writes; apply items/addresses and calculate taxes/totals before staging the requested status. Status hooks see final totals.
+- Treat billing/shipping-only updates as financially significant: they recalculate totals even on paid orders.
+- Save before payment completion. On update, `set_paid: true` calls `payment_complete()` only when the order still needs payment. Repeated paid updates do not repeat the event. An already-paid status with `set_paid` is not a guarantee of that event or evidence of external capture.
+- Do not assume database rollback undoes emails, webhooks or external hook effects.
+- Accept finite numeric quantities (including numeric strings). Order lines must be positive; product stock accepts negative values and null. Reject booleans, non-numeric/non-finite values, and any quantity that `wc_stock_amount()` would change, before persistence.
+- Keep fractional Woo stock configuration active for later reads as well as writes. Woo normalizes quantities on load; Better Route does not recover old fractions by bypassing its data store.
+- Use OpenAPI `number` for line quantities, `exclusiveMinimum: 0` on input, and `number` or `null` for stock.
+
+The registrar is administrative CRUD, not a Store API cart/checkout adapter. It adds no storefront or refund endpoints in 1.1.1. Runtime changes were checked with WooCommerce 11.1.1 on both HPOS and legacy storage; `requireHpos` remains enabled by default.
 
 ## Metadata
 
@@ -144,9 +156,11 @@ Incoming metadata may be a key/value map or a list of `{key,value}` entries. Und
 ],
 ```
 
-1.1 uses `AtomicIdempotencyMiddleware` and requires a custom store to implement `AtomicIdempotencyStoreInterface`. Under WordPress, the default is a lease-aware wpdb store whose schema is installed/migrated once per version option; failure is surfaced rather than silently falling back.
+Idempotency defaults to disabled and `requireKey` defaults to false; enable both explicitly for protected retry-safe writes. 1.1 uses `AtomicIdempotencyMiddleware` and requires a custom store to implement `AtomicIdempotencyStoreInterface`. Under WordPress, the default is a lease-aware wpdb store whose schema is installed/migrated once per version option; failure is surfaced rather than silently falling back.
 
 The current 1.1 registrar attaches idempotency to create and update routes. DELETE routes are not wrapped by the registrar's idempotency configuration; add a custom raw route/middleware if idempotent delete replay is a requirement.
+
+Before updating existing idempotent writers to 1.1.1, follow `br-install-and-migrate`: default namespace/URL keys and fingerprints change without translating legacy records.
 
 ## HPOS
 

@@ -1,4 +1,4 @@
 interface:
   display_name: "Better Route Auth Middleware"
-  short_description: "Pick and configure Better Route 1.1 authentication."
-  default_prompt: "Use Better Route 1.1 authentication middleware and shared AuthContext for a protected REST endpoint."
+  short_description: "Configure auth and scoped WordPress user identity."
+  default_prompt: "Use $br-auth-middleware to configure authentication and verify native user restoration and response-filter boundaries."

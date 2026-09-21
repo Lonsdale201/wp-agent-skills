@@ -1,13 +1,13 @@
 ---
 name: br-auth-middleware
-description: Configure Better Route 1.1 authentication with JWT, custom bearer tokens, WordPress Application Passwords, or cookie nonces. Use when protecting routes, mapping verified claims to WordPress users, enforcing scopes, or consuming the shared AuthContext identity.
+description: Configure Better Route 1.1 authentication with JWT, custom bearer tokens, WordPress Application Passwords, or cookie nonces. Use when protecting routes, mapping verified claims to WordPress users, enforcing scopes, consuming the shared AuthContext identity, restoring native users after nested dispatch, or diagnosing response-filter/_embed auth boundaries.
 metadata:
   wp-skills-author: "Soczó Kristóf"
   wp-skills-contact: "mailto:lonsdale201@hotmail.com"
   wp-skills-plugin: "better-route"
-  wp-skills-plugin-version-tested: "1.1.0"
+  wp-skills-plugin-version-tested: "1.1.1"
   wp-skills-php-min: "8.1"
-  wp-skills-last-updated: "2026-07-13"
+  wp-skills-last-updated: "2026-09-21"
 ---
 
 # Better Route authentication middleware
@@ -55,14 +55,25 @@ $router->get('/orders/(?P<id>\d+)', $handler)
 
 `WpClaimsUserMapper` defaults to numeric `user_id`, `uid`, and `wp_user_id` claims. It deliberately does not interpret `sub` as a WordPress user ID and leaves email/login lookup disabled.
 
-Prefer an issuer-scoped custom `sub` resolver. If email mapping is unavoidable, explicitly pass `emailClaims` and retain `requireEmailVerified: true`. Enable login-name mapping only for a fully controlled issuer. A mapped positive user ID also becomes the native WordPress current user.
+Prefer an issuer-scoped custom `sub` resolver. If email mapping is unavoidable, explicitly pass `emailClaims` and retain `requireEmailVerified: true`. Enable login-name mapping only for a fully controlled issuer. A mapped positive user ID becomes the native WordPress current user only during downstream execution (1.1.1).
+
+## Native user scope in 1.1.1
+
+JWT, Bearer and Application Password middleware restore the previous WP user in `finally`, including exceptions. Nested calls unwind in reverse order. A verified JWT/Bearer identity without a positive WP mapping runs downstream as native user `0`, never as an unrelated ambient user.
+
+If you supply `setCurrentUser`, pair it with the appended optional `getCurrentUser` callback for the same identity store. The default getter calls `get_current_user_id()` or returns `0` outside WordPress. Previous constructor positions are unchanged.
+
+WordPress permission callbacks run before middleware. Check middleware-established identity inside the downstream pipeline. Later `rest_request_after_callbacks`, `rest_post_dispatch` and `_embed` see the restored caller; use native WordPress request authentication when those phases need an authenticated user. Do not bypass permission checks or leave a global user set.
 
 ## Shared identity
 
 Successful built-in authentication writes a normalized identity into `RequestContext::$attributes['auth']` with `provider`, `userId`, `subject`, and `scopes`. JWT/bearer claims and useful user fields are exposed through other context attributes. Ownership guards, rate-limit identity selection, and audit enrichment consume this shared contract; do not invent a parallel identity attribute.
 
+Since 1.1.1, `AuthContext::withIdentity()` always replaces `userId`, `user`, `claims` and `scopes`, including null/empty values. Do not treat attribute presence alone as proof of a mapped user.
+
 ## Checks
 
+- Verify mapped/unmapped identities, nested success/exception restoration, and the restored caller in response filters and embedding.
 - Test missing, malformed, expired, future, wrong-issuer, wrong-audience, and over-lifetime tokens.
 - Test every missing required scope and ensure a token-provided wildcard cannot widen authority unexpectedly.
 - Test routes without `protectedByMiddleware()` fail closed.

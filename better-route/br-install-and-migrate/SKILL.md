@@ -5,19 +5,19 @@ metadata:
   wp-skills-author: "Soczó Kristóf"
   wp-skills-contact: "mailto:lonsdale201@hotmail.com"
   wp-skills-plugin: "better-route"
-  wp-skills-plugin-version-tested: "1.1.0"
+  wp-skills-plugin-version-tested: "1.1.1"
   wp-skills-php-min: "8.1"
-  wp-skills-last-updated: "2026-07-13"
+  wp-skills-last-updated: "2026-09-21"
 ---
 
 # better-route: install and migrate to 1.1
 
 ## Install
 
-Require the stable 1.1 line directly from Packagist:
+Require the stable 1.1.1 bug-fix release or newer in the 1.x line from Packagist:
 
 ```bash
-composer require better-route/better-route:^1.1
+composer require better-route/better-route:^1.1.1
 composer show better-route/better-route
 ```
 
@@ -36,7 +36,38 @@ add_action('rest_api_init', static function (): void {
 });
 ```
 
-## 1.1 migration checklist
+## 1.1.0 to 1.1.1
+
+Keep Composer versions, your REST namespace and OpenAPI `info.version` independent. Updating the library does not rename `myapp/v1`. This patch fixes existing APIs; it adds no Store API, cart, checkout or refund endpoints.
+
+### Coordinate cache and idempotency key changes
+
+Default response-cache keys and both classic/atomic idempotency keys and fingerprints now include router namespace, template, concrete request path and separately captured URL parameters. Query/body fields cannot mask a URL ID in this scope. `RequestContext::routePath` remains the template; the router supplies `attributes['routeNamespace']`.
+
+Old response-cache entries become cold and expire. Old default idempotency records lack the namespace/target needed for safe translation; there is no legacy replay fallback. No table-schema change is needed from 1.1.0.
+
+1. Pause all affected writers, webhooks, retry queues and client retries; drain in-flight requests.
+2. Reconcile uncertain operations against business records. Complete or retire old retries before switching keys. Account for the entire client retry horizon; waiting for record TTL alone is insufficient.
+3. Switch every web/worker process together and restart long-running workers. Never mix old/new default key schemes.
+4. Verify identical replay and payload conflicts, then resume new operations. Retain business-level deduplication for irreversible effects.
+
+Do not clear records as a substitute for reconciliation. Rollback requires the same coordination. Custom key/fingerprint resolvers own namespace, URL, identity and tenant isolation; a custom key alone still uses the changed default fingerprint. Keep auth before cache/idempotency. Rate-limit buckets, optimistic-lock scope and single-use token semantics are unchanged.
+
+### Review authentication and Woo changes
+
+- JWT, Bearer and Application Password middleware restore the caller's native WP user in `finally`. Unmapped JWT/Bearer identities run downstream as native user `0`; null/empty identity attributes replace stale outer values.
+- Pair custom `setCurrentUser` adapters with the appended optional `getCurrentUser` callback. Existing positional constructor arguments are unchanged.
+- Native binding ends with the downstream pipeline: later `rest_request_after_callbacks`, `rest_post_dispatch` and `_embed` see the restored caller. Use native WP request authentication when those phases require a WP identity. Never disable authorization to preserve access.
+- WordPress permissions run before middleware. `protectedByMiddleware()` alone does not authenticate.
+- Address-only order updates recalculate tax/totals, including paid orders. Requested status follows calculations; payment gateways initialize before writes.
+- Save precedes `payment_complete()`; `set_paid` updates call it only if the order still needs payment. An already-paid status plus `set_paid` does not guarantee that event. The flag does not prove external capture.
+- Database rollback cannot undo emails/webhooks/external effects.
+- Order quantities are positive finite numbers; stock accepts finite numbers (including negative values) or null. Reject values that `wc_stock_amount()` changes. Fractional configuration must remain active for subsequent reads too; Better Route does not bypass Woo's data store.
+- Regenerate clients if needed: OpenAPI line quantities are `number` (input `exclusiveMinimum: 0`); stock is `number` or `null`.
+
+## 1.0.x to 1.1.x migration checklist
+
+Also follow the 1.1.1 rollout above when upgrading directly from 1.0.x.
 
 Treat these as consumer-visible changes when moving from `^1.0` to `^1.1`.
 
@@ -61,7 +92,7 @@ Treat these as consumer-visible changes when moving from `^1.0` to `^1.1`.
 - Re-run `WpdbAtomicIdempotencyStore::installSchema()` during deployment/activation. The 1.1 schema adds `reservation_token` and migrates an existing table.
 - Do not release an uncertain atomic reservation after a throwable unless duplicate execution is demonstrably safe. `releaseOnThrowable` now defaults to `false`.
 - Keep idempotency keys at or below the configured `maxKeyLength` (default 200) and printable ASCII.
-- Store data-only responses. Better Route serializes no arbitrary PHP classes; `WP_REST_Response` is converted to a safe Better Route response and returned `WP_Error` values are not stored.
+- Return data-only payloads. The atomic wpdb store uses data-only encoding; the classic wpdb store retains its `Response::class` allowlist. Both middleware normalize `WP_REST_Response` into a Better Route response and do not store returned `WP_Error` values.
 - Understand that optimistic locking serializes cooperating Better Route writers with a MySQL advisory lock. External writers must use the same protocol or a storage-level conditional update.
 
 ### Resource DSL
@@ -98,7 +129,7 @@ Treat these as consumer-visible changes when moving from `^1.0` to `^1.1`.
 
 ### WooCommerce
 
-- Configure Woo idempotency with `AtomicIdempotencyStoreInterface`. In WordPress, the registrar installs/migrates and reuses `WpdbAtomicIdempotencyStore`; schema failure is surfaced instead of falling back to request-local memory.
+- Enable Woo idempotency explicitly (default disabled); custom stores must implement `AtomicIdempotencyStoreInterface`. When enabled in WordPress, the registrar installs/migrates and reuses `WpdbAtomicIdempotencyStore`; schema failure is surfaced instead of falling back to request-local memory.
 - Treat omitted `actions[resource]` as full CRUD and explicit `[]` as disabled. Invalid action names throw.
 - Expect strict payload types and unknown nested-key rejection. Order payloads are fully validated before writes and create/update run in a Woo transaction.
 - Keep product `price` read-only; send `regular_price` or `sale_price`.
@@ -141,7 +172,7 @@ Smoke at minimum: anonymous/public and denied routes, authenticated reads/writes
 ## References
 
 - Official documentation: <https://lonsdale201.github.io/better-docs/docs/better-route/agents>
-- Official documentation: <https://github.com/Lonsdale201/better-route>
+- Versioned migration contract: <https://github.com/Lonsdale201/better-route/blob/v1.1.1/MIGRATING.md>
 - Verified source paths:
   - `README.md`
   - `composer.json`
