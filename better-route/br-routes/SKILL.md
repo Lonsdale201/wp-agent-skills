@@ -112,7 +112,7 @@ Do not replace this with a template plus `get_params()` custom key: that loses n
 ## Groups and middleware
 
 ```php
-$router->group('/account', static function (Router $router) use ($jwt): void {
+$router->group('/account', static function (Router $router) use ($jwt, $me, $update): void {
     $router->middleware([$jwt]);
 
     $router->get('/me', $me)->protectedByMiddleware('bearerAuth');
