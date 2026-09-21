@@ -5,9 +5,9 @@ metadata:
   wp-skills-author: "Soczó Kristóf"
   wp-skills-contact: "mailto:lonsdale201@hotmail.com"
   wp-skills-plugin: "woocommerce"
-  wp-skills-plugin-version-tested: "11.0.0"
+  wp-skills-plugin-version-tested: "11.1.1"
   wp-skills-php-min: "7.4"
-  wp-skills-last-updated: "2026-08-05"
+  wp-skills-last-updated: "2026-09-21"
 ---
 
 # WooCommerce coupon types and rules
@@ -52,6 +52,8 @@ $coupon->save();
 ```
 
 Use arrays of IDs and real booleans. Coupon-code comparison is case-insensitive; use `wc_is_same_coupon()` where available instead of raw `===`.
+
+The existence check is not an atomic uniqueness guarantee. Serialize concurrent creation in the integration's own job/idempotency mechanism; do not assume a unique database constraint on coupon codes.
 
 ## Register a complete custom type
 
@@ -159,6 +161,8 @@ add_filter(
 - `woocommerce_coupon_get_apply_quantity`: cap qualifying quantity without changing cart quantity.
 - `woocommerce_coupon_error`: presentation only, not authorization.
 
+Woo 11.1 adds six `woocommerce_coupon_is_valid_for_*` restriction filters, each receiving `(valid, coupon, discounts)`. Unlike `woocommerce_coupon_validate_*` rejection predicates, **true means valid**. See the reference table before overriding native restrictions: later validators and per-product allocation still apply.
+
 Validation runs many times in classic checkout, Blocks/Store API, order creation, and recalculation. Make it side-effect free, bounded, and usable with either `WC_Cart` or `WC_Order`. Avoid network requests in calculation/validation; prefetch/cache authoritative state or fail closed with a short timeout outside the hot calculation loop.
 
 Do not base historical order recalculation on mutable membership tiers, time, external prices, or the current session. Store custom checkout facts as separate coupon-line metadata through `woocommerce_checkout_create_order_coupon_item`; never extend Woo's `coupon_info` JSON format. Load [references/coupon-contract.md](references/coupon-contract.md) for hook signatures, order snapshots, admin fields, usage holds, and the complete validation matrix.
@@ -187,6 +191,16 @@ Guard repeated hooks because carts recalculate frequently. Use `remove_coupon()`
 
 For an existing order, use `$order->apply_coupon( $coupon_or_code )` and inspect `WP_Error`; it recalculates coupon/item/tax totals and usage state. Never add only a `WC_Order_Item_Coupon` row and assume the product totals were discounted.
 
+### Reject zero-allocation monetary applications before mutation
+
+`WC_Discounts` takes product lines from an order. Fees and shipping are outside that allocation. On the tested pending fee-only order, both unrestricted `percent` and `fixed_cart` coupons returned success, left the total unchanged, and consumed usage. A valid coupon is not proof of a realized discount.
+
+For an integration that promises a monetary discount, reject orders without eligible product lines **before** `apply_coupon()` or external entitlement reservation. If a preflight uses `WC_Discounts`, inspect its actual per-code allocation as well as validation; an existing discount/stacking policy can still affect the final amount. After applying, inspect the matching coupon line and product totals. Handle an unexpected zero result through an explicit rollback/error policy using Woo APIs, not direct counter edits. Free-shipping-only and deliberately zero-value coupons need their own policy.
+
+Model a sale of a service as a genuine, non-stock-managed product when that matches the business meaning. Do not suppress stock handling on an entire mixed order to make a synthetic product line work. Do not turn fees into negative rows to imitate native coupon restrictions.
+
+Historical `recalculate_coupons()` deliberately disables coupon-wide validation. Product allocation/calculation filters still matter; restore immutable policy before the first replay. For virtual coupons, use the scoped filter in `wc-coupon-dynamic`, not a snapshot repair after `apply_coupon()` returns.
+
 ## Compatibility and security checklist
 
 1. Register the type on every frontend, REST, CLI, cron, and admin request before coupon hydration.
@@ -206,6 +220,7 @@ For an existing order, use `$order->apply_coupon( $coupon_or_code )` and inspect
 
 ## References
 
+- [Disposable CLI smoke example](../wcs-upgrade-compatibility/examples/woo-skills-smoke/woo-skills-smoke.php)
 - Verified source paths:
   - `wp-content/plugins/woocommerce/includes/class-wc-coupon.php`
   - `wp-content/plugins/woocommerce/includes/class-wc-discounts.php`

@@ -5,9 +5,9 @@ metadata:
   wp-skills-author: "Soczó Kristóf"
   wp-skills-contact: "mailto:lonsdale201@hotmail.com"
   wp-skills-plugin: "woocommerce"
-  wp-skills-plugin-version-tested: "11.0.0"
+  wp-skills-plugin-version-tested: "11.1.1"
   wp-skills-php-min: "7.4"
-  wp-skills-last-updated: "2026-08-05"
+  wp-skills-last-updated: "2026-09-21"
 ---
 
 # WooCommerce virtual coupons
@@ -129,13 +129,17 @@ add_filter(
 		}
 
 		$entitlement = MyPlugin_Virtual_Coupons::entitlement( $code );
-		if ( ! $entitlement || ! is_user_logged_in() ) {
+		$context = $discounts->get_object();
+		$user_id = $context instanceof WC_Order
+			? (int) $context->get_customer_id()
+			: get_current_user_id();
+		if ( ! $entitlement || ! $user_id ) {
 			return false;
 		}
 
 		return $valid
-			&& (int) $entitlement->user_id === get_current_user_id()
-			&& myplugin_user_can_redeem( get_current_user_id(), $code );
+			&& (int) $entitlement->user_id === $user_id
+			&& myplugin_user_can_redeem( $user_id, $code );
 	},
 	10,
 	3
@@ -143,6 +147,8 @@ add_filter(
 ```
 
 Use `woocommerce_coupon_is_valid_for_product` for per-line eligibility and `woocommerce_coupon_is_valid` for coupon-wide rules. Validation may run repeatedly against a `WC_Cart` or `WC_Order`; keep it deterministic, bounded, and side-effect free. Never consume entitlement during validation or calculation.
+
+For orders, validate the order customer's entitlement, not the administrator or CLI actor. Authorize the caller separately before permitting an order mutation. This user-bound example deliberately rejects guests. `recalculate_coupons()` skips coupon-wide validation; historical replay needs a saved rule policy, not this callback.
 
 Returning `false` gives core's filtered-invalid error. A callback may deliberately throw an `Exception` for a customer-safe custom denial message because `WC_Discounts` catches it, but do not leak whether another user's entitlement exists.
 
@@ -187,24 +193,11 @@ Historical recalculation may reconstruct an ID-zero/missing coupon from `coupon_
 
 `WC_Order::apply_coupon()` recalculates item and tax totals, but the direct virtual-object path has a snapshot trap: core later performs an ID lookup and may construct `new WC_Coupon( 0 )`, losing the original virtual type/amount before it stores `coupon_info`.
 
-After a successful direct apply, repair only the matching coupon item's core snapshot with the original object's unmodified `get_short_info()` result, and save custom facts separately:
+`apply_coupon()` performs its first recalculation **before returning**. Repairing the snapshot afterward is too late: a restricted percentage coupon can already have been replayed as an unrestricted fixed-cart amount. Install an order-and-code-scoped restoration filter before applying, remove it in `finally`, and preserve a separate property/rule snapshot for later recalculations. Read [references/order-application.md](references/order-application.md) for the pattern.
 
-```php
-$result = $order->apply_coupon( $virtual_coupon );
+The compact core snapshot omits product/category restrictions, sale exclusions and quantity limits. Test per-line allocation immediately after application and again after reload with the resolver unavailable. A correct grand total alone can hide discounts allocated to excluded products.
 
-if ( ! is_wp_error( $result ) ) {
-	foreach ( $order->get_items( 'coupon' ) as $coupon_item ) {
-		if ( wc_is_same_coupon( $coupon_item->get_code(), $virtual_coupon->get_code() ) ) {
-			$coupon_item->update_meta_data( 'coupon_info', $virtual_coupon->get_short_info() );
-			$coupon_item->update_meta_data( '_myplugin_rule_snapshot', $immutable_snapshot );
-			$coupon_item->save();
-			break;
-		}
-	}
-}
-```
-
-Guard this workaround with a regression test against the supported WooCommerce version; internal order-application behavior can change.
+Fee and shipping rows are not product discount targets. Reject an inapplicable monetary entitlement before reserving it; a successful order API return alone does not prove value was delivered. See the fee-only guard in `wc-coupon-types-rules`.
 
 ## Support every shopper surface
 
@@ -230,6 +223,8 @@ Prefer simple normalized code characters. The Store API's coupon endpoints and o
 
 ## References
 
+- [Direct virtual order application and historical replay](references/order-application.md)
+- [Disposable CLI smoke example](../wcs-upgrade-compatibility/examples/woo-skills-smoke/woo-skills-smoke.php)
 - Verified source paths:
   - `wp-content/plugins/woocommerce/includes/class-wc-coupon.php`
   - `wp-content/plugins/woocommerce/includes/class-wc-discounts.php`

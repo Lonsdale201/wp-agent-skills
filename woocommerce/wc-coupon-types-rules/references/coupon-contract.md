@@ -1,6 +1,6 @@
 # WooCommerce coupon extension contract
 
-Version scope: WooCommerce 11.0.0, PHP 7.4+. Use this reference for custom coupon types, rule engines, admin/REST fields, concurrency, or historical order recalculation.
+Version scope: WooCommerce 11.1.1, PHP 7.4+. Use this reference for custom coupon types, rule engines, admin/REST fields, concurrency, or historical order recalculation.
 
 ## Contents
 
@@ -88,7 +88,7 @@ Use `woocommerce_coupon_sort` when the custom type should behave like one of tho
 
 `WC_Discounts::is_coupon_valid()` runs these checks before the final custom filter:
 
-1. coupon exists, is virtual, and is not trashed;
+1. coupon has a persisted ID or is virtual, and is not trashed;
 2. global usage plus tentative holds;
 3. per-user persisted usage;
 4. expiry;
@@ -103,6 +103,21 @@ Use `woocommerce_coupon_sort` when the custom type should behave like one of tho
 Native failure codes cover filtered invalid, missing, exhausted, expired, min/max, not applicable, sale-item exclusion, product exclusion, category exclusion, and held/stuck usages. `woocommerce_coupon_error` changes only the message returned after validation catches an exception.
 
 Some `woocommerce_coupon_validate_*` hooks filter a failure predicate, not a validity predicate. For example, returning true from `woocommerce_coupon_validate_minimum_amount` means reject when the surrounding minimum exists. Prefer the clear final/per-product validity hooks unless intentionally replacing a native predicate.
+
+### WooCommerce 11.1 restriction overrides
+
+All six filters below receive `(bool $valid, WC_Coupon $coupon, WC_Discounts $discounts)`. Return true to permit that check, false to reject, and preserve `$valid` outside the exact owned policy. They run conditionally; they are not universal replacement hooks for the final validity filter.
+
+| Hook | Gate |
+|---|---|
+| `woocommerce_coupon_is_valid_for_product_ids` | Nonempty product inclusion list. |
+| `woocommerce_coupon_is_valid_for_product_categories` | Nonempty category inclusion list. |
+| `woocommerce_coupon_is_valid_for_sale_items` | Sale exclusion on the cart-style validation path. |
+| `woocommerce_coupon_is_valid_for_excluded_items` | Product-family check that at least one line satisfies all restrictions. |
+| `woocommerce_coupon_is_valid_for_excluded_product_ids` | Product exclusions on the cart-style path. |
+| `woocommerce_coupon_is_valid_for_excluded_product_categories` | Category exclusions on the cart-style path. |
+
+An inclusion override alone can still fail the later eligible-item check. Even allowing both checks does not alter per-product allocation: the measured restricted percentage coupon validated but allocated zero. Change allocation only through an explicitly scoped product policy; do not force all these filters true globally. The final `woocommerce_coupon_is_valid` filter cannot rescue a failure thrown before it is reached.
 
 Email restrictions can include wildcards and compare current account email plus cart/order billing email. Persisted per-user usage uses user IDs for logged-in users and billing email for guests, with additional alias checks in checkout/Store API.
 
@@ -188,10 +203,13 @@ Do not extend or change this format. Add separate namespaced order-item metadata
 
 When an order recalculates:
 
+- coupon-wide validation is disabled (`apply_coupon( $coupon, false )`); this is historical replay, not a fresh redemption eligibility check;
 - an existing persisted coupon is reloaded with its current definition;
 - if missing/virtual, Woo reconstructs a temporary coupon from `coupon_info`;
 - `woocommerce_order_recalculate_coupons_coupon_object` can restore a separately stored immutable snapshot;
 - the custom calculation plugin still needs to be active, otherwise the custom type yields no intended calculation.
+
+`apply_coupon()` itself invokes this replay before returning. For virtual coupons, capture the original object and separate restrictions in a scoped recalculation filter before calling it. The compact snapshot contains neither product/category restrictions nor custom entitlement facts. See `wc-coupon-dynamic` and its order-application reference.
 
 This means mutable coupon definitions and external rule state can change historical recalculation. Choose and document one policy:
 
@@ -264,6 +282,9 @@ At minimum test:
 - classic cart/checkout and Blocks/Store API;
 - REST v3 create/read/update of custom type;
 - existing-order apply, cancellation/failure, pending recovery, partial/full refund policy;
+- fee-only pending order: successful native apply, zero allocation, usage consumed; integration rejects before mutation;
+- Woo 11.1 restriction overrides: true/false polarity, later validators, and allocation separately;
+- order entitlement belongs to the customer, including administrator and CLI actors;
 - concurrent final usage slot with tentative holds;
 - historical recalculation after coupon edit/delete and after plugin deactivation;
 - custom metadata snapshot and redaction in REST/logs.

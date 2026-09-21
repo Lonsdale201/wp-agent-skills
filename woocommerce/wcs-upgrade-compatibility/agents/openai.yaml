@@ -1,0 +1,4 @@
+interface:
+  display_name: "Subscriptions Upgrade Compatibility"
+  short_description: "Verify WCS release changes and deprecated APIs"
+  default_prompt: "Use $wcs-upgrade-compatibility to review a WooCommerce Subscriptions upgrade and run the relevant disposable smoke tests."

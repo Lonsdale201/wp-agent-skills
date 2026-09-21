@@ -1,6 +1,6 @@
 # wp-agent-skills
 
-**227 skills · 30 plugins**
+**228 skills · 22 domains**
 
 A community-maintained collection of **portable Agent Skills** for WordPress plugin and theme development.
 
@@ -24,6 +24,7 @@ Skills are grouped by domain. Each domain has its own README listing the skills 
 | [`plugin-scaffold/`](plugin-scaffold) | Building a new plugin from scratch — bootstrap, lifecycle, architecture, options storage, cron, hooks, rewrite rules, asset loading, Action Scheduler. |
 | [`woocommerce/`](woocommerce) | WooCommerce **core** ([`wc-*`](woocommerce#woocommerce-core)) — HPOS, Checkout Block payment methods, order lifecycle, classic cart/checkout, variations & pricing, coupons, customers & sessions, shipping, downloads, emails, Action Scheduler, and logging. The extension families below live in the same folder. |
 | &nbsp;&nbsp;↳ [WooCommerce Memberships](woocommerce#woocommerce-memberships) | `wcm-*` — membership hooks, access & discounts, the data model + WCS-linked memberships, and the 1.29+ Abilities API surface. |
+| &nbsp;&nbsp;↳ [WooCommerce Subscriptions](woocommerce#woocommerce-subscriptions) | Release compatibility grounded on WCS 9.2, deprecated settings APIs, permissions, plans, switching, renewal discounts, and a disposable CLI smoke plugin. |
 | &nbsp;&nbsp;↳ [Other WooCommerce extensions](woocommerce#woocommerce-extensions) | The WooCommerce **Stripe** payment gateway (add-payment-method, Subscriptions integration, webhooks) and **Sequential Order Numbers Pro**. |
 | [`jetformbuilder/`](jetformbuilder) | Extending JetFormBuilder — settings tabs, form sidebar panels, custom Form Actions, action events, item decorators, external-API actions. |
 | [`jet-engine/`](jet-engine) | Extending JetEngine from a companion plugin — Dynamic Visibility conditions (show/hide polarity, listing context), Dynamic Field callbacks (callable gate, positional args, output escaping), Query Builder custom query types (runtime + editor halves, cache, filters, REST, MCP), Custom Content Types (Factory / Item Handler CRUD, lifecycle hooks, `jet-cct` REST), and Data Stores (favorites / likes / recently-viewed across cookie, session, user-meta, local-storage, user-IP backends). |
