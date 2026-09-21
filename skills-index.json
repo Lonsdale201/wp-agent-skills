@@ -12,7 +12,7 @@
     "skill_file": "SKILL.md"
   },
   "domain_count": 22,
-  "skill_count": 227,
+  "skill_count": 228,
   "domains": [
     {
       "slug": "better-data",
@@ -126,7 +126,7 @@
       "slug": "woocommerce",
       "path": "woocommerce",
       "readme_path": "woocommerce/README.md",
-      "skill_count": 30
+      "skill_count": 31
     },
     {
       "slug": "wordpress",
@@ -5553,18 +5553,26 @@
         "author": "Soczó Kristóf",
         "contact": "mailto:lonsdale201@hotmail.com",
         "plugin": "woocommerce",
-        "plugin-version-tested": "11.0.0",
+        "plugin-version-tested": "11.1.1",
         "php-min": "7.4",
-        "last-updated": "2026-08-05"
+        "last-updated": "2026-09-21"
       },
-      "resources": [],
-      "has_reference": false,
+      "resources": [
+        {
+          "path": "references/order-application.md",
+          "repo_path": "woocommerce/wc-coupon-dynamic/references/order-application.md",
+          "type": "reference",
+          "bytes": 4933,
+          "sha256": "9cbb79b1fbd7f2aa9f4c9159ebeb425998bd646d99121ff86e40cf64fcfadc61"
+        }
+      ],
+      "has_reference": true,
       "has_examples": false,
       "has_scripts": false,
       "skill_md": {
-        "bytes": 11981,
-        "lines": 240,
-        "sha256": "2bf2f58c674e0a0c8e83cdec9175ca346b28d976c788aa1a1cdd4fb84f684319"
+        "bytes": 12850,
+        "lines": 235,
+        "sha256": "63a2ed6dd80d0c1332df47bbbcd5e769c17ada92096805aac08f7a5e81e791e3"
       }
     },
     {
@@ -5582,9 +5590,9 @@
         "author": "Soczó Kristóf",
         "contact": "mailto:lonsdale201@hotmail.com",
         "plugin": "woocommerce",
-        "plugin-version-tested": "11.0.0",
+        "plugin-version-tested": "11.1.1",
         "php-min": "7.4",
-        "last-updated": "2026-08-05"
+        "last-updated": "2026-09-21"
       },
       "resources": [
         {
@@ -5598,17 +5606,17 @@
           "path": "references/coupon-contract.md",
           "repo_path": "woocommerce/wc-coupon-types-rules/references/coupon-contract.md",
           "type": "reference",
-          "bytes": 16130,
-          "sha256": "278cf882f33b157fb5baa0d967450f3a9c852a7998173250f510f0e515fb46fc"
+          "bytes": 18353,
+          "sha256": "690e65ad970b01f9a77f760ff693596ab16b92038f683cf34e83240aaa4d8912"
         }
       ],
       "has_reference": true,
       "has_examples": false,
       "has_scripts": false,
       "skill_md": {
-        "bytes": 12136,
-        "lines": 219,
-        "sha256": "8c1c5de5b4416f08c7617c9a0bfa06e929517d7497edbfc77a609defa55e609a"
+        "bytes": 14325,
+        "lines": 234,
+        "sha256": "0f680e83819f0f3443f99c00f3fbfb5425e0e8bf208f83bfa5108cbdde6a8442"
       }
     },
     {
@@ -6376,6 +6384,59 @@
         "bytes": 25118,
         "lines": 294,
         "sha256": "d48bca47b8bb835ea4abde7dff3dacafbe06759d464b69c5e0d6080d49083de1"
+      }
+    },
+    {
+      "slug": "wcs-upgrade-compatibility",
+      "name": "wcs-upgrade-compatibility",
+      "domain": "woocommerce",
+      "description": "Audits WooCommerce Subscriptions integrations across release changes, with a verified 9.2.0 baseline. Covers deprecated settings APIs, REST field contracts, per-product gifting migration, item-removal ownership and nonce changes, APFS script loading and legacy plan identity, switching, renewal discounts, PayPal validation, and HPOS stale saves. Use when upgrading Subscriptions, reviewing its changelog, replacing deprecated WCS calls, or diagnosing behavior that changed after an update. Includes a disposable WP-CLI smoke plugin; payment settlement and browser checkout require separate tests.",
+      "path": "woocommerce/wcs-upgrade-compatibility",
+      "skill_path": "woocommerce/wcs-upgrade-compatibility/SKILL.md",
+      "url": "https://raw.githubusercontent.com/Lonsdale201/wp-agent-skills/main/woocommerce/wcs-upgrade-compatibility/SKILL.md",
+      "raw_url": "https://raw.githubusercontent.com/Lonsdale201/wp-agent-skills/main/woocommerce/wcs-upgrade-compatibility/SKILL.md",
+      "html_url": "https://github.com/Lonsdale201/wp-agent-skills/blob/main/woocommerce/wcs-upgrade-compatibility/SKILL.md",
+      "directory_url": "https://github.com/Lonsdale201/wp-agent-skills/tree/main/woocommerce/wcs-upgrade-compatibility",
+      "metadata": {
+        "author": "Soczó Kristóf",
+        "contact": "https://github.com/Lonsdale201",
+        "plugin": "woocommerce-subscriptions",
+        "plugin-version-tested": "9.2.0",
+        "woocommerce-version-tested": "11.1.1",
+        "wp-version-tested": "7.1",
+        "php-min": "7.4",
+        "last-updated": "2026-09-21"
+      },
+      "resources": [
+        {
+          "path": "agents/openai.yaml",
+          "repo_path": "woocommerce/wcs-upgrade-compatibility/agents/openai.yaml",
+          "type": "resource",
+          "bytes": 277,
+          "sha256": "46a662df4b3b793add9ef338a030ad808ef18321833a536c4cceb54fcf657201"
+        },
+        {
+          "path": "examples/woo-skills-smoke/woo-skills-smoke.php",
+          "repo_path": "woocommerce/wcs-upgrade-compatibility/examples/woo-skills-smoke/woo-skills-smoke.php",
+          "type": "example",
+          "bytes": 16342,
+          "sha256": "891646929ddac93181ddc993648481a1efe7d9f62708b15127015aa9dec1e03c"
+        },
+        {
+          "path": "references/release-9.2.md",
+          "repo_path": "woocommerce/wcs-upgrade-compatibility/references/release-9.2.md",
+          "type": "reference",
+          "bytes": 12193,
+          "sha256": "be16a5fc01c182d4afe63610b5ef5bba2a443d979b91f591d894d19d39a18409"
+        }
+      ],
+      "has_reference": true,
+      "has_examples": true,
+      "has_scripts": false,
+      "skill_md": {
+        "bytes": 9840,
+        "lines": 94,
+        "sha256": "21eda0b26e5684889e48ea6b4dfda41dbc441871315a17de362462c849d533b6"
       }
     },
     {

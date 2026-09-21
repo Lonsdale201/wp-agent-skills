@@ -2,6 +2,22 @@
 
 This collection is continuously evolving — entries are date-based, not version-tagged. New skills land when they're ready; updates go in when they cover real ground (a new release of an upstream plugin, a verified misconception, a corrected example).
 
+## 2026-09-21 (Subscriptions 9.2 compatibility and WooCommerce 11.1 coupons)
+
+### Added
+
+- `woocommerce/wcs-upgrade-compatibility`: a newly source-grounded WCS 9.2 upgrade workflow, full release impact map, deprecated settings API replacements, changed REST suspension field, per-product gifting migration, ownership and operation-specific nonces, APFS loading/plan identity, switching, renewal tax/discount checks, PayPal notification validation, and HPOS stale-save behavior. Internal settings classes are identified as implementation evidence, not recommended extension APIs.
+- Original `Woo Skills Contract Smoke` example plugin for disposable local installations, with explicit WP-CLI execution, write opt-in and pinned Woo/WCS versions. Run reports and generated results stay outside the skill collection.
+
+### Changed
+
+- Rechecked the existing `wc-coupon-types-rules` and `wc-coupon-dynamic` skills against WooCommerce 11.1.1; no duplicate coupon skill was added.
+- Added the six Woo 11.1 coupon restriction filters, their true-means-valid polarity, and the distinction between overriding a validator and changing product allocation.
+- Documented the measured pending fee-only order trap: native coupon application can succeed and consume usage while allocating no discount. Monetary integrations must reject inapplicable orders before mutation and verify the realized amount.
+- Corrected virtual entitlement validation to use the order customer rather than the current administrator/CLI actor.
+- Replaced the late virtual snapshot repair with restoration during the first internal recalculation, plus separate historical property/rule snapshots. The smoke verifies individual line totals after application and after reload without a resolver.
+- Clarified that historical coupon recalculation skips coupon-wide validation and that coupon-code existence checks do not provide atomic uniqueness.
+
 ## 2026-09-10 (collection trimmed)
 
 Several skills have been removed from this repository, and they will not be coming back.

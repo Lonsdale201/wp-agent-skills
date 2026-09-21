@@ -4,6 +4,14 @@ Skills for **WooCommerce core and the WooCommerce extension family** — WC itse
 
 Use these when extending Woo or building an integration that touches Woo data.
 
+The coupon skills cover WooCommerce 11.1.1 fee-only zero-allocation/usage behavior, the six new 11.1 restriction filters, order-customer entitlement identity, and virtual coupon restoration before the first order recalculation.
+
+## WooCommerce Subscriptions
+
+| Skill | Purpose |
+|---|---|
+| [`wcs-upgrade-compatibility`](wcs-upgrade-compatibility/SKILL.md) | Audit release changes with a WCS 9.2 baseline: deprecated settings/REST surfaces, gifting migration, ownership and operation nonces, APFS scripts and legacy plan identity, switching, renewal discounts, PayPal validation, and HPOS stale saves. Includes a disposable WP-CLI smoke plugin example. |
+
 ## WooCommerce core
 
 | Skill | Purpose |
