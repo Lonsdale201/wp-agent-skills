@@ -1,11 +1,11 @@
 ---
 name: lw-lms-abilities
-description: Consumer and reviewer reference for LW LMS 2.0.0 Abilities API registrations. Use when calling or auditing `lw-lms/list-courses`, `lw-lms/get-course`, `lw-lms/get-progress`, `lw-lms/set-progress`, `lw-lms/get-options`, `/wp-json/wp-abilities/v1/abilities/lw-lms/.../run`, Site Manager bridge integration, standalone WordPress Abilities API fallback, schemas, permissions, or agent access to course and progress data.
+description: Consumer and reviewer reference for LW LMS 2.0.1 Abilities API registrations. Use when calling or auditing `lw-lms/list-courses`, `lw-lms/get-course`, `lw-lms/get-progress`, `lw-lms/set-progress`, `lw-lms/get-options`, `/wp-json/wp-abilities/v1/abilities/lw-lms/.../run`, Site Manager bridge integration, MCP discovery, standalone WordPress Abilities API fallback, schemas, permissions, or agent access to course and progress data.
 metadata:
   wp-skills-author: "Soczó Kristóf"
-  wp-skills-contact: "mailto:lonsdale201@hotmail.com"
+  wp-skills-contact: "https://github.com/Lonsdale201"
   wp-skills-plugin: "lw-lms"
-  wp-skills-plugin-version-tested: "2.0.0"
+  wp-skills-plugin-version-tested: "2.0.1"
   wp-skills-wp-version-tested: "7.1.2"
   wp-skills-php-min: "8.0"
   wp-skills-last-updated: "2026-09-26"
@@ -27,12 +27,25 @@ Trigger this skill when ANY of the following is true:
 
 ## Verified registration model
 
-LW LMS 2.0.0 still registers the same five abilities in two modes. The quiz, drip, React admin, and privacy releases did not add abilities. They did tighten progress authorization and validation.
+LW LMS 2.0.1 registers the same five abilities in two modes. The quiz, drip, React admin, and privacy releases did not add abilities. They did tighten progress authorization and validation. Version 2.0.1 adds explicit MCP-public metadata so Site Manager can discover the foreign `lw-lms/*` namespace.
 
 1. Site Manager bridge: hooks `lw_site_manager_register_categories` and `lw_site_manager_register_abilities`, receives the Site Manager `PermissionManager`, and registers into category `lms`.
 2. Standalone fallback: hooks `wp_abilities_api_categories_init` and `wp_abilities_api_init` at priority 20. `did_action()` guards prevent duplicate registration when Site Manager is active.
 
 Do not claim Site Manager is required for LMS abilities. Since v1.2.16, WordPress 6.9+ Abilities API or the feature plugin is enough.
+
+### MCP visibility
+
+Each ability now carries:
+
+```php
+'mcp' => [
+	'public' => true,
+	'type'   => 'tool',
+],
+```
+
+With LW Site Manager 1.5.1, all five `lw-lms/*` abilities appear in its discovery response. MCP visibility does not bypass the ability permission callback or the target-object checks.
 
 ## Ability catalog
 

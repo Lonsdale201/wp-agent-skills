@@ -11,9 +11,9 @@ description: >-
   abilities from another plugin.
 metadata:
   wp-skills-author: "Soczó Kristóf"
-  wp-skills-contact: "mailto:lonsdale201@hotmail.com"
+  wp-skills-contact: "https://github.com/Lonsdale201"
   wp-skills-plugin: "lw-site-manager"
-  wp-skills-plugin-version-tested: "1.5.0"
+  wp-skills-plugin-version-tested: "1.5.1"
   wp-skills-wp-version-tested: "7.1.2"
   wp-skills-php-min: "8.2"
   wp-skills-last-updated: "2026-09-26"
@@ -21,13 +21,13 @@ metadata:
 
 # LW Site Manager 1.5: consumer and operations reference
 
-Use the plugin's registered abilities instead of calling its internal service classes. Version 1.5.0 exposes the same abilities through the WordPress Abilities REST API and a built-in MCP server, but the two transports have different discovery and authorization layers.
+Use the plugin's registered abilities instead of calling its internal service classes. Version 1.5.1 exposes the same abilities through the WordPress Abilities REST API and a built-in MCP server, but the two transports have different discovery and authorization layers.
 
 ## Binding requirements and current surface
 
 Read the plugin header before relying on README badges:
 
-| Contract | Version 1.5.0 |
+| Contract | Version 1.5.1 |
 |---|---|
 | WordPress | 6.9 or newer |
 | PHP | 8.2 or newer |
@@ -71,7 +71,7 @@ $result = $ability->execute( [ 'type' => 'all' ] );
 
 ### Built-in MCP server
 
-Version 1.5.0 ships the WordPress MCP Adapter in release packages and brands its default server as LW Site Manager. Connect a Streamable HTTP MCP client to:
+Version 1.5.1 ships the WordPress MCP Adapter in release packages and brands its default server as LW Site Manager. Connect a Streamable HTTP MCP client to:
 
 ```text
 https://example.com/wp-json/mcp/lw-site-manager
@@ -142,7 +142,7 @@ Treat transport success and operation success separately:
 - A whole-operation failure should arrive as `WP_Error`; REST then returns an error status and MCP reports `isError: true`.
 - A batch operation may return a successful envelope with per-item failures. Inspect `failed`, `failed_ids`, and the message.
 - Plugin activation can succeed while returning captured PHP warnings. Do not retry activation merely because `php_errors` is non-empty.
-- MCP Adapter conflicts matter. Another plugin can load an older adapter first. Version 1.5.0 detects the loaded implementation by reflection and shows an outdated-adapter warning. Resolve that warning before trusting MCP result unwrapping.
+- MCP Adapter conflicts matter. Another plugin can load an older adapter first. Version 1.5.1 detects the loaded implementation by reflection and shows an outdated-adapter warning. Resolve that warning before trusting MCP result unwrapping.
 
 ## High-impact behavior added after 1.1.22
 

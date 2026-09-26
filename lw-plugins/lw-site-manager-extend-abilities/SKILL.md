@@ -10,9 +10,9 @@ description: >-
   lw-site-manager-overview when consuming existing abilities.
 metadata:
   wp-skills-author: "Soczó Kristóf"
-  wp-skills-contact: "mailto:lonsdale201@hotmail.com"
+  wp-skills-contact: "https://github.com/Lonsdale201"
   wp-skills-plugin: "lw-site-manager"
-  wp-skills-plugin-version-tested: "1.5.0"
+  wp-skills-plugin-version-tested: "1.5.1"
   wp-skills-wp-version-tested: "7.1.2"
   wp-skills-php-min: "8.2"
   wp-skills-last-updated: "2026-09-26"

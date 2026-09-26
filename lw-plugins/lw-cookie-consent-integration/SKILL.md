@@ -11,9 +11,9 @@ description: >-
   legal compliance certification.
 metadata:
   wp-skills-author: "Soczó Kristóf"
-  wp-skills-contact: "mailto:lonsdale201@hotmail.com"
+  wp-skills-contact: "https://github.com/Lonsdale201"
   wp-skills-plugin: "lw-cookie"
-  wp-skills-plugin-version-tested: "1.8.2"
+  wp-skills-plugin-version-tested: "1.8.3"
   wp-skills-wp-version-tested: "7.1.2"
   wp-skills-php-min: "8.2"
   wp-skills-last-updated: "2026-09-26"
@@ -27,7 +27,7 @@ Use LW Cookie's public hooks, browser API, REST routes, CLI, and abilities. Do n
 
 Read the plugin header rather than old README badges:
 
-| Contract | Version 1.8.2 |
+| Contract | Version 1.8.3 |
 |---|---|
 | WordPress | 6.6 or newer |
 | PHP | 8.2 or newer |
@@ -38,7 +38,7 @@ Read the plugin header rather than old README badges:
 
 `necessary` is always required. The three optional categories default to denied until consent is saved.
 
-Do not write `lw_cookie_options` directly. The admin REST settings controller sanitizes field types, enums, colors, IDs, and declared-cookie rows. Direct `Options::save()` callers and the current Site Manager ability do not receive that complete controller validation.
+Do not write `lw_cookie_options` directly. The admin REST settings controller and the 1.8.3 `lw-cookie/set-options` ability both use the sanitized partial-update path for field types, enums, colors, IDs, multilingual locks, and declared-cookie rows.
 
 ## Read consent through the public filters
 
@@ -83,18 +83,18 @@ Do not create a second consent cookie or mirror state in local storage. Use the 
 
 The Service Worker is part of script/network blocking. Since 1.7.0 it serves a correct 200 fallback and uses the real webroot on subdirectory-core installations. Since 1.7.6 it refreshes after plugin updates and synchronizes consent across reloads and tabs. When diagnosing stale blocking, verify the registered worker, the current worker file, consent cookie visibility, and another tab's state before changing host lists.
 
-## Current YouTube privacy-enhanced behavior
+## YouTube privacy-enhanced behavior
 
-Version 1.8.2 maps both of these patterns to `marketing`:
+Version 1.8.3 maps both of these patterns to `marketing` by default:
 
 - `youtube.com/embed`
 - `youtube-nocookie.com/embed`
 
-Therefore privacy-enhanced YouTube embeds are blocked while content blocking is enabled and marketing consent is absent. Public issue #10 asks to exempt `youtube-nocookie.com`; it is still open in the verified version.
+The Advanced setting **Load youtube-nocookie.com embeds without consent** writes `allow_youtube_nocookie`. It defaults to off. When enabled, the browser guard and server-side placeholders remove only `youtube-nocookie.com` from the blocked-domain map; ordinary `youtube.com` embeds remain blocked until marketing consent.
 
-Do not describe `youtube-nocookie.com` as automatically consent-free. Privacy-enhanced mode changes YouTube personalization behavior, but the iframe still contacts a third party and data-processing requirements remain site- and jurisdiction-specific. Keep the current blocking behavior until the plugin changes or the site owner makes an explicit, reviewed policy decision.
+Do not describe `youtube-nocookie.com` as automatically consent-free. Privacy-enhanced mode still sends the visitor's IP address and request metadata to Google. Enable the exemption only after the site owner makes an explicit, reviewed policy decision.
 
-If testing a proposed exemption, verify at least:
+When testing the exemption, verify at least:
 
 1. network requests before playback and after playback;
 2. cookies or storage written before interaction and after interaction;
@@ -129,19 +129,19 @@ LW Cookie registers four abilities when LW Site Manager fires its extension hook
 | Ability | Behavior |
 |---|---|
 | `lw-cookie/get-options` | Returns the merged option set. |
-| `lw-cookie/set-options` | Updates only a fixed allowlist of keys. |
+| `lw-cookie/set-options` | Sanitized partial update across the full current settings model. |
 | `lw-cookie/get-consent-stats` | Aggregates action counts over a requested number of days. |
 | `lw-cookie/scan-cookies` | Runs the HTTP header pre-scan and returns detected cookies/domains. |
 
 All four use Site Manager's `can_manage_options` callback.
 
-The current `set-options` allowlist covers the original banner/category text/colors, consent duration, both blocking switches, GCM, and floating-button fields. It does not cover every 1.8.2 option. Notably, newer layout/text fields, `hide_for_logged_in`, and `declared_cookies` are not writable through this ability.
+The 1.8.3 automation policy covers every current setting, including box alignment, necessary-category text, `hide_for_logged_in`, all modal/table/embed texts, `declared_cookies`, and `allow_youtube_nocookie`. A test keeps the policy aligned with the defaults. Multilingual source-text keys remain locked while a supported translation plugin owns them.
 
-`set-options` writes allowed values through `Options::save()` without the admin controller's complete field sanitization. Before calling it:
+`get-options` returns typed values plus `writable_keys`. `set-options` returns `updated`, `rejected`, and the resulting options. Before calling it:
 
 1. call `get-options`;
-2. change only documented allowlisted keys;
-3. validate booleans, integers, enum values, page IDs, and colors in the client;
+2. change only keys listed in `writable_keys`;
+3. inspect `rejected` for invalid, unknown, or multilingual-locked fields;
 4. read the options back and verify the result.
 
 `scan-cookies` performs outbound work and refreshes scan data even though its metadata says idempotent. Do not retry it blindly on a timeout; inspect the current scan result first.
@@ -154,18 +154,7 @@ The four abilities set `show_in_rest`, so call them through the Abilities REST r
 /wp-json/wp-abilities/v1/abilities/lw-cookie/get-options/run
 ```
 
-In version 1.8.2 their metadata does not set `mcp.public`. LW Site Manager 1.5.0 automatically exposes only `site-manager/*`, so these `lw-cookie/*` abilities do not appear in its MCP discovery by default. Treat absence from MCP as the current contract, not as a missing registration.
-
-To make them MCP-visible in a future plugin release, LW Cookie must add explicit metadata:
-
-```php
-'mcp' => [
-	'public' => true,
-	'type'   => 'tool',
-],
-```
-
-Do not rename them into `site-manager/*` as a workaround.
+Version 1.8.3 adds explicit `mcp.public = true` and `mcp.type = tool` metadata. With LW Site Manager 1.5.1, all four abilities appear in MCP discovery. If they are missing, verify exact versions, live ability metadata, MCP enablement, and the loaded adapter before changing namespaces.
 
 ## WP-CLI operations
 
@@ -210,7 +199,6 @@ For an integration or regression report:
 ## References
 
 - Plugin repository: <https://github.com/lwplugins/lw-cookie>
-- Open issue #10: <https://github.com/lwplugins/lw-cookie/issues/10>
 - Settings reference: <https://github.com/lwplugins/lw-cookie/blob/main/docs/settings.md>
 - Verified source paths:
   - `lw-cookie.php`
@@ -222,4 +210,5 @@ For an integration or regression report:
   - `includes/SiteManager/Integration.php`
   - `includes/SiteManager/CookieAbilities.php`
   - `includes/SiteManager/CookieService.php`
+  - `includes/SiteManager/AutomationPolicy.php`
   - `includes/CLI/Commands.php`
