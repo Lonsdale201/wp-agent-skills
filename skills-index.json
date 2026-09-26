@@ -11,8 +11,8 @@
     "layout": "<domain>/<skill>/SKILL.md",
     "skill_file": "SKILL.md"
   },
-  "domain_count": 23,
-  "skill_count": 241,
+  "domain_count": 24,
+  "skill_count": 244,
   "domains": [
     {
       "slug": "acf",
@@ -55,6 +55,12 @@
       "path": "fluentform",
       "readme_path": "fluentform/README.md",
       "skill_count": 4
+    },
+    {
+      "slug": "hungarian-pickup-points",
+      "path": "hungarian-pickup-points",
+      "readme_path": "hungarian-pickup-points/README.md",
+      "skill_count": 3
     },
     {
       "slug": "jet-engine",
@@ -2867,6 +2873,99 @@
       }
     },
     {
+      "slug": "vp-woo-pont-checkout-order-data",
+      "name": "vp-woo-pont-checkout-order-data",
+      "domain": "hungarian-pickup-points",
+      "description": "Integrate a WooCommerce plugin or checkout with Csomagpontok és Címkék WooCommerce-hez pickup-point selection and order data. Covers classic checkout and Checkout Blocks, Store API namespace `vp-woo-pont-picker`, session state, HPOS-safe order meta, provider versus carrier IDs, shipping-address replacement, pricing filters, custom checkout compatibility, and safe programmatic point assignment. Use when reading the selected point, changing checkout UI, adding a provider, synchronizing an order, or making another shipping/payment plugin cooperate with `vp_pont`.",
+      "path": "hungarian-pickup-points/vp-woo-pont-checkout-order-data",
+      "skill_path": "hungarian-pickup-points/vp-woo-pont-checkout-order-data/SKILL.md",
+      "url": "https://raw.githubusercontent.com/Lonsdale201/wp-agent-skills/main/hungarian-pickup-points/vp-woo-pont-checkout-order-data/SKILL.md",
+      "raw_url": "https://raw.githubusercontent.com/Lonsdale201/wp-agent-skills/main/hungarian-pickup-points/vp-woo-pont-checkout-order-data/SKILL.md",
+      "html_url": "https://github.com/Lonsdale201/wp-agent-skills/blob/main/hungarian-pickup-points/vp-woo-pont-checkout-order-data/SKILL.md",
+      "directory_url": "https://github.com/Lonsdale201/wp-agent-skills/tree/main/hungarian-pickup-points/vp-woo-pont-checkout-order-data",
+      "metadata": {
+        "author": "Soczó Kristóf",
+        "contact": "https://github.com/Lonsdale201",
+        "plugin": "hungarian-pickup-points-for-woocommerce",
+        "plugin-version-tested": "4.2.8",
+        "wp-version-tested": "7.1.2",
+        "php-min": "7.4",
+        "last-updated": "2026-09-27",
+        "license": "GPLv2-or-later"
+      },
+      "resources": [],
+      "has_reference": false,
+      "has_examples": false,
+      "has_scripts": false,
+      "skill_md": {
+        "bytes": 8609,
+        "lines": 162,
+        "sha256": "d9aa83ac8e76a44916c5b827ef03cf2b3ad0694131ff293bb8d156e752c5b507"
+      }
+    },
+    {
+      "slug": "vp-woo-pont-shipping-labels",
+      "name": "vp-woo-pont-shipping-labels",
+      "domain": "hungarian-pickup-points",
+      "description": "Integrate with the shipping-label workflow in Csomagpontok és Címkék WooCommerce-hez. Covers the PRO boundary, normalized label payload, `generate_label()` and idempotency, HPOS-safe parcel meta, payload filters, label-created/error/removed actions, provider selection, PDF links, permissions, remote voiding versus local clearing, Számlázz.hu invoice references, and safe external side effects. Use when another WooCommerce plugin must add label fields, trigger generation, sync tracking numbers, expose a label link, or react to carrier-label lifecycle events.",
+      "path": "hungarian-pickup-points/vp-woo-pont-shipping-labels",
+      "skill_path": "hungarian-pickup-points/vp-woo-pont-shipping-labels/SKILL.md",
+      "url": "https://raw.githubusercontent.com/Lonsdale201/wp-agent-skills/main/hungarian-pickup-points/vp-woo-pont-shipping-labels/SKILL.md",
+      "raw_url": "https://raw.githubusercontent.com/Lonsdale201/wp-agent-skills/main/hungarian-pickup-points/vp-woo-pont-shipping-labels/SKILL.md",
+      "html_url": "https://github.com/Lonsdale201/wp-agent-skills/blob/main/hungarian-pickup-points/vp-woo-pont-shipping-labels/SKILL.md",
+      "directory_url": "https://github.com/Lonsdale201/wp-agent-skills/tree/main/hungarian-pickup-points/vp-woo-pont-shipping-labels",
+      "metadata": {
+        "author": "Soczó Kristóf",
+        "contact": "https://github.com/Lonsdale201",
+        "plugin": "hungarian-pickup-points-for-woocommerce",
+        "plugin-version-tested": "4.2.8",
+        "wp-version-tested": "7.1.2",
+        "php-min": "7.4",
+        "last-updated": "2026-09-27",
+        "license": "GPLv2-or-later"
+      },
+      "resources": [],
+      "has_reference": false,
+      "has_examples": false,
+      "has_scripts": false,
+      "skill_md": {
+        "bytes": 8453,
+        "lines": 161,
+        "sha256": "ae66e54d08443766c7f5257782bf7d095b88279bdca857252b40588f12a5c23d"
+      }
+    },
+    {
+      "slug": "vp-woo-pont-tracking-automations",
+      "name": "vp-woo-pont-tracking-automations",
+      "domain": "hungarian-pickup-points",
+      "description": "Integrate with PRO shipment tracking and automations in Csomagpontok és Címkék WooCommerce-hez. Covers Action Scheduler hook/group, parcel event storage, tracking links and customer-token privacy, tracking update/status/email hooks, provider-specific event codes, HPOS-safe reads, retry and cancellation behavior, custom tracking pages, and the built-in PRO Számlázz.hu mark-as-paid bridge. Use when syncing carrier events, changing order status, sending companion notifications, exposing tracking data, or connecting delivery events to another WooCommerce integration.",
+      "path": "hungarian-pickup-points/vp-woo-pont-tracking-automations",
+      "skill_path": "hungarian-pickup-points/vp-woo-pont-tracking-automations/SKILL.md",
+      "url": "https://raw.githubusercontent.com/Lonsdale201/wp-agent-skills/main/hungarian-pickup-points/vp-woo-pont-tracking-automations/SKILL.md",
+      "raw_url": "https://raw.githubusercontent.com/Lonsdale201/wp-agent-skills/main/hungarian-pickup-points/vp-woo-pont-tracking-automations/SKILL.md",
+      "html_url": "https://github.com/Lonsdale201/wp-agent-skills/blob/main/hungarian-pickup-points/vp-woo-pont-tracking-automations/SKILL.md",
+      "directory_url": "https://github.com/Lonsdale201/wp-agent-skills/tree/main/hungarian-pickup-points/vp-woo-pont-tracking-automations",
+      "metadata": {
+        "author": "Soczó Kristóf",
+        "contact": "https://github.com/Lonsdale201",
+        "plugin": "hungarian-pickup-points-for-woocommerce",
+        "plugin-version-tested": "4.2.8",
+        "wp-version-tested": "7.1.2",
+        "php-min": "7.4",
+        "last-updated": "2026-09-27",
+        "license": "GPLv2-or-later"
+      },
+      "resources": [],
+      "has_reference": false,
+      "has_examples": false,
+      "has_scripts": false,
+      "skill_md": {
+        "bytes": 8716,
+        "lines": 151,
+        "sha256": "7e367d1ea4d9d222a4bec2bbfcf40feb1c43aa8d62568d1e4b2f0bde830266db"
+      }
+    },
+    {
       "slug": "je-custom-content-types",
       "name": "je-custom-content-types",
       "domain": "jet-engine",
@@ -5143,12 +5242,12 @@
       "directory_url": "https://github.com/Lonsdale201/wp-agent-skills/tree/main/szamlazzhu/szamlazzhu-document-xml-compatibility",
       "metadata": {
         "author": "Soczó Kristóf",
-        "contact": "mailto:lonsdale201@hotmail.com",
+        "contact": "https://github.com/Lonsdale201",
         "plugin": "integration-for-szamlazzhu-woocommerce",
-        "plugin-version-tested": "6.2.2 on WooCommerce 10.9.4",
-        "wp-version-tested": "7.0",
+        "plugin-version-tested": "6.2.2",
+        "wp-version-tested": "7.1.2",
         "php-min": "7.4",
-        "last-updated": "2026-07-09",
+        "last-updated": "2026-09-27",
         "license": "GPLv3"
       },
       "resources": [],
@@ -5156,9 +5255,9 @@
       "has_examples": false,
       "has_scripts": false,
       "skill_md": {
-        "bytes": 17340,
+        "bytes": 16786,
         "lines": 317,
-        "sha256": "babf69143d232c63f95433d996dd625d145a8d8f622fc0b31fbe4ef7f21beb77"
+        "sha256": "04aeebcb45d2530cce58cfd80a1f46b4b32d211c537a5d2f313834fb800af10e"
       }
     },
     {
@@ -5174,12 +5273,12 @@
       "directory_url": "https://github.com/Lonsdale201/wp-agent-skills/tree/main/szamlazzhu/szamlazzhu-vat-checkout-compatibility",
       "metadata": {
         "author": "Soczó Kristóf",
-        "contact": "mailto:lonsdale201@hotmail.com",
+        "contact": "https://github.com/Lonsdale201",
         "plugin": "integration-for-szamlazzhu-woocommerce",
-        "plugin-version-tested": "6.2.2 on WooCommerce 10.9.4",
-        "wp-version-tested": "7.0",
+        "plugin-version-tested": "6.2.2",
+        "wp-version-tested": "7.1.2",
         "php-min": "7.4",
-        "last-updated": "2026-07-09",
+        "last-updated": "2026-09-27",
         "license": "GPLv3"
       },
       "resources": [],
@@ -5187,9 +5286,9 @@
       "has_examples": false,
       "has_scripts": false,
       "skill_md": {
-        "bytes": 16945,
+        "bytes": 16597,
         "lines": 326,
-        "sha256": "bff92d7ee8b73ca6ebc4ee6efa9712172c772c5e0b847c3732aa84dd81a808c2"
+        "sha256": "cf57154437cb60bff2b3eb29b4ff2893e2a079a782a635dbb19137363aca045a"
       }
     },
     {

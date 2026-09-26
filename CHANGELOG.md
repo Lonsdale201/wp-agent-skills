@@ -2,6 +2,26 @@
 
 This collection is continuously evolving — entries are date-based, not version-tagged. New skills land when they're ready; updates go in when they cover real ground (a new release of an upstream plugin, a verified misconception, a corrected example).
 
+## 2026-09-27 (Csomagpontok és Címkék 4.2.8 and Számlázz.hu recheck)
+
+### Added
+
+- New `hungarian-pickup-points/` domain with three development skills for Csomagpontok és Címkék WooCommerce-hez 4.2.8.
+- `vp-woo-pont-checkout-order-data`: classic checkout and Checkout Blocks, the `vp-woo-pont-picker` Store API namespace, session/user/order storage, provider-to-carrier normalization, point-derived shipping addresses, pricing filters, and HPOS-safe programmatic assignment.
+- `vp-woo-pont-shipping-labels`: the normalized label payload and filter timing, explicit external-side-effect and permission gates, parcel metadata, label lifecycle hooks, PDF links, remote void versus local clear semantics, and Számlázz.hu invoice references. Ordinary carrier API labels are marked PRO; Kvikk's separately configured path is identified explicitly.
+- `vp-woo-pont-tracking-automations`: PRO tracking meta, Action Scheduler hook/group, provider event semantics, status and email gates, tokenized customer tracking pages, idempotent consumers, and the bundled PRO Számlázz.hu mark-as-paid bridge.
+
+### Changed
+
+- Rechecked both existing Számlázz.hu skills against the unchanged official 6.2.2 source and WooCommerce 11.1.2. All documented `wc_szamlazz_*` identifiers remain present; tested-version metadata and the public maintainer contact were refreshed, and source references are now plugin-root-relative.
+
+### Verified
+
+- Both installed plugins were already current according to the WordPress.org API: Integration for Szamlazz.hu & WooCommerce 6.2.2 and Csomagpontok és Címkék WooCommerce-hez 4.2.8.
+- Exact SHA-256 inventories matched the official release packages: all 125 Számlázz.hu files and all 991 Csomagpontok files were identical to the installed copies.
+- On WordPress 7.1.2 and WooCommerce 11.1.2, a disposable order smoke verified HPOS-safe pickup metadata, `gls_locker` to `gls` carrier normalization, the neutral label-data contract, and cleanup of the fixture order.
+- The test installation had Csomagpontok PRO disabled. Label-generation and tracking code paths were source-verified without making carrier, shipment, invoice, or payment API calls.
+
 ## 2026-09-26 (LW SEO 1.7.4 compatibility and automation)
 
 ### Added

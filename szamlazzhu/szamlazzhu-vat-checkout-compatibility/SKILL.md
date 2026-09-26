@@ -4,12 +4,12 @@ description: Make WooCommerce checkout, B2B, VAT/tax-number, address, and headle
 license: GPLv3
 metadata:
   wp-skills-author: "Soczó Kristóf"
-  wp-skills-contact: "mailto:lonsdale201@hotmail.com"
+  wp-skills-contact: "https://github.com/Lonsdale201"
   wp-skills-plugin: "integration-for-szamlazzhu-woocommerce"
-  wp-skills-plugin-version-tested: "6.2.2 on WooCommerce 10.9.4"
-  wp-skills-wp-version-tested: "7.0"
+  wp-skills-plugin-version-tested: "6.2.2"
+  wp-skills-wp-version-tested: "7.1.2"
   wp-skills-php-min: "7.4"
-  wp-skills-last-updated: "2026-07-09"
+  wp-skills-last-updated: "2026-09-27"
 ---
 
 # Szamlazz.hu VAT/Checkout Compatibility
@@ -18,7 +18,7 @@ Use this skill when a plugin/theme must cooperate with the Szamlazz.hu WooCommer
 
 The plugin's VAT feature loads only when its `vat_number_type` option is not `no`. Guard your integration for sites where the Szamlazz.hu VAT UI is disabled.
 
-Version 6.2 added the "VAT number for all countries" path and made `wc_szamlazz_vat_number_validation_results` run for invalid VAT results too. Version 6.2.2 further adjusts EU VAT validation behavior. This skill was rechecked against the local 6.2.2 source and WooCommerce 10.9.4.
+Version 6.2 added the "VAT number for all countries" path and made `wc_szamlazz_vat_number_validation_results` run for invalid VAT results too. Version 6.2.2 further adjusts EU VAT validation behavior. This skill was rechecked against the official 6.2.2 package and smoke-tested on WooCommerce 11.1.2.
 
 ## When to use this skill
 
@@ -317,9 +317,9 @@ VAT numbers are personal/business identifiers. Treat them like billing data:
 - Official documentation: <https://docs.szamlazz.hu/hu/agent/querying_taxpayer/xml>
 - Official documentation: <https://ec.europa.eu/taxation_customs/vies/>
 - Verified source paths:
-  - `wp-content/plugins/integration-for-szamlazzhu-woocommerce/includes/class-vat-number.php`
-  - `wp-content/plugins/integration-for-szamlazzhu-woocommerce/includes/block/vat-number-block.php`
-  - `wp-content/plugins/integration-for-szamlazzhu-woocommerce/includes/block/vat-number-block-endpoints.php`
-  - `wp-content/plugins/integration-for-szamlazzhu-woocommerce/includes/block/vat-number-block-integration.php`
-  - `wp-content/plugins/integration-for-szamlazzhu-woocommerce/index.php`
-  - `wp-content/plugins/integration-for-szamlazzhu-woocommerce/includes/compatibility/modules/class-wc-szamlazz-subscriptions.php`
+  - `includes/class-vat-number.php`
+  - `includes/block/vat-number-block.php`
+  - `includes/block/vat-number-block-endpoints.php`
+  - `includes/block/vat-number-block-integration.php`
+  - `index.php`
+  - `includes/compatibility/modules/class-wc-szamlazz-subscriptions.php`

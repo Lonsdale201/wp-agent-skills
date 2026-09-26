@@ -33,6 +33,7 @@ const ALLOWED_DOMAINS = new Set([
   'wpml',
   'learndash',
   'rankmath',
+  'hungarian-pickup-points',
 ]);
 
 // Open Agent Skills format (https://agentskills.io/specification):
