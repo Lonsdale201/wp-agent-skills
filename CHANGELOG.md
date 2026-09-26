@@ -2,6 +2,20 @@
 
 This collection is continuously evolving — entries are date-based, not version-tagged. New skills land when they're ready; updates go in when they cover real ground (a new release of an upstream plugin, a verified misconception, a corrected example).
 
+## 2026-09-26 (LW Image 2.0.2)
+
+### Added
+
+- `lw-plugins/lw-img-operations-integration`: a source-grounded operations and integration reference for LW Image 2.0.2 covering the HelloImg upload pipeline, WebP/AVIF conversion, bounded bulk rollout, backups and restore, smart-crop credit planning, WP-CLI and environment diagnostics, pattern rules, public PHP hooks, admin REST boundaries, WordPress 7.1 browser uploads, old-image redirects, and uninstall persistence.
+- Documented the read-only preflight and dry-run sequence before media mutations, plus the distinction between eligibility skips, unavailable API access, size-guard skips, conversion failures, stale cached URLs, and bulk-gate failures.
+- Recorded the 2.0.2 machine-output edge case where an empty `wp lw-img leftovers --format=json` result prints a human success line instead of `[]`.
+- Recorded the current automation boundary: version 2.0.2 has administrator-only application REST routes but no WordPress Abilities or LW Site Manager abilities.
+
+### Verified
+
+- Compared the public `main` source with a running 2.0.2 installation on WordPress 7.1.2; all shipped non-vendor files matched.
+- Ran `wp lw-img status` and `wp lw-img doctor --format=json`; database, PHP, image editor, WebP support, filesystem, cron loopback, disk space, and old-image redirects passed. The test installation intentionally remains inactive until a HelloImg API key is configured.
+
 ## 2026-09-26 (LW Site Manager 1.5.0 and LW Cookie 1.8.2)
 
 ### Added

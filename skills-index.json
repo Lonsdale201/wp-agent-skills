@@ -12,7 +12,7 @@
     "skill_file": "SKILL.md"
   },
   "domain_count": 22,
-  "skill_count": 229,
+  "skill_count": 230,
   "domains": [
     {
       "slug": "better-data",
@@ -78,7 +78,7 @@
       "slug": "lw-plugins",
       "path": "lw-plugins",
       "readme_path": "lw-plugins/README.md",
-      "skill_count": 14
+      "skill_count": 15
     },
     {
       "slug": "plugin-scaffold",
@@ -3700,6 +3700,36 @@
         "bytes": 8370,
         "lines": 183,
         "sha256": "fc6516bebf1ca4a717259db32931d9de14d12dfe488b0b37ab0355eed4f0ce6a"
+      }
+    },
+    {
+      "slug": "lw-img-operations-integration",
+      "name": "lw-img-operations-integration",
+      "domain": "lw-plugins",
+      "description": "Operate, integrate, or diagnose LW Image 2.0.x image optimization for WordPress. Covers the HelloImg upload pipeline, WebP and AVIF conversion, bulk jobs, backups and restore, smart crop, WP-CLI, environment checks, pattern rules, public PHP hooks, admin REST boundaries, WordPress 7.1 browser uploads, old-image redirects, and safe rollout or rollback. Use when working with lw-img, wp lw-img, lw_img_options, lw_img_* hooks, Media Library optimization, conversion credits, or uploads/lw-img-backups.",
+      "path": "lw-plugins/lw-img-operations-integration",
+      "skill_path": "lw-plugins/lw-img-operations-integration/SKILL.md",
+      "url": "https://raw.githubusercontent.com/Lonsdale201/wp-agent-skills/main/lw-plugins/lw-img-operations-integration/SKILL.md",
+      "raw_url": "https://raw.githubusercontent.com/Lonsdale201/wp-agent-skills/main/lw-plugins/lw-img-operations-integration/SKILL.md",
+      "html_url": "https://github.com/Lonsdale201/wp-agent-skills/blob/main/lw-plugins/lw-img-operations-integration/SKILL.md",
+      "directory_url": "https://github.com/Lonsdale201/wp-agent-skills/tree/main/lw-plugins/lw-img-operations-integration",
+      "metadata": {
+        "author": "Soczó Kristóf",
+        "contact": "mailto:lonsdale201@hotmail.com",
+        "plugin": "lw-img",
+        "plugin-version-tested": "2.0.2",
+        "wp-version-tested": "7.1.2",
+        "php-min": "8.0",
+        "last-updated": "2026-09-26"
+      },
+      "resources": [],
+      "has_reference": false,
+      "has_examples": false,
+      "has_scripts": false,
+      "skill_md": {
+        "bytes": 15055,
+        "lines": 297,
+        "sha256": "58984337bae05a91de44e1ea23049497def8866697cbc18a1d77af58ea365a7c"
       }
     },
     {
