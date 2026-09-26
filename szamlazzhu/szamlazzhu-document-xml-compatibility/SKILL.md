@@ -4,19 +4,19 @@ description: Integrate another WooCommerce plugin with Integration for Szamlazz.
 license: GPLv3
 metadata:
   wp-skills-author: "Soczó Kristóf"
-  wp-skills-contact: "mailto:lonsdale201@hotmail.com"
+  wp-skills-contact: "https://github.com/Lonsdale201"
   wp-skills-plugin: "integration-for-szamlazzhu-woocommerce"
-  wp-skills-plugin-version-tested: "6.2.2 on WooCommerce 10.9.4"
-  wp-skills-wp-version-tested: "7.0"
+  wp-skills-plugin-version-tested: "6.2.2"
+  wp-skills-wp-version-tested: "7.1.2"
   wp-skills-php-min: "7.4"
-  wp-skills-last-updated: "2026-07-09"
+  wp-skills-last-updated: "2026-09-27"
 ---
 
 # Szamlazz.hu Document/XML Compatibility
 
 Use this skill when a WooCommerce extension must cooperate with **Integration for Szamlazz.hu & WooCommerce** instead of sending its own invoice to Számlázz.hu. The plugin already owns the Számlázz.hu Agent request, PDF storage, order meta, admin actions, automations, IPN, and Woo webhooks. A crossover plugin should hook that contract, not duplicate it.
 
-The validated plugin version is 6.2.2. The installed source declares HPOS, Cart/Checkout Blocks, and product block editor compatibility, while the plugin header says WC tested up to 10.7.0; this skill was checked locally against WooCommerce 10.9.4. The plugin header/readme are 6.2.2, but `WC_Szamlazz::$version` is still `6.2.1` in the main class and is used as an asset version; do not use that static property for feature detection.
+The validated plugin version is 6.2.2. The installed source declares HPOS, Cart/Checkout Blocks, and product block editor compatibility; this skill was rechecked against the official 6.2.2 package and smoke-tested on WooCommerce 11.1.2. The plugin header/readme are 6.2.2, but `WC_Szamlazz::$version` is still `6.2.1` in the main class and is used as an asset version; do not use that static property for feature detection.
 
 ## When to use this skill
 
@@ -305,12 +305,12 @@ Do not translate invoice numbers, tax numbers, order IDs, SKU identifiers, or Sz
 - Official documentation: <https://docs.szamlazz.hu/hu/agent/generating_invoice/rounding>
 - Official documentation: <https://docs.szamlazz.hu/hu/agent/generating_invoice/vat-rates>
 - Verified source paths:
-  - `wp-content/plugins/integration-for-szamlazzhu-woocommerce/index.php`
-  - `wp-content/plugins/integration-for-szamlazzhu-woocommerce/includes/class-xml-generator.php`
-  - `wp-content/plugins/integration-for-szamlazzhu-woocommerce/includes/class-helpers.php`
-  - `wp-content/plugins/integration-for-szamlazzhu-woocommerce/includes/class-automations.php`
-  - `wp-content/plugins/integration-for-szamlazzhu-woocommerce/includes/class-ipn.php`
-  - `wp-content/plugins/integration-for-szamlazzhu-woocommerce/includes/class-webhooks.php`
-  - `wp-content/plugins/integration-for-szamlazzhu-woocommerce/includes/compatibility/class-compatibility.php`
-  - `wp-content/plugins/integration-for-szamlazzhu-woocommerce/includes/compatibility/modules/class-wc-szamlazz-custom-order-numbers.php`
-  - `wp-content/plugins/integration-for-szamlazzhu-woocommerce/includes/compatibility/modules/class-wc-szamlazz-translatepress.php`
+  - `index.php`
+  - `includes/class-xml-generator.php`
+  - `includes/class-helpers.php`
+  - `includes/class-automations.php`
+  - `includes/class-ipn.php`
+  - `includes/class-webhooks.php`
+  - `includes/compatibility/class-compatibility.php`
+  - `includes/compatibility/modules/class-wc-szamlazz-custom-order-numbers.php`
+  - `includes/compatibility/modules/class-wc-szamlazz-translatepress.php`
