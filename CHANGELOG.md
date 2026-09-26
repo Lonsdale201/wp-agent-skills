@@ -2,6 +2,26 @@
 
 This collection is continuously evolving — entries are date-based, not version-tagged. New skills land when they're ready; updates go in when they cover real ground (a new release of an upstream plugin, a verified misconception, a corrected example).
 
+## 2026-09-26 (LW LMS 2.0.0)
+
+### Added
+
+- `lw-plugins/lw-lms-drip-progression`: linear progression, course/section/lesson delay rules, learner course clocks, lock REST responses, exemptions, CLI diagnostics, and the `lw_lms_lesson_locks` extension contract.
+- `lw-plugins/lw-lms-quiz-integration`: canonical quiz JSON, stable question/option IDs, learner submission and scoring, pass-gated completion, attempt history and limits, hooks, CLI operations, and admin result permissions.
+
+### Changed
+
+- Re-grounded all five existing LW LMS skills from 1.6.0 to 2.0.0 on WordPress 7.1.2, including PHP 8.0 requirements, React admin boundaries, Staff Access, privacy cleanup, WooCommerce lifecycle fixes, signed downloads, ready video HTML, additive REST payload filters, non-published course previews, and the complete quiz/drip command set.
+- Corrected stored-access semantics: free-course catalog reads no longer lazily enroll, null-source grants deduplicate per source, and broad `revoke()` now revokes every active stored row.
+- Removed the obsolete `lw_lms_settings_tabs` / `SettingsPage::get_settings_group()` recommendation and documented a separate companion settings screen instead.
+- Updated Abilities guidance: progress read/write now requires `manage_lms` or `manage_options` and validates user, course, lesson, and lesson-course membership.
+
+### Verified
+
+- Compared the official 2.0.0 release asset with its public source; all 195 shipped non-vendor files matched after line-ending normalization.
+- Ran disposable REST/CLI fixtures for scheduled lesson locks, public quiz answer stripping, quiz scoring, rate limiting, progress writes, and cleanup. The test user, posts, access, progress, completion, and quiz-attempt rows were removed with zero residue.
+- Found a reproducible 2.0.0 timezone defect: on `Europe/Budapest`, a zero-delay `previous` rule remained schedule-locked for two hours because the site-local completion time was converted with the UTC offset twice. The new drip skill records the limitation pending an upstream fix.
+
 ## 2026-09-26 (LW Image 2.0.2)
 
 ### Added

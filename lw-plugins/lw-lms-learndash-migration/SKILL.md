@@ -1,20 +1,21 @@
 ---
 name: lw-lms-learndash-migration
-description: Plan, run, or review the LW LMS WP-CLI LearnDash migration command `wp lw-lms migrate-learndash` in lw-lms v1.6.0. Use when migrating `sfwd-courses` / `sfwd-lessons`, checking `--dry-run` / `--verbose`, verifying `_lw_lms_migrated_to` mappings, course sections, lesson order, WooCommerce product links, LearnDash video extraction, or safe reruns after partial migration.
+description: Plans, runs, or reviews the LW LMS 2.0.0 WP-CLI LearnDash migration command `wp lw-lms migrate-learndash`. Use when migrating `sfwd-courses` or `sfwd-lessons`, checking `--dry-run` and `--verbose`, verifying `_lw_lms_migrated_to`, sections, order, WooCommerce product links, video extraction, or safe reruns while explicitly excluding quizzes, drip, progress, and enrollments.
 metadata:
   wp-skills-author: "Soczó Kristóf"
   wp-skills-contact: "mailto:lonsdale201@hotmail.com"
   wp-skills-plugin: "lw-lms"
-  wp-skills-plugin-version-tested: "1.6.0"
-  wp-skills-php-min: "8.2"
-  wp-skills-last-updated: "2026-07-20"
+  wp-skills-plugin-version-tested: "2.0.0"
+  wp-skills-wp-version-tested: "7.1.2"
+  wp-skills-php-min: "8.0"
+  wp-skills-last-updated: "2026-09-26"
 ---
 
 # LW LMS LearnDash Migration
 
 Use this for the one-time WP-CLI migration from LearnDash post types into LW LMS. The command copies course and lesson posts, maps key metadata, then builds a single LW LMS section per migrated course using LearnDash lesson order.
 
-Verified against local lw-lms **v1.6.0**. Neither the v1.4.0 operational CLI release nor the v1.6.0 access-filter/source-revocation work changed the `migrate-learndash` command flow. Use `lw-lms-wp-cli-operations` for the non-migration commands.
+Verified against LW LMS **2.0.0**. The quiz, drip, React admin, privacy, and access changes through 2.0.0 did not extend the `migrate-learndash` flow. Use `lw-lms-wp-cli-operations` for non-migration commands.
 
 ## When to use this skill
 
@@ -64,7 +65,7 @@ The command is intentionally rerunnable, but not a full synchronization tool:
 - Courses are skipped if an LW LMS course with the same title already exists; the mapping is refreshed.
 - Lessons are skipped if a lesson with the same title already exists for the mapped LW LMS course; the mapping is refreshed.
 - SectionBuilder rebuilds a single generated section from `ld_course_steps`.
-- It does not delete target posts, remove stale mappings, migrate quizzes, certificates, groups, assignments, user progress, enrollments, or LearnDash-specific drip rules.
+- It does not delete target posts, remove stale mappings, migrate quizzes, certificates, groups, assignments, user progress, enrollments, or LearnDash-specific drip rules. Configure LW LMS quiz and drip data after migration.
 
 ## Verification checklist
 
@@ -106,6 +107,6 @@ The command is intentionally rerunnable, but not a full synchronization tool:
 - Video extraction: `includes/CLI/Migration/VideoExtractor.php`.
 - Official documentation: <https://github.com/lwplugins/lw-lms>
 - Verified source paths:
-  - `wp-content/plugins/lw-lms/includes/Plugin.php`
-  - `wp-content/plugins/lw-lms/includes/CLI/Migration/PostCreator.php`
-  - `wp-content/plugins/lw-lms/includes/CLI/Migration/MigrationLogger.php`
+  - `includes/Plugin.php`
+  - `includes/CLI/Migration/PostCreator.php`
+  - `includes/CLI/Migration/MigrationLogger.php`

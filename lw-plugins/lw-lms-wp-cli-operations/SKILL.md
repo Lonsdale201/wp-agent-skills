@@ -1,279 +1,126 @@
 ---
 name: lw-lms-wp-cli-operations
-description: Use the LW LMS v1.6.0 operational WP-CLI commands added in v1.4.0. Covers `wp lw-lms course create|list|delete|set-section`, `wp lw-lms lesson create|list|assign`, `wp lw-lms enroll`, `wp lw-lms revoke`, `wp lw-lms force-complete`, argument resolution by ID/slug/login/email, enrollment/progress hook side effects, source-scoped revocation limitations, and common CLI footguns.
+description: Operates LW LMS 2.0.0 with WP-CLI. Use for `wp lw-lms course`, `lesson`, `enroll`, `revoke`, `force-complete`, `drip status|set-start`, quiz import/export/delete, course or lesson drip settings, reference resolution, automation output formats, and understanding enrollment, completion, quiz, or lock side effects. Excludes the LearnDash migration workflow.
 metadata:
   wp-skills-author: "Soczó Kristóf"
   wp-skills-contact: "mailto:lonsdale201@hotmail.com"
   wp-skills-plugin: "lw-lms"
-  wp-skills-plugin-version-tested: "1.6.0"
-  wp-skills-php-min: "8.2"
-  wp-skills-last-updated: "2026-07-20"
+  wp-skills-plugin-version-tested: "2.0.0"
+  wp-skills-wp-version-tested: "7.1.2"
+  wp-skills-php-min: "8.0"
+  wp-skills-last-updated: "2026-09-26"
 ---
 
-# LW LMS: WP-CLI operations
+# LW LMS WP-CLI operations
 
-Use this for the day-to-day LW LMS WP-CLI commands introduced in v1.4.0 and verified against local lw-lms **v1.6.0**. v1.6.0 did not add a CLI command or option. This is not the LearnDash migration command; use `lw-lms-learndash-migration` for `wp lw-lms migrate-learndash`.
-
-## When to use this skill
-
-Trigger this skill when any of the following is true:
-
-- A task mentions `wp lw-lms course`, `wp lw-lms lesson`, `wp lw-lms enroll`, `wp lw-lms revoke`, or `wp lw-lms force-complete`.
-- You need to create/list/delete courses or lessons from CLI.
-- You need to enroll/revoke a user or force-complete a course from CLI.
-- A diff touches files under `includes/CLI/*Command.php` except `MigrateLearnDashCommand.php` and `includes/CLI/Migration/`.
-
-## Command catalog
-
-Registered in `Plugin::register_cli_commands()` only when `WP_CLI` is defined and truthy.
-
-| Command | Purpose |
-|---|---|
-| `wp lw-lms course create` | Create a `course` post and set selected course meta |
-| `wp lw-lms course list` | List courses, optionally filtered by access type/status |
-| `wp lw-lms course delete` | Trash or permanently delete a course |
-| `wp lw-lms course set-section` | Create or update one course section in `_lw_lms_course_sections` |
-| `wp lw-lms lesson create` | Create a `lesson` post and assign it to a course |
-| `wp lw-lms lesson list` | List lessons for one course, optionally filtered by section |
-| `wp lw-lms lesson assign` | Assign/reassign an existing lesson to a course/section/order |
-| `wp lw-lms enroll` | Grant stored access through `AccessRepository::grant()` |
-| `wp lw-lms revoke` | Revoke stored access through `AccessRepository::revoke()` |
-| `wp lw-lms force-complete` | Mark every published lesson in a course completed through `ProgressRepository::mark_course_completed()` |
+Use the registered commands for repeatable administration. Use `lw-lms-learndash-migration` for `migrate-learndash`.
 
 ## Reference resolution
 
-`CliResolver` resolves:
+- Course and lesson: numeric post ID or slug.
+- User: numeric ID, login, or email.
+- Resolution errors stop the command through `WP_CLI::error()`.
 
-- course references by numeric post ID or course slug;
-- lesson references by numeric post ID or lesson slug;
-- user references by numeric user ID, login, or email.
+## Command catalog
 
-Resolver failures call `WP_CLI::error()` and halt the command. Callers can treat returned IDs as valid.
-
-## Course commands
-
-### Create
-
-```bash
-wp lw-lms course create --title="My Course" --access-type=paid --duration="8h"
-wp lw-lms course create --title="Draft Course" --status=draft --porcelain
-```
-
-Options:
-
-| Option | Notes |
+| Command | Purpose |
 |---|---|
-| `--title=<title>` | Required |
-| `--access-type=<open|free|paid>` | Default `free` |
-| `--duration=<duration>` | Stored as `_lw_lms_duration` |
-| `--status=<status>` | Default `publish` |
-| `--excerpt=<excerpt>` | Saved to `post_excerpt` |
-| `--content=<content>` | Saved to `post_content` |
-| `--porcelain` | Outputs only the new course ID |
+| `course create` | Create course; access type defaults to the configured `default_access_type` |
+| `course list` | List by access type/status and machine format |
+| `course delete` | Trash or force-delete the course post |
+| `course set-section` | Create/update a section |
+| `course set-drip` | Set free/linear progression and course enrollment delay |
+| `lesson create` | Create and assign a lesson |
+| `lesson list` | List lessons for a course/section |
+| `lesson assign` | Reassign course, section, and order |
+| `lesson set-quiz` | Replace quiz from JSON |
+| `lesson get-quiz` | Output the stored quiz, including correct answers |
+| `lesson delete-quiz` | Delete current quiz; preserve attempts |
+| `lesson set-drip` | Set none/enrollment/previous rule |
+| `enroll` | Durable access grant through the repository |
+| `revoke` | Revoke every active stored access row for user/course |
+| `force-complete` | Complete all published course lessons |
+| `drip status` | Diagnose one learner's lock map |
+| `drip set-start` | Set, reset-to-now, or clear one course clock |
 
-This command does not configure WooCommerce products, subscriptions, membership plans, preview lessons, or attachments.
-
-### List
-
-```bash
-wp lw-lms course list
-wp lw-lms course list --access-type=paid --format=json
-wp lw-lms course list --format=ids
-```
-
-Options:
-
-- `--access-type=<type>` filters by `_lw_lms_access_type`;
-- `--status=<status>` defaults to `any`;
-- `--per-page=<n>` defaults to `100`;
-- `--format=<table|csv|json|yaml|count|ids>` defaults to `table`.
-
-### Delete
+## Course and lesson examples
 
 ```bash
-wp lw-lms course delete 42
-wp lw-lms course delete my-course --force
+wp lw-lms course create --title="Course" --status=draft --porcelain
+wp lw-lms course list --status=any --format=json
+wp lw-lms course set-section 42 --id=intro --title="Introduction" --order=0
+wp lw-lms lesson create --title="Welcome" --course=42 --section=intro --order=1 --porcelain
+wp lw-lms lesson assign welcome --course=42 --section=intro --order=2
+wp lw-lms lesson list --course=42 --format=json
+wp lw-lms course delete 42 --force
 ```
 
-Without `--force`, WordPress trash behavior is used. The command does not clean orphaned lesson meta, access rows, progress rows, or completion snapshots. If you need full cleanup, build that explicitly.
+`course delete` removes the course post only. It does not cascade-delete lessons, access, progress, completion snapshots, or attempts. Plan cleanup deliberately.
 
-### Set section
+Section IDs passed through CLI are normalized with `sanitize_key()`. Use lowercase identifiers consistently; an uppercase ID created through another interface will not compare equal after CLI normalization.
+
+## Enrollment and completion
 
 ```bash
-wp lw-lms course set-section 42 --id=sec_intro --title="Intro" --order=0
-wp lw-lms course set-section my-course --id=sec_extra --description="Bonus material"
-```
-
-Re-running with the same `--id` updates the existing section. This command only mutates the course's `_lw_lms_course_sections` array. It does not move lessons into that section; use `lesson assign` for lesson assignment.
-
-## Lesson commands
-
-### Create
-
-```bash
-wp lw-lms lesson create --title="Intro" --course=42 --section=sec_intro --order=1
-wp lw-lms lesson create --title="Intro" --course=my-course --content="<p>Body</p>" --porcelain
-```
-
-Options:
-
-| Option | Notes |
-|---|---|
-| `--title=<title>` | Required |
-| `--course=<course>` | Required; course ID or slug |
-| `--section=<section-id>` | Optional; sanitized with `sanitize_key()` |
-| `--order=<order>` | Default `0` |
-| `--duration=<duration>` | Stored as `_lw_lms_duration` |
-| `--status=<status>` | Default `publish` |
-| `--content=<content>` | Saved to `post_content` |
-| `--porcelain` | Outputs only the new lesson ID |
-
-The command does not create the section. Create/update the section first with `course set-section` if the section should exist in the course outline.
-
-### List
-
-```bash
-wp lw-lms lesson list --course=42
-wp lw-lms lesson list --course=my-course --section=sec_intro --format=json
-wp lw-lms lesson list --course=42 --format=ids
-```
-
-`--course` is required. Rows are ordered by `_lw_lms_lesson_order`.
-
-### Assign
-
-```bash
-wp lw-lms lesson assign 99 --course=42 --section=sec_intro --order=2
-wp lw-lms lesson assign intro-lesson --course=my-course --section=""
-```
-
-This sets `_lw_lms_lesson_course_id`, optionally `_lw_lms_lesson_section_id`, and optionally `_lw_lms_lesson_order`. Passing an empty string to `--section` clears the section.
-
-## Enrollment commands
-
-### Enroll
-
-```bash
-wp lw-lms enroll alice 42
-wp lw-lms enroll alice@example.com my-course --expires-at="2027-01-01"
-wp lw-lms enroll 7 my-course --source=my_integration
-```
-
-This command calls:
-
-```php
-AccessRepository::grant( $user_id, $course_id, $source, null, $expires_at );
-```
-
-Side effects:
-
-- `lw_lms_pre_grant` can abort the command; the CLI reports an error if the grant returns false.
-- `lw_lms_after_grant` fires on success with 5 args.
-- Re-running can update an existing row's `granted_at` and `expires_at`.
-
-Footgun: the command always passes `source_id = null`. The access table unique key is `(user_id, course_id, source_id)`, so changing `--source` alone does not guarantee a separate row. If your integration needs stable distinct rows, use PHP and pass a meaningful `source_id`.
-
-`--expires-at` is parsed through `strtotime()` and stored as `Y-m-d H:i:s` using `gmdate()`. Prefer explicit full datetimes in automation.
-
-### Revoke
-
-```bash
+wp lw-lms enroll alice 42 --source=manual --expires="2026-12-31 23:59:59"
 wp lw-lms revoke alice 42
-```
-
-This calls `AccessRepository::revoke( $user_id, $course_id )`. It flips the first matching active row to `status='revoked'` and fires `lw_lms_after_revoke` only when a row was changed. If there is no active row, the command warns and exits without an error.
-
-v1.6.0 added `AccessRepository::revoke_by_source()` to the PHP API, but this CLI command still has no `--source` or `--source-id` option and still calls the broad `revoke()`. For an integration-owned grant, use PHP and pass both the expected source and its stable external source ID:
-
-```php
-AccessRepository::revoke_by_source(
-    $user_id,
-    $course_id,
-    'my_integration',
-    $external_access_id
-);
-```
-
-Omitting the fourth argument revokes all active rows for that source on the user/course, not only rows whose `source_id` is null.
-
-Runtime subscription, membership, or legacy purchase access has no stored row to revoke. Revoke the upstream WooCommerce entitlement or change course meta if access comes from those live checks.
-
-## Force-complete
-
-```bash
-wp lw-lms force-complete alice 42
-wp lw-lms force-complete alice@example.com my-course
-```
-
-This calls `ProgressRepository::mark_course_completed( $user_id, $course_id )`.
-
-Side effects:
-
-- published lessons assigned to the course are upserted to `completed`;
-- `lw_lms_lesson_completed` fires for lessons that transition to completed;
-- `CompletionTracker::maybe_record()` can write the completion snapshot and fire `lw_lms_course_completed`;
-- if no published lessons are found, the command warns.
-
-This command does not enroll the user. It only writes progress.
-
-## Critical rules
-
-- These commands are registered only in WP-CLI.
-- This skill does not cover `wp lw-lms migrate-learndash`; use `lw-lms-learndash-migration`.
-- `course set-section` and `lesson assign` are separate operations. A section existing on the course does not automatically move lessons.
-- `enroll` writes an access row and fires access hooks; subscription/membership live access does not.
-- `revoke` changes only the first stored active row regardless of source; it does not expose the v1.6.0 source-scoped PHP API.
-- Neither CLI nor PHP stored-row revocation removes live subscription, membership, or legacy-purchase entitlement.
-- `force-complete` writes progress, not access.
-- There is no dry-run flag for these operational commands.
-- Use `--format=json` or `--format=ids` for scripts instead of parsing table output.
-
-## Common mistakes
-
-```bash
-# WRONG: assumes set-section moves lessons.
-wp lw-lms course set-section 42 --id=sec_intro --title="Intro"
-
-# RIGHT.
-wp lw-lms course set-section 42 --id=sec_intro --title="Intro"
-wp lw-lms lesson assign 99 --course=42 --section=sec_intro --order=1
-```
-
-```bash
-# WRONG: assumes source creates a distinct row.
-wp lw-lms enroll alice 42 --source=free
-wp lw-lms enroll alice 42 --source=manual
-
-# RIGHT for distinct external rows: call AccessRepository::grant() in PHP with
-# a non-null source_id from the external system.
-```
-
-```bash
-# WRONG: assumes force-complete grants course access.
-wp lw-lms force-complete alice 42
-
-# RIGHT when both are needed.
-wp lw-lms enroll alice 42
 wp lw-lms force-complete alice 42
 ```
+
+`enroll` calls `AccessRepository::grant()` and fires grant hooks. The expiry is stored in the access table's UTC contract. Repeating a null-source-ID grant is idempotent within the same source in 2.0.0.
+
+`revoke` is broad in 2.0.0: it revokes all active stored rows for that user/course and fires `lw_lms_after_revoke` for each row. It cannot remove live subscription, membership, or legacy-purchase entitlement. Use PHP `revoke_by_source()` when only one integration-owned row should end.
+
+`force-complete` writes progress and completion hooks. It does not grant access and intentionally overrides learner pacing and quiz gates.
+
+## Quiz commands
+
+```bash
+wp lw-lms lesson set-quiz 99 --file=quiz.json
+cat quiz.json | wp lw-lms lesson set-quiz intro --file=-
+wp lw-lms lesson get-quiz 99 --format=json
+wp lw-lms lesson delete-quiz 99 --yes
+```
+
+The JSON normalizer is strict. `set-quiz` replaces the whole quiz. `get-quiz` exposes correct answers; do not send its output to learner logs. Deletion preserves attempt history.
+
+## Drip commands
+
+```bash
+wp lw-lms course set-drip 42 --progression=linear --delay=2 --unit=day
+wp lw-lms lesson set-drip 101 --mode=previous --delay=1 --unit=week
+wp lw-lms drip status alice 42 --format=json
+wp lw-lms drip set-start alice 42 --date="2026-09-01 09:00:00"
+wp lw-lms drip set-start alice 42 --now
+wp lw-lms drip set-start alice 42 --clear
+```
+
+Supported units are `hour`, `day`, `week`, and `month`; delays are `0..999`. A lesson rule on a free-progression course stays dormant. Read `lw-lms-drip-progression` before changing a real learner's clock.
+
+## Automation rules
+
+- Use `--porcelain` for created IDs.
+- Use `--format=json`, `csv`, `yaml`, `count`, or `ids` where the command supports it; do not parse human tables.
+- Capture IDs before destructive cleanup.
+- Build a dry-run around your orchestration because operational commands have no common `--dry-run` flag.
+- Do not run `get-quiz` in a public CI log.
+- Verify frontend state after writes; command success proves persistence, not the complete learner experience.
 
 ## Cross-references
 
-- Use `lw-lms-backend-extend` for hook contracts and repository semantics.
+- Use `lw-lms-drip-progression` for schedule semantics and known 2.0.0 timezone behavior.
+- Use `lw-lms-quiz-integration` for quiz schema and learner submissions.
+- Use `lw-lms-backend-extend` for repository/hook semantics.
 - Use `lw-lms-learndash-migration` for `wp lw-lms migrate-learndash`.
-- Use `lw-lms-rest-frontend` to validate how CLI changes appear in `/wp-json/lms/v1` responses.
-- Use `lw-lms-abilities` for admin/agent Abilities API calls.
+- Use `lw-lms-rest-frontend` to verify learner responses.
 
 ## References
 
-- Command registration: `includes/Plugin.php`.
-- Reference resolution: `includes/CLI/CliResolver.php`.
-- Course commands: `CourseCreateCommand.php`, `CourseListCommand.php`, `CourseDeleteCommand.php`, `CourseSetSectionCommand.php`.
-- Lesson commands: `LessonCreateCommand.php`, `LessonListCommand.php`, `LessonAssignCommand.php`.
-- Access commands: `EnrollCommand.php`, `RevokeCommand.php`.
-- Progress command: `ForceCompleteCommand.php`.
-- Access hook side effects: `includes/Access/AccessRepository.php`.
-- Progress hook side effects: `includes/Progress/ProgressRepository.php`.
-- Official documentation: <https://github.com/lwplugins/lw-lms>
+- Official repository: <https://github.com/lwplugins/lw-lms>
 - Verified source paths:
-  - `wp-content/plugins/lw-lms/CHANGELOG.md`
+  - `includes/Plugin.php`
+  - `includes/CLI/CliResolver.php`
+  - `includes/CLI/*Command.php`
+  - `includes/CLI/DripArgs.php`
+  - `includes/Access/AccessRepository.php`
+  - `includes/Progress/ProgressRepository.php`
