@@ -6,7 +6,7 @@ This collection is continuously evolving — entries are date-based, not version
 
 ### Added
 
-- New `hungarian-pickup-points/` domain with three development skills for Csomagpontok és Címkék WooCommerce-hez 4.2.8.
+- New `csomagpontok-es-cimkek/` domain with three development skills for Csomagpontok és Címkék WooCommerce-hez 4.2.8.
 - `vp-woo-pont-checkout-order-data`: classic checkout and Checkout Blocks, the `vp-woo-pont-picker` Store API namespace, session/user/order storage, provider-to-carrier normalization, point-derived shipping addresses, pricing filters, and HPOS-safe programmatic assignment.
 - `vp-woo-pont-shipping-labels`: the normalized label payload and filter timing, explicit external-side-effect and permission gates, parcel metadata, label lifecycle hooks, PDF links, remote void versus local clear semantics, and Számlázz.hu invoice references. Ordinary carrier API labels are marked PRO; Kvikk's separately configured path is identified explicitly.
 - `vp-woo-pont-tracking-automations`: PRO tracking meta, Action Scheduler hook/group, provider event semantics, status and email gates, tokenized customer tracking pages, idempotent consumers, and the bundled PRO Számlázz.hu mark-as-paid bridge.
