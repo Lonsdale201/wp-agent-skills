@@ -1,0 +1,4 @@
+interface:
+  display_name: "ACF PRO options pages"
+  short_description: "Build global settings pages with safe option storage"
+  default_prompt: "Use this skill to implement or review an ACF PRO options page, including capability, storage prefix, autoload, frontend reads, and collision handling."

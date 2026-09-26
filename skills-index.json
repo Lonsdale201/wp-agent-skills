@@ -11,9 +11,15 @@
     "layout": "<domain>/<skill>/SKILL.md",
     "skill_file": "SKILL.md"
   },
-  "domain_count": 22,
-  "skill_count": 232,
+  "domain_count": 23,
+  "skill_count": 238,
   "domains": [
+    {
+      "slug": "acf",
+      "path": "acf",
+      "readme_path": "acf/README.md",
+      "skill_count": 6
+    },
     {
       "slug": "better-data",
       "path": "better-data",
@@ -148,6 +154,241 @@
     }
   ],
   "skills": [
+    {
+      "slug": "acf-custom-field-type",
+      "name": "acf-custom-field-type",
+      "domain": "acf",
+      "description": "Builds and reviews custom Advanced Custom Fields field types on the Free acf_field extension API. Covers acf/include_field_types registration, initialize metadata, settings and input rendering, dynamic input names, validation, load/update/format transforms, field-aware HTML escaping, assets, REST visibility, and repeater-compatible JavaScript initialization. Use when a built-in ACF field cannot represent the editor control or stored value, when extending acf_field, or when a custom field saves correctly but formats, validates, repeats, or renders unsafely.",
+      "path": "acf/acf-custom-field-type",
+      "skill_path": "acf/acf-custom-field-type/SKILL.md",
+      "url": "https://raw.githubusercontent.com/Lonsdale201/wp-agent-skills/main/acf/acf-custom-field-type/SKILL.md",
+      "raw_url": "https://raw.githubusercontent.com/Lonsdale201/wp-agent-skills/main/acf/acf-custom-field-type/SKILL.md",
+      "html_url": "https://github.com/Lonsdale201/wp-agent-skills/blob/main/acf/acf-custom-field-type/SKILL.md",
+      "directory_url": "https://github.com/Lonsdale201/wp-agent-skills/tree/main/acf/acf-custom-field-type",
+      "metadata": {
+        "author": "Soczó Kristóf",
+        "contact": "https://github.com/Lonsdale201",
+        "plugin": "advanced-custom-fields",
+        "plugin-version-tested": "6.8.10",
+        "wp-version-tested": "7.1.2",
+        "php-min": "7.4",
+        "last-updated": "2026-09-26"
+      },
+      "resources": [
+        {
+          "path": "agents/openai.yaml",
+          "repo_path": "acf/acf-custom-field-type/agents/openai.yaml",
+          "type": "resource",
+          "bytes": 328,
+          "sha256": "eb99ba94d0e8a26ffa5806c6e62bd48f6f8bf9d8069f5ddf6fa6789ed6b14e45"
+        }
+      ],
+      "has_reference": false,
+      "has_examples": false,
+      "has_scripts": false,
+      "skill_md": {
+        "bytes": 7910,
+        "lines": 200,
+        "sha256": "dc339877ce986a1626434eb75207ff427f793e3e29595357a4aa2d4f3b565329"
+      }
+    },
+    {
+      "slug": "acf-field-group-development",
+      "name": "acf-field-group-development",
+      "domain": "acf",
+      "description": "Builds and reviews Advanced Custom Fields field groups defined in PHP or Local JSON. Covers stable group and field keys, storage names, acf/init timing, location rules, REST exposure, plugin-owned JSON paths, deployment, and Free versus PRO field availability. Use when adding a new ACF-backed meta field, converting an admin-created group to code, shipping field definitions in a plugin or theme, fixing duplicate keys or missing frontend fields, or deciding whether a field belongs in ACF at all.",
+      "path": "acf/acf-field-group-development",
+      "skill_path": "acf/acf-field-group-development/SKILL.md",
+      "url": "https://raw.githubusercontent.com/Lonsdale201/wp-agent-skills/main/acf/acf-field-group-development/SKILL.md",
+      "raw_url": "https://raw.githubusercontent.com/Lonsdale201/wp-agent-skills/main/acf/acf-field-group-development/SKILL.md",
+      "html_url": "https://github.com/Lonsdale201/wp-agent-skills/blob/main/acf/acf-field-group-development/SKILL.md",
+      "directory_url": "https://github.com/Lonsdale201/wp-agent-skills/tree/main/acf/acf-field-group-development",
+      "metadata": {
+        "author": "Soczó Kristóf",
+        "contact": "https://github.com/Lonsdale201",
+        "plugin": "advanced-custom-fields",
+        "plugin-version-tested": "6.8.10",
+        "wp-version-tested": "7.1.2",
+        "php-min": "7.4",
+        "last-updated": "2026-09-26"
+      },
+      "resources": [
+        {
+          "path": "agents/openai.yaml",
+          "repo_path": "acf/acf-field-group-development/agents/openai.yaml",
+          "type": "resource",
+          "bytes": 297,
+          "sha256": "a09805e17b0038918a07f6719beff35223186cde5a6fa2245edead6ee0265317"
+        }
+      ],
+      "has_reference": false,
+      "has_examples": false,
+      "has_scripts": false,
+      "skill_md": {
+        "bytes": 7239,
+        "lines": 172,
+        "sha256": "9ba17e5a97825240963b62ab51ea90cc36d94633511b5ae26276c8334e86c4b1"
+      }
+    },
+    {
+      "slug": "acf-pro-complex-fields",
+      "name": "acf-pro-complex-fields",
+      "domain": "acf",
+      "description": "Builds and reviews ACF PRO Repeater, Flexible Content, Gallery, and Clone fields. Covers their flattened database shapes, field-key update arrays, have_rows and get_sub_field loops, layout dispatch, safe rendering, nested cleanup, pagination limits, migration risks, and performance boundaries. Use when implementing repeated rows, modular page sections, galleries, reused field definitions, or debugging missing subfields and orphaned meta after a programmatic update. Requires ACF PRO; Group fields are identified separately because Group is available in Free.",
+      "path": "acf/acf-pro-complex-fields",
+      "skill_path": "acf/acf-pro-complex-fields/SKILL.md",
+      "url": "https://raw.githubusercontent.com/Lonsdale201/wp-agent-skills/main/acf/acf-pro-complex-fields/SKILL.md",
+      "raw_url": "https://raw.githubusercontent.com/Lonsdale201/wp-agent-skills/main/acf/acf-pro-complex-fields/SKILL.md",
+      "html_url": "https://github.com/Lonsdale201/wp-agent-skills/blob/main/acf/acf-pro-complex-fields/SKILL.md",
+      "directory_url": "https://github.com/Lonsdale201/wp-agent-skills/tree/main/acf/acf-pro-complex-fields",
+      "metadata": {
+        "author": "Soczó Kristóf",
+        "contact": "https://github.com/Lonsdale201",
+        "plugin": "advanced-custom-fields-pro",
+        "plugin-version-tested": "6.8.10",
+        "wp-version-tested": "7.1.2",
+        "php-min": "7.4",
+        "last-updated": "2026-09-26"
+      },
+      "resources": [
+        {
+          "path": "agents/openai.yaml",
+          "repo_path": "acf/acf-pro-complex-fields/agents/openai.yaml",
+          "type": "resource",
+          "bytes": 298,
+          "sha256": "b8a1803cac0b4a9ba6c08214c7d247b6ca238e156e9c20c8e22861b241a662e0"
+        }
+      ],
+      "has_reference": false,
+      "has_examples": false,
+      "has_scripts": false,
+      "skill_md": {
+        "bytes": 7706,
+        "lines": 202,
+        "sha256": "8e63ae1f107999b42d80904bdc45ff66fb5fd8d29a8a1ac7ed5f08339f35f404"
+      }
+    },
+    {
+      "slug": "acf-pro-options-pages",
+      "name": "acf-pro-options-pages",
+      "domain": "acf",
+      "description": "Builds and reviews ACF PRO options pages and their global value storage. Covers acf_add_options_page registration, capabilities, menu and location rules, default and custom post_id prefixes in wp_options, hidden field-key references, autoload cost, frontend reads, field-name collisions, and migrations. Use when adding site-wide settings, header/footer content, brand configuration, or debugging options that leak between ACF options pages. Requires ACF PRO; reading ordinary WordPress options is outside this skill.",
+      "path": "acf/acf-pro-options-pages",
+      "skill_path": "acf/acf-pro-options-pages/SKILL.md",
+      "url": "https://raw.githubusercontent.com/Lonsdale201/wp-agent-skills/main/acf/acf-pro-options-pages/SKILL.md",
+      "raw_url": "https://raw.githubusercontent.com/Lonsdale201/wp-agent-skills/main/acf/acf-pro-options-pages/SKILL.md",
+      "html_url": "https://github.com/Lonsdale201/wp-agent-skills/blob/main/acf/acf-pro-options-pages/SKILL.md",
+      "directory_url": "https://github.com/Lonsdale201/wp-agent-skills/tree/main/acf/acf-pro-options-pages",
+      "metadata": {
+        "author": "Soczó Kristóf",
+        "contact": "https://github.com/Lonsdale201",
+        "plugin": "advanced-custom-fields-pro",
+        "plugin-version-tested": "6.8.10",
+        "wp-version-tested": "7.1.2",
+        "php-min": "7.4",
+        "last-updated": "2026-09-26"
+      },
+      "resources": [
+        {
+          "path": "agents/openai.yaml",
+          "repo_path": "acf/acf-pro-options-pages/agents/openai.yaml",
+          "type": "resource",
+          "bytes": 298,
+          "sha256": "66c5728c8383d9a65806ca985625de3d6aa5a2227e6e59b962001ffb5785408c"
+        }
+      ],
+      "has_reference": false,
+      "has_examples": false,
+      "has_scripts": false,
+      "skill_md": {
+        "bytes": 6492,
+        "lines": 162,
+        "sha256": "412c063c7064a3b138870b97be21a950062e4c83af70418e61593808cebb5133"
+      }
+    },
+    {
+      "slug": "acf-relational-fields",
+      "name": "acf-relational-fields",
+      "domain": "acf",
+      "description": "Implements and reviews ACF Relationship, Post Object, User, and Taxonomy fields. Covers raw ID storage versus ID/object return formats, single and multiple values, native bidirectional settings, taxonomy save/load term side effects, reverse meta queries, object targeting, authorization, and bounded frontend rendering. Use when connecting posts, users, or terms with ACF, building related-content templates, importing relations, enabling bidirectionality, or debugging a relation that appears on only one side.",
+      "path": "acf/acf-relational-fields",
+      "skill_path": "acf/acf-relational-fields/SKILL.md",
+      "url": "https://raw.githubusercontent.com/Lonsdale201/wp-agent-skills/main/acf/acf-relational-fields/SKILL.md",
+      "raw_url": "https://raw.githubusercontent.com/Lonsdale201/wp-agent-skills/main/acf/acf-relational-fields/SKILL.md",
+      "html_url": "https://github.com/Lonsdale201/wp-agent-skills/blob/main/acf/acf-relational-fields/SKILL.md",
+      "directory_url": "https://github.com/Lonsdale201/wp-agent-skills/tree/main/acf/acf-relational-fields",
+      "metadata": {
+        "author": "Soczó Kristóf",
+        "contact": "https://github.com/Lonsdale201",
+        "plugin": "advanced-custom-fields",
+        "plugin-version-tested": "6.8.10",
+        "wp-version-tested": "7.1.2",
+        "php-min": "7.4",
+        "last-updated": "2026-09-26"
+      },
+      "resources": [
+        {
+          "path": "agents/openai.yaml",
+          "repo_path": "acf/acf-relational-fields/agents/openai.yaml",
+          "type": "resource",
+          "bytes": 315,
+          "sha256": "6468fadee937539f31c32ffb4fe8d1829c85256f65c5468eeb7fe0dfcb8f887e"
+        }
+      ],
+      "has_reference": false,
+      "has_examples": false,
+      "has_scripts": false,
+      "skill_md": {
+        "bytes": 7510,
+        "lines": 179,
+        "sha256": "e02be171bbaf6ad59a9a6478e8df5e9733c32ed95eb69d2de12035ea511863c7"
+      }
+    },
+    {
+      "slug": "acf-value-storage-frontend",
+      "name": "acf-value-storage-frontend",
+      "domain": "acf",
+      "description": "Implements and diagnoses Advanced Custom Fields value storage, programmatic writes, database inspection, and frontend rendering. Covers the value row plus hidden field-key reference, post/user/term/comment/options targets, field-key first writes, raw versus formatted get_field values, return formats, escaping, cache behavior, and meta queries. Use when adding an ACF-backed meta value, importing data, displaying fields in a template or shortcode, debugging values that exist in the database but format incorrectly, or reviewing direct meta SQL.",
+      "path": "acf/acf-value-storage-frontend",
+      "skill_path": "acf/acf-value-storage-frontend/SKILL.md",
+      "url": "https://raw.githubusercontent.com/Lonsdale201/wp-agent-skills/main/acf/acf-value-storage-frontend/SKILL.md",
+      "raw_url": "https://raw.githubusercontent.com/Lonsdale201/wp-agent-skills/main/acf/acf-value-storage-frontend/SKILL.md",
+      "html_url": "https://github.com/Lonsdale201/wp-agent-skills/blob/main/acf/acf-value-storage-frontend/SKILL.md",
+      "directory_url": "https://github.com/Lonsdale201/wp-agent-skills/tree/main/acf/acf-value-storage-frontend",
+      "metadata": {
+        "author": "Soczó Kristóf",
+        "contact": "https://github.com/Lonsdale201",
+        "plugin": "advanced-custom-fields",
+        "plugin-version-tested": "6.8.10",
+        "wp-version-tested": "7.1.2",
+        "php-min": "7.4",
+        "last-updated": "2026-09-26"
+      },
+      "resources": [
+        {
+          "path": "agents/openai.yaml",
+          "repo_path": "acf/acf-value-storage-frontend/agents/openai.yaml",
+          "type": "resource",
+          "bytes": 309,
+          "sha256": "860c0f7d778eb8758d1182df5fa57b6937c59a4e58123cc75ddcc78880c45603"
+        },
+        {
+          "path": "examples/acf-skills-smoke/acf-skills-smoke.php",
+          "repo_path": "acf/acf-value-storage-frontend/examples/acf-skills-smoke/acf-skills-smoke.php",
+          "type": "example",
+          "bytes": 11802,
+          "sha256": "49e0be9d39735325bb95333a41cfc28c958c35f8875c811bc6fe16470a27831d"
+        }
+      ],
+      "has_reference": false,
+      "has_examples": true,
+      "has_scripts": false,
+      "skill_md": {
+        "bytes": 8567,
+        "lines": 197,
+        "sha256": "d4c30d5a45df82d32bce6699aceafcdaf07622ce485219905fedc73c502a53a9"
+      }
+    },
     {
       "slug": "bd-attribute",
       "name": "bd-attribute",

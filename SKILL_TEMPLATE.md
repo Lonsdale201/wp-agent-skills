@@ -104,10 +104,15 @@ Date: <YYYY-MM-DD>
 
 - Official documentation: <https://developer.wordpress.org/...>
 - Verified source paths:
-  - `wp-content/plugins/<plugin>/includes/example.php`
+  - `includes/example.php`
 - Detailed examples and edge cases: `reference.md` or `references/` (only if the skill is split).
 - Real-world snippets: `examples/` (only if the skill has examples).
 
 (Documentation URLs and source paths the skill was grounded against live
 here — the open format's `metadata` only allows string values, so lists
 like these belong in the body.)
+
+(Source paths are relative to the documented plugin/theme root. Never include
+installation paths, server paths, usernames, site names, or any prefix above the
+documented plugin/theme root. Use only official documentation and official
+project-repository links.)

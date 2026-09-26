@@ -1,0 +1,4 @@
+interface:
+  display_name: "ACF storage and frontend"
+  short_description: "Read, write, query, and render ACF values correctly"
+  default_prompt: "Use this skill to implement or debug ACF value storage and frontend output, including object targets, field-key references, raw/formatted shapes, and escaping."

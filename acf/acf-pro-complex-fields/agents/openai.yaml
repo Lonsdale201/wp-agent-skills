@@ -1,0 +1,4 @@
+interface:
+  display_name: "ACF PRO complex fields"
+  short_description: "Build Repeaters, flexible layouts, galleries, and clones"
+  default_prompt: "Use this skill to implement or review ACF PRO complex fields with correct nested storage, writes, rendering, cleanup, and performance boundaries."
