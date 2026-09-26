@@ -1,4 +1,4 @@
-# Hungarian Pickup Points for WooCommerce
+# Csomagpontok és Címkék (Hungarian Pickup Points)
 
 Development and compatibility skills for **[Csomagpontok és Címkék WooCommerce-hez](https://wordpress.org/plugins/hungarian-pickup-points-for-woocommerce/)** (`hungarian-pickup-points-for-woocommerce`). They explain how another plugin can cooperate with pickup-point checkout, HPOS order data, shipping labels, and tracking without duplicating the plugin's provider APIs or checkout state.
 
