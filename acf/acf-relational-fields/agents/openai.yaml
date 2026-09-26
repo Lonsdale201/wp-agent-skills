@@ -1,0 +1,4 @@
+interface:
+  display_name: "ACF relational fields"
+  short_description: "Connect posts, users, and terms safely with ACF"
+  default_prompt: "Use this skill to implement or review an ACF relationship, post object, user, or taxonomy field with correct storage, return formats, bidirectionality, and reverse queries."

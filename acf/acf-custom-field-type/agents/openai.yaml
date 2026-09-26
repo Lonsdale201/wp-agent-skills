@@ -1,0 +1,4 @@
+interface:
+  display_name: "ACF custom field type"
+  short_description: "Build custom acf_field controls and value pipelines"
+  default_prompt: "Use this skill to implement or review a custom ACF field type, including registration, editor rendering, validation, storage transforms, escaping, assets, and nested-field behavior."

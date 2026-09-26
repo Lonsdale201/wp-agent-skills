@@ -1,0 +1,4 @@
+interface:
+  display_name: "ACF field group development"
+  short_description: "Build stable PHP or Local JSON ACF schemas"
+  default_prompt: "Use this skill to add or review an ACF field group with stable keys, correct registration timing, deployment ownership, and explicit Free/PRO boundaries."

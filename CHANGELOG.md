@@ -2,6 +2,20 @@
 
 This collection is continuously evolving — entries are date-based, not version-tagged. New skills land when they're ready; updates go in when they cover real ground (a new release of an upstream plugin, a verified misconception, a corrected example).
 
+## 2026-09-26 (Advanced Custom Fields 6.8.10)
+
+### Added
+
+- New `acf/` domain with six development skills for ACF Free and ACF PRO: field-group ownership and registration, database storage and frontend rendering, relational fields, PRO complex fields, PRO options pages, and custom `acf_field` types.
+- Explicit Free/PRO boundaries throughout. Repeater, Flexible Content, Gallery, Clone, Options Pages, and ACF Blocks are marked as PRO; the local-field API, Local JSON, relational fields, Group, value APIs, hooks, and the custom field-type base are marked as shared Free/PRO surfaces.
+- A disposable WP-CLI smoke plugin that registers a local schema and verifies post, user, term, and custom-options storage; hidden field-key references; raw and formatted reads; HTML-safe reads; Relationship and Group values; PRO Repeater rows; and a custom JSON field type.
+
+### Verified
+
+- Grounded the skills against ACF Free 6.8.10 and ACF PRO 6.8.10 source on WordPress 7.1.2 and PHP 8.3.30.
+- The same smoke suite passed 18 shared storage/formatting checks under ACF Free and all 22 checks under ACF PRO, then removed its posts, user, term, options, and temporary plugin files after each run.
+- Confirmed that ACF writes a value row plus an underscore-prefixed field-key reference across post, user, term, and options storage; Repeater stores a parent row count plus flattened child rows; and custom `acf_field::update_value()` transformations are persisted and returned through `get_field()`.
+
 ## 2026-09-26 (LW LMS 2.0.0)
 
 ### Added
@@ -202,7 +216,7 @@ Also verified in 3.1.13 source: the double opt-in sender selects list-specific s
 
 ### Changed — five skills re-grounded on FluentCRM 3.1.13
 
-`fluentcrm-contact-models`, `fluentcrm-companies-model`, `fluentcrm-event-tracking`, `fluentcrm-automation-sequence-models` and `fluentcrm-smartcodes-segments` were re-verified against **core 3.1.13 + Pro 3.1.13** on **WordPress 7.1** (core 3.1.13 declares `FLUENTCRM_MIN_PRO_VERSION` as 3.1.13). No behavioral corrections were needed — the documented APIs, hook names, transformer list, funnel batch filters and pivot semantics all still hold — so the changes are the version metadata, the in-prose version references, and `wp-skills-plugin-version-tested` normalized to a bare `3.1.13` (which also clears the validator's version-format warning on these five). Verified source paths dropped their `wp-content/plugins/` prefix to match the rest of the collection, and two descriptions stopped embedding `->` arrow syntax.
+`fluentcrm-contact-models`, `fluentcrm-companies-model`, `fluentcrm-event-tracking`, `fluentcrm-automation-sequence-models` and `fluentcrm-smartcodes-segments` were re-verified against **core 3.1.13 + Pro 3.1.13** on **WordPress 7.1** (core 3.1.13 declares `FLUENTCRM_MIN_PRO_VERSION` as 3.1.13). No behavioral corrections were needed — the documented APIs, hook names, transformer list, funnel batch filters and pivot semantics all still hold — so the changes are the version metadata, the in-prose version references, and `wp-skills-plugin-version-tested` normalized to a bare `3.1.13` (which also clears the validator's version-format warning on these five). Verified source paths now start at the documented plugin root, and two descriptions stopped embedding `->` arrow syntax.
 
 `fluentcrm-contact-models` additionally gained a **double opt-in boundary** section — the two-step flow and the rule against `$forceUpdate = true` from a public form, pointing at the new skill for the full matrix — plus an explicit warning that public request values must not be passed to the list/tag attach helpers, and a cross-reference row for public subscription orchestration.
 

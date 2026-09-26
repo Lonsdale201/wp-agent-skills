@@ -1,6 +1,6 @@
 # wp-agent-skills
 
-**232 skills · 22 domains**
+**238 skills · 23 domains**
 
 A community-maintained collection of **portable Agent Skills** for WordPress plugin and theme development.
 
@@ -22,6 +22,7 @@ Skills are grouped by domain. Each domain has its own README listing the skills 
 |---|---|
 | [`wordpress/`](wordpress) | Core WP topics that apply to any plugin or theme — security, i18n, REST API, the Abilities API, HTML/UTF-8 helpers, query cache, and the WP 7.1 editor/block surface (Interactivity API, Block Bindings, DataViews/DataForms, Style Engine, View Config, JSON Schema, speculative loading). |
 | [`plugin-scaffold/`](plugin-scaffold) | Building a new plugin from scratch — bootstrap, lifecycle, architecture, options storage, cron, hooks, rewrite rules, asset loading, Action Scheduler. |
+| [`acf/`](acf) | Building with **Advanced Custom Fields Free and PRO** — stable PHP/Local JSON field groups, the value/reference metadata contract across posts/users/terms/comments/options, frontend reads and escaping, relational fields and bidirectionality, PRO complex fields and options pages, and custom `acf_field` types. Every skill marks its Free/PRO boundary. |
 | [`woocommerce/`](woocommerce) | WooCommerce **core** ([`wc-*`](woocommerce#woocommerce-core)) — HPOS, Checkout Block payment methods, order lifecycle, classic cart/checkout, variations & pricing, coupons, customers & sessions, shipping, downloads, emails, Action Scheduler, and logging. The extension families below live in the same folder. |
 | &nbsp;&nbsp;↳ [WooCommerce Memberships](woocommerce#woocommerce-memberships) | `wcm-*` — membership hooks, access & discounts, the data model + WCS-linked memberships, and the 1.29+ Abilities API surface. |
 | &nbsp;&nbsp;↳ [WooCommerce Subscriptions](woocommerce#woocommerce-subscriptions) | Release compatibility grounded on WCS 9.2, deprecated settings APIs, permissions, plans, switching, renewal discounts, and a disposable CLI smoke plugin. |

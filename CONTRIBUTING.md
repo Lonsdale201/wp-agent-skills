@@ -85,10 +85,14 @@ They are **body content now**, because the portable `metadata` mapping only hold
 
 - Official documentation: <https://developer.wordpress.org/...>
 - Verified source paths:
-  - `wp-content/plugins/<plugin>/includes/example.php`
+  - `includes/example.php`
 ```
 
 Merge into the existing References section if the skill already has one — don't create a duplicate heading, and don't repeat URLs or paths already listed there.
+Source paths are always relative to the root of the plugin or theme being
+documented. Never publish installation paths, server paths, usernames, site
+names, or any path prefix above the documented plugin/theme root. Link only
+official product documentation and official project repositories.
 
 ## Writing the description
 
