@@ -12,7 +12,7 @@
     "skill_file": "SKILL.md"
   },
   "domain_count": 23,
-  "skill_count": 238,
+  "skill_count": 241,
   "domains": [
     {
       "slug": "acf",
@@ -84,7 +84,7 @@
       "slug": "lw-plugins",
       "path": "lw-plugins",
       "readme_path": "lw-plugins/README.md",
-      "skill_count": 17
+      "skill_count": 20
     },
     {
       "slug": "plugin-scaffold",
@@ -3685,9 +3685,9 @@
       "directory_url": "https://github.com/Lonsdale201/wp-agent-skills/tree/main/lw-plugins/lw-cookie-consent-integration",
       "metadata": {
         "author": "Soczó Kristóf",
-        "contact": "mailto:lonsdale201@hotmail.com",
+        "contact": "https://github.com/Lonsdale201",
         "plugin": "lw-cookie",
-        "plugin-version-tested": "1.8.2",
+        "plugin-version-tested": "1.8.3",
         "wp-version-tested": "7.1.2",
         "php-min": "8.2",
         "last-updated": "2026-09-26"
@@ -3697,9 +3697,9 @@
       "has_examples": false,
       "has_scripts": false,
       "skill_md": {
-        "bytes": 11834,
-        "lines": 226,
-        "sha256": "1dc96970c348599330496ed99cc4690f9fbea99a4e4cac827ac2fbf363ff4e85"
+        "bytes": 11622,
+        "lines": 215,
+        "sha256": "efc58977840da00b29185288c45d19697df24caeb4339813f034b42f5f456d05"
       }
     },
     {
@@ -3977,7 +3977,7 @@
       "slug": "lw-lms-abilities",
       "name": "lw-lms-abilities",
       "domain": "lw-plugins",
-      "description": "Consumer and reviewer reference for LW LMS 2.0.0 Abilities API registrations. Use when calling or auditing `lw-lms/list-courses`, `lw-lms/get-course`, `lw-lms/get-progress`, `lw-lms/set-progress`, `lw-lms/get-options`, `/wp-json/wp-abilities/v1/abilities/lw-lms/.../run`, Site Manager bridge integration, standalone WordPress Abilities API fallback, schemas, permissions, or agent access to course and progress data.",
+      "description": "Consumer and reviewer reference for LW LMS 2.0.1 Abilities API registrations. Use when calling or auditing `lw-lms/list-courses`, `lw-lms/get-course`, `lw-lms/get-progress`, `lw-lms/set-progress`, `lw-lms/get-options`, `/wp-json/wp-abilities/v1/abilities/lw-lms/.../run`, Site Manager bridge integration, MCP discovery, standalone WordPress Abilities API fallback, schemas, permissions, or agent access to course and progress data.",
       "path": "lw-plugins/lw-lms-abilities",
       "skill_path": "lw-plugins/lw-lms-abilities/SKILL.md",
       "url": "https://raw.githubusercontent.com/Lonsdale201/wp-agent-skills/main/lw-plugins/lw-lms-abilities/SKILL.md",
@@ -3986,9 +3986,9 @@
       "directory_url": "https://github.com/Lonsdale201/wp-agent-skills/tree/main/lw-plugins/lw-lms-abilities",
       "metadata": {
         "author": "Soczó Kristóf",
-        "contact": "mailto:lonsdale201@hotmail.com",
+        "contact": "https://github.com/Lonsdale201",
         "plugin": "lw-lms",
-        "plugin-version-tested": "2.0.0",
+        "plugin-version-tested": "2.0.1",
         "wp-version-tested": "7.1.2",
         "php-min": "8.0",
         "last-updated": "2026-09-26"
@@ -3998,9 +3998,9 @@
       "has_examples": false,
       "has_scripts": false,
       "skill_md": {
-        "bytes": 7035,
-        "lines": 131,
-        "sha256": "303f972fc541c6fa02606a03bf717486279a51bdfcf216e08f89c0d567184b42"
+        "bytes": 7453,
+        "lines": 144,
+        "sha256": "b86c7a7721721d3c39042d9f391dcfeb82ebb94cc8323b897ced559b40d88c40"
       }
     },
     {
@@ -4200,6 +4200,96 @@
       }
     },
     {
+      "slug": "lw-seo-automation-compatibility",
+      "name": "lw-seo-automation-compatibility",
+      "domain": "lw-plugins",
+      "description": "Automate or review LW SEO 1.7.x through WP-CLI, public REST, WordPress Abilities, and LW Site Manager MCP, and verify compatibility with LW Cookie 1.8.x and headless LW LMS 2.0.x. Use when calling `wp lw-seo`, `lw-seo/*` abilities, `/wp-json/lw-seo/v1`, Site Manager discovery, SEO option or meta writes, or diagnosing cross-plugin privacy and exposure boundaries.",
+      "path": "lw-plugins/lw-seo-automation-compatibility",
+      "skill_path": "lw-plugins/lw-seo-automation-compatibility/SKILL.md",
+      "url": "https://raw.githubusercontent.com/Lonsdale201/wp-agent-skills/main/lw-plugins/lw-seo-automation-compatibility/SKILL.md",
+      "raw_url": "https://raw.githubusercontent.com/Lonsdale201/wp-agent-skills/main/lw-plugins/lw-seo-automation-compatibility/SKILL.md",
+      "html_url": "https://github.com/Lonsdale201/wp-agent-skills/blob/main/lw-plugins/lw-seo-automation-compatibility/SKILL.md",
+      "directory_url": "https://github.com/Lonsdale201/wp-agent-skills/tree/main/lw-plugins/lw-seo-automation-compatibility",
+      "metadata": {
+        "author": "Soczó Kristóf",
+        "contact": "https://github.com/Lonsdale201",
+        "plugin": "lw-seo",
+        "plugin-version-tested": "1.7.4",
+        "wp-version-tested": "7.1.2",
+        "php-min": "8.2",
+        "last-updated": "2026-09-26"
+      },
+      "resources": [],
+      "has_reference": false,
+      "has_examples": false,
+      "has_scripts": false,
+      "skill_md": {
+        "bytes": 8175,
+        "lines": 153,
+        "sha256": "ece07e0f1b0b5d6dfd041259b7849744d0ed29c60775124c22b82f0d7670d0f6"
+      }
+    },
+    {
+      "slug": "lw-seo-content-metadata",
+      "name": "lw-seo-content-metadata",
+      "domain": "lw-plugins",
+      "description": "Build, extend, or audit LW SEO 1.7.x titles, descriptions, canonical URLs, robots directives, Open Graph, Twitter cards, schema, breadcrumbs, post and term metadata, template variables, and custom post type support. Use when a companion plugin needs to set or filter `_lw_seo_*` values, add SEO behavior for custom content, protect restricted summaries, or diagnose duplicate or missing head metadata.",
+      "path": "lw-plugins/lw-seo-content-metadata",
+      "skill_path": "lw-plugins/lw-seo-content-metadata/SKILL.md",
+      "url": "https://raw.githubusercontent.com/Lonsdale201/wp-agent-skills/main/lw-plugins/lw-seo-content-metadata/SKILL.md",
+      "raw_url": "https://raw.githubusercontent.com/Lonsdale201/wp-agent-skills/main/lw-plugins/lw-seo-content-metadata/SKILL.md",
+      "html_url": "https://github.com/Lonsdale201/wp-agent-skills/blob/main/lw-plugins/lw-seo-content-metadata/SKILL.md",
+      "directory_url": "https://github.com/Lonsdale201/wp-agent-skills/tree/main/lw-plugins/lw-seo-content-metadata",
+      "metadata": {
+        "author": "Soczó Kristóf",
+        "contact": "https://github.com/Lonsdale201",
+        "plugin": "lw-seo",
+        "plugin-version-tested": "1.7.4",
+        "wp-version-tested": "7.1.2",
+        "php-min": "8.2",
+        "last-updated": "2026-09-26"
+      },
+      "resources": [],
+      "has_reference": false,
+      "has_examples": false,
+      "has_scripts": false,
+      "skill_md": {
+        "bytes": 7331,
+        "lines": 171,
+        "sha256": "2ab9e4b75e818a936b7e3a422a9623e6a6194f69ce67e2d2c98c9f7b9303e2ce"
+      }
+    },
+    {
+      "slug": "lw-seo-machine-readable-content",
+      "name": "lw-seo-machine-readable-content",
+      "domain": "lw-plugins",
+      "description": "Configure, extend, or audit LW SEO 1.7.x XML sitemaps, robots.txt, llms.txt, llms-full.txt, per-object Markdown, Content Signals, and AI crawler rules. Use when code touches lw_seo_post_is_eligible, sitemap or Markdown filters, `/md`, `Accept: text/markdown`, Content-Signal headers, crawler policy, restricted content, or cache invalidation for machine-readable output.",
+      "path": "lw-plugins/lw-seo-machine-readable-content",
+      "skill_path": "lw-plugins/lw-seo-machine-readable-content/SKILL.md",
+      "url": "https://raw.githubusercontent.com/Lonsdale201/wp-agent-skills/main/lw-plugins/lw-seo-machine-readable-content/SKILL.md",
+      "raw_url": "https://raw.githubusercontent.com/Lonsdale201/wp-agent-skills/main/lw-plugins/lw-seo-machine-readable-content/SKILL.md",
+      "html_url": "https://github.com/Lonsdale201/wp-agent-skills/blob/main/lw-plugins/lw-seo-machine-readable-content/SKILL.md",
+      "directory_url": "https://github.com/Lonsdale201/wp-agent-skills/tree/main/lw-plugins/lw-seo-machine-readable-content",
+      "metadata": {
+        "author": "Soczó Kristóf",
+        "contact": "https://github.com/Lonsdale201",
+        "plugin": "lw-seo",
+        "plugin-version-tested": "1.7.4",
+        "wp-version-tested": "7.1.2",
+        "php-min": "8.2",
+        "last-updated": "2026-09-26"
+      },
+      "resources": [],
+      "has_reference": false,
+      "has_examples": false,
+      "has_scripts": false,
+      "skill_md": {
+        "bytes": 8079,
+        "lines": 190,
+        "sha256": "31628a382c109388686b4e9a1d72df7913b53c14cc0aced98b3a4b22e2b282c2"
+      }
+    },
+    {
       "slug": "lw-site-manager-extend-abilities",
       "name": "lw-site-manager-extend-abilities",
       "domain": "lw-plugins",
@@ -4212,9 +4302,9 @@
       "directory_url": "https://github.com/Lonsdale201/wp-agent-skills/tree/main/lw-plugins/lw-site-manager-extend-abilities",
       "metadata": {
         "author": "Soczó Kristóf",
-        "contact": "mailto:lonsdale201@hotmail.com",
+        "contact": "https://github.com/Lonsdale201",
         "plugin": "lw-site-manager",
-        "plugin-version-tested": "1.5.0",
+        "plugin-version-tested": "1.5.1",
         "wp-version-tested": "7.1.2",
         "php-min": "8.2",
         "last-updated": "2026-09-26"
@@ -4226,7 +4316,7 @@
       "skill_md": {
         "bytes": 9610,
         "lines": 238,
-        "sha256": "b5ea12e7b27819eb957a34cfb454439c9f9160982c69c44049e4dfba10766c13"
+        "sha256": "1b8bb4eedc28526356be3709bde26f7718da80612d54e7bc2fc1b9ce66f421d8"
       }
     },
     {
@@ -4242,9 +4332,9 @@
       "directory_url": "https://github.com/Lonsdale201/wp-agent-skills/tree/main/lw-plugins/lw-site-manager-overview",
       "metadata": {
         "author": "Soczó Kristóf",
-        "contact": "mailto:lonsdale201@hotmail.com",
+        "contact": "https://github.com/Lonsdale201",
         "plugin": "lw-site-manager",
-        "plugin-version-tested": "1.5.0",
+        "plugin-version-tested": "1.5.1",
         "wp-version-tested": "7.1.2",
         "php-min": "8.2",
         "last-updated": "2026-09-26"
@@ -4256,7 +4346,7 @@
       "skill_md": {
         "bytes": 10441,
         "lines": 209,
-        "sha256": "858c9952abbd60e5c15679d4f54ef945efa3981cc8f8e127ae2ed58b1d4b8bbb"
+        "sha256": "a957776ae471c8ca1727d23b14a8d722be12855cef202692c3971cdc0e9993bb"
       }
     },
     {

@@ -1,6 +1,6 @@
 # wp-agent-skills
 
-**238 skills · 23 domains**
+**241 skills · 23 domains**
 
 A community-maintained collection of **portable Agent Skills** for WordPress plugin and theme development.
 
@@ -32,7 +32,7 @@ Skills are grouped by domain. Each domain has its own README listing the skills 
 | [`jetsmartfilter/`](jetsmartfilter) | Integrating & extending **JetSmartFilters** (`jet-smart-filters`) — the provider / query-ID contract, filterable JSF Listings, the frontend AJAX lifecycle, narrowly scoped PHP query hooks, and the custom provider / query-type APIs. |
 | [`better-data/`](better-data) | **Contributor** skills for the [better-data](https://github.com/lonsdale201/better-data) PHP library. |
 | [`better-route/`](better-route) | **Consumer** skills for the [better-route](https://github.com/Lonsdale201/better-route) PHP library. |
-| [`lw-plugins/`](lw-plugins) | LW Plugins family — LW LMS 2.0 (REST, quizzes, drip, CLI, abilities, migration), LW Site Manager 1.5, LW Cookie 1.8, LW Image 2.0, Elállás for WooCommerce, and LW Firewall v1.5.4. |
+| [`lw-plugins/`](lw-plugins) | LW Plugins family — LW SEO 1.7 (content metadata, sitemap/llms/Markdown, automation and compatibility), LW LMS 2.0, LW Site Manager 1.5, LW Cookie 1.8, LW Image 2.0, Elállás for WooCommerce, and LW Firewall v1.5.4. |
 | [`wp-rocket/`](wp-rocket) | WP Rocket integration skills — cache invalidation and filter hooks for third-party plugins / themes. |
 | [`redis-object-cache/`](redis-object-cache) | Redis Object Cache (`redis-cache`) integration — drop-in lifecycle, `WP_REDIS_*` config, `wp redis` CLI, and correct `wp_cache_*` usage with persistent object caching. |
 | [`fluentcart/`](fluentcart) | Extending **FluentCart** (`fluent-cart` + Pro `fluent-cart-pro` + the `fluent-cart-migrator` companion) — the extension bootstrap / container / custom-table data model, products & inventory, cart & checkout trust boundaries, orders / transactions / refunds, payment gateways and subscriptions, customers & the account portal, downloads & storage, coupons, shipping & tax, the `/fluent-cart/v2` REST surface, integration feeds & scheduled jobs, Pro licensing, and EDD / WooCommerce migrations. Every skill marks its Free / Pro / Migrator boundary. |

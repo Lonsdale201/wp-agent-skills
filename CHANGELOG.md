@@ -2,6 +2,27 @@
 
 This collection is continuously evolving — entries are date-based, not version-tagged. New skills land when they're ready; updates go in when they cover real ground (a new release of an upstream plugin, a verified misconception, a corrected example).
 
+## 2026-09-26 (LW SEO 1.7.4 compatibility and automation)
+
+### Added
+
+- `lw-plugins/lw-seo-content-metadata`: titles, descriptions, canonical URLs, robots, Open Graph/Twitter metadata, schema, breadcrumbs, template variables, `_lw_seo_*` storage, restriction filters, and custom content type boundaries.
+- `lw-plugins/lw-seo-machine-readable-content`: XML sitemap, virtual robots.txt additions, llms.txt, llms-full.txt, Markdown negotiation, Content Signals, AI crawler rules, shared eligibility, cache invalidation, and extension hooks.
+- `lw-plugins/lw-seo-automation-compatibility`: WP-CLI, public REST, the five `lw-seo/*` abilities, MCP discovery, and verified LW Cookie/LW LMS/LW Site Manager interoperability.
+
+### Changed
+
+- Updated `lw-cookie-consent-integration` to 1.8.3: the optional `youtube-nocookie.com` exemption, full sanitized `set-options` coverage, rejected-key reporting, writable-key discovery, and MCP-public metadata.
+- Updated `lw-lms-abilities` to 2.0.1 with explicit MCP-public metadata for all five `lw-lms/*` abilities.
+- Updated the LW Site Manager overview and ability-extension skills to 1.5.1 and its documented foreign-namespace MCP opt-in contract.
+
+### Verified
+
+- Compared the official LW SEO 1.7.4 release asset with public source; all 196 shipped non-vendor files matched after line-ending normalization.
+- Activated LW SEO 1.7.4 beside LW Cookie 1.8.3, LW LMS 2.0.1, and LW Site Manager 1.5.1 on WordPress 7.1.2 / PHP 8.3.30. All 14 companion abilities registered with MCP-public metadata and appeared in Site Manager discovery.
+- A disposable write/read smoke confirmed SEO meta, Markdown, frontend title/description/social/canonical output, Content-Signal headers, Cookie banner coexistence, public sitemap/llms selection, and cleanup of all fixture posts and terms.
+- Found a reproducible anonymous REST exposure for non-public LW LMS objects and private taxonomies. It is tracked in [lwplugins/lw-seo#18](https://github.com/lwplugins/lw-seo/issues/18); the new automation skill records the containment boundary until a fixed release is verified.
+
 ## 2026-09-26 (Advanced Custom Fields 6.8.10)
 
 ### Added
