@@ -12,7 +12,7 @@
     "skill_file": "SKILL.md"
   },
   "domain_count": 22,
-  "skill_count": 228,
+  "skill_count": 229,
   "domains": [
     {
       "slug": "better-data",
@@ -78,7 +78,7 @@
       "slug": "lw-plugins",
       "path": "lw-plugins",
       "readme_path": "lw-plugins/README.md",
-      "skill_count": 13
+      "skill_count": 14
     },
     {
       "slug": "plugin-scaffold",
@@ -3432,6 +3432,36 @@
       }
     },
     {
+      "slug": "lw-cookie-consent-integration",
+      "name": "lw-cookie-consent-integration",
+      "domain": "lw-plugins",
+      "description": "Integrate, operate, or audit LW Cookie 1.8.x consent state, script and embed blocking, Google Consent Mode, scanner, WP-CLI, WordPress hooks, JavaScript API, and LW Site Manager abilities. Use when code reads lw_cookie_is_category_allowed, calls LWCookie, renders consent-aware embeds, manages lw_cookie_options, automates lw-cookie/* abilities, or diagnoses tracker, Service Worker, multilingual, builder-preview, and youtube-nocookie.com behavior. This is an implementation reference, not a legal compliance certification.",
+      "path": "lw-plugins/lw-cookie-consent-integration",
+      "skill_path": "lw-plugins/lw-cookie-consent-integration/SKILL.md",
+      "url": "https://raw.githubusercontent.com/Lonsdale201/wp-agent-skills/main/lw-plugins/lw-cookie-consent-integration/SKILL.md",
+      "raw_url": "https://raw.githubusercontent.com/Lonsdale201/wp-agent-skills/main/lw-plugins/lw-cookie-consent-integration/SKILL.md",
+      "html_url": "https://github.com/Lonsdale201/wp-agent-skills/blob/main/lw-plugins/lw-cookie-consent-integration/SKILL.md",
+      "directory_url": "https://github.com/Lonsdale201/wp-agent-skills/tree/main/lw-plugins/lw-cookie-consent-integration",
+      "metadata": {
+        "author": "Soczó Kristóf",
+        "contact": "mailto:lonsdale201@hotmail.com",
+        "plugin": "lw-cookie",
+        "plugin-version-tested": "1.8.2",
+        "wp-version-tested": "7.1.2",
+        "php-min": "8.2",
+        "last-updated": "2026-09-26"
+      },
+      "resources": [],
+      "has_reference": false,
+      "has_examples": false,
+      "has_scripts": false,
+      "skill_md": {
+        "bytes": 11834,
+        "lines": 226,
+        "sha256": "1dc96970c348599330496ed99cc4690f9fbea99a4e4cac827ac2fbf363ff4e85"
+      }
+    },
+    {
       "slug": "lw-elallas-integration",
       "name": "lw-elallas-integration",
       "domain": "lw-plugins",
@@ -3837,7 +3867,7 @@
       "slug": "lw-site-manager-extend-abilities",
       "name": "lw-site-manager-extend-abilities",
       "domain": "lw-plugins",
-      "description": "Add custom abilities to the LW Site Manager hub via its extension contract — two action hooks (lw_site_manager_register_categories for category labels, lw_site_manager_register_abilities for the abilities themselves; the second receives the PermissionManager so external abilities reuse the typed cap-check methods). Pattern — extend AbstractAbilitiesRegistrar to inherit the meta builders (readOnlyMeta / writeMeta / destructiveMeta) and schema builders (paginationSchema/orderingSchema/idSchema/listOutputSchema/entityOutputSchema/successOutputSchema/bulkResultSchema/updateResultSchema). Don't bypass — meta annotations (readonly / destructive / idempotent) are how AI agents reason about ability safety; inconsistent helpers make the hub surface heterogeneous. The plugin emits NO filters; it's additively extensible only. Use when shipping a companion plugin that adds site-manager/* abilities. Triggers on lw_site_manager_register_abilities, lw_site_manager_register_categories, AbstractAbilitiesRegistrar.",
+      "description": "Add companion-plugin abilities to LW Site Manager 1.5.x through lw_site_manager_register_categories and lw_site_manager_register_abilities. Covers namespaces, REST and MCP exposure metadata, PermissionManager, object-level authorization, schemas, annotations, WP_Error failure contracts, and service-layer registration. Use when a plugin should expose its own operations through the Site Manager Abilities or MCP surface. Use lw-site-manager-overview when consuming existing abilities.",
       "path": "lw-plugins/lw-site-manager-extend-abilities",
       "skill_path": "lw-plugins/lw-site-manager-extend-abilities/SKILL.md",
       "url": "https://raw.githubusercontent.com/Lonsdale201/wp-agent-skills/main/lw-plugins/lw-site-manager-extend-abilities/SKILL.md",
@@ -3848,25 +3878,26 @@
         "author": "Soczó Kristóf",
         "contact": "mailto:lonsdale201@hotmail.com",
         "plugin": "lw-site-manager",
-        "plugin-version-tested": "1.1.22",
+        "plugin-version-tested": "1.5.0",
+        "wp-version-tested": "7.1.2",
         "php-min": "8.2",
-        "last-updated": "2026-04-29"
+        "last-updated": "2026-09-26"
       },
       "resources": [],
       "has_reference": false,
       "has_examples": false,
       "has_scripts": false,
       "skill_md": {
-        "bytes": 28847,
-        "lines": 488,
-        "sha256": "7b1c79e7c8f45afcd7666f6c419b6431a2d1348a171a869433c81dc86576db9d"
+        "bytes": 9610,
+        "lines": 238,
+        "sha256": "b5ea12e7b27819eb957a34cfb454439c9f9160982c69c44049e4dfba10766c13"
       }
     },
     {
       "slug": "lw-site-manager-overview",
       "name": "lw-site-manager-overview",
       "domain": "lw-plugins",
-      "description": "Reference for the LW Site Manager plugin (lwplugins/ lw-site-manager) — a WP 6.9+ Abilities-API-native exposure layer that registers 120+ machine-callable abilities under the site-manager/* namespace for AI agents (Claude, ChatGPT, MCP clients) to discover and invoke. Covers updates / plugins / themes / posts / pages / comments / media / users / taxonomies / settings / backups / health / database / cache / WooCommerce. Calling pattern — REST run endpoint is /wp-json/wp-abilities/v1/abilities/{namespace}/{ability}/run with Application Password Basic auth. Important — this is NOT MainWP; the surface and security model are different (per-ability cap-checks via PermissionManager, not a single dashboard token). Header requires PHP 8.2 (not 8.1 as some docs say). Use when calling the plugin's abilities, advising on AI agent integration, or before extending the plugin (see lw-site-manager-extend-abilities). Triggers on site-manager/, lw-site-manager, wp-abilities/v1, AI agent + WP.",
+      "description": "Operate and integrate with LW Site Manager 1.5.x through its WordPress Abilities REST surface or built-in MCP server. Covers the site-manager/* catalog, Application Password authentication, MCP enablement and domain lock, skill discovery, capability and object-level authorization, error contracts, and WooCommerce prerequisites. Use when calling, configuring, diagnosing, or reviewing lw-site-manager, /wp-json/wp-abilities/v1, or /wp-json/mcp/lw-site-manager. Use lw-site-manager-extend-abilities when adding abilities from another plugin.",
       "path": "lw-plugins/lw-site-manager-overview",
       "skill_path": "lw-plugins/lw-site-manager-overview/SKILL.md",
       "url": "https://raw.githubusercontent.com/Lonsdale201/wp-agent-skills/main/lw-plugins/lw-site-manager-overview/SKILL.md",
@@ -3877,18 +3908,19 @@
         "author": "Soczó Kristóf",
         "contact": "mailto:lonsdale201@hotmail.com",
         "plugin": "lw-site-manager",
-        "plugin-version-tested": "1.1.22",
+        "plugin-version-tested": "1.5.0",
+        "wp-version-tested": "7.1.2",
         "php-min": "8.2",
-        "last-updated": "2026-04-29"
+        "last-updated": "2026-09-26"
       },
       "resources": [],
       "has_reference": false,
       "has_examples": false,
       "has_scripts": false,
       "skill_md": {
-        "bytes": 18916,
-        "lines": 276,
-        "sha256": "57261ccc92072c8bc3a154595bb636646d6e52efd19b4b65e69c93ccf24d6f34"
+        "bytes": 10441,
+        "lines": 209,
+        "sha256": "858c9952abbd60e5c15679d4f54ef945efa3981cc8f8e127ae2ed58b1d4b8bbb"
       }
     },
     {

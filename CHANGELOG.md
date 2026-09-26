@@ -2,6 +2,19 @@
 
 This collection is continuously evolving — entries are date-based, not version-tagged. New skills land when they're ready; updates go in when they cover real ground (a new release of an upstream plugin, a verified misconception, a corrected example).
 
+## 2026-09-26 (LW Site Manager 1.5.0 and LW Cookie 1.8.2)
+
+### Added
+
+- `lw-plugins/lw-cookie-consent-integration`: a source-grounded LW Cookie 1.8.2 integration and operations reference covering consent filters and browser events, cache-safe custom embeds, independent script/content blocking, Service Worker and Google Consent Mode behavior, scanner and WP-CLI operations, multilingual settings, and the four `lw-cookie/*` Site Manager abilities.
+- Documented the released behavior behind open issue #10: `youtube-nocookie.com/embed` is still classified as marketing and blocked before consent. The skill treats exemption as a pending product/legal decision rather than claiming that privacy-enhanced mode is automatically consent-free.
+- Recorded two current automation boundaries: `lw-cookie/set-options` has a partial allowlist and bypasses the admin settings sanitizer, and the four foreign-namespace abilities set REST metadata but not `meta.mcp.public`, so Site Manager 1.5.0 does not expose them through MCP discovery by default.
+
+### Changed
+
+- Re-grounded `lw-site-manager-overview` from 1.1.22 to 1.5.0. It now covers the 167 operational abilities plus runtime skill abilities, the built-in Streamable HTTP MCP endpoint, default enablement and domain lock, administrator transport authorization, adapter-version conflict diagnostics, skill discovery, object-level authorization, meta guards, and the current error contract.
+- Reworked `lw-site-manager-extend-abilities` around companion-owned namespaces, explicit REST/MCP exposure, target-object capability checks, truthful schemas and annotations, thin registrars, and `WP_Error` whole-operation failures. `AbstractAbilitiesRegistrar` is now identified as version-coupled internals rather than a required extension base.
+
 ## 2026-09-21 (Better Route 1.1.1)
 
 ### Changed
