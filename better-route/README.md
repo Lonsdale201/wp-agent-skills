@@ -1,6 +1,6 @@
 # Better Route skills
 
-Consumer skills for [Better Route](https://github.com/Lonsdale201/better-route), the fluent REST layer for WordPress. The current release preparation targets **2.0.0 / PHP 8.3+**. The published **1.1.2** line remains available for PHP 8.1/8.2 consumers. Use this collection when building, reviewing or migrating plugin APIs.
+Consumer skills for [Better Route](https://github.com/Lonsdale201/better-route), the fluent REST layer for WordPress. Updated installation and migration guidance targets **2.0.0 / PHP 8.3+**, with the **1.1.3 security patch** for PHP 8.1/8.2 consumers. Use this collection when building, reviewing or migrating plugin APIs.
 
 The collection is grounded in the public Better Route source and documentation. Every raw route denies by default, including `GET` and `OPTIONS`, until it declares `permission()`, `protectedByMiddleware()` or an intentionally reviewed `publicRoute()`.
 
@@ -10,7 +10,7 @@ The update adds customer-role policies, coupon management views, read-only Analy
 
 | Skill | Purpose |
 |---|---|
-| `br-install-and-migrate` | Select the 2.0/PHP 8.3 or 1.1.2/PHP 8.1 line and preserve earlier routing, auth, storage and concurrency migrations. |
+| `br-install-and-migrate` | Select the 2.0/PHP 8.3 or security-patched 1.1.3/PHP 8.1 line and preserve earlier routing, auth, storage and concurrency migrations. |
 | `br-php83-upgrade` | Upgrade all PHP runtimes, review readonly DTO compatibility and custom sensitive-parameter annotations, then verify the consumer deployment. |
 | `br-routes` | Register raw routes, WordPress regex path parameters, valid handler signatures, groups, middleware, WordPress `args`, and explicit access intent. |
 | `br-error-contract` | Emit the standard error envelope, safe `ApiException` details and headers, normalized `WP_Error`, OAuth error mode, and non-leaking telemetry. |

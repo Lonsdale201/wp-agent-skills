@@ -14,7 +14,7 @@ metadata:
 
 Authentication establishes identity; ownership authorization establishes whether that identity may access this object.
 
-The Resource helper guidance below targets the URL-bound ownership fix in 2.0.
+The Resource helper guidance below targets the URL-bound ownership fix in 1.1.3/2.0.
 On 1.1.2 or older, do not rely on `OwnedResourcePolicy::currentUserOwns()` for
 URL-bound object authorization: its merged request ID can differ from the handler's
 URL ID. Use an explicit URL-bound policy until the security fix is installed.

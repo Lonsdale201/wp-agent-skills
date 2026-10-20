@@ -2,7 +2,7 @@
 
 This collection is continuously evolving — entries are date-based, not version-tagged. New skills land when they're ready; updates go in when they cover real ground (a new release of an upstream plugin, a verified misconception, a corrected example).
 
-## 2026-10-20 (Better Route 2.0 / PHP 8.3)
+## 2026-10-20 (Better Route 2.0 / PHP 8.3 and 1.1.3 security patch)
 
 ### Added
 
@@ -18,6 +18,8 @@ This collection is continuously evolving — entries are date-based, not version
   protected metadata, coupon management state and distinct PUT/PATCH operation IDs.
 - Preserved older idempotency and authentication rollout requirements. Unchanged
   skills retain their previously tested version metadata.
+- Updated ownership examples to use URL-capture IDs consistently; documented the
+  1.1.3/2.0 fix and an explicit-policy workaround for older package installations.
 
 ## 2026-09-27 (Csomagpontok és Címkék 4.2.8 and Számlázz.hu recheck)
 

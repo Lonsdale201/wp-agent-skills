@@ -24,9 +24,9 @@ composer check-platform-reqs --no-dev
 ```
 
 Version 2.0 requires PHP 8.3 in web, CLI, cron and worker processes. For PHP 8.1/8.2,
-use the published 1.1.2 line with `composer require better-route/better-route:1.1.2`.
-On that older release, replace the Resource ownership helper with an explicit
-URL-bound policy before exposing owned objects; see `br-owned-resource-guards`.
+use the security-patched 1.x line with `composer require better-route/better-route:^1.1.3`.
+On 1.1.2 or older, replace the Resource ownership helper with an explicit URL-bound
+policy until updated; see `br-owned-resource-guards`.
 An existing `^1.1` constraint deliberately does not select 2.0. Do not add a VCS
 repository unless intentionally consuming a fork or unreleased branch.
 
@@ -43,7 +43,7 @@ add_action('rest_api_init', static function (): void {
 });
 ```
 
-## 1.1.2 to 2.0.0
+## 1.1.2 / 1.1.3 to 2.0.0
 
 - Upgrade every PHP runtime before changing the Composer constraint. A Composer
   `config.platform` value does not upgrade the server; check real platform requirements.
@@ -58,6 +58,7 @@ add_action('rest_api_init', static function (): void {
   is introduced between 1.1.2 and 2.0.0.
 - Resource ownership authorization now uses the same URL capture as the handler,
   preventing query/body IDs from selecting a different authorization object.
+  The same security fix is available in 1.1.3 without raising the PHP minimum.
 - Keep the application's REST namespace and OpenAPI `info.version` independent of the
   library major. Installing 2.0 does not require renaming an unchanged `myapp/v1` API.
 

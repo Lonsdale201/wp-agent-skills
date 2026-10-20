@@ -1034,9 +1034,9 @@
       "has_examples": false,
       "has_scripts": false,
       "skill_md": {
-        "bytes": 15980,
-        "lines": 229,
-        "sha256": "2908801ccaf1f958b8d0431910768ac4fa23e33581e0d8252b00717bdfc091eb"
+        "bytes": 16053,
+        "lines": 230,
+        "sha256": "c4369f1e2dc19d13e8ca7f07d562614be289bcab242ec440e5074e40dd17ec27"
       }
     },
     {
@@ -1211,9 +1211,9 @@
       "has_examples": false,
       "has_scripts": false,
       "skill_md": {
-        "bytes": 4148,
+        "bytes": 4154,
         "lines": 100,
-        "sha256": "48a62cb2086c03f3e6cbaf2bead102f0b525ccf28b4556f5292de1d31c5d7353"
+        "sha256": "07ded024e976ad1d8877dfcf195c0d13228f46cac6547818d4623a935a7d0121"
       }
     },
     {
@@ -1240,9 +1240,9 @@
       "has_examples": false,
       "has_scripts": false,
       "skill_md": {
-        "bytes": 5291,
+        "bytes": 5293,
         "lines": 108,
-        "sha256": "6a1de62e21d7fd504cc0920a0cfb6c56e88d1b7577a4ef8aad6133ada06c119f"
+        "sha256": "87c33654b26d2e94a406126aed640c454637b9024e8c784f4ed5c96a38038019"
       }
     },
     {

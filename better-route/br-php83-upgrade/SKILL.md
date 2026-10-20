@@ -25,9 +25,9 @@ changing its application API or weakening its authentication and write safeguard
 3. Deploy the matching dependency tree and restart long-lived workers. Smoke test
    the integration's real authorization, reads, writes and retry behavior.
 
-An existing `^1.1` constraint does not install 2.0. PHP 8.1/8.2 consumers need the
-older line and an explicit URL-bound Resource ownership policy until a compatible
-security fix is installed; see `br-owned-resource-guards`.
+An existing `^1.1` constraint does not install 2.0. PHP 8.1/8.2 consumers can use
+the 1.1.3 security patch. On 1.1.2 or older, use an explicit URL-bound Resource
+ownership policy until updated; see `br-owned-resource-guards`.
 The package is a Composer library; it has no standalone WordPress activation step.
 For a host plugin that now requires this runtime, update that plugin's own declared
 PHP requirement and deployment checks as well.
