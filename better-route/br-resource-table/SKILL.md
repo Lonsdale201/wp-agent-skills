@@ -5,9 +5,9 @@ metadata:
   wp-skills-author: "Soczó Kristóf"
   wp-skills-contact: "mailto:lonsdale201@hotmail.com"
   wp-skills-plugin: "better-route"
-  wp-skills-plugin-version-tested: "1.1.0"
-  wp-skills-php-min: "8.1"
-  wp-skills-last-updated: "2026-07-13"
+  wp-skills-plugin-version-tested: "2.0.0"
+  wp-skills-php-min: "8.3"
+  wp-skills-last-updated: "2026-10-20"
 ---
 
 # better-route: custom-table Resource CRUD
@@ -101,6 +101,10 @@ Row-level authorization must be enforced by policy plus repository/query constra
 ## Response and OpenAPI
 
 Lists return `{data, meta}`; create/update return `{data}`; a single get is raw unless `uniformEnvelope(true)` is enabled. After registration, use `contracts()` for OpenAPI export and provide the matching response-envelope schemas in strict mode.
+
+PUT and PATCH use distinct generated operation IDs (`Update` and `Patch`). Regenerate
+clients that used duplicate IDs and validate serialized bodies as well as the
+OpenAPI document. Equivalent templates and duplicate method/path operations fail export.
 
 ## Review checklist
 

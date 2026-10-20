@@ -5,9 +5,9 @@ metadata:
   wp-skills-author: "Soczó Kristóf"
   wp-skills-contact: "mailto:lonsdale201@hotmail.com"
   wp-skills-plugin: "better-route"
-  wp-skills-plugin-version-tested: "1.1.0"
-  wp-skills-php-min: "8.1"
-  wp-skills-last-updated: "2026-07-13"
+  wp-skills-plugin-version-tested: "2.0.0"
+  wp-skills-php-min: "8.3"
+  wp-skills-last-updated: "2026-10-20"
 ---
 
 # better-route: CPT Resource CRUD
@@ -134,6 +134,10 @@ Valid delete modes are `force` and `trash`.
 Lists return `{data, meta}`. Create/update return `{data}`. A single get returns the raw item unless `uniformEnvelope(true)` is set; then it returns `{data}`.
 
 After `register()`, call `contracts()` to export generated contracts. Provide `<Resource>`, `<Resource>Input`, `<Resource>Response`, and `<Resource>ListResponse` schemas in strict OpenAPI mode as applicable. Explicitly public Resource actions emit `security: []`.
+
+PUT and PATCH now have distinct generated operation IDs (`Update` and `Patch`).
+Regenerate clients that consumed duplicate IDs, validate the serialized document
+and handle native WordPress validation errors as well as Better Route errors.
 
 ## Review checklist
 

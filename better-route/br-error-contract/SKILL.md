@@ -5,9 +5,9 @@ metadata:
   wp-skills-author: "Soczó Kristóf"
   wp-skills-contact: "mailto:lonsdale201@hotmail.com"
   wp-skills-plugin: "better-route"
-  wp-skills-plugin-version-tested: "1.1.0"
-  wp-skills-php-min: "8.1"
-  wp-skills-last-updated: "2026-07-13"
+  wp-skills-plugin-version-tested: "2.0.0"
+  wp-skills-php-min: "8.3"
+  wp-skills-last-updated: "2026-10-20"
 ---
 
 # better-route: error contract
@@ -51,6 +51,14 @@ Clients should branch on `error.code`, not message text.
 | `WP_Error` | Uses its code/message and valid `data.status`; details expose only allowlisted `data.params`. |
 
 Unexpected exception class names and raw messages never reach the caller. Log internally; do not convert an unexpected exception to `ApiException` with its raw message.
+
+Native WordPress validation/authentication can fail before Better Route's handler
+and error normalizer run. Clients must also accept `{code,message,data}` and its
+native validation fields. Do not assume every REST failure has `error.requestId`.
+
+PHP 8.3-line sensitive parameter annotations redact annotated library argument
+frames, not exception messages, object state or onward core/custom callback frames.
+Keep application logging redaction and production error-display restrictions.
 
 `WP_Error` messages remain caller-visible for compatibility. Do not put SQL, paths, secrets, or debug data in a returned `WP_Error` message. Arbitrary error data is intentionally not copied into `details`; only the core REST validation `params` map is allowed.
 
@@ -105,7 +113,7 @@ Set `details.error_uri` to emit `error_uri`. Set `details.requestId` to boolean 
 
 ```php
 $router->get('/orders/(?P<id>\d+)', static function ($request): array {
-    $id = (int) $request->get_param('id');
+    $id = (int) ($request->get_url_params()['id'] ?? 0);
     $order = wc_get_order($id);
 
     if (!$order) {

@@ -5,9 +5,9 @@ metadata:
   wp-skills-author: "Soczó Kristóf"
   wp-skills-contact: "mailto:lonsdale201@hotmail.com"
   wp-skills-plugin: "better-route"
-  wp-skills-plugin-version-tested: "1.1.0"
-  wp-skills-php-min: "8.1"
-  wp-skills-last-updated: "2026-07-13"
+  wp-skills-plugin-version-tested: "2.0.0"
+  wp-skills-php-min: "8.3"
+  wp-skills-last-updated: "2026-10-20"
 ---
 
 # Better Route optimistic locking
@@ -22,7 +22,7 @@ use BetterRoute\Middleware\Write\WpdbOptimisticLockCriticalSection;
 $lock = new OptimisticLockMiddleware(
     versionResolver: new CallbackOptimisticLockVersionResolver(
         static function ($context): string|int|null {
-            $id = (int) $context->request->get_param('id');
+            $id = (int) ($context->request->get_url_params()['id'] ?? 0);
             return my_current_record_version($id);
         }
     ),

@@ -1,13 +1,13 @@
 ---
 name: br-auth-middleware
-description: Configure Better Route 1.1 authentication with JWT, custom bearer tokens, WordPress Application Passwords, or cookie nonces. Use when protecting routes, mapping verified claims to WordPress users, enforcing scopes, consuming the shared AuthContext identity, restoring native users after nested dispatch, or diagnosing response-filter/_embed auth boundaries.
+description: Configure Better Route authentication with JWT, custom bearer tokens, WordPress Application Passwords or cookie nonces. Use when protecting routes, mapping verified claims to WordPress users, enforcing scopes, consuming AuthContext, restoring native users after nested dispatch, or checking sensitive-argument redaction in custom verifier implementations.
 metadata:
   wp-skills-author: "Soczó Kristóf"
   wp-skills-contact: "mailto:lonsdale201@hotmail.com"
   wp-skills-plugin: "better-route"
-  wp-skills-plugin-version-tested: "1.1.1"
-  wp-skills-php-min: "8.1"
-  wp-skills-last-updated: "2026-09-21"
+  wp-skills-plugin-version-tested: "2.0.0"
+  wp-skills-php-min: "8.3"
+  wp-skills-last-updated: "2026-10-20"
 ---
 
 # Better Route authentication middleware
@@ -80,6 +80,15 @@ Since 1.1.1, `AuthContext::withIdentity()` always replaces `userId`, `user`, `cl
 - Never log bearer tokens, Basic credentials, cookies, nonces, or complete claims payloads.
 
 Source references: `src/Middleware/Jwt/*`, `src/Middleware/Auth/*`, `src/Router/RouteBuilder.php`.
+
+## Sensitive arguments on the PHP 8.3 line
+
+Built-in credential, JWT/claim and scope helpers redact annotated arguments in their
+own exception frames. Repeat `#[\SensitiveParameter]` on custom verifier/mapper
+implementations and nested sensitive helpers; interface annotations do not propagate.
+Messages, stored object state, request objects and onward native/custom callback
+arguments remain outside that protection. Use `br-php83-upgrade` for the exact limits
+and keep normal application logging redaction.
 
 ## References
 

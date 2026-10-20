@@ -5,14 +5,19 @@ metadata:
   wp-skills-author: "Soczó Kristóf"
   wp-skills-contact: "mailto:lonsdale201@hotmail.com"
   wp-skills-plugin: "better-route"
-  wp-skills-plugin-version-tested: "1.1.0"
-  wp-skills-php-min: "8.1"
-  wp-skills-last-updated: "2026-07-13"
+  wp-skills-plugin-version-tested: "2.0.0"
+  wp-skills-php-min: "8.3"
+  wp-skills-last-updated: "2026-10-20"
 ---
 
 # Better Route ownership guards
 
 Authentication establishes identity; ownership authorization establishes whether that identity may access this object.
+
+The Resource helper guidance below targets the URL-bound ownership fix in 2.0.
+On 1.1.2 or older, do not rely on `OwnedResourcePolicy::currentUserOwns()` for
+URL-bound object authorization: its merged request ID can differ from the handler's
+URL ID. Use an explicit URL-bound policy until the security fix is installed.
 
 ## Raw route
 
@@ -21,7 +26,7 @@ use BetterRoute\Middleware\Auth\OwnershipGuardMiddleware;
 
 $guard = new OwnershipGuardMiddleware(
     ownerResolver: static function ($context): ?int {
-        return my_resource_owner_id((int) $context->request->get_param('id'));
+        return my_resource_owner_id((int) ($context->request->get_url_params()['id'] ?? 0));
     },
     bypassCapability: 'manage_options',
     deniedStatus: 404
@@ -61,6 +66,33 @@ Resource::make('records')
 Test another user's ID, absent object, anonymous access, subject-only identity, native WordPress identity, admin bypass, and list-result isolation.
 
 Source references: `src/Middleware/Auth/OwnershipGuardMiddleware.php`, `src/Resource/OwnedResourcePolicy.php`.
+
+## Explicit URL policy for older installations
+
+Until the library fix is installed, use an explicit callback for each owned action:
+
+```php
+use BetterRoute\Resource\ResourcePolicy;
+
+$ownsUrl = static function ($request): bool {
+    $raw = $request->get_url_params()['id'] ?? null;
+    $valid = (is_int($raw) && $raw > 0)
+        || (is_string($raw) && ctype_digit($raw) && (int) $raw > 0);
+    $userId = get_current_user_id();
+    return $valid && $userId > 0 && (int) my_resource_owner_id((int) $raw) === $userId;
+};
+
+// On the existing Resource definition:
+->policy(ResourcePolicy::callbacks([
+    'get' => $ownsUrl,
+    'update' => $ownsUrl,
+    'delete' => $ownsUrl,
+]))
+```
+
+Resource permission callbacks require the authenticated native WP user before
+dispatch. Middleware running after WordPress permissions does not establish that
+earlier identity. List authorization and filtering remain separate requirements.
 
 ## References
 

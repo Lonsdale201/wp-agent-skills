@@ -2,6 +2,23 @@
 
 This collection is continuously evolving — entries are date-based, not version-tagged. New skills land when they're ready; updates go in when they cover real ground (a new release of an upstream plugin, a verified misconception, a corrected example).
 
+## 2026-10-20 (Better Route 2.0 / PHP 8.3)
+
+### Added
+
+- `br-woo-analytics`: fixed read-only reports, native permissions, bounded queries,
+  comparison windows, historical import readiness, decimal DTOs and OpenAPI helpers.
+- `br-php83-upgrade`: runtime and Composer migration from 1.1.2 to 2.0, readonly
+  compatibility, sensitive argument frames and custom implementation guidance.
+
+### Changed
+
+- Updated installation/migration, authentication, routes, Resource, errors, Woo CRUD
+  and OpenAPI guidance from public source. Covered customer-role visibility,
+  protected metadata, coupon management state and distinct PUT/PATCH operation IDs.
+- Preserved older idempotency and authentication rollout requirements. Unchanged
+  skills retain their previously tested version metadata.
+
 ## 2026-09-27 (Csomagpontok és Címkék 4.2.8 and Számlázz.hu recheck)
 
 ### Added

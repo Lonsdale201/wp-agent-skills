@@ -1,13 +1,13 @@
 ---
 name: br-routes
-description: Register custom WordPress REST routes with better-route 1.1 Router and RouteBuilder. Use for Router::make or BetterRoute::router, get/post/put/patch/delete/options, permission, protectedByMiddleware, publicRoute, args, route middleware, groups, handler signatures, RequestContext, WP_REST_Request, route registration, or unexpected 403 responses. In 1.1 every raw route, including GET and OPTIONS, denies by default until its access intent is explicit.
+description: Register custom WordPress REST routes with Better Route Router and RouteBuilder. Use for Router::make, route methods, explicit permissions, protectedByMiddleware, publicRoute, args, groups, handler signatures, RequestContext and route-registration failures. Every raw route, including GET and OPTIONS, denies by default until access intent is explicit.
 metadata:
   wp-skills-author: "Soczó Kristóf"
   wp-skills-contact: "mailto:lonsdale201@hotmail.com"
   wp-skills-plugin: "better-route"
-  wp-skills-plugin-version-tested: "1.1.1"
-  wp-skills-php-min: "8.1"
-  wp-skills-last-updated: "2026-09-21"
+  wp-skills-plugin-version-tested: "2.0.0"
+  wp-skills-php-min: "8.3"
+  wp-skills-last-updated: "2026-10-20"
 ---
 
 # better-route: custom REST routes
@@ -23,7 +23,7 @@ use BetterRoute\Router\Router;
 add_action('rest_api_init', static function (): void {
     $router = Router::make('myapp', 'v1');
 
-    $router->get('/ping', static fn (): Response => Response::ok(['pong' => true]))
+    $router->get('/ping', static fn (): Response => new Response(['pong' => true]))
         ->publicRoute();
 
     $router->register();
@@ -44,9 +44,9 @@ $router->post('/account/orders', $handler)
     ->protectedByMiddleware('bearerAuth')
     ->middleware([$jwt]);
 
-// Deliberately anonymous. Also emits OpenAPI security: [].
+// The signature middleware authenticates this webhook.
 $router->post('/webhooks/provider', $handler)
-    ->publicRoute()
+    ->protectedByMiddleware('hmacAuth')
     ->middleware([$signature]);
 ```
 
@@ -83,7 +83,7 @@ static fn (): array => ['ok' => true];
 
 // One untyped/non-RequestContext parameter receives WP_REST_Request.
 static function ($request): array {
-    return ['id' => (int) $request->get_param('id')];
+    return ['id' => (int) ($request->get_url_params()['id'] ?? 0)];
 }
 
 // A RequestContext-compatible type receives RequestContext.
@@ -93,7 +93,7 @@ static function (RequestContext $context): array {
 
 // Two parameters always receive RequestContext, then the WP request.
 static function (RequestContext $context, $request): array {
-    return ['id' => (int) $request->get_param('id')];
+    return ['id' => (int) ($request->get_url_params()['id'] ?? 0)];
 }
 ```
 
@@ -160,6 +160,13 @@ Do not treat these as silent missing-route cases.
 - Use `br-cors-public-client` for browser preflight and authoritative CORS headers.
 - Use `br-openapi` for contract export.
 - Use `br-error-contract` for `ApiException` and normalized responses.
+
+## Context compatibility in 2.0
+
+`RequestContext` and `RouteDefinition` are readonly classes on PHP 8.3. Attach
+per-request extension data with `$context->withAttribute($key, $value)` and pass
+the returned context onward; undeclared dynamic properties now fail. Contained
+request objects remain mutable. See `br-php83-upgrade` before updating consumers.
 
 ## References
 
