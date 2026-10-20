@@ -1,6 +1,6 @@
 ---
 name: br-install-and-migrate
-description: Install better-route from Packagist or migrate an existing WordPress API to Better Route 2.0 on PHP 8.3. Use for Composer constraints, choosing the PHP 8.1-compatible 1.1.2 release, upgrading web/CLI/worker runtimes, readonly DTO compatibility, or preserving earlier authentication, idempotency, Resource and WooCommerce migration requirements.
+description: Install better-route from Packagist or migrate an existing WordPress API to Better Route 2.0 on PHP 8.3. Use for Composer constraints, choosing the PHP 8.1-compatible 1.1.3 security patch, upgrading web/CLI/worker runtimes, readonly DTO compatibility, or preserving earlier authentication, idempotency, Resource and WooCommerce migration requirements.
 metadata:
   wp-skills-author: "Soczó Kristóf"
   wp-skills-contact: "mailto:lonsdale201@hotmail.com"
