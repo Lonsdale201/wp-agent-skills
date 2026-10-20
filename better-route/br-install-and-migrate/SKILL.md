@@ -1,27 +1,34 @@
 ---
 name: br-install-and-migrate
-description: Install better-route from Packagist or migrate a WordPress integration to better-route 1.1. Use when adding better-route/better-route, changing the Composer constraint to ^1.1, upgrading from 1.0 or pre-1.0 releases, diagnosing new 403 route responses, migrating atomic idempotency schema, or reviewing 1.1 behavior changes in routing, Resource CRUD, CORS, ETag, rate limiting, JWT/JWKS, OpenAPI, and WooCommerce routes.
+description: Install better-route from Packagist or migrate an existing WordPress API to Better Route 2.0 on PHP 8.3. Use for Composer constraints, choosing the PHP 8.1-compatible 1.1.2 release, upgrading web/CLI/worker runtimes, readonly DTO compatibility, or preserving earlier authentication, idempotency, Resource and WooCommerce migration requirements.
 metadata:
   wp-skills-author: "Soczó Kristóf"
   wp-skills-contact: "mailto:lonsdale201@hotmail.com"
   wp-skills-plugin: "better-route"
-  wp-skills-plugin-version-tested: "1.1.1"
-  wp-skills-php-min: "8.1"
-  wp-skills-last-updated: "2026-09-21"
+  wp-skills-plugin-version-tested: "2.0.0"
+  wp-skills-php-min: "8.3"
+  wp-skills-last-updated: "2026-10-20"
 ---
 
-# better-route: install and migrate to 1.1
+# better-route: install and migrate
 
 ## Install
 
-Require the stable 1.1.1 bug-fix release or newer in the 1.x line from Packagist:
+Choose the package line for the actual PHP runtime. Better Route is a Composer
+library, not an independently activated WordPress plugin.
 
 ```bash
-composer require better-route/better-route:^1.1.1
+composer require better-route/better-route:^2.0
 composer show better-route/better-route
+composer check-platform-reqs --no-dev
 ```
 
-Use PHP 8.1 or newer. Do not add a VCS repository unless intentionally consuming a fork or unreleased branch.
+Version 2.0 requires PHP 8.3 in web, CLI, cron and worker processes. For PHP 8.1/8.2,
+use the security-patched 1.x line with `composer require better-route/better-route:^1.1.3`.
+On 1.1.2 or older, replace the Resource ownership helper with an explicit URL-bound
+policy until updated; see `br-owned-resource-guards`.
+An existing `^1.1` constraint deliberately does not select 2.0. Do not add a VCS
+repository unless intentionally consuming a fork or unreleased branch.
 
 Register routes during `rest_api_init`:
 
@@ -35,6 +42,47 @@ add_action('rest_api_init', static function (): void {
     $router->register();
 });
 ```
+
+## 1.1.2 / 1.1.3 to 2.0.0
+
+- Upgrade every PHP runtime before changing the Composer constraint. A Composer
+  `config.platform` value does not upgrade the server; check real platform requirements.
+- Request/response, route and Woo query/policy DTOs become readonly classes. Declared
+  fields and constructors remain; attaching undeclared properties now fails. Use
+  `RequestContext::withAttribute()` or separate application state. Readonly is shallow.
+- Sensitive arguments in annotated library frames are redacted in exception traces.
+  Messages, object properties and onward PHP/WP/custom callback frames are outside
+  that protection. Annotate sensitive parameters in custom implementations too.
+- Method overrides and constant types are checked by PHP. Public names and constant
+  values remain unchanged. No database-schema, cache-key or idempotency-key migration
+  is introduced between 1.1.2 and 2.0.0.
+- Resource ownership authorization now uses the same URL capture as the handler,
+  preventing query/body IDs from selecting a different authorization object.
+  The same security fix is available in 1.1.3 without raising the PHP minimum.
+- Keep the application's REST namespace and OpenAPI `info.version` independent of the
+  library major. Installing 2.0 does not require renaming an unchanged `myapp/v1` API.
+
+Use `br-php83-upgrade` for runtime and extension compatibility checks.
+
+## 1.1.1 to 1.1.2
+
+This earlier upgrade remains relevant when jumping directly to 2.0:
+
+- Customer visibility is shared across list/detail/writes through `CustomerRolePolicy`.
+  Privileged multi-role, directly privileged and superadmin users are excluded by
+  default. Role filters only narrow trusted configuration. Authorization/session
+  metadata is rejected, including known sensitive keys without an underscore prefix.
+- Customer list defaults and all coupon defaults omit metadata. Customer detail and
+  create/update responses can include filtered public metadata by default. Coupon `state` is a management summary;
+  published default lists still include expired/exhausted coupons unless filtered.
+  Internal coupon metadata cannot invoke native setters; usage counts remain read-only.
+- Analytics is opt-in through `WooAnalyticsService`, with native report capabilities,
+  import-readiness checks and no cross-user wrapper cache. Use `br-woo-analytics`.
+- OpenAPI PATCH operation IDs now end in `Patch`, independently of PUT `Update` IDs.
+  Invalid security, duplicate operations and equivalent path templates throw. Use
+  strict export and a complete OpenAPI 3.1 validator; handle native WP errors too.
+- No new storage migration is introduced by 1.1.2. Preserve the older coordinated
+  writer rollout below when coming from 1.1.0 or earlier.
 
 ## 1.1.0 to 1.1.1
 
@@ -172,7 +220,7 @@ Smoke at minimum: anonymous/public and denied routes, authenticated reads/writes
 ## References
 
 - Official documentation: <https://lonsdale201.github.io/better-docs/docs/better-route/agents>
-- Versioned migration contract: <https://github.com/Lonsdale201/better-route/blob/v1.1.1/MIGRATING.md>
+- Migration contract: <https://github.com/Lonsdale201/better-route/blob/main/MIGRATING.md>
 - Verified source paths:
   - `README.md`
   - `composer.json`

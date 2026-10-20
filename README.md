@@ -1,6 +1,6 @@
 # wp-agent-skills
 
-**244 skills · 24 domains**
+**246 skills · 24 domains**
 
 A community-maintained collection of **portable Agent Skills** for WordPress plugin and theme development.
 

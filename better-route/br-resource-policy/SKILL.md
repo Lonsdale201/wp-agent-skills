@@ -5,9 +5,9 @@ metadata:
   wp-skills-author: "Soczó Kristóf"
   wp-skills-contact: "mailto:lonsdale201@hotmail.com"
   wp-skills-plugin: "better-route"
-  wp-skills-plugin-version-tested: "1.1.0"
-  wp-skills-php-min: "8.1"
-  wp-skills-last-updated: "2026-07-13"
+  wp-skills-plugin-version-tested: "2.0.0"
+  wp-skills-php-min: "8.3"
+  wp-skills-last-updated: "2026-10-20"
 ---
 
 # better-route: Resource authorization
@@ -30,7 +30,7 @@ use BetterRoute\Resource\ResourcePolicy;
 ]))
 ->policy(ResourcePolicy::callbacks([
     'update' => static fn ($request, string $action): bool =>
-        current_user_can('edit_post', (int) $request->get_param('id')),
+        current_user_can('edit_post', (int) ($request->get_url_params()['id'] ?? 0)),
 ]))
 ```
 

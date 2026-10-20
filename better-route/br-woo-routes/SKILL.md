@@ -1,13 +1,13 @@
 ---
 name: br-woo-routes
-description: Expose WooCommerce orders, products, customers, and coupons with better-route 1.1 WooRouteRegistrar. Use for BetterRoute::wooRouteRegistrar, HPOS guards, actions, permissions, strict list/body validation, pagination meta, stable sorting, protected metadata, atomic idempotency, transactional order writes, product price rules, customer role/capability rules, coupon uniqueness, or Woo OpenAPI components.
+description: Expose WooCommerce orders, products, customers and coupons with Better Route WooRouteRegistrar. Use for strict CRUD, CustomerRolePolicy, coupon state/status and metadata views, native permissions, HPOS, pagination, idempotency and Woo OpenAPI components. Read-only Analytics reports have a separate br-woo-analytics skill.
 metadata:
   wp-skills-author: "Soczó Kristóf"
   wp-skills-contact: "mailto:lonsdale201@hotmail.com"
   wp-skills-plugin: "better-route"
-  wp-skills-plugin-version-tested: "1.1.1"
-  wp-skills-php-min: "8.1"
-  wp-skills-last-updated: "2026-09-21"
+  wp-skills-plugin-version-tested: "2.0.0"
+  wp-skills-php-min: "8.3"
+  wp-skills-last-updated: "2026-10-20"
 ---
 
 # better-route: WooCommerce routes
@@ -52,7 +52,21 @@ Customer writes also enforce native user capabilities inside the service:
 - update: `edit_user` for the target;
 - delete: `delete_user` for the target.
 
-Customer list/get expose users with the `customer` role only; a general WordPress user directory is intentionally not provided.
+Customer visibility defaults to the `customer` role and uses one `CustomerRolePolicy`
+for lists, detail and mutations. Configure additional customer-like roles explicitly:
+
+```php
+'customerRoles' => new \BetterRoute\Integration\Woo\CustomerRolePolicy(
+    allowedRoles: ['customer', 'wholesale_customer'],
+    excludedRoles: ['former_customer'],
+    allowPrivilegedRoles: false
+),
+```
+
+Privileged roles, direct administrative capabilities and multisite superadmins are
+excluded by default, including multi-role accounts. Request role filters can only
+narrow the configured allowlist. `allowPrivilegedRoles: true` is a trusted server
+opt-in; it does not grant native user-write capabilities or make a user directory.
 
 ## Lists
 
@@ -76,8 +90,8 @@ Resource filters/sorts differ:
 
 - orders: status, customer_id, search; stable order/date/total options supported by parser;
 - products: status, type, sku, search, stock_status; derived price sorting is not supported;
-- customers: role, email, search;
-- coupons: code, search.
+- customers: role, email, search; role must be inside the configured policy;
+- coupons: code, search, state and native status; numeric usage/expiry sorting.
 
 Use each parser's allowlist rather than forwarding arbitrary Woo query vars.
 
@@ -126,19 +140,54 @@ Money response fields are decimal strings, not JSON floats.
 - Keep fractional Woo stock configuration active for later reads as well as writes. Woo normalizes quantities on load; Better Route does not recover old fractions by bypassing its data store.
 - Use OpenAPI `number` for line quantities, `exclusiveMinimum: 0` on input, and `number` or `null` for stock.
 
-The registrar is administrative CRUD, not a Store API cart/checkout adapter. It adds no storefront or refund endpoints in 1.1.1. Runtime changes were checked with WooCommerce 11.1.1 on both HPOS and legacy storage; `requireHpos` remains enabled by default.
+The registrar is administrative CRUD, not a Store API cart/checkout adapter. It adds
+no storefront or refund endpoints. The current measured runtime matrix is WordPress
+6.9.4 / WooCommerce 10.9.4 on PHP 8.3/8.5, each with HPOS and legacy storage. This does
+not establish every WP/Woo combination; `requireHpos` remains enabled by default.
+
+## Coupon management views
+
+Coupon `state` is read-only: `active`, `scheduled`, `expired`, `exhausted` or `draft`.
+It is a management summary, not a checkout eligibility decision. State filters select
+their matching native post status; contradictory `state`/`status` combinations fail.
+Published state precedence is expired, then exhausted, then active. Unfiltered lists
+remain published coupons, including expired/exhausted ones.
+
+Use `status=publish|draft|future` and numeric sort fields `date_expires` or
+`usage_count`, with `-` for descending. The `expiring` filter uses `expiring_days`
+(default 30, maximum 3650); it is not a separate DTO state. Expiry uses shop-timezone
+rules. Request metadata explicitly when the application needs public plugin fields.
 
 ## Metadata
 
-Use the actual helper APIs:
+Prefer the services, which enforce entity-specific metadata guards. In an already
+authorized custom integration, use the corresponding normalizer:
 
 ```php
-$meta = MetaDataHelper::normalizeIncoming($payload['meta_data'] ?? null);
-MetaDataHelper::applyToTarget($object, $meta);
-$serialized = MetaDataHelper::serialize($object->get_meta_data());
+use BetterRoute\Integration\Woo\MetaDataHelper;
+
+$couponMeta = MetaDataHelper::normalizeCouponIncoming($payload['meta_data'] ?? null);
+MetaDataHelper::applyToTarget($coupon, $couponMeta);
+
+$customerMeta = MetaDataHelper::normalizeCustomerIncoming($payload['meta_data'] ?? null);
+MetaDataHelper::applyToTarget($customer, $customerMeta);
+$serialized = MetaDataHelper::serializeCustomer($customer->get_meta_data());
 ```
 
-Incoming metadata may be a key/value map or a list of `{key,value}` entries. Underscore-prefixed protected keys are rejected on write and omitted on serialization by default. Opt in with `allowProtected/includeProtected` only on tightly protected internal code paths.
+Incoming metadata may be null, a key/value map or a list of `{key,value}` entries.
+Underscore-prefixed keys are rejected on write and omitted on serialization by
+default. The generic `normalizeIncoming()`/`serialize()` helper flags are not
+substitutes for the customer/coupon guards. Normalization does not authorize writes;
+retain native capability and visibility checks.
+
+Customer list defaults omit `meta_data`; select the field explicitly on lists.
+Customer detail and create/update responses can include filtered public metadata by
+default. Coupon default read DTOs omit `meta_data` for both list and detail.
+Customer services additionally reject known WordPress role/capability/session keys,
+including keys without an underscore. Coupon services reject internal data keys such
+as `usage_count` so metadata cannot invoke native setters. Generic helper flags do
+not remove those service-level boundaries. Review third-party authorization metadata
+and use an application allowlist rather than assuming every public key is harmless.
 
 ## Atomic idempotency
 
@@ -204,3 +253,5 @@ Use the returned Router's contracts and `BetterRoute::wooOpenApiComponents()`. I
   - `src/Integration/Woo/WooCustomerService.php`
   - `src/Integration/Woo/WooCouponService.php`
   - `src/Integration/Woo/WooOpenApiComponents.php`
+  - `src/Integration/Woo/CustomerRolePolicy.php`
+  - `src/Integration/Woo/CouponQueryFilters.php`

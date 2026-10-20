@@ -12,7 +12,7 @@
     "skill_file": "SKILL.md"
   },
   "domain_count": 24,
-  "skill_count": 244,
+  "skill_count": 246,
   "domains": [
     {
       "slug": "acf",
@@ -30,7 +30,7 @@
       "slug": "better-route",
       "path": "better-route",
       "readme_path": "better-route/README.md",
-      "skill_count": 23
+      "skill_count": 25
     },
     {
       "slug": "csomagpontok-es-cimkek",
@@ -763,7 +763,7 @@
       "slug": "br-auth-middleware",
       "name": "br-auth-middleware",
       "domain": "better-route",
-      "description": "Configure Better Route 1.1 authentication with JWT, custom bearer tokens, WordPress Application Passwords, or cookie nonces. Use when protecting routes, mapping verified claims to WordPress users, enforcing scopes, consuming the shared AuthContext identity, restoring native users after nested dispatch, or diagnosing response-filter/_embed auth boundaries.",
+      "description": "Configure Better Route authentication with JWT, custom bearer tokens, WordPress Application Passwords or cookie nonces. Use when protecting routes, mapping verified claims to WordPress users, enforcing scopes, consuming AuthContext, restoring native users after nested dispatch, or checking sensitive-argument redaction in custom verifier implementations.",
       "path": "better-route/br-auth-middleware",
       "skill_path": "better-route/br-auth-middleware/SKILL.md",
       "url": "https://raw.githubusercontent.com/Lonsdale201/wp-agent-skills/main/better-route/br-auth-middleware/SKILL.md",
@@ -774,9 +774,9 @@
         "author": "Soczó Kristóf",
         "contact": "mailto:lonsdale201@hotmail.com",
         "plugin": "better-route",
-        "plugin-version-tested": "1.1.1",
-        "php-min": "8.1",
-        "last-updated": "2026-09-21"
+        "plugin-version-tested": "2.0.0",
+        "php-min": "8.3",
+        "last-updated": "2026-10-20"
       },
       "resources": [
         {
@@ -791,9 +791,9 @@
       "has_examples": false,
       "has_scripts": false,
       "skill_md": {
-        "bytes": 5775,
-        "lines": 87,
-        "sha256": "d64d5128a362019501e4cee211dbb7d9f15afb7d9d6a031c95785ca1eeca7d31"
+        "bytes": 6283,
+        "lines": 96,
+        "sha256": "a7307d1a27d0ff366d1585587f5b68dca55264b2929df97d13299634e79708dc"
       }
     },
     {
@@ -885,9 +885,9 @@
         "author": "Soczó Kristóf",
         "contact": "mailto:lonsdale201@hotmail.com",
         "plugin": "better-route",
-        "plugin-version-tested": "1.1.0",
-        "php-min": "8.1",
-        "last-updated": "2026-07-13"
+        "plugin-version-tested": "2.0.0",
+        "php-min": "8.3",
+        "last-updated": "2026-10-20"
       },
       "resources": [
         {
@@ -902,9 +902,9 @@
       "has_examples": false,
       "has_scripts": false,
       "skill_md": {
-        "bytes": 5186,
-        "lines": 144,
-        "sha256": "48662c2a8f317d4318c16c29ecc71d7ca63dcc9a86a75092e2a3809c88dc93e2"
+        "bytes": 5688,
+        "lines": 152,
+        "sha256": "c122bfac54831f937f2258726e6dbf7aaad844d1642d2032625b4c29ed9c7f89"
       }
     },
     {
@@ -1006,7 +1006,7 @@
       "slug": "br-install-and-migrate",
       "name": "br-install-and-migrate",
       "domain": "better-route",
-      "description": "Install better-route from Packagist or migrate a WordPress integration to better-route 1.1. Use when adding better-route/better-route, changing the Composer constraint to ^1.1, upgrading from 1.0 or pre-1.0 releases, diagnosing new 403 route responses, migrating atomic idempotency schema, or reviewing 1.1 behavior changes in routing, Resource CRUD, CORS, ETag, rate limiting, JWT/JWKS, OpenAPI, and WooCommerce routes.",
+      "description": "Install better-route from Packagist or migrate an existing WordPress API to Better Route 2.0 on PHP 8.3. Use for Composer constraints, choosing the PHP 8.1-compatible 1.1.2 release, upgrading web/CLI/worker runtimes, readonly DTO compatibility, or preserving earlier authentication, idempotency, Resource and WooCommerce migration requirements.",
       "path": "better-route/br-install-and-migrate",
       "skill_path": "better-route/br-install-and-migrate/SKILL.md",
       "url": "https://raw.githubusercontent.com/Lonsdale201/wp-agent-skills/main/better-route/br-install-and-migrate/SKILL.md",
@@ -1017,9 +1017,9 @@
         "author": "Soczó Kristóf",
         "contact": "mailto:lonsdale201@hotmail.com",
         "plugin": "better-route",
-        "plugin-version-tested": "1.1.1",
-        "php-min": "8.1",
-        "last-updated": "2026-09-21"
+        "plugin-version-tested": "2.0.0",
+        "php-min": "8.3",
+        "last-updated": "2026-10-20"
       },
       "resources": [
         {
@@ -1034,9 +1034,9 @@
       "has_examples": false,
       "has_scripts": false,
       "skill_md": {
-        "bytes": 12953,
-        "lines": 182,
-        "sha256": "88a3d4c8f4c75e582adae121186772d400bb2862e456613b4abaa14d390b6aca"
+        "bytes": 16053,
+        "lines": 230,
+        "sha256": "c4369f1e2dc19d13e8ca7f07d562614be289bcab242ec440e5074e40dd17ec27"
       }
     },
     {
@@ -1117,7 +1117,7 @@
       "slug": "br-openapi",
       "name": "br-openapi",
       "domain": "better-route",
-      "description": "Generate or serve better-route 1.1 OpenAPI 3.1 documents from Router/Resource/Woo contracts. Use for OpenApiExporter, OpenApiRouteRegistrar, contracts, contractsFromSources, route args to parameters, explicit parameter overrides, custom responses, OPTIONS 204, strictSchemas, components, securitySchemes, globalSecurity, publicRoute security, Resource response envelopes, Woo schemas, or openapi.json permissions.",
+      "description": "Export and validate Better Route OpenAPI 3.1 documents from Router, Resource and Woo contracts. Use for OpenApiExporter, strictSchemas, nested references, unique operation IDs, WordPress regex paths and args, security schemes and overrides, native WP errors, response envelopes, Woo components or protected openapi.json endpoints.",
       "path": "better-route/br-openapi",
       "skill_path": "better-route/br-openapi/SKILL.md",
       "url": "https://raw.githubusercontent.com/Lonsdale201/wp-agent-skills/main/better-route/br-openapi/SKILL.md",
@@ -1128,18 +1128,18 @@
         "author": "Soczó Kristóf",
         "contact": "mailto:lonsdale201@hotmail.com",
         "plugin": "better-route",
-        "plugin-version-tested": "1.1.1",
-        "php-min": "8.1",
-        "last-updated": "2026-09-21"
+        "plugin-version-tested": "2.0.0",
+        "php-min": "8.3",
+        "last-updated": "2026-10-20"
       },
       "resources": [],
       "has_reference": false,
       "has_examples": false,
       "has_scripts": false,
       "skill_md": {
-        "bytes": 7039,
-        "lines": 190,
-        "sha256": "2758f0b7ed45cbdc4371a298aedc33486427e8ded555d0a85192c3a2a124fbad"
+        "bytes": 9087,
+        "lines": 229,
+        "sha256": "578c440f68941a1248f962d50393b3741fe0a92bf5583166525965603e4ed2bc"
       }
     },
     {
@@ -1157,9 +1157,9 @@
         "author": "Soczó Kristóf",
         "contact": "mailto:lonsdale201@hotmail.com",
         "plugin": "better-route",
-        "plugin-version-tested": "1.1.0",
-        "php-min": "8.1",
-        "last-updated": "2026-07-13"
+        "plugin-version-tested": "2.0.0",
+        "php-min": "8.3",
+        "last-updated": "2026-10-20"
       },
       "resources": [
         {
@@ -1174,9 +1174,9 @@
       "has_examples": false,
       "has_scripts": false,
       "skill_md": {
-        "bytes": 4267,
+        "bytes": 4281,
         "lines": 76,
-        "sha256": "ea4bf9a1230cd27592050d90772b1dbec39a950052c7ceca75802a591686ed5a"
+        "sha256": "e17e648e50dcf9bed90dd771163cbea1c343295e124871dcf4ea4635f1386d82"
       }
     },
     {
@@ -1194,9 +1194,9 @@
         "author": "Soczó Kristóf",
         "contact": "mailto:lonsdale201@hotmail.com",
         "plugin": "better-route",
-        "plugin-version-tested": "1.1.0",
-        "php-min": "8.1",
-        "last-updated": "2026-07-13"
+        "plugin-version-tested": "2.0.0",
+        "php-min": "8.3",
+        "last-updated": "2026-10-20"
       },
       "resources": [
         {
@@ -1211,9 +1211,38 @@
       "has_examples": false,
       "has_scripts": false,
       "skill_md": {
-        "bytes": 2892,
-        "lines": 68,
-        "sha256": "ace18f9dc3794ff9fd41d50e9391c7fb7c85506de1ec47523125d1a198be3459"
+        "bytes": 4154,
+        "lines": 100,
+        "sha256": "07ded024e976ad1d8877dfcf195c0d13228f46cac6547818d4623a935a7d0121"
+      }
+    },
+    {
+      "slug": "br-php83-upgrade",
+      "name": "br-php83-upgrade",
+      "domain": "better-route",
+      "description": "Upgrade a Better Route consumer from 1.1.2 to 2.0 on PHP 8.3. Use when changing Composer constraints or PHP runtimes, checking readonly DTO dynamic properties, extending authentication interfaces with SensitiveParameter, diagnosing Override failures, or validating the new runtime before deployment. Earlier idempotency migrations remain in br-install-and-migrate.",
+      "path": "better-route/br-php83-upgrade",
+      "skill_path": "better-route/br-php83-upgrade/SKILL.md",
+      "url": "https://raw.githubusercontent.com/Lonsdale201/wp-agent-skills/main/better-route/br-php83-upgrade/SKILL.md",
+      "raw_url": "https://raw.githubusercontent.com/Lonsdale201/wp-agent-skills/main/better-route/br-php83-upgrade/SKILL.md",
+      "html_url": "https://github.com/Lonsdale201/wp-agent-skills/blob/main/better-route/br-php83-upgrade/SKILL.md",
+      "directory_url": "https://github.com/Lonsdale201/wp-agent-skills/tree/main/better-route/br-php83-upgrade",
+      "metadata": {
+        "author": "Soczó Kristóf",
+        "contact": "mailto:lonsdale201@hotmail.com",
+        "plugin": "better-route",
+        "plugin-version-tested": "2.0.0",
+        "php-min": "8.3",
+        "last-updated": "2026-10-20"
+      },
+      "resources": [],
+      "has_reference": false,
+      "has_examples": false,
+      "has_scripts": false,
+      "skill_md": {
+        "bytes": 5293,
+        "lines": 108,
+        "sha256": "87c33654b26d2e94a406126aed640c454637b9024e8c784f4ed5c96a38038019"
       }
     },
     {
@@ -1268,18 +1297,18 @@
         "author": "Soczó Kristóf",
         "contact": "mailto:lonsdale201@hotmail.com",
         "plugin": "better-route",
-        "plugin-version-tested": "1.1.0",
-        "php-min": "8.1",
-        "last-updated": "2026-07-13"
+        "plugin-version-tested": "2.0.0",
+        "php-min": "8.3",
+        "last-updated": "2026-10-20"
       },
       "resources": [],
       "has_reference": false,
       "has_examples": false,
       "has_scripts": false,
       "skill_md": {
-        "bytes": 6610,
-        "lines": 161,
-        "sha256": "9088b4c4df363ce07189175fd70001ceaf44e4e662050dc4f974e50b410c64e0"
+        "bytes": 6850,
+        "lines": 165,
+        "sha256": "cb291ed4bc987ae4cc408433be925217bac1e49cf121f8f5b6edac49085a4320"
       }
     },
     {
@@ -1297,18 +1326,18 @@
         "author": "Soczó Kristóf",
         "contact": "mailto:lonsdale201@hotmail.com",
         "plugin": "better-route",
-        "plugin-version-tested": "1.1.0",
-        "php-min": "8.1",
-        "last-updated": "2026-07-13"
+        "plugin-version-tested": "2.0.0",
+        "php-min": "8.3",
+        "last-updated": "2026-10-20"
       },
       "resources": [],
       "has_reference": false,
       "has_examples": false,
       "has_scripts": false,
       "skill_md": {
-        "bytes": 5064,
+        "bytes": 5078,
         "lines": 118,
-        "sha256": "26b6877e68b76d599d6f817497081b26a70283e7deb21efad4278df2c5488c8d"
+        "sha256": "305be4abbcb3386290aa6aaf3e26aba4188e8bc3bfa61a9a71b32c156e94afdd"
       }
     },
     {
@@ -1326,25 +1355,25 @@
         "author": "Soczó Kristóf",
         "contact": "mailto:lonsdale201@hotmail.com",
         "plugin": "better-route",
-        "plugin-version-tested": "1.1.0",
-        "php-min": "8.1",
-        "last-updated": "2026-07-13"
+        "plugin-version-tested": "2.0.0",
+        "php-min": "8.3",
+        "last-updated": "2026-10-20"
       },
       "resources": [],
       "has_reference": false,
       "has_examples": false,
       "has_scripts": false,
       "skill_md": {
-        "bytes": 5806,
-        "lines": 129,
-        "sha256": "fd176ada2ffbb05e3ce99aabd52b79fd4068057ac9422c80b0490310649f24e1"
+        "bytes": 6060,
+        "lines": 133,
+        "sha256": "1df09781bd375a8f29a83158b597b79bf979fc92fd5ceeeec789beee7c6b9a54"
       }
     },
     {
       "slug": "br-routes",
       "name": "br-routes",
       "domain": "better-route",
-      "description": "Register custom WordPress REST routes with better-route 1.1 Router and RouteBuilder. Use for Router::make or BetterRoute::router, get/post/put/patch/delete/options, permission, protectedByMiddleware, publicRoute, args, route middleware, groups, handler signatures, RequestContext, WP_REST_Request, route registration, or unexpected 403 responses. In 1.1 every raw route, including GET and OPTIONS, denies by default until its access intent is explicit.",
+      "description": "Register custom WordPress REST routes with Better Route Router and RouteBuilder. Use for Router::make, route methods, explicit permissions, protectedByMiddleware, publicRoute, args, groups, handler signatures, RequestContext and route-registration failures. Every raw route, including GET and OPTIONS, denies by default until access intent is explicit.",
       "path": "better-route/br-routes",
       "skill_path": "better-route/br-routes/SKILL.md",
       "url": "https://raw.githubusercontent.com/Lonsdale201/wp-agent-skills/main/better-route/br-routes/SKILL.md",
@@ -1355,18 +1384,18 @@
         "author": "Soczó Kristóf",
         "contact": "mailto:lonsdale201@hotmail.com",
         "plugin": "better-route",
-        "plugin-version-tested": "1.1.1",
-        "php-min": "8.1",
-        "last-updated": "2026-09-21"
+        "plugin-version-tested": "2.0.0",
+        "php-min": "8.3",
+        "last-updated": "2026-10-20"
       },
       "resources": [],
       "has_reference": false,
       "has_examples": false,
       "has_scripts": false,
       "skill_md": {
-        "bytes": 7315,
-        "lines": 173,
-        "sha256": "0d67c3f34e44079004de1a0a3e8b4815a1cfad06b3e27eed64697a6632adb8a6"
+        "bytes": 7614,
+        "lines": 180,
+        "sha256": "cf4b523afddada704a185fc6c3a7fbf96e8f89b9dd971c94fd2fb5e1b9a4a8eb"
       }
     },
     {
@@ -1407,10 +1436,40 @@
       }
     },
     {
+      "slug": "br-woo-analytics",
+      "name": "br-woo-analytics",
+      "domain": "better-route",
+      "description": "Expose read-only WooCommerce Analytics with Better Route WooAnalyticsService. Use for supported reports, report-specific date and pagination contracts, native report permissions, comparison windows, historical import readiness, decimal-money DTOs or WooAnalyticsOpenApi helpers. CRUD, checkout eligibility and import execution are separate concerns.",
+      "path": "better-route/br-woo-analytics",
+      "skill_path": "better-route/br-woo-analytics/SKILL.md",
+      "url": "https://raw.githubusercontent.com/Lonsdale201/wp-agent-skills/main/better-route/br-woo-analytics/SKILL.md",
+      "raw_url": "https://raw.githubusercontent.com/Lonsdale201/wp-agent-skills/main/better-route/br-woo-analytics/SKILL.md",
+      "html_url": "https://github.com/Lonsdale201/wp-agent-skills/blob/main/better-route/br-woo-analytics/SKILL.md",
+      "directory_url": "https://github.com/Lonsdale201/wp-agent-skills/tree/main/better-route/br-woo-analytics",
+      "metadata": {
+        "author": "Soczó Kristóf",
+        "contact": "mailto:lonsdale201@hotmail.com",
+        "plugin": "better-route",
+        "plugin-version-tested": "2.0.0",
+        "wp-version-tested": "6.9.4",
+        "php-min": "8.3",
+        "last-updated": "2026-10-20"
+      },
+      "resources": [],
+      "has_reference": false,
+      "has_examples": false,
+      "has_scripts": false,
+      "skill_md": {
+        "bytes": 6004,
+        "lines": 122,
+        "sha256": "9ec8309bd88b0911196cad8a89d3cb729d35c1244365652bd0aa67e9ae033c5c"
+      }
+    },
+    {
       "slug": "br-woo-routes",
       "name": "br-woo-routes",
       "domain": "better-route",
-      "description": "Expose WooCommerce orders, products, customers, and coupons with better-route 1.1 WooRouteRegistrar. Use for BetterRoute::wooRouteRegistrar, HPOS guards, actions, permissions, strict list/body validation, pagination meta, stable sorting, protected metadata, atomic idempotency, transactional order writes, product price rules, customer role/capability rules, coupon uniqueness, or Woo OpenAPI components.",
+      "description": "Expose WooCommerce orders, products, customers and coupons with Better Route WooRouteRegistrar. Use for strict CRUD, CustomerRolePolicy, coupon state/status and metadata views, native permissions, HPOS, pagination, idempotency and Woo OpenAPI components. Read-only Analytics reports have a separate br-woo-analytics skill.",
       "path": "better-route/br-woo-routes",
       "skill_path": "better-route/br-woo-routes/SKILL.md",
       "url": "https://raw.githubusercontent.com/Lonsdale201/wp-agent-skills/main/better-route/br-woo-routes/SKILL.md",
@@ -1421,18 +1480,18 @@
         "author": "Soczó Kristóf",
         "contact": "mailto:lonsdale201@hotmail.com",
         "plugin": "better-route",
-        "plugin-version-tested": "1.1.1",
-        "php-min": "8.1",
-        "last-updated": "2026-09-21"
+        "plugin-version-tested": "2.0.0",
+        "php-min": "8.3",
+        "last-updated": "2026-10-20"
       },
       "resources": [],
       "has_reference": false,
       "has_examples": false,
       "has_scripts": false,
       "skill_md": {
-        "bytes": 9683,
-        "lines": 207,
-        "sha256": "1067e57157955593011e78b435167bd83825bbac9ba9e9f3b49d8dc1aa7a9f8b"
+        "bytes": 12340,
+        "lines": 258,
+        "sha256": "560de11d7f7ba6b4bb6fb328622c246511d4bd70a60b95c49300c9d8d4e79df5"
       }
     },
     {
