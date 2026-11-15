@@ -1,242 +1,229 @@
 ---
 name: wp-cli-extending
-description: Add custom WP-CLI commands to a WordPress plugin via `WP_CLI::add_command( $name, $callable, $args )`. Covers the class-based command pattern with PHPDoc-driven synopsis, positional vs `--flag` args, I/O helpers (`success` / `log` / `warning` / `error` / `confirm` / `debug`), formatted output via `WP_CLI\Utils\format_items()` + `--format=table|csv|json|yaml|count`, progress bars with `WP_CLI\Utils\make_progress_bar()`, `WP_CLI::runcommand()` for invoking other commands, lifecycle hooks (`before_wp_load`, `before_invoke:{cmd}`, `after_invoke:{cmd}`), and the `defined( 'WP_CLI' ) && WP_CLI` registration guard. Use for plugin bulk import, data migration, queue dispatch, debug introspection, or any CLI surface.
+description: >-
+  Build and review custom WordPress WP-CLI commands: guarded registration,
+  PHPDoc or programmatic synopsis, argument types and global flag collisions,
+  machine output, authorization, side-effect-free previews, bounded batches,
+  command invocation and runtime verification. Also use for metadata cleanup,
+  serialized search-replace, settings automation, migration safety, cache
+  invalidation, or checking claims about native WP-CLI versus plugin commands.
 metadata:
   wp-skills-author: "Soczó Kristóf"
   wp-skills-contact: "mailto:lonsdale201@hotmail.com"
   wp-skills-plugin: "wordpress"
-  wp-skills-plugin-version-tested: "7.1"
-  wp-skills-wp-version-tested: "7.1"
-  wp-skills-toolchain-tested: "WP-CLI 2.10 - 2.11"
+  wp-skills-plugin-version-tested: "7.1.3"
+  wp-skills-wp-version-tested: "7.1.3"
+  wp-skills-toolchain-tested: "WP-CLI 2.12.0; PHP 8.3.31"
   wp-skills-php-min: "7.4"
-  wp-skills-last-updated: "2026-08-20"
+  wp-skills-last-updated: "2026-11-15"
 ---
 
-# WP-CLI: Extending with Custom Commands
+# Extend WP-CLI using verified command contracts
 
-WP-CLI is the maintenance / automation interface to a WordPress install. Almost no plugin ships CLI commands — even though `wp myplugin import`, `wp myplugin clear-cache`, `wp myplugin run-sync` are exactly what ops people want. The API is `WP_CLI::add_command()` and a class with PHPDoc-annotated methods.
+Start with the installed command's `wp help`, version and loaded packages. Native
+commands already cover many maintenance tasks; a plugin command adds domain rules,
+selection, preview and lifecycle coordination where those are actually needed.
+Do not infer capabilities or safety guarantees from a comparison chart.
 
-## When to use this skill
+Read [native commands and bulk data](references/native-commands-and-bulk-data.md)
+before metadata cleanup, database replacement, cache or resumability work. Read
+[the worked command](reference.md) when implementing a command, and use
+[the verification matrix](references/verification.md) before delivery.
 
-Trigger when ANY of the following is true:
-
-- A plugin needs a CLI surface — bulk import / export, data migration, queue dispatch, debug introspection, scheduled-job force-run, cache clear, license activate.
-- Code references `WP_CLI::add_command`, `WP_CLI::log`, `WP_CLI::success`, `WP_CLI::warning`, `WP_CLI::error`, `WP_CLI::confirm`, `WP_CLI::runcommand`, `WP_CLI::add_hook`, `WP_CLI\Utils\format_items`, `WP_CLI\Utils\make_progress_bar`, `WP_CLI\Utils\get_flag_value`.
-- The user has a long-running admin task (`update_option` loop over 50k rows, AJAX-timing-out import) and wants to run it from terminal.
-- Code is checking `if ( defined( 'WP_CLI' ) && WP_CLI )` and the body is empty / wrong.
-
-## The bootstrap — guard, then register
+## Registration and bootstrap
 
 ```php
-// In the plugin's main file or a dedicated CLI bootstrap.
 if ( defined( 'WP_CLI' ) && WP_CLI ) {
     WP_CLI::add_command( 'myplugin', MyPlugin\CLI\Commands::class );
 }
 ```
 
-The class is instantiated **lazily** when WP-CLI dispatches a `myplugin ...` invocation. PHPDoc on each method is what drives synopsis / help. Public methods become subcommands. Method names are used as-is, so `import_licenses` registers `wp myplugin import_licenses` unless you add `@subcommand import-licenses`. Use `@subcommand` for normal hyphenated command names.
+Load/autoload the command class safely. Registering a class string permits lazy
+instantiation on invocation; constructing an object yourself does not. Keep
+constructors cheap and side-effect-free. Public command methods become
+subcommands; keep helpers private/protected. A method named `import_records`
+keeps its underscore unless its PHPDoc declares `@subcommand import-records`.
 
-Full worked example (import + list with progress bar, dry-run, format args) lives in `reference.md`. The skeleton:
+Commands registered by active plugins normally run after WordPress loads. A real
+`before_wp_load` command must be registered earlier, e.g. by a WP-CLI package or
+`--require` file; an active plugin cannot move its registration before bootstrap
+by adding an annotation. Do not access WP APIs before they are available.
+
+## Synopsis and help are an executable interface
+
+Declare arguments using PHPDoc or the documented `synopsis` registration argument
+to `WP_CLI::add_command()`. Programmatic synopsis is supported; printing a usage
+string inside a callback does not declare or validate arguments.
 
 ```php
-namespace MyPlugin\CLI;
-
-final class Commands {
-    /**
-     * One-line description.
-     *
-     * ## OPTIONS
-     *
-     * <file>
-     * : Positional, required.
-     *
-     * [--dry-run]
-     * : Optional flag.
-     *
-     * @subcommand import-licenses
-     * @when after_wp_load
-     */
-    public function import_licenses( array $args, array $assoc_args ): void {
-        [ $file ] = $args;
-        $dry = (bool) \WP_CLI\Utils\get_flag_value( $assoc_args, 'dry-run', false );
-        // ... work, with \WP_CLI::log() / success() / error() ...
-    }
-}
+/**
+ * Import records from a file.
+ *
+ * ## OPTIONS
+ *
+ * <file>
+ * : Path to an input file.
+ *
+ * [--dry-run]
+ * : Prepare and validate without applying changes.
+ *
+ * [--batch-size=<n>]
+ * : Maximum records per batch, from 1 to 1000.
+ *
+ * @subcommand import-records
+ */
 ```
 
-## PHPDoc drives the synopsis — get the format right
+Give every option its own `: description`, separated by blank lines. In WP-CLI
+2.12.0, an undescribed option next to a described option was omitted from the
+parsed synopsis and rejected. A command with no parsed synopsis accepted the
+same undeclared option: malformed docs do **not** reliably fail closed. Test both
+`wp help` and invocation, including an unknown flag. Keep the first docblock line
+a complete short summary; wrapped text can become the long description.
 
-WP-CLI parses the docblock for command help / arg validation. The strict format:
-
-| Line | Means |
+| Syntax | Meaning |
 |---|---|
-| First paragraph | One-line short description (shown in `wp help myplugin`) |
-| `## OPTIONS` | Begins the args section |
-| `<name>` | Positional arg, required |
-| `[<name>]` | Positional arg, optional |
-| `[<name>...]` | Variadic positional |
-| `--flag` | Boolean flag |
+| `<name>` / `[<name>]` | Required / optional positional argument |
+| `<name>...` / `[<name>...]` | Multiple positional arguments |
 | `[--flag]` | Optional boolean flag |
-| `[--key=<value>]` | Associative arg |
-| `[--key=<value>...]` | Repeatable associative arg |
-| `: description` | The next line is the description for the arg above |
-| `## EXAMPLES` | Begins examples block |
-| `@when before_wp_load` / `after_wp_load` | Controls when WP boots relative to the command (default: `after_wp_load`) |
-| `@subcommand name-with-hyphen` | Exposes a PHP method under a CLI-safe command name |
-| `@alias` | Alternate name for the command |
+| `[--key=<value>]` | Optional named value |
+| `@subcommand name-with-hyphen` | Explicit subcommand name |
 
-The arg pattern lines are NOT freeform — they MUST match WP-CLI's parser. Run `wp help myplugin import-licenses` to see what the parser made of your docblock; if the command is missing, check the method name / `@subcommand` tag first. If the `## OPTIONS` section looks wrong there, the docblock is malformed.
+Do not promise repeatable custom named values from `[--key=<value>...]`. In the
+tested release, repeating `--item=a --item=b` retained only `b`. Use positional
+variadics or an explicitly parsed JSON/list input when multiple values are needed.
 
-## I/O helpers — pick the right severity
+Global parameters are consumed by WP-CLI. Avoid business options named `--user`,
+`--path`, `--url`, `--require`, `--exec` or `--context`; use `--target-user` etc.
+The tested `--json` shorthand became `--format=json`, so it did not reach a custom
+`json` option. Use `--payload` or a positional input for JSON data. Test collisions
+against the installed release rather than treating this list as complete.
 
-Verified at `WP_CLI` class methods (reflection-confirmed):
+## Parse types and reject invalid inputs
 
-```php
-\WP_CLI::line( $msg );           // plain stdout; no log prefix
-\WP_CLI::log( $msg );            // also plain stdout but suppressed by --quiet
-\WP_CLI::success( $msg );        // green "Success: ..."
-\WP_CLI::warning( $msg );        // yellow "Warning: ..."
-\WP_CLI::error( $msg, true );    // red "Error: ..." AND exit non-zero (default)
-\WP_CLI::error( $msg, false );   // print error but continue
-\WP_CLI::debug( $msg );          // only printed with --debug flag
-\WP_CLI::confirm( $question, $assoc_args ); // y/n prompt; auto-yes when $assoc_args contains --yes
-\WP_CLI::halt( $code );          // exit with custom code
-```
+Assigned values usually arrive as strings, while `--enabled` is boolean `true`
+and `--no-enabled` is boolean `false`. `--enabled=no` is the string `"no"`:
+`(bool) 'no'` would incorrectly enable it. Do not blindly cast unvalidated input.
 
-`error` exits by default — use it for "abort the command". `warning` does not exit.
+- Boolean: accept a documented set using `FILTER_VALIDATE_BOOLEAN` with
+  `FILTER_NULL_ON_FAILURE`; reject null/arrays/empty values unless explicitly valid.
+- Integer: validate using `FILTER_VALIDATE_INT` plus min/max, check `false` with
+  strict comparison. This rejects overflow as well as text; a regex alone does not.
+- Choice: strict membership in an allowlist. PHPDoc `options:` can declare enums;
+  retain domain validation in the shared service for non-CLI callers.
+- Structured data: decode JSON only for declared structured fields; check JSON
+  errors, shape, depth, unknown keys and bounds. A text name `"123"` stays text.
+- Batch size: positive, bounded integer before reading or processing input.
 
-## Formatted output — match the `--format` convention
+Define whether out-of-range input errors or is clamped with a warning. Report the
+actual stored value. Do not silently discard unknown fields or typoed options.
 
-Every WP-CLI command that lists data accepts `--format=<table|csv|json|yaml|count>`. Build your commands the same way. `WP_CLI\Utils\format_items( $format, $items, $fields )` does the work (signature verified via reflection).
+## Authorization and domain behavior
 
-```php
-$format = \WP_CLI\Utils\get_flag_value( $assoc_args, 'format', 'table' );
-\WP_CLI\Utils\format_items( $format, $items, array( 'id', 'name', 'expires_at' ) );
-```
+Choose an explicit trust policy. Native maintenance commands commonly trust the
+shell operator; setting `--user` selects WP identity but does not universally add
+capability checks to those commands. A custom command can require `--user` and
+`current_user_can()`, as the worked example does. Neither policy replaces shell
+access control. Never silently impersonate an arbitrary administrator.
 
-Declare the format enum in the PHPDoc with the `---` YAML-block syntax so WP-CLI validates user input — full example in `reference.md`:
+Use the plugin's shared domain service for business validation, related writes,
+audit events and plugin indexes. Native `wp option patch`/metadata commands use
+WordPress APIs and can run loaded sanitizers, hooks and cache invalidation; they
+may still bypass business logic that exists only in a plugin UI/REST controller.
+They are not equivalent to raw SQL. See the bulk-data reference for the distinction.
 
-```
- * [--format=<format>]
- * : Output format.
- * ---
- * default: table
- * options:
- *   - table
- *   - csv
- *   - json
- *   - yaml
- *   - count
- * ---
-```
+Browser nonces are not a CLI authentication mechanism. Keep any trusted CLI-only
+authorization path unreachable from REST/AJAX input, and preserve validation,
+tenant/object scoping and content sanitization on that path.
 
-## Invoking other commands — `runcommand`
+## Preview, confirmation and output
 
-Reflection-confirmed signature: `WP_CLI::runcommand( $command, $options = [] )`. Options:
+`--dry-run` is a command-specific feature, not a universal WP-CLI switch. Implement
+it explicitly with the same pure preparation/validation/selection as apply.
+Preparation must not send HTTP requests, enqueue jobs, send mail, deliberately
+invalidate application caches or mutate persistent domain state. Separate apply
+side effects and disclose preview limitations; ordinary read-cache fills can occur.
 
-| Option | Meaning |
+Use `WP_CLI::confirm( $question, $assoc_args )` with a documented `--yes` option
+for confirmation. Confirmation does not provide locking, rollback or a preview.
+A declined confirmation may exit successfully: automation needing a distinct
+cancel code must implement and test its own contract.
+
+| Helper | Contract |
 |---|---|
-| `launch` | `true` (default for `after_wp_load` boundary crossing): run in subprocess. `false`: run in current process (faster but shares state) |
-| `return` | `true`: return the output as a string. `'stdout'` / `'stderr'` / `'return_code'`: return one piece. `false` (default): echo |
-| `parse` | `'json'`: JSON-decode the captured output |
-| `exit_error` | `false`: don't exit on non-zero return from the inner command |
+| `WP_CLI::line()` | Payload/plain stdout, including under `--quiet` |
+| `WP_CLI::log()` / `success()` | Informational stdout, suppressed by `--quiet` |
+| `WP_CLI::warning()` / `debug()` | Diagnostic stderr; debug requires `--debug` |
+| `WP_CLI::error()` | Diagnostic and nonzero exit by default |
+| `WP_CLI::error( $message, false )` | Reports error without stopping |
+| `WP_CLI::halt( $code )` | Explicit exit code |
+
+Machine output must contain only the requested payload. Do not append success
+messages or progress text to JSON/CSV/porcelain output. Raw stdout is legitimate
+for payloads; helpers are preferable for status and diagnostics.
+
+For lists, declare only supported formats and validate them before calling
+`WP_CLI\Utils\format_items( $format, $items, $fields )`. There is no universal
+format set: native `search-replace` supports `table`/`count`, not JSON in 2.12.0.
+Define stable fields, empty results, `--porcelain` and partial-failure exit codes.
+Redact secrets from normal output and examples; a redacted export is not a backup.
+
+## Invoking commands and lifecycle hooks
+
+`WP_CLI::runcommand( $command, $options )` launches a subprocess by default.
+Use `return => true` for stdout, `return => 'all'` for an object with `stdout`,
+`stderr`, `return_code`; `exit_error => false` permits inspecting a failed command.
+`parse => 'json'` requires a genuinely JSON-only payload.
 
 ```php
-// Run another command and capture its JSON output.
-$users = \WP_CLI::runcommand( 'user list --role=customer --format=json', array(
-    'return' => true,
-    'parse'  => 'json',
+$result = WP_CLI::runcommand( 'core version', array(
+    'return' => 'all',
+    'exit_error' => false,
 ) );
-
-// Fire-and-forget; let it print to terminal.
-\WP_CLI::runcommand( 'cache flush' );
-```
-
-## Lifecycle hooks — `WP_CLI::add_hook`
-
-Useful for command lifecycle logic. An ordinary active plugin is loaded during
-WordPress bootstrap, so it cannot register code early enough to run before
-WordPress loads; `before_wp_load` is for commands registered by WP-CLI packages
-or an earlier bootstrap file.
-
-| Hook | When |
-|---|---|
-| `before_wp_load` | Before any WP file is loaded |
-| `after_wp_load` | After WP bootstrap, before commands run |
-| `before_invoke:<command>` | Right before `<command>`; parent command hooks also fire for subcommands |
-| `after_invoke:<command>` | Right after `<command>` |
-| `before_run_command` | Before every command, after dispatch |
-| `after_run_command` | After every command |
-
-```php
-WP_CLI::add_hook( 'before_invoke:myplugin import-licenses', static function () {
-    \WP_CLI::log( 'Disabling Action Scheduler runners for the import...' );
-    remove_action( 'action_scheduler_run_queue', 'ActionScheduler::run_queue' );
-} );
-```
-
-## Long-running commands and progress bars
-
-`WP_CLI\Utils\make_progress_bar( $message, $count, $interval = 100 )` returns a progress bar (`\cli\progress\Bar` from the `wp-cli/php-cli-tools` lib). Call `->tick()` (with optional increment) per item, `->finish()` at the end.
-
-```php
-$bar = \WP_CLI\Utils\make_progress_bar( 'Migrating', $total );
-foreach ( $rows as $row ) {
-    migrate_one( $row );
-    $bar->tick();
-}
-$bar->finish();
-```
-
-For commands that take >30 seconds, flush WP object cache between batches and `wp_get_db_schema()`-style commands — the persistent `$wpdb` accumulates query log + cached results. Common pattern:
-
-```php
-foreach ( array_chunk( $ids, 500 ) as $chunk ) {
-    process_chunk( $chunk );
-    \WP_CLI\Utils\wp_clear_object_cache();  // utility function, reflection-confirmed
+if ( 0 !== $result->return_code ) {
+    WP_CLI::error( 'Inner command failed.' );
 }
 ```
 
-## Critical rules
+Use `launch => false` only after accounting for shared globals, user/blog context,
+caches and command lifecycle in the same process. Do not interpolate untrusted
+values into command strings; use the documented escaping helpers and test the
+target shell/platform. Treat `--require`/`--exec` and PHP input files as code.
 
-- **Always guard registration with `defined( 'WP_CLI' ) && WP_CLI`**. Otherwise the `WP_CLI::add_command` call fatals on every web request — the class doesn't exist outside CLI runs.
-- **Method visibility matters**. Only `public` methods are exposed as subcommands. `protected` / `private` helpers don't leak — use them freely.
-- **Underscores are not automatically converted to hyphens**. A method named `import_licenses` registers as `import_licenses`; add `@subcommand import-licenses` when the CLI command should be hyphenated.
-- **Register a class name, not an already-instantiated object, when you want lazy loading**. With a class string, WP-CLI reflects PHPDoc during registration/help and only constructs the class when the command is invoked. Constructors should still stay cheap because every real command run pays for them.
-- **`@when after_wp_load` is the default and the normal plugin mode**. A command
-  declared by an active plugin is registered only while WP is loading, too late
-  for a real `before_wp_load` command. Put WP-independent early commands in a
-  WP-CLI package/bootstrap loaded before core.
-- **`WP_CLI::error()` exits with non-zero by default**. Pass `false` as the 2nd arg only when you genuinely want to print "Error:" but continue.
-- **Format your output via `WP_CLI\Utils\format_items()`, not by `echo`**. Users expect `--format=json` to work; rolling your own table breaks pipelines and scripts.
-- **Don't bypass `WP_CLI::log` with raw `echo`**. `echo` doesn't respect `--quiet`; logs always do.
-- **Pass `$assoc_args` to `WP_CLI::confirm()` when you want `--yes` support**. Calling `confirm( $question )` prompts even if the user supplied `--yes`.
-- **Don't query the database from `before_wp_load`**. `$wpdb` is not initialized yet. Use `after_wp_load` (the default) for anything touching WP state.
-- **Don't `wp_die()` inside a CLI command** — it bypasses WP-CLI's error formatting and produces ugly stack traces. Use `WP_CLI::error()`.
+WP-CLI's own `WP_CLI::add_hook()` system is separate from WP `add_action()`.
+Common hooks include `before_wp_load`, `after_wp_load` and
+`before_invoke:<command>` / `after_invoke:<command>`. Verify hook names/timing
+against the installed WP-CLI source; do not invent an `after_run_command` hook
+or assume an after hook runs after an exit/fatal. Use `try/finally` for ordinary
+exceptions, plus durable lease recovery for process termination.
 
-## Common AI mistakes
+## Long-running operations
 
-See `reference.md` for before/after snippets covering: missing `defined('WP_CLI')` guard, hand-rolled synopsis logic instead of PHPDoc, raw `echo` instead of `WP_CLI::log/success/error`, hand-built tables that break `--format=json`, and `wp_die()` inside a CLI command.
+Stream input or page selected IDs using a stable cursor. `array_chunk()` of an
+already-loaded dataset does not bound memory. Deleting while using offset paging
+can skip rows; record selection and resume semantics. WP APIs may trigger hooks,
+revisions and asynchronous work: include those in the operation's design.
 
-## Cross-references
+Progress bars use `WP_CLI\Utils\make_progress_bar()` with `tick()` / `finish()`;
+keep them out of machine payloads. Measure memory/query logging before clearing
+caches. `$wpdb->queries` grows when query logging is enabled, not unconditionally.
+Legacy `WP_CLI\Utils\wp_clear_object_cache()` is marked deprecated since 1.5.0;
+its presence in 2.12.0 is not a recommendation for new code. Feature-check core
+`wp_cache_flush_runtime()` and backend runtime-flush support when needed. Clearing
+runtime state is not flushing every persistent backend. Never schedule broad
+`wp cache flush` calls just because a command runs for more than 30 seconds.
 
-- See **`wp-plugin-cron`** when the CLI command's job is to dispatch background work — Action Scheduler / cron is the right destination, not "do it all in the CLI invocation".
-- See **`wp-rest-api`** when the same logic also needs a REST surface — extract the core into a service class, expose via both CLI command and REST route.
-- See **`wp-locale-and-dates`** for `wp_date()` output in command tables — locale-aware display matters in `--format=table`.
-
-## What this skill does NOT cover
-
-- Distributing the command as a standalone WP-CLI package (`composer.json`, `wp package install`). Plugin-shipped commands cover 95% of plugin needs.
-- Writing your own custom output formatter (subclassing `WP_CLI\Formatter`). Almost never needed — `format_items` covers everything.
-- The package authoring conventions (`wp-cli/dotenv-command` style). Out of scope.
+Locks, checkpoints, idempotency and cache/index repair require explicit design
+and failure tests; a CLI command or database transaction alone proves none of them.
 
 ## References
 
-- `WP_CLI::add_command()` — reflection-verified signature `add_command( $name, $callable, $args = [] )`.
-- `WP_CLI\Utils\format_items()` — reflection-verified `format_items( $format, $items, $fields )`.
-- `WP_CLI\Utils\make_progress_bar()` — reflection-verified `make_progress_bar( $message, $count, $interval = 100 )`.
-- `WP_CLI\Utils\get_flag_value()` — `get_flag_value( $assoc_args, $flag, $default = null )`.
-- WP-CLI handbook (canonical docs): https://make.wordpress.org/cli/handbook/references/internal-api/
-- WP-CLI hook system: https://make.wordpress.org/cli/handbook/guides/hook-system/
-- Official documentation: <https://make.wordpress.org/cli/handbook/references/internal-api/wp-cli-add-command/>
-- Official documentation: <https://make.wordpress.org/cli/handbook/guides/commands-cookbook/>
+- [Worked command and bounded-import design](reference.md)
+- [Native capabilities, metadata scope and bulk-operation safety](references/native-commands-and-bulk-data.md)
+- [Verification procedure and tested behavior](references/verification.md)
+- [Command registration](https://make.wordpress.org/cli/handbook/references/internal-api/wp-cli-add-command/)
+- [Commands cookbook](https://make.wordpress.org/cli/handbook/guides/commands-cookbook/)
+- [Internal APIs](https://make.wordpress.org/cli/handbook/references/internal-api/)
+- [runcommand](https://make.wordpress.org/cli/handbook/references/internal-api/wp-cli-runcommand/)
+- [WP-CLI 2.12.0 runtime utilities](https://github.com/wp-cli/wp-cli/blob/v2.12.0/php/utils.php)
+- [Legacy WP utility deprecations](https://github.com/wp-cli/wp-cli/blob/v2.12.0/php/utils-wp.php#L360-L401)

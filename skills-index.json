@@ -7629,7 +7629,7 @@
       "slug": "wp-cli-extending",
       "name": "wp-cli-extending",
       "domain": "wordpress",
-      "description": "Add custom WP-CLI commands to a WordPress plugin via `WP_CLI::add_command( $name, $callable, $args )`. Covers the class-based command pattern with PHPDoc-driven synopsis, positional vs `--flag` args, I/O helpers (`success` / `log` / `warning` / `error` / `confirm` / `debug`), formatted output via `WP_CLI\\Utils\\format_items()` + `--format=table|csv|json|yaml|count`, progress bars with `WP_CLI\\Utils\\make_progress_bar()`, `WP_CLI::runcommand()` for invoking other commands, lifecycle hooks (`before_wp_load`, `before_invoke:{cmd}`, `after_invoke:{cmd}`), and the `defined( 'WP_CLI' ) && WP_CLI` registration guard. Use for plugin bulk import, data migration, queue dispatch, debug introspection, or any CLI surface.",
+      "description": "Build and review custom WordPress WP-CLI commands: guarded registration, PHPDoc or programmatic synopsis, argument types and global flag collisions, machine output, authorization, side-effect-free previews, bounded batches, command invocation and runtime verification. Also use for metadata cleanup, serialized search-replace, settings automation, migration safety, cache invalidation, or checking claims about native WP-CLI versus plugin commands.",
       "path": "wordpress/wp-cli-extending",
       "skill_path": "wordpress/wp-cli-extending/SKILL.md",
       "url": "https://raw.githubusercontent.com/Lonsdale201/wp-agent-skills/main/wordpress/wp-cli-extending/SKILL.md",
@@ -7640,28 +7640,42 @@
         "author": "Soczó Kristóf",
         "contact": "mailto:lonsdale201@hotmail.com",
         "plugin": "wordpress",
-        "plugin-version-tested": "7.1",
-        "wp-version-tested": "7.1",
-        "toolchain-tested": "WP-CLI 2.10 - 2.11",
+        "plugin-version-tested": "7.1.3",
+        "wp-version-tested": "7.1.3",
+        "toolchain-tested": "WP-CLI 2.12.0; PHP 8.3.31",
         "php-min": "7.4",
-        "last-updated": "2026-08-20"
+        "last-updated": "2026-11-15"
       },
       "resources": [
         {
           "path": "reference.md",
           "repo_path": "wordpress/wp-cli-extending/reference.md",
           "type": "reference",
-          "bytes": 4427,
-          "sha256": "de7fa6b0ed7f426da29db0d0cf35a240783738fcdee332c2ce05315d7f50d280"
+          "bytes": 6202,
+          "sha256": "3e040a0d4978deb1215d4f21c5700e537f39ba363181fbe5f6cbfb30e6b0cb4d"
+        },
+        {
+          "path": "references/native-commands-and-bulk-data.md",
+          "repo_path": "wordpress/wp-cli-extending/references/native-commands-and-bulk-data.md",
+          "type": "reference",
+          "bytes": 11938,
+          "sha256": "a7780c778e7b2802c12e833cfeb1da825534ce33e83c6a4085c19eb7dc6ff02e"
+        },
+        {
+          "path": "references/verification.md",
+          "repo_path": "wordpress/wp-cli-extending/references/verification.md",
+          "type": "reference",
+          "bytes": 4261,
+          "sha256": "c2f856976703baaa3ae24804319852a6deac1d3df90eba35b6ccf9f4096c08fd"
         }
       ],
       "has_reference": true,
       "has_examples": false,
       "has_scripts": false,
       "skill_md": {
-        "bytes": 12951,
-        "lines": 243,
-        "sha256": "735fa24a988339774480782eca4815007aa35409d70b1a9f360859c94c05f650"
+        "bytes": 11702,
+        "lines": 230,
+        "sha256": "7ede66d405f9f7664e35c62014741674186f25d3c2b2aa95e98259f0718ef638"
       }
     },
     {

@@ -1,67 +1,64 @@
-# wp-cli-extending — Reference: full examples
+# Worked command and import design
 
-Long-form examples kept out of `SKILL.md` for brevity. The main skill is the
-contract + critical rules; this file is the worked code.
+## A complete, bounded settings example
 
-## Full command class — import + list with all the right idioms
+This standalone example owns only `acme_demo_limit`. It deliberately requires an
+explicit WordPress identity with `manage_options`; native maintenance commands do
+not all enforce this policy. Load the file with `--require`, or put it behind your
+plugin's CLI bootstrap. Existing plugins should call their shared settings service
+instead of replacing that service with this simple `update_option()` example.
 
 ```php
-namespace MyPlugin\CLI;
+<?php
+if ( ! defined( 'WP_CLI' ) || ! WP_CLI ) {
+    return;
+}
 
-final class Commands {
-
+final class Acme_Demo_Command {
     /**
-     * Imports licenses from a CSV file.
+     * Set a demo limit after validation and confirmation.
      *
      * ## OPTIONS
      *
-     * <file>
-     * : Path to CSV file.
+     * <limit>
+     * : Integer from 1 to 1000.
      *
      * [--dry-run]
-     * : Parse and report counts without writing.
+     * : Show the prepared change without writing.
      *
-     * [--batch-size=<n>]
-     * : Rows per chunk. Default: 100.
+     * [--yes]
+     * : Skip interactive confirmation.
      *
-     * ## EXAMPLES
-     *
-     *     wp myplugin import-licenses ./batch.csv --batch-size=500
-     *     wp myplugin import-licenses ./batch.csv --dry-run
-     *
-     * @subcommand import-licenses
-     * @when after_wp_load
+     * @subcommand set-limit
      */
-    public function import_licenses( array $args, array $assoc_args ): void {
-        [ $file ] = $args;
-        $dry_run    = (bool) \WP_CLI\Utils\get_flag_value( $assoc_args, 'dry-run', false );
-        $batch_size = (int)  \WP_CLI\Utils\get_flag_value( $assoc_args, 'batch-size', 100 );
-
-        if ( ! is_readable( $file ) ) {
-            \WP_CLI::error( "Cannot read file: $file" );
+    public function set_limit( array $args, array $assoc_args ): void {
+        $this->authorize();
+        $limit = $this->prepare_limit( $args[0] );
+        $dry_run = filter_var(
+            $assoc_args['dry-run'] ?? false,
+            FILTER_VALIDATE_BOOLEAN,
+            FILTER_NULL_ON_FAILURE
+        );
+        if ( null === $dry_run ) {
+            WP_CLI::error( '--dry-run expects a boolean.' );
         }
-
-        $rows  = \MyPlugin\License\Importer::parse( $file );
-        $total = count( $rows );
-        \WP_CLI::log( sprintf( 'Parsed %d rows.', $total ) );
-
+        $before = get_option( 'acme_demo_limit', 10 );
+        WP_CLI::log( sprintf( 'acme_demo_limit: %s -> %d', $before, $limit ) );
         if ( $dry_run ) {
-            \WP_CLI::success( 'Dry run complete. No changes written.' );
+            WP_CLI::success( 'Preview complete; no changes applied.' );
             return;
         }
-
-        $progress = \WP_CLI\Utils\make_progress_bar( 'Importing', $total );
-        foreach ( array_chunk( $rows, $batch_size ) as $chunk ) {
-            \MyPlugin\License\Importer::write_chunk( $chunk );
-            $progress->tick( count( $chunk ) );
+        WP_CLI::confirm( 'Apply this change?', $assoc_args );
+        $updated = update_option( 'acme_demo_limit', $limit, false );
+        // false can mean unchanged, not only a failed write.
+        if ( ! $updated && (string) get_option( 'acme_demo_limit' ) !== (string) $limit ) {
+            WP_CLI::error( 'The setting could not be saved.' );
         }
-        $progress->finish();
-
-        \WP_CLI::success( sprintf( 'Imported %d licenses.', $total ) );
+        WP_CLI::success( 'Setting saved.' );
     }
 
     /**
-     * Lists active licenses.
+     * Read the demo configuration.
      *
      * ## OPTIONS
      *
@@ -73,91 +70,89 @@ final class Commands {
      *   - table
      *   - csv
      *   - json
-     *   - yaml
      *   - count
      * ---
-     *
-     * [--fields=<fields>]
-     * : Limit output to specific fields (comma-separated).
-     *
-     * @subcommand list-licenses
      */
-    public function list_licenses( array $args, array $assoc_args ): void {
-        $items  = \MyPlugin\License\Repo::all_active();
-        $fields = ! empty( $assoc_args['fields'] )
-            ? array_map( 'trim', explode( ',', $assoc_args['fields'] ) )
-            : array( 'id', 'key', 'product', 'expires_at' );
-
-        $format = \WP_CLI\Utils\get_flag_value( $assoc_args, 'format', 'table' );
-
-        \WP_CLI\Utils\format_items( $format, $items, $fields );
+    public function show( array $args, array $assoc_args ): void {
+        $this->authorize();
+        WP_CLI\Utils\format_items(
+            $assoc_args['format'] ?? 'table',
+            array( array( 'key' => 'acme_demo_limit', 'value' => get_option( 'acme_demo_limit', 10 ) ) ),
+            array( 'key', 'value' )
+        );
     }
-}
-```
 
-## Common before/after AI mistakes
+    private function authorize(): void {
+        if ( ! current_user_can( 'manage_options' ) ) {
+            WP_CLI::error( 'Select an authorized user with --user=<id|login|email>.' );
+        }
+    }
 
-```php
-// WRONG — fatals on every web request (WP_CLI class doesn't exist there)
-WP_CLI::add_command( 'myplugin', MyClass::class );
-
-// RIGHT — guard
-if ( defined( 'WP_CLI' ) && WP_CLI ) {
-    WP_CLI::add_command( 'myplugin', MyClass::class );
-}
-```
-
-```php
-// WRONG — invents synopsis in code; WP-CLI parser ignores it, help is wrong
-public function import( $args, $assoc_args ) {
-    if ( empty( $assoc_args['file'] ) ) {
-        echo "Usage: wp myplugin import --file=<path>\n";
-        return;
+    private function prepare_limit( string $raw ): int {
+        $value = filter_var( $raw, FILTER_VALIDATE_INT, array(
+            'options' => array( 'min_range' => 1, 'max_range' => 1000 ),
+        ) );
+        if ( false === $value ) {
+            WP_CLI::error( 'Limit must be an integer from 1 to 1000.' );
+        }
+        return $value;
     }
 }
 
-// RIGHT — declare in PHPDoc; WP-CLI shows usage and validates
-/**
- * ## OPTIONS
- *
- * --file=<path>
- * : The CSV file.
- */
-public function import( $args, $assoc_args ) { /* ... */ }
+WP_CLI::add_command( 'acme-demo', Acme_Demo_Command::class );
 ```
 
-```php
-// WRONG — raw echo doesn't respect --quiet, gets no colour, no exit code
-echo "Done.\n";
-echo "ERROR: something went wrong\n";
-
-// RIGHT — use WP-CLI helpers
-\WP_CLI::success( 'Done.' );
-\WP_CLI::error( 'Something went wrong.' );   // also exits non-zero
+```bash
+wp --require=./acme-cli.php help acme-demo set-limit
+wp --require=./acme-cli.php --user=cliadmin acme-demo set-limit 25 --dry-run
+wp --require=./acme-cli.php --user=cliadmin acme-demo set-limit 25 --yes
+wp --require=./acme-cli.php --user=cliadmin acme-demo show --format=json
 ```
 
-```php
-// WRONG — hand-built table; --format=json now broken for scripts
-foreach ( $items as $row ) {
-    printf( "%-10s %s\n", $row['id'], $row['name'] );
-}
+Test absent user, unauthorized user, unknown option, `0`, `-1`, `ten`, integer
+overflow, valid dry run, valid apply and unchanged apply. The example is a single
+setting operation, without a concurrency or rollback guarantee. A production
+service must also handle its filters, related writes and concurrent writers.
 
-// RIGHT — let WP-CLI format it; users get table/csv/json/yaml for free
-\WP_CLI\Utils\format_items(
-    \WP_CLI\Utils\get_flag_value( $assoc_args, 'format', 'table' ),
-    $items,
-    array( 'id', 'name' )
-);
-```
+## Importers: bounded reading and truthful preview
 
-```php
-// WRONG — wp_die in a CLI command produces an HTML / fatal-looking output
-if ( ! current_user_can( 'manage_options' ) ) {
-    wp_die( 'Not allowed.' );
-}
+Define these interfaces in the plugin; they are architectural roles, not WP-CLI APIs:
 
-// RIGHT — WP-CLI error
-if ( ! current_user_can( 'manage_options' ) ) {
-    \WP_CLI::error( 'Not allowed.' );
-}
-```
+1. A streaming reader (e.g. `fgetcsv()` or `SplFileObject`) with byte/record limits,
+   explicit encoding, headers, JSON shape and field bounds.
+2. A pure `prepare(record, snapshot)` step shared by preview and apply. Validate
+   references, permission scope, uniqueness and cross-field constraints here.
+3. An `apply(plan)` domain service using supported storage APIs, plugin lifecycle
+   events and a documented partial-failure policy.
+4. A durable report with input identity/hash, selected target, schema/version,
+   cursor, processed/skipped/failed counts and redacted before/after examples.
+
+Validate batch size with `FILTER_VALIDATE_INT` and a positive min/max before
+opening the input. Reading the whole file and then using `array_chunk()` is not
+streaming. A successful parse is not a successful domain validation dry run.
+
+For all-or-nothing **validation**, preflight the complete input before applying,
+then reread a verified unchanged source or consume an immutable prepared plan.
+This alone does not make writes transactional. Declare whether invalid records
+abort everything or are skipped, and return nonzero for partial failures unless
+the caller explicitly requested a documented tolerance policy.
+
+Do not run apply and roll it back to implement preview: hooks, email, webhooks,
+queue jobs and external services are not undone by a database rollback. Preview
+is based on a snapshot and may become stale; revalidate affected state on apply.
+
+## Reusing WP-CLI internals
+
+Use the documented `synopsis` registration argument when a generated command
+schema needs programmatic argument definitions. PHPDoc is the usual alternative.
+Neither handwritten usage output nor a callback-only validator automatically
+populates help.
+
+For untrusted command arguments, avoid ad hoc string concatenation. Check the
+installed escaping API (`WP_CLI\Utils\esc_cmd()`) and platform
+behavior before invocation. A domain service call is often a simpler way to reuse
+plugin behavior than invoking a second CLI command.
+
+See [native commands and bulk data](references/native-commands-and-bulk-data.md)
+for selection, serialization, cache and resumability contracts, and
+[verification](references/verification.md) for the release checks.
