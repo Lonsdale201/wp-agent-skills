@@ -2,6 +2,33 @@
 
 This collection is continuously evolving — entries are date-based, not version-tagged. New skills land when they're ready; updates go in when they cover real ground (a new release of an upstream plugin, a verified misconception, a corrected example).
 
+## 2026-11-15 (WP-CLI 2.12 command contracts and bulk-data safety)
+
+### Added
+
+- Two `wp-cli-extending` references covering native command capabilities, metadata
+  selection, serialization, cache/index behavior, resumability and verification.
+- A standalone command example with explicit authorization, bounded integer input,
+  side-effect-free preview, confirmation and machine-readable output.
+
+### Changed
+
+- Corrected argument types, repeated named options, global flag collisions,
+  PHPDoc parser edge cases, programmatic synopsis and `runcommand()` contracts.
+- Clarified native preview logging, the empty-value metadata deletion sentinel,
+  serialized value versus array-key replacement, and API versus direct-SQL writes.
+- Replaced unconditional cache-flush advice with measured runtime-cache guidance;
+  marked the legacy cache helper as deprecated and documented the limits of
+  checkpoints, locks and exactly-once claims.
+
+### Verified
+
+- Passed 33 checks in a disposable WordPress 7.1.3 / WP-CLI 2.12.0 / PHP 8.3.31 /
+  MariaDB 10.11 installation with the default object cache.
+- Validated the skill format, repository rules and generated index. PHP 7.4 is
+  the sample syntax minimum; runtime coverage is PHP 8.3. Persistent cache,
+  multisite and large-volume guarantees require separate tests.
+
 ## 2026-10-20 (Better Route 2.0 / PHP 8.3 and 1.1.3 security patch)
 
 ### Added
