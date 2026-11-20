@@ -97,4 +97,3 @@ not network options. show_in_rest does not create a core sites REST endpoint.
   `wp-includes/class-wp-application-passwords.php`, `wp-includes/ms-site.php`,
   `wp-includes/default-constants.php`, `wp-admin/includes/class-wp-automatic-updater.php`,
   `wp-admin/menu.php`.
-

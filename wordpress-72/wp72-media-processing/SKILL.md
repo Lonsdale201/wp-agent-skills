@@ -89,4 +89,3 @@ Cancel/navigate away during processing and check cleanup. Report any path not ru
   `wp-includes/script-loader.php`, `wp-admin/includes/deprecated.php`,
   `wp-includes/rest-api/endpoints/class-wp-rest-attachments-controller.php`.
 - Related stable skill: `wp-client-side-media-processing`.
-

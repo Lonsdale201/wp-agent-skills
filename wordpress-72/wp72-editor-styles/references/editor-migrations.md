@@ -71,4 +71,3 @@ that store instead of reacting to every registered store's changes.
 - [Menus](https://make.wordpress.org/core/2026/11/11/editor-the-options-and-view-menus-now-use-the-new-menu-component/)
 - [CSS Module collision fix](https://make.wordpress.org/core/2026/11/16/update-bundled-wordpress-packages-and-wordpress-build-to-fix-css-module-class-name-collisions/)
 - [Miscellaneous editor changes](https://make.wordpress.org/core/2026/11/18/miscellaneous-editor-changes-in-wordpress-7-2/)
-

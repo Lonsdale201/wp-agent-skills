@@ -93,4 +93,3 @@ For source-backed embedding-builder and core-ability inventory guidance, read
   `wp-includes/rest-api/endpoints/class-wp-rest-abilities-v1-run-controller.php`,
   `wp-includes/json-schema.php`.
 - Related stable skill: `wp-abilities-api`.
-

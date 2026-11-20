@@ -88,4 +88,3 @@ and popover portals. Keep manual/device gaps explicit.
 - Verified source: `wp-includes/js/dist/block-editor.js`,
   `wp-includes/js/dist/components.js`, `wp-includes/block-supports/`,
   `wp-includes/class-wp-theme-json.php`, `wp-includes/global-styles-and-settings.php`.
-

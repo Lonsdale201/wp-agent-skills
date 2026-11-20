@@ -76,4 +76,3 @@ unregistered icon. Exercise any title replacement after save/reload.
   `wp-includes/admin-bar.php`, `wp-admin/menu-header.php`,
   `wp-admin/includes/plugin.php`, `wp-includes/icons.php`.
 - Related stable skill: `wp-svg-icon-api`.
-

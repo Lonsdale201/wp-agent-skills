@@ -80,4 +80,3 @@ final 7.2 support, a full WCAG audit or every browser from a nightly smoke run.
 - [7.2 release schedule](https://make.wordpress.org/core/7-2/)
 - [Change coverage](references/coverage.md)
 - [Candidate status and promotion](references/candidate-status.md)
-

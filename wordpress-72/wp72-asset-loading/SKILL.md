@@ -71,4 +71,3 @@ expose deprecated behavior ahead of a future jQuery 4 transition.
 - Verified source: `wp-admin/load-scripts.php`, `wp-admin/load-styles.php`,
   `wp-includes/script-loader.php`, `wp-includes/deprecated.php`,
   `wp-admin/includes/deprecated.php`, `wp-includes/js/jquery/jquery-migrate.js`.
-

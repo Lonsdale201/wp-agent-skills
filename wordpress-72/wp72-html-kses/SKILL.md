@@ -78,4 +78,3 @@ filters. Keep regression checks distinct from a full sanitizer security review.
 - Verified source: `wp-includes/kses.php`, `wp-includes/default-filters.php`,
   `wp-includes/html-api/class-wp-html-tag-processor.php`.
 - Related stable skill: `wp-html-api`.
-

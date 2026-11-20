@@ -24,4 +24,3 @@ Start with the [change map](wp72-compatibility-audit/references/coverage.md).
 Read [candidate caveats and final-release promotion](wp72-compatibility-audit/references/candidate-status.md)
 before acting on a beta-era proposal. In particular, wp_kses remains public,
 jQuery 4 does not ship here and the Secrets API was withdrawn from 7.2.
-

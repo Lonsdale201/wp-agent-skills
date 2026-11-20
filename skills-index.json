@@ -8760,9 +8760,9 @@
       "has_examples": false,
       "has_scripts": false,
       "skill_md": {
-        "bytes": 4289,
-        "lines": 97,
-        "sha256": "9f3ac1b54a6bc57296d003f506e7bed8bb10de3ec1b7bff7e211f5c727423566"
+        "bytes": 4288,
+        "lines": 96,
+        "sha256": "d4d0d9c40adff25306e0bda9ebd725c46d25c6294528fbd2f90b5db9058afd6c"
       }
     },
     {
@@ -8790,9 +8790,9 @@
       "has_examples": false,
       "has_scripts": false,
       "skill_md": {
-        "bytes": 3636,
-        "lines": 80,
-        "sha256": "b5324fbdb8427f72bc453b1157f7cad8ee0ccbb353711fbed1db7d853cd7441d"
+        "bytes": 3635,
+        "lines": 79,
+        "sha256": "23c53529c9e288192ef5e0070cf11453f16e80f197c64c27e1fda58eaafa0a8d"
       }
     },
     {
@@ -8820,9 +8820,9 @@
       "has_examples": false,
       "has_scripts": false,
       "skill_md": {
-        "bytes": 3970,
-        "lines": 75,
-        "sha256": "c07855f5796a4f89809503bcffe2bf1184b98c0859c561f0eabc1b00e90f0b03"
+        "bytes": 3969,
+        "lines": 74,
+        "sha256": "a0bf7f6bd7a72405646f7daee05237928fc830d4b6415cec9aa2b8083ad349b2"
       }
     },
     {
@@ -8865,9 +8865,9 @@
       "has_examples": false,
       "has_scripts": false,
       "skill_md": {
-        "bytes": 4279,
-        "lines": 84,
-        "sha256": "256200bc28ab990acb9510cd8f4b0855cd43226a2771bc0a61503d5a7c746017"
+        "bytes": 4278,
+        "lines": 83,
+        "sha256": "daf858cac5d7108522531e333db8bec6833c47f30cd158b5d4c4a099f0167085"
       }
     },
     {
@@ -8895,17 +8895,17 @@
           "path": "references/editor-migrations.md",
           "repo_path": "wordpress-72/wp72-editor-styles/references/editor-migrations.md",
           "type": "reference",
-          "bytes": 3718,
-          "sha256": "b7cb19bc138a8617d99217d4570756a082a82b3edd4abf125123a3bd9b9f4248"
+          "bytes": 3717,
+          "sha256": "3ade41a80532cbd29fe3a19f06b6721274924b9a9dc921dbbd619b988f98d6b9"
         }
       ],
       "has_reference": true,
       "has_examples": false,
       "has_scripts": false,
       "skill_md": {
-        "bytes": 4407,
-        "lines": 92,
-        "sha256": "386e961983573e693020ec7e5d954592bca52bbe5ac452291993599be570f24f"
+        "bytes": 4406,
+        "lines": 91,
+        "sha256": "da55b73aa067bf41fb3ddd53c2de7b311a35f4b7cddcc6b429d260cce5747a91"
       }
     },
     {
@@ -8963,9 +8963,9 @@
       "has_examples": false,
       "has_scripts": false,
       "skill_md": {
-        "bytes": 3924,
-        "lines": 82,
-        "sha256": "241964c2200b669a881015de025469e8f53a5ecd505fc72da92b353d73b854c9"
+        "bytes": 3923,
+        "lines": 81,
+        "sha256": "4314d14b6a1ee430ebad1b42923d4c8d58e3a3dd8e42eacb907c68fa3b267d70"
       }
     },
     {
@@ -8993,9 +8993,9 @@
       "has_examples": false,
       "has_scripts": false,
       "skill_md": {
-        "bytes": 3874,
-        "lines": 82,
-        "sha256": "84121feb7a5fd5bf6687b9efabb1b16e81d0376ec6d443e239b4858f3005fe0a"
+        "bytes": 3873,
+        "lines": 81,
+        "sha256": "fb0e37d1ff541708954991be0e504783050ebe6bb4029bc57eb737efadef3b36"
       }
     },
     {
@@ -9023,9 +9023,9 @@
       "has_examples": false,
       "has_scripts": false,
       "skill_md": {
-        "bytes": 4748,
-        "lines": 93,
-        "sha256": "328cbf61515eb3211cbfb5b02fb19523ec7a097d1e7a6459b5f8da0586b3cb3c"
+        "bytes": 4747,
+        "lines": 92,
+        "sha256": "2ba684d762348f56d3bfca8ec65179d9dc1dfe1b26558a6ec12b1631bb791934"
       }
     },
     {
@@ -9061,9 +9061,9 @@
       "has_examples": false,
       "has_scripts": false,
       "skill_md": {
-        "bytes": 5256,
-        "lines": 101,
-        "sha256": "d1b3622b09de8237e6e894d291523312562e0bb237ec4b3dd06109e85ff6006e"
+        "bytes": 5255,
+        "lines": 100,
+        "sha256": "9ca27c41ea93d909c63f4b0f350d6c577899daab07742e7fe2febdfb0dcf2669"
       }
     },
     {
@@ -9091,9 +9091,9 @@
       "has_examples": false,
       "has_scripts": false,
       "skill_md": {
-        "bytes": 3893,
-        "lines": 86,
-        "sha256": "206e360bc746ae9ddb887010239bf10a011d7889885c18b48526a765256bc63d"
+        "bytes": 3892,
+        "lines": 85,
+        "sha256": "63762a0badf0d9f71ed2758396f08fdae8a55fbdfce7d4e39c3ee25fdb621d23"
       }
     },
     {

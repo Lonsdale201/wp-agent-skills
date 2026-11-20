@@ -82,4 +82,3 @@ check default/filtered/explicit/enveloped CORS headers. Record untested branches
   `wp-includes/rest-api/endpoints/class-wp-rest-comments-controller.php`,
   `wp-includes/rest-api.php`.
 - Related stable skill: `wp-rest-api`.
-

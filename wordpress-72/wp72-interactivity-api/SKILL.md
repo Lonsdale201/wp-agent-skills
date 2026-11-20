@@ -78,4 +78,3 @@ and check production behavior where warnings are absent.
   `wp-includes/js/dist/script-modules/interactivity/`,
   `wp-includes/js/dist/script-modules/interactivity-router/`.
 - Related stable skill: `wp-interactivity-api`.
-
