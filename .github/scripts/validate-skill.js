@@ -11,6 +11,7 @@ const BASE_REF = process.env.BASE_REF || 'origin/main';
 
 const ALLOWED_DOMAINS = new Set([
   'wordpress',
+  'wordpress-72',
   'plugin-scaffold',
   'acf',
   'woocommerce',
