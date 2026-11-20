@@ -1,6 +1,6 @@
 # wp-agent-skills
 
-**246 skills · 24 domains**
+**257 skills · 25 domains**
 
 A community-maintained collection of **portable Agent Skills** for WordPress plugin and theme development.
 
@@ -21,6 +21,7 @@ Skills are grouped by domain. Each domain has its own README listing the skills 
 | Domain | What it covers |
 |---|---|
 | [`wordpress/`](wordpress) | Core WP topics that apply to any plugin or theme — security, i18n, REST API, the Abilities API, HTML/UTF-8 helpers, query cache, and the WP 7.1 editor/block surface (Interactivity API, Block Bindings, DataViews/DataForms, Style Engine, View Config, JSON Schema, speculative loading). |
+| [`wordpress-72/`](wordpress-72) | WordPress 7.2 prerelease migrations — asset loading, KSES, Abilities/REST, entity fields/actions, editor styling, media, icons and platform changes. Kept separate until the final release. |
 | [`plugin-scaffold/`](plugin-scaffold) | Building a new plugin from scratch — bootstrap, lifecycle, architecture, options storage, cron, hooks, rewrite rules, asset loading, Action Scheduler. |
 | [`acf/`](acf) | Building with **Advanced Custom Fields Free and PRO** — stable PHP/Local JSON field groups, the value/reference metadata contract across posts/users/terms/comments/options, frontend reads and escaping, relational fields and bidirectionality, PRO complex fields and options pages, and custom `acf_field` types. Every skill marks its Free/PRO boundary. |
 | [`woocommerce/`](woocommerce) | WooCommerce **core** ([`wc-*`](woocommerce#woocommerce-core)) — HPOS, Checkout Block payment methods, order lifecycle, classic cart/checkout, variations & pricing, coupons, customers & sessions, shipping, downloads, emails, Action Scheduler, and logging. The extension families below live in the same folder. |

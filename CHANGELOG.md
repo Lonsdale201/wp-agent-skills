@@ -2,6 +2,11 @@
 
 This collection is continuously evolving — entries are date-based, not version-tagged. New skills land when they're ready; updates go in when they cover real ground (a new release of an upstream plugin, a verified misconception, a corrected example).
 
+## 2026-11-20 (WordPress 7.2 prerelease developer migrations)
+
+- Added eleven WordPress 7.2 migration skills and supporting references in
+  `wordpress-72/`, kept separate from the stable WordPress domain until release.
+
 ## 2026-11-15 (WP-CLI 2.12 command contracts and bulk-data safety)
 
 ### Added
