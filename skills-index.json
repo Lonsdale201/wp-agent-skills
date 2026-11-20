@@ -11,8 +11,8 @@
     "layout": "<domain>/<skill>/SKILL.md",
     "skill_file": "SKILL.md"
   },
-  "domain_count": 24,
-  "skill_count": 246,
+  "domain_count": 25,
+  "skill_count": 257,
   "domains": [
     {
       "slug": "acf",
@@ -145,6 +145,12 @@
       "path": "wordpress",
       "readme_path": "wordpress/README.md",
       "skill_count": 42
+    },
+    {
+      "slug": "wordpress-72",
+      "path": "wordpress-72",
+      "readme_path": "wordpress-72/README.md",
+      "skill_count": 11
     },
     {
       "slug": "wp-rocket",
@@ -8719,6 +8725,375 @@
         "bytes": 7577,
         "lines": 157,
         "sha256": "0d53b458d7be2895971dca82d3b92df773104aa5f71c15090f85e99861447803"
+      }
+    },
+    {
+      "slug": "wp72-abilities-api",
+      "name": "wp72-abilities-api",
+      "domain": "wordpress-72",
+      "description": "Migrates WordPress 7.2 Abilities API integrations using required_capabilities, has_required_capabilities, WP_Ability::prepare_input and schema-aware JSON output. Use for ability registration, direct PHP versus REST input differences, permission callbacks, sanitization failures or custom AI/REST transports.",
+      "path": "wordpress-72/wp72-abilities-api",
+      "skill_path": "wordpress-72/wp72-abilities-api/SKILL.md",
+      "url": "https://raw.githubusercontent.com/Lonsdale201/wp-agent-skills/main/wordpress-72/wp72-abilities-api/SKILL.md",
+      "raw_url": "https://raw.githubusercontent.com/Lonsdale201/wp-agent-skills/main/wordpress-72/wp72-abilities-api/SKILL.md",
+      "html_url": "https://github.com/Lonsdale201/wp-agent-skills/blob/main/wordpress-72/wp72-abilities-api/SKILL.md",
+      "directory_url": "https://github.com/Lonsdale201/wp-agent-skills/tree/main/wordpress-72/wp72-abilities-api",
+      "metadata": {
+        "author": "Soczó Kristóf",
+        "contact": "https://github.com/Lonsdale201",
+        "plugin": "wordpress",
+        "plugin-version-tested": "7.2-RC2-65695",
+        "wp-version-tested": "7.2-RC2-65695",
+        "php-min": "7.4",
+        "last-updated": "2026-11-20"
+      },
+      "resources": [
+        {
+          "path": "references/ai-and-core-abilities.md",
+          "repo_path": "wordpress-72/wp72-abilities-api/references/ai-and-core-abilities.md",
+          "type": "reference",
+          "bytes": 1866,
+          "sha256": "699e2108d4c5e04acffe7b201e698824afcddb3785b61b51bfa00d84a3d38751"
+        }
+      ],
+      "has_reference": true,
+      "has_examples": false,
+      "has_scripts": false,
+      "skill_md": {
+        "bytes": 4289,
+        "lines": 97,
+        "sha256": "9f3ac1b54a6bc57296d003f506e7bed8bb10de3ec1b7bff7e211f5c727423566"
+      }
+    },
+    {
+      "slug": "wp72-admin-icons",
+      "name": "wp72-admin-icons",
+      "domain": "wordpress-72",
+      "description": "Migrates WordPress 7.2 admin menu and toolbar icon integrations to inline SVG. Use for Dashicons pseudo-element overrides, custom admin color schemes, WP_Admin_Bar node title manipulation, the new icon argument, core-admin icon names or wp_is_valid_icon_name checks.",
+      "path": "wordpress-72/wp72-admin-icons",
+      "skill_path": "wordpress-72/wp72-admin-icons/SKILL.md",
+      "url": "https://raw.githubusercontent.com/Lonsdale201/wp-agent-skills/main/wordpress-72/wp72-admin-icons/SKILL.md",
+      "raw_url": "https://raw.githubusercontent.com/Lonsdale201/wp-agent-skills/main/wordpress-72/wp72-admin-icons/SKILL.md",
+      "html_url": "https://github.com/Lonsdale201/wp-agent-skills/blob/main/wordpress-72/wp72-admin-icons/SKILL.md",
+      "directory_url": "https://github.com/Lonsdale201/wp-agent-skills/tree/main/wordpress-72/wp72-admin-icons",
+      "metadata": {
+        "author": "Soczó Kristóf",
+        "contact": "https://github.com/Lonsdale201",
+        "plugin": "wordpress",
+        "plugin-version-tested": "7.2-RC2-65695",
+        "wp-version-tested": "7.2-RC2-65695",
+        "php-min": "7.4",
+        "last-updated": "2026-11-20"
+      },
+      "resources": [],
+      "has_reference": false,
+      "has_examples": false,
+      "has_scripts": false,
+      "skill_md": {
+        "bytes": 3636,
+        "lines": 80,
+        "sha256": "b5324fbdb8427f72bc453b1157f7cad8ee0ccbb353711fbed1db7d853cd7441d"
+      }
+    },
+    {
+      "slug": "wp72-asset-loading",
+      "name": "wp72-asset-loading",
+      "domain": "wordpress-72",
+      "description": "Migrates WordPress 7.2 asset integrations away from load-scripts.php, load-styles.php and retired concatenation/compression settings. Use for broken admin previews, hardcoded asset endpoints, script_concat_settings, COMPRESS_SCRIPTS, COMPRESS_CSS, ENFORCE_GZIP or jQuery Migrate warnings. Covers the jQuery 3 to future jQuery 4 preparation boundary.",
+      "path": "wordpress-72/wp72-asset-loading",
+      "skill_path": "wordpress-72/wp72-asset-loading/SKILL.md",
+      "url": "https://raw.githubusercontent.com/Lonsdale201/wp-agent-skills/main/wordpress-72/wp72-asset-loading/SKILL.md",
+      "raw_url": "https://raw.githubusercontent.com/Lonsdale201/wp-agent-skills/main/wordpress-72/wp72-asset-loading/SKILL.md",
+      "html_url": "https://github.com/Lonsdale201/wp-agent-skills/blob/main/wordpress-72/wp72-asset-loading/SKILL.md",
+      "directory_url": "https://github.com/Lonsdale201/wp-agent-skills/tree/main/wordpress-72/wp72-asset-loading",
+      "metadata": {
+        "author": "Soczó Kristóf",
+        "contact": "https://github.com/Lonsdale201",
+        "plugin": "wordpress",
+        "plugin-version-tested": "7.2-RC2-65695",
+        "wp-version-tested": "7.2-RC2-65695",
+        "php-min": "7.4",
+        "last-updated": "2026-11-20"
+      },
+      "resources": [],
+      "has_reference": false,
+      "has_examples": false,
+      "has_scripts": false,
+      "skill_md": {
+        "bytes": 3970,
+        "lines": 75,
+        "sha256": "c07855f5796a4f89809503bcffe2bf1184b98c0859c561f0eabc1b00e90f0b03"
+      }
+    },
+    {
+      "slug": "wp72-compatibility-audit",
+      "name": "wp72-compatibility-audit",
+      "domain": "wordpress-72",
+      "description": "Audits a plugin or theme for WordPress 7.2 prerelease compatibility. Use for a 7.2 upgrade, RC or nightly test, or a developer migration review spanning assets, KSES, Abilities, REST, Interactivity, media, editor styles, admin icons, rewrites or platform changes. Records exact build evidence and separates shipped features from reverted proposals.",
+      "path": "wordpress-72/wp72-compatibility-audit",
+      "skill_path": "wordpress-72/wp72-compatibility-audit/SKILL.md",
+      "url": "https://raw.githubusercontent.com/Lonsdale201/wp-agent-skills/main/wordpress-72/wp72-compatibility-audit/SKILL.md",
+      "raw_url": "https://raw.githubusercontent.com/Lonsdale201/wp-agent-skills/main/wordpress-72/wp72-compatibility-audit/SKILL.md",
+      "html_url": "https://github.com/Lonsdale201/wp-agent-skills/blob/main/wordpress-72/wp72-compatibility-audit/SKILL.md",
+      "directory_url": "https://github.com/Lonsdale201/wp-agent-skills/tree/main/wordpress-72/wp72-compatibility-audit",
+      "metadata": {
+        "author": "Soczó Kristóf",
+        "contact": "https://github.com/Lonsdale201",
+        "plugin": "wordpress",
+        "plugin-version-tested": "7.2-RC2-65695",
+        "wp-version-tested": "7.2-RC2-65695",
+        "php-min": "7.4",
+        "last-updated": "2026-11-20"
+      },
+      "resources": [
+        {
+          "path": "references/candidate-status.md",
+          "repo_path": "wordpress-72/wp72-compatibility-audit/references/candidate-status.md",
+          "type": "reference",
+          "bytes": 2937,
+          "sha256": "daa6d3f8bcee2ed3cda759f52a7e172c50f8105a8349b89ea58c3c93311bd898"
+        },
+        {
+          "path": "references/coverage.md",
+          "repo_path": "wordpress-72/wp72-compatibility-audit/references/coverage.md",
+          "type": "reference",
+          "bytes": 5211,
+          "sha256": "7f308c00cfd4b0e225fc6b010a75f41d936b0043322568a4515b759aec2f24ea"
+        }
+      ],
+      "has_reference": true,
+      "has_examples": false,
+      "has_scripts": false,
+      "skill_md": {
+        "bytes": 4279,
+        "lines": 84,
+        "sha256": "256200bc28ab990acb9510cd8f4b0855cd43226a2771bc0a61503d5a7c746017"
+      }
+    },
+    {
+      "slug": "wp72-editor-styles",
+      "name": "wp72-editor-styles",
+      "domain": "wordpress-72",
+      "description": "Migrates WordPress 7.2 editor components, menus and block styling. Use for Emotion or SCSS Module overrides, palette asButtons/presentation, InspectorControls __experimentalGroup, style-state controls, textShadow presets, FontFamilyControl or bundled @wordpress package class collisions.",
+      "path": "wordpress-72/wp72-editor-styles",
+      "skill_path": "wordpress-72/wp72-editor-styles/SKILL.md",
+      "url": "https://raw.githubusercontent.com/Lonsdale201/wp-agent-skills/main/wordpress-72/wp72-editor-styles/SKILL.md",
+      "raw_url": "https://raw.githubusercontent.com/Lonsdale201/wp-agent-skills/main/wordpress-72/wp72-editor-styles/SKILL.md",
+      "html_url": "https://github.com/Lonsdale201/wp-agent-skills/blob/main/wordpress-72/wp72-editor-styles/SKILL.md",
+      "directory_url": "https://github.com/Lonsdale201/wp-agent-skills/tree/main/wordpress-72/wp72-editor-styles",
+      "metadata": {
+        "author": "Soczó Kristóf",
+        "contact": "https://github.com/Lonsdale201",
+        "plugin": "wordpress",
+        "plugin-version-tested": "7.2-RC2-65695",
+        "wp-version-tested": "7.2-RC2-65695",
+        "php-min": "7.4",
+        "last-updated": "2026-11-20"
+      },
+      "resources": [
+        {
+          "path": "references/editor-migrations.md",
+          "repo_path": "wordpress-72/wp72-editor-styles/references/editor-migrations.md",
+          "type": "reference",
+          "bytes": 3718,
+          "sha256": "b7cb19bc138a8617d99217d4570756a082a82b3edd4abf125123a3bd9b9f4248"
+        }
+      ],
+      "has_reference": true,
+      "has_examples": false,
+      "has_scripts": false,
+      "skill_md": {
+        "bytes": 4407,
+        "lines": 92,
+        "sha256": "386e961983573e693020ec7e5d954592bca52bbe5ac452291993599be570f24f"
+      }
+    },
+    {
+      "slug": "wp72-entity-fields-actions",
+      "name": "wp72-entity-fields-actions",
+      "domain": "wordpress-72",
+      "description": "Registers and audits WordPress 7.2 Entity Fields and Entity Actions for DataViews/DataForm integrations. Use for wp_register_entity_fields, wp_update_entity_fields, wp_register_entity_actions, their initialization hooks, script-module augmentation or the entity-fields/entity-actions REST discovery endpoints.",
+      "path": "wordpress-72/wp72-entity-fields-actions",
+      "skill_path": "wordpress-72/wp72-entity-fields-actions/SKILL.md",
+      "url": "https://raw.githubusercontent.com/Lonsdale201/wp-agent-skills/main/wordpress-72/wp72-entity-fields-actions/SKILL.md",
+      "raw_url": "https://raw.githubusercontent.com/Lonsdale201/wp-agent-skills/main/wordpress-72/wp72-entity-fields-actions/SKILL.md",
+      "html_url": "https://github.com/Lonsdale201/wp-agent-skills/blob/main/wordpress-72/wp72-entity-fields-actions/SKILL.md",
+      "directory_url": "https://github.com/Lonsdale201/wp-agent-skills/tree/main/wordpress-72/wp72-entity-fields-actions",
+      "metadata": {
+        "author": "Soczó Kristóf",
+        "contact": "https://github.com/Lonsdale201",
+        "plugin": "wordpress",
+        "plugin-version-tested": "7.2-RC2-65695",
+        "wp-version-tested": "7.2-RC2-65695",
+        "php-min": "7.4",
+        "last-updated": "2026-11-20"
+      },
+      "resources": [],
+      "has_reference": false,
+      "has_examples": false,
+      "has_scripts": false,
+      "skill_md": {
+        "bytes": 4435,
+        "lines": 91,
+        "sha256": "eb682998607a77c5ef1ee242e9befb63662f3f77ee86deda2b49751c77b0b011"
+      }
+    },
+    {
+      "slug": "wp72-html-kses",
+      "name": "wp72-html-kses",
+      "domain": "wordpress-72",
+      "description": "Reviews HTML sanitization against WordPress 7.2's transitional KSES implementation. Use for wp_kses, wp_kses_post, pre_kses, custom allowlists, wp_kses_force_legacy_parser, or HTML API parser migrations. Distinguishes the default HTML API parser from the legacy fallback and tests security and output compatibility.",
+      "path": "wordpress-72/wp72-html-kses",
+      "skill_path": "wordpress-72/wp72-html-kses/SKILL.md",
+      "url": "https://raw.githubusercontent.com/Lonsdale201/wp-agent-skills/main/wordpress-72/wp72-html-kses/SKILL.md",
+      "raw_url": "https://raw.githubusercontent.com/Lonsdale201/wp-agent-skills/main/wordpress-72/wp72-html-kses/SKILL.md",
+      "html_url": "https://github.com/Lonsdale201/wp-agent-skills/blob/main/wordpress-72/wp72-html-kses/SKILL.md",
+      "directory_url": "https://github.com/Lonsdale201/wp-agent-skills/tree/main/wordpress-72/wp72-html-kses",
+      "metadata": {
+        "author": "Soczó Kristóf",
+        "contact": "https://github.com/Lonsdale201",
+        "plugin": "wordpress",
+        "plugin-version-tested": "7.2-RC2-65695",
+        "wp-version-tested": "7.2-RC2-65695",
+        "php-min": "7.4",
+        "last-updated": "2026-11-20"
+      },
+      "resources": [],
+      "has_reference": false,
+      "has_examples": false,
+      "has_scripts": false,
+      "skill_md": {
+        "bytes": 3924,
+        "lines": 82,
+        "sha256": "241964c2200b669a881015de025469e8f53a5ecd505fc72da92b353d73b854c9"
+      }
+    },
+    {
+      "slug": "wp72-interactivity-api",
+      "name": "wp72-interactivity-api",
+      "domain": "wordpress-72",
+      "description": "Migrates WordPress 7.2 interactive blocks using data-wp-html, asDangerousHTML, wp_interactivity_as_dangerous_html and core/router state. Use for removed data-wp-ignore, two-hyphen directive IDs, negated function references, server HTML hydration or navigation loading indicators.",
+      "path": "wordpress-72/wp72-interactivity-api",
+      "skill_path": "wordpress-72/wp72-interactivity-api/SKILL.md",
+      "url": "https://raw.githubusercontent.com/Lonsdale201/wp-agent-skills/main/wordpress-72/wp72-interactivity-api/SKILL.md",
+      "raw_url": "https://raw.githubusercontent.com/Lonsdale201/wp-agent-skills/main/wordpress-72/wp72-interactivity-api/SKILL.md",
+      "html_url": "https://github.com/Lonsdale201/wp-agent-skills/blob/main/wordpress-72/wp72-interactivity-api/SKILL.md",
+      "directory_url": "https://github.com/Lonsdale201/wp-agent-skills/tree/main/wordpress-72/wp72-interactivity-api",
+      "metadata": {
+        "author": "Soczó Kristóf",
+        "contact": "https://github.com/Lonsdale201",
+        "plugin": "wordpress",
+        "plugin-version-tested": "7.2-RC2-65695",
+        "wp-version-tested": "7.2-RC2-65695",
+        "php-min": "7.4",
+        "last-updated": "2026-11-20"
+      },
+      "resources": [],
+      "has_reference": false,
+      "has_examples": false,
+      "has_scripts": false,
+      "skill_md": {
+        "bytes": 3874,
+        "lines": 82,
+        "sha256": "84121feb7a5fd5bf6687b9efabb1b16e81d0376ec6d443e239b4858f3005fe0a"
+      }
+    },
+    {
+      "slug": "wp72-media-processing",
+      "name": "wp72-media-processing",
+      "domain": "wordpress-72",
+      "description": "Audits WordPress 7.2 media uploads and cross-origin isolation. Use for wp.media/wp.Uploader integrations, REST sideload/finalize, upload hooks, Document-Isolation-Policy, deprecated crossorigin rewriting, animated GIF/WebP sub-sizes or multisite storage quota regressions.",
+      "path": "wordpress-72/wp72-media-processing",
+      "skill_path": "wordpress-72/wp72-media-processing/SKILL.md",
+      "url": "https://raw.githubusercontent.com/Lonsdale201/wp-agent-skills/main/wordpress-72/wp72-media-processing/SKILL.md",
+      "raw_url": "https://raw.githubusercontent.com/Lonsdale201/wp-agent-skills/main/wordpress-72/wp72-media-processing/SKILL.md",
+      "html_url": "https://github.com/Lonsdale201/wp-agent-skills/blob/main/wordpress-72/wp72-media-processing/SKILL.md",
+      "directory_url": "https://github.com/Lonsdale201/wp-agent-skills/tree/main/wordpress-72/wp72-media-processing",
+      "metadata": {
+        "author": "Soczó Kristóf",
+        "contact": "https://github.com/Lonsdale201",
+        "plugin": "wordpress",
+        "plugin-version-tested": "7.2-RC2-65695",
+        "wp-version-tested": "7.2-RC2-65695",
+        "php-min": "7.4",
+        "last-updated": "2026-11-20"
+      },
+      "resources": [],
+      "has_reference": false,
+      "has_examples": false,
+      "has_scripts": false,
+      "skill_md": {
+        "bytes": 4748,
+        "lines": 93,
+        "sha256": "328cbf61515eb3211cbfb5b02fb19523ec7a097d1e7a6459b5f8da0586b3cb3c"
+      }
+    },
+    {
+      "slug": "wp72-platform-compatibility",
+      "name": "wp72-platform-compatibility",
+      "domain": "wordpress-72",
+      "description": "Audits WordPress 7.2 platform deltas affecting randomable post types and random redirects, NO_BACKSLASH_ESCAPES, application-password hook slashing and notifications, register_site_meta, local WP_DEBUG, worktree update detection and Appearance submenu positions. Use when these contracts affect a 7.2 upgrade.",
+      "path": "wordpress-72/wp72-platform-compatibility",
+      "skill_path": "wordpress-72/wp72-platform-compatibility/SKILL.md",
+      "url": "https://raw.githubusercontent.com/Lonsdale201/wp-agent-skills/main/wordpress-72/wp72-platform-compatibility/SKILL.md",
+      "raw_url": "https://raw.githubusercontent.com/Lonsdale201/wp-agent-skills/main/wordpress-72/wp72-platform-compatibility/SKILL.md",
+      "html_url": "https://github.com/Lonsdale201/wp-agent-skills/blob/main/wordpress-72/wp72-platform-compatibility/SKILL.md",
+      "directory_url": "https://github.com/Lonsdale201/wp-agent-skills/tree/main/wordpress-72/wp72-platform-compatibility",
+      "metadata": {
+        "author": "Soczó Kristóf",
+        "contact": "https://github.com/Lonsdale201",
+        "plugin": "wordpress",
+        "plugin-version-tested": "7.2-RC2-65695",
+        "wp-version-tested": "7.2-RC2-65695",
+        "php-min": "7.4",
+        "last-updated": "2026-11-20"
+      },
+      "resources": [
+        {
+          "path": "references/translation-updates.md",
+          "repo_path": "wordpress-72/wp72-platform-compatibility/references/translation-updates.md",
+          "type": "reference",
+          "bytes": 1569,
+          "sha256": "5f984682584e939b1255c0f95d4f586041af35ad20ec39f009feccac5439e54e"
+        }
+      ],
+      "has_reference": true,
+      "has_examples": false,
+      "has_scripts": false,
+      "skill_md": {
+        "bytes": 5256,
+        "lines": 101,
+        "sha256": "d1b3622b09de8237e6e894d291523312562e0bb237ec4b3dd06109e85ff6006e"
+      }
+    },
+    {
+      "slug": "wp72-rest-api",
+      "name": "wp72-rest-api",
+      "domain": "wordpress-72",
+      "description": "Audits the WordPress 7.2 REST changes to revision/autosave metadata, comments status arrays and rest_allowed_cors_methods. Use for revision.meta clients, revisions_enabled, wp_post_revision_meta_keys, rest_comment_query, comments status comparisons or Access-Control-Allow-Methods overrides.",
+      "path": "wordpress-72/wp72-rest-api",
+      "skill_path": "wordpress-72/wp72-rest-api/SKILL.md",
+      "url": "https://raw.githubusercontent.com/Lonsdale201/wp-agent-skills/main/wordpress-72/wp72-rest-api/SKILL.md",
+      "raw_url": "https://raw.githubusercontent.com/Lonsdale201/wp-agent-skills/main/wordpress-72/wp72-rest-api/SKILL.md",
+      "html_url": "https://github.com/Lonsdale201/wp-agent-skills/blob/main/wordpress-72/wp72-rest-api/SKILL.md",
+      "directory_url": "https://github.com/Lonsdale201/wp-agent-skills/tree/main/wordpress-72/wp72-rest-api",
+      "metadata": {
+        "author": "Soczó Kristóf",
+        "contact": "https://github.com/Lonsdale201",
+        "plugin": "wordpress",
+        "plugin-version-tested": "7.2-RC2-65695",
+        "wp-version-tested": "7.2-RC2-65695",
+        "php-min": "7.4",
+        "last-updated": "2026-11-20"
+      },
+      "resources": [],
+      "has_reference": false,
+      "has_examples": false,
+      "has_scripts": false,
+      "skill_md": {
+        "bytes": 3893,
+        "lines": 86,
+        "sha256": "206e360bc746ae9ddb887010239bf10a011d7889885c18b48526a765256bc63d"
       }
     },
     {
